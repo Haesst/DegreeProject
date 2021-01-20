@@ -34,6 +34,8 @@ bld/
 # SFML
 DegreeProject/ThirdParty/SFML-2.5.1/doc
 DegreeProject/ThirdParty/SFML-2.5.1/examples
+# Add include on sfml bin (all bin folders are excluded as default in this .gitignore)
+!DegreeProject/ThirdParty/SFML-2.5.1/bin
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
