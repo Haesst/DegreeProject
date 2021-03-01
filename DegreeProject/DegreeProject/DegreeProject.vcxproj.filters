@@ -66,6 +66,7 @@
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Log.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -87,5 +88,6 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
+    <ClCompile Include="Source\Engine\Log.cpp" />
   </ItemGroup>
 </Project>

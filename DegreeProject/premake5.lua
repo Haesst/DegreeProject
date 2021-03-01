@@ -12,6 +12,7 @@ workspace "DegreeProject"
 -- Include directories relative to solution directory
 includedir = {}
 includedir["SFML"] = "ThirdParty/SFML-2.5.1/include"
+includedir["SpdLog"] = "ThirdParty/spdlog/include"
 
 libdir = {}
 libdir["SFML"] = "ThirdParty/SFML-2.5.1/lib"
@@ -40,7 +41,8 @@ project "DegreeProject"
 
 	includedirs
 	{
-		"%{includedir.SFML}"
+		"%{includedir.SFML}",
+		"%{includedir.SpdLog}"
 	}
 
 	libdirs
@@ -53,7 +55,7 @@ project "DegreeProject"
 		"sfml-graphics.lib",
 		"sfml-window.lib",
 		"sfml-system.lib",
-		"sfml-audio.lib"
+		"sfml-audio.lib",
 	}
 	postbuildcommands
 	{

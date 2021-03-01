@@ -2,6 +2,7 @@
 #include "Engine/AssetHandler.h"
 #include "Engine/Time.h"
 #include "Engine/Window.h"
+#include "Engine/Log.h"
 #include "ECS/EntityManager.h"
 #include "Game/MapDrawer.h"
 #include "Engine/InputHandler.h"
@@ -12,6 +13,10 @@
 
 int main()
 {
+	// Init log
+	Log::Init();
+	LOG_CORE_INFO("Initialized Log");
+
 	sf::Vector2 resolution(1920, 1080);
 	AssetHandler AssetLoader;
 	sf::Sprite Spr;
