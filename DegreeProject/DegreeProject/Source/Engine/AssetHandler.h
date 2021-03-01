@@ -4,8 +4,9 @@
 class AssetHandler
 {
 public:
-	sf::Sprite LoadImageFromFile(const char* FilePath, sf::Texture& Texture);
+	sf::Sprite LoadImageFromFileToSprite(const char* FilePath, sf::Texture& Texture);
+
+	sf::Text LoadFontFromFileToText(const char* FilePath);
 
 private:
-
 };
