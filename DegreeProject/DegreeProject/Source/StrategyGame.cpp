@@ -1,7 +1,16 @@
 #include <SFML/Graphics.hpp>
+#include "Engine/AssetHandler.h"
 
 int main()
 {
+	AssetHandler AssetLoader;
+	sf::Sprite Spr;
+	sf::Texture Texture;
+
+	Spr = AssetLoader.LoadImageFromFile("Assets/Graphics/Test.jpg", Texture);
+
+	Spr.scale(.5f, .5f);
+
 	sf::RenderWindow window(sf::VideoMode(1920, 1080), "GRAND STRATEGY GAME 2.5!", sf::Style::Fullscreen);
 	sf::CircleShape shape(10.f);
 	shape.setPosition(window.getSize().x * .5f, window.getSize().y * .5);
@@ -35,6 +44,7 @@ int main()
 		}
 
 		window.clear();
+		window.draw(Spr);
 		window.draw(shape);
 		window.draw(redShape);
 		window.display();

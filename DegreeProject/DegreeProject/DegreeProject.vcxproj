@@ -94,7 +94,11 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll\ (xcopy /Q /E
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Source\Engine\AssetHandler.cpp" />
     <ClCompile Include="Source\StrategyGame.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Source\Engine\AssetHandler.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
