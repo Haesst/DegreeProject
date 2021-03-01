@@ -102,12 +102,18 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll\ (xcopy /Q /E
     <ClInclude Include="Source\ECS\System.h" />
     <ClInclude Include="Source\ECS\Types.h" />
     <ClInclude Include="Source\Engine\AssetHandler.h" />
+    <ClInclude Include="Source\Engine\Time.h" />
     <ClInclude Include="Source\Engine\Vector2D.h" />
+    <ClInclude Include="Source\Engine\Window.h" />
+    <ClInclude Include="Source\Game\Components\MovingCircle.h" />
     <ClInclude Include="Source\Game\MapDrawer.h" />
+    <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp" />
     <ClCompile Include="Source\Engine\AssetHandler.cpp" />
+    <ClCompile Include="Source\Engine\Time.cpp" />
+    <ClCompile Include="Source\Engine\Window.cpp" />
     <ClCompile Include="Source\Game\MapDrawer.cpp" />
     <ClCompile Include="Source\StrategyGame.cpp" />
   </ItemGroup>
