@@ -44,7 +44,7 @@ public:
 
 	void Erase(const EntityID entity) override final
 	{
-		auto comp = std::find_if(m_Components.begin(), m_Components.end(), [&](const T& c{ return c.GetID() == entity; }));
+		auto comp = std::find_if(m_Components.begin(), m_Components.end(), [&](const T& c) { return c.GetID() == entity; });
 
 		if (comp != m_Components.end())
 		{

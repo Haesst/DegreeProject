@@ -33,7 +33,7 @@ inline static const SystemTypeID GetRuntimeSystemTypeID()
 template<typename T>
 inline static const ComponentTypeID ComponentType() noexcept
 {
-	static_assert((std::is_base_of<Component, T>::value && !std::is_same<Component, T> value), "INVALID TEMPLATE TYPE");
+	static_assert((std::is_base_of<Component, T>::value && !std::is_same<Component, T>::value), "INVALID TEMPLATE TYPE");
 	static const ComponentTypeID typeID = GetRuntimeComponentTypeID();
 
 	return typeID;
@@ -43,7 +43,7 @@ inline static const ComponentTypeID ComponentType() noexcept
 template<typename T>
 inline static const SystemTypeID SystemType() noexcept
 {
-	static_assert((std::is_base_of<System, T>::value && !std::is_same<System, T> value), "INVALID TEMPLATE TYPE");
+	static_assert((std::is_base_of<System, T>::value && !std::is_same<System, T>::value), "INVALID TEMPLATE TYPE");
 	static const SystemTypeID typeID = GetRuntimeSystemTypeID();
 
 	return typeID;

@@ -10,6 +10,7 @@
 #include "Component.h"
 #include "ComponentList.h"
 #include "EntityTag.h"
+#include "Components/Transform.h"
 
 class EntityManager
 {
@@ -125,6 +126,8 @@ public:
 	{
 		const EntityID entityID = m_AvailableEntityIDs.front();
 		AddEntitySignature(entityID);
+
+		AddComponent<Transform>(entityID);
 
 		m_AvailableEntityIDs.pop();
 		m_EntityCount++;
