@@ -70,7 +70,9 @@
     <PostBuildEvent>
       <Command>IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-graphics-2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-graphics-2.dll $(SolutionDir)bin\Debug-x86\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-graphics-2.dll $(SolutionDir)bin\Debug-x86\$(ProjectName) &gt; nul)
 IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-window-2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-window-2.dll $(SolutionDir)bin\Debug-x86\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-window-2.dll $(SolutionDir)bin\Debug-x86\$(ProjectName) &gt; nul)
-IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll $(SolutionDir)bin\Debug-x86\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll $(SolutionDir)bin\Debug-x86\$(ProjectName) &gt; nul)</Command>
+IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll $(SolutionDir)bin\Debug-x86\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll $(SolutionDir)bin\Debug-x86\$(ProjectName) &gt; nul)
+IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-audio-2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-audio-2.dll $(SolutionDir)bin\Debug-x86\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-audio-2.dll $(SolutionDir)bin\Debug-x86\$(ProjectName) &gt; nul)
+IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll $(SolutionDir)bin\Debug-x86\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll $(SolutionDir)bin\Debug-x86\$(ProjectName) &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -84,13 +86,15 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll\ (xcopy /Q /E
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\ThirdParty\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
     <PostBuildEvent>
       <Command>IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-graphics-2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-graphics-2.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-graphics-2.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul)
 IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-window-2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-window-2.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-window-2.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul)
-IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul)</Command>
+IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-system-2.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul)
+IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-audio-2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-audio-2.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-audio-2.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul)
+IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

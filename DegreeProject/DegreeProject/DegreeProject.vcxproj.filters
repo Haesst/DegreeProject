@@ -13,6 +13,12 @@
     <Filter Include="Game">
       <UniqueIdentifier>{7FA9857C-6BE0-860D-14CD-6C1000E3020F}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Components">
+      <UniqueIdentifier>{3441F2CD-A0CC-5F92-A9DD-E28615E8BB92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Systems">
+      <UniqueIdentifier>{860EB599-7271-443E-1BF7-7CF4073910C1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\ECS\Component.h">
@@ -39,14 +45,24 @@
     <ClInclude Include="Source\Engine\AssetHandler.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Time.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Vector2D.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\Window.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Components\MovingCircle.h">
+      <Filter>Game\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\MapDrawer.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Vector2D.h" />
-    <ClInclude Include="Source\Game\Components\MovingCircle.h" />
-    <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h" />
-    <ClInclude Include="Source\Engine\Window.h" />
-    <ClInclude Include="Source\Engine\Time.h" />
+    <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h">
+      <Filter>Game\Systems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -55,11 +71,15 @@
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Time.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\Window.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Game\MapDrawer.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Engine\Time.cpp" />
-    <ClCompile Include="Source\Engine\Window.cpp" />
   </ItemGroup>
 </Project>
