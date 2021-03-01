@@ -20,7 +20,6 @@ struct ECSExampleSystem : System
 	ECSExampleSystem()
 	{
 		AddComponentSignature<MovingCircle>();
-		AddComponentSignature<Transform>();
 		m_EntityManager = &EntityManager::Get();
 	}
 

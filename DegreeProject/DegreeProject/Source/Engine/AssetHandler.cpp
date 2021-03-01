@@ -30,3 +30,15 @@ sf::Text AssetHandler::LoadFontFromFileToText(const char* FilePath)
 
 	return Text;
 }
+
+sf::Sound AssetHandler::LoadAudioFile(const char* FilePath, sf::SoundBuffer& Buffer)
+{
+	if (Buffer.loadFromFile(FilePath))
+	{
+		sf::Sound SoundFile;
+		SoundFile.setBuffer(Buffer);
+		return SoundFile;
+	}
+	
+	return sf::Sound();
+}

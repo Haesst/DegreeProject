@@ -52,11 +52,14 @@ project "DegreeProject"
 	{
 		"sfml-graphics.lib",
 		"sfml-window.lib",
-		"sfml-system.lib"
+		"sfml-system.lib",
+		"sfml-audio.lib"
 	}
 	postbuildcommands
 	{
 		("{COPY} %{wks.location}%{sfmlbindir}/sfml-graphics-2.dll %{wks.location}bin/" .. outputdir .. "/%{prj.name}"),
 		("{COPY} %{wks.location}%{sfmlbindir}/sfml-window-2.dll %{wks.location}bin/" .. outputdir .. "/%{prj.name}"),
-		("{COPY} %{wks.location}%{sfmlbindir}/sfml-system-2.dll %{wks.location}bin/" .. outputdir .. "/%{prj.name}")
+		("{COPY} %{wks.location}%{sfmlbindir}/sfml-system-2.dll %{wks.location}bin/" .. outputdir .. "/%{prj.name}"),
+		("{COPY} %{wks.location}%{sfmlbindir}/sfml-audio-2.dll %{wks.location}bin/" .. outputdir .. "/%{prj.name}"),
+		("{COPY} %{wks.location}%{sfmlbindir}/openal32.dll %{wks.location}bin/" .. outputdir .. "/%{prj.name}")
 	}

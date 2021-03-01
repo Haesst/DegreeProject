@@ -17,8 +17,12 @@ int main()
 	sf::Texture Texture;
 
 	Spr = AssetLoader.LoadImageFromFile("Assets/Graphics/Test.jpg", Texture);
-
 	Spr.scale(.5f, .5f);
+
+	sf::SoundBuffer buffer;
+	sf::Sound TestSound = AssetLoader.LoadAudioFile("Assets/Audio/MenuMusic.wav", buffer);
+	TestSound.setVolume(20);
+	TestSound.play();
 
 	MapDrawer mapDrawer;
 	auto map = mapDrawer.GetMap("Assets/Map/Map.txt", 'O', resolution, 30.0f);
@@ -51,9 +55,8 @@ int main()
 
 	// Get transform and moving circle of entity
 	Transform* dot2Transform = &entityManager->GetComponent<Transform>(dot2);
-	dot2Transform->m_Position = { window->getSize().x * 0.5f, window->getSize().y * 0.6f };
-
 	MovingCircle* dot2Circle = &entityManager->GetComponent<MovingCircle>(dot2);
+	dot2Transform->m_Position = { window->getSize().x * 0.5f, window->getSize().y * 0.6f };
 	dot2Circle->m_Direction = { 0.0f, 1.0f };
 	dot2Circle->m_Color = sf::Color::Yellow;
 
@@ -80,9 +83,9 @@ int main()
 		// Render
 		window->clear(sf::Color::Blue);
 		mapDrawer.DrawMap(&map, *window);
-
 		EntityManager::Get().Render();
 		window->display();
+
 	}
 
 	Window::Cleanup();
