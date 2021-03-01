@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include "Engine/AssetHandler.h"
+#include "ECS/EntityManager.h"
 
 int main()
 {
@@ -19,10 +20,15 @@ int main()
 	redShape.setPosition(window.getSize().x * .5f, window.getSize().y * .6);
 	redShape.setFillColor(sf::Color::Red);
 
+	sf::Clock deltaClock;
+
+	EntityManager* entityManager = &EntityManager::Get();
+
 	while (window.isOpen())
 	{
-		float newX = shape.getPosition().x + 0.1f;
-		float redShapeY = redShape.getPosition().y + 0.1f;
+		float dt = deltaClock.restart().asSeconds();
+		float newX = shape.getPosition().x + (100 * dt);
+		float redShapeY = redShape.getPosition().y + (100 * dt);
 		
 		if (newX > window.getSize().x - 20)
 		{
@@ -42,6 +48,9 @@ int main()
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
+
+		EntityManager::Get().Update();
+		EntityManager::Get().Render();
 
 		window.clear();
 		window.draw(Spr);
