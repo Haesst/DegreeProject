@@ -21,7 +21,7 @@ int main()
 
 	sf::SoundBuffer buffer;
 	sf::Sound TestSound = AssetLoader.LoadAudioFile("Assets/Audio/MenuMusic.wav", buffer);
-	TestSound.setVolume(100);
+	TestSound.setVolume(20);
 	TestSound.play();
 
 	MapDrawer mapDrawer;

@@ -9,7 +9,7 @@ public:
 
 	sf::Text LoadFontFromFileToText(const char* FilePath);
 
-	sf::Sound LoadAudioFile(const char* FilePath, sf::SoundBuffer Buffer);
+	sf::Sound LoadAudioFile(const char* FilePath, sf::SoundBuffer& Buffer);
 
 private:
 };
