@@ -1,6 +1,6 @@
 #include "AssetHandler.h"
 
-sf::Sprite AssetHandler::LoadImageFromFileToSprite(const char* FilePath, sf::Texture& Texture)
+sf::Sprite AssetHandler::LoadImageFromFile(const char* FilePath, sf::Texture& Texture)
 {
 	sf::Image Img;
 	sf::Sprite sprite;
