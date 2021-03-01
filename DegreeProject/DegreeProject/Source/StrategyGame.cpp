@@ -17,19 +17,15 @@ int main()
 	sf::Texture Texture;
 
 	Spr = AssetLoader.LoadImageFromFile("Assets/Graphics/Test.jpg", Texture);
-
 	Spr.scale(.5f, .5f);
+
+	sf::SoundBuffer buffer;
+	sf::Sound TestSound = AssetLoader.LoadAudioFile("Assets/Audio/MenuMusic.wav", buffer);
+	TestSound.setVolume(100);
+	TestSound.play();
 
 	MapDrawer mapDrawer;
 	auto map = mapDrawer.GetMap("Assets/Map/Map.txt", 'O', resolution, 30.0f);
-
-	// sf::RenderWindow window(sf::VideoMode(resolution.x, resolution.y), "GRAND STRATEGY GAME 2.5!", sf::Style::Fullscreen);
-	// sf::CircleShape shape(10.f);
-	// shape.setPosition(window.getSize().x * .5f, window.getSize().y * .5);
-	// shape.setFillColor(sf::Color::Green);
-	// sf::CircleShape redShape(10.f);
-	// redShape.setPosition(window.getSize().x * .5f, window.getSize().y * .6);
-	// redShape.setFillColor(sf::Color::Red);
 
 	Window::Init(sf::VideoMode(resolution.x, resolution.y), "GRAND STRATEGY  GAME 2.5!", sf::Style::Fullscreen);
 
@@ -81,23 +77,6 @@ int main()
 			}
 		}
 
-		// float dt = deltaClock.restart().asSeconds();
-		// float newX = shape.getPosition().x + (100 * dt);
-		// float redShapeY = redShape.getPosition().y + (100 * dt);
-		// 
-		// if (newX > window.getSize().x - 20)
-		// {
-		// 	newX = 0;
-		// }
-		// 
-		// if (redShapeY > window.getSize().y - 20)
-		// {
-		// 	redShapeY = 0;
-		// }
-		// 
-		// shape.setPosition(newX, shape.getPosition().y);
-		// redShape.setPosition(redShape.getPosition().x, redShapeY);
-
 		// Update
 		EntityManager::Get().Update();
 
@@ -107,12 +86,6 @@ int main()
 		EntityManager::Get().Render();
 		window->display();
 
-
-		/*window.clear(sf::Color::Blue);
-		window.draw(Spr);
-		window.draw(shape);
-		window.draw(redShape);
-		window.display();*/
 	}
 
 	Window::Cleanup();
