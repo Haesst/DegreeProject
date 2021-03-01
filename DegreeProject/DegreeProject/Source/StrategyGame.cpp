@@ -4,6 +4,7 @@
 #include "Engine/Window.h"
 #include "ECS/EntityManager.h"
 #include "Game/MapDrawer.h"
+#include "Engine/InputHandler.h"
 
 // For ECS demo
 #include "Game/Systems/ECSExampleSystem.h"
@@ -26,6 +27,8 @@ int main()
 
 	MapDrawer mapDrawer;
 	auto map = mapDrawer.GetMap("Assets/Map/Map.txt", 'O', resolution, 30.0f);
+
+	InputHandler inputHandler;
 
 	Window::Init(sf::VideoMode(resolution.x, resolution.y), "GRAND STRATEGY  GAME 2.5!", sf::Style::Fullscreen);
 
@@ -68,14 +71,7 @@ int main()
 		Time::UpdateTime();
 
 		// Events
-		sf::Event event;
-		while (window->pollEvent(event))
-		{
-			if (event.type == sf::Event::Closed)
-			{
-				window->close();
-			}
-		}
+		inputHandler.HandleInputEvents(*window);
 
 		// Update
 		EntityManager::Get().Update();

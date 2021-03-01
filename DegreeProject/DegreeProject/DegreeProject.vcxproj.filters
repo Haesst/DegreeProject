@@ -45,6 +45,9 @@
     <ClInclude Include="Source\Engine\AssetHandler.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\InputHandler.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Engine\Time.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -69,6 +72,9 @@
       <Filter>ECS</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\InputHandler.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Time.cpp">
