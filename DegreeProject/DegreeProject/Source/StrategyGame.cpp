@@ -1,9 +1,11 @@
 #include <SFML/Graphics.hpp>
 #include "Engine/AssetHandler.h"
 #include "ECS/EntityManager.h"
+#include "Game/MapDrawer.h"
 
 int main()
 {
+	sf::Vector2 resolution(1920, 1080);
 	AssetHandler AssetLoader;
 	sf::Sprite Spr;
 	sf::Texture Texture;
@@ -12,7 +14,10 @@ int main()
 
 	Spr.scale(.5f, .5f);
 
-	sf::RenderWindow window(sf::VideoMode(1920, 1080), "GRAND STRATEGY GAME 2.5!", sf::Style::Fullscreen);
+	MapDrawer mapDrawer;
+	auto map = mapDrawer.GetMap("Assets/Map/Map.txt", 'O', resolution, 30.0f);
+
+	sf::RenderWindow window(sf::VideoMode(resolution.x, resolution.y), "GRAND STRATEGY GAME 2.5!", sf::Style::Fullscreen);
 	sf::CircleShape shape(10.f);
 	shape.setPosition(window.getSize().x * .5f, window.getSize().y * .5);
 	shape.setFillColor(sf::Color::Green);
@@ -52,7 +57,8 @@ int main()
 		EntityManager::Get().Update();
 		EntityManager::Get().Render();
 
-		window.clear();
+		window.clear(sf::Color::Blue);
+		mapDrawer.DrawMap(&map, window);
 		window.draw(Spr);
 		window.draw(shape);
 		window.draw(redShape);

@@ -1,43 +1,58 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    <Filter Include="ECS">
+      <UniqueIdentifier>{60E1870B-CCEA-877C-5566-9E7CC16E937C}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    <Filter Include="ECS\Components">
+      <UniqueIdentifier>{752AA906-61F8-9C0C-4A8C-0D3336F97871}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    <Filter Include="Engine">
+      <UniqueIdentifier>{DBC7D3B0-C769-FE86-B024-12DB9C6585D7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{7FA9857C-6BE0-860D-14CD-6C1000E3020F}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\StrategyGame.cpp">
-    <ClCompile Include="Source\Engine\AssetHandler.cpp">
-    <ClCompile Include="Source\ECS\EntityManager.cpp">
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Source\Engine\AssetHandler.h">
-    <ClInclude Include="Source\ECS\Types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Source\ECS\Component.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ECS\System.h">
-      <Filter>Header Files</Filter>
+      <Filter>ECS</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\ComponentList.h">
-      <Filter>Header Files</Filter>
+      <Filter>ECS</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\EntityTag.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="Source\ECS\Components\Transform.h">
+      <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\EntityManager.h">
-      <Filter>Header Files</Filter>
+      <Filter>ECS</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ECS\EntityTag.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\System.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Types.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\AssetHandler.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\MapDrawer.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Source\ECS\EntityManager.cpp">
+      <Filter>ECS</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\AssetHandler.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\MapDrawer.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\StrategyGame.cpp" />
   </ItemGroup>
 </Project>
