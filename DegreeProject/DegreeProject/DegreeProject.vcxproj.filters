@@ -42,6 +42,7 @@
     <ClInclude Include="Source\Game\MapDrawer.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Vector2D.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">

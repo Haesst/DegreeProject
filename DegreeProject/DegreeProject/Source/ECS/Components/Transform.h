@@ -1,8 +1,7 @@
 #pragma once
 
 #include "../Component.h"
-
-class Vector2D;
+#include "../../Engine/Vector2D.h"
 
 struct Transform : public Component
 {
