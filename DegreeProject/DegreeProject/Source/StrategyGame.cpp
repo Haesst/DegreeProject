@@ -6,6 +6,7 @@
 #include "ECS/EntityManager.h"
 #include "Game/MapDrawer.h"
 #include "Engine/InputHandler.h"
+#include "Game/Systems/PlayerSystem.h"
 
 // For ECS demo
 #include "Game/Systems/ECSExampleSystem.h"
@@ -65,6 +66,16 @@ int main()
 	// Add necessary components
 	entityManager->AddComponent<MovingCircle>(dot2);
 
+	//Create Player Dot
+	entityManager->RegisterSystem<PlayerSystem>();
+	EntityID playerDot = entityManager->AddNewEntity();
+	entityManager->AddComponent<Player>(playerDot);
+	Transform* playerDotTransform = &entityManager->GetComponent<Transform>(playerDot);
+	Player* playerDotCircle = &entityManager->GetComponent<Player>(playerDot);
+	playerDotTransform->m_Position = { window->getSize().x * 0.5f, window->getSize().y * 0.6f };
+	playerDotCircle->m_Direction = { 1.0f, 1.0f };
+	playerDotCircle->m_Color = sf::Color::Black;
+
 	// Get transform and moving circle of entity
 	Transform* dot2Transform = &entityManager->GetComponent<Transform>(dot2);
 	MovingCircle* dot2Circle = &entityManager->GetComponent<MovingCircle>(dot2);
@@ -80,7 +91,7 @@ int main()
 		Time::UpdateTime();
 
 		// Events
-		inputHandler.HandleInputEvents(*window);
+		InputHandler::HandleInputEvents();
 
 		// Update
 		EntityManager::Get().Update();

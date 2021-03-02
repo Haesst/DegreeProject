@@ -102,6 +102,17 @@ struct Vec2D
 		stream << "[" << v.x << "," << v.y << "]";
 		return stream;
 	}
+
+	inline Vec2D Normalized()
+	{
+		float length = sqrtf(x * x + y * y);
+		if (length != 0)
+		{
+			x = x / length;
+			y =	y / length;
+		}
+		return *this;
+	}
 };
 
 using Vector2DInt = Vec2D<int>;
