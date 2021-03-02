@@ -1,9 +1,9 @@
 #pragma once
 
-#include "../../Engine/Window.h"
-#include "../../ECS/System.h"
-#include "../Components/SpriteRenderer.h"
-#include "../../ECS/Components/Transform.h"
+#include "Engine/Window.h"
+#include "ECS/System.h"
+#include "Game/Components/SpriteRenderer.h"
+#include "ECS/Components/Transform.h"
 
 struct SpriteRenderSystem : public System
 {

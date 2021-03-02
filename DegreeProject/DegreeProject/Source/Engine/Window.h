@@ -19,11 +19,13 @@ public:
 
 	static void Cleanup()
 	{
-		delete m_Window;
 	}
 
 	~Window()
 	{
-		Cleanup();
+		if (m_Window != nullptr)
+		{
+			delete m_Window;
+		}
 	}
 };

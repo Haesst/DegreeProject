@@ -42,7 +42,8 @@ project "DegreeProject"
 	includedirs
 	{
 		"%{includedir.SFML}",
-		"%{includedir.SpdLog}"
+		"%{includedir.SpdLog}",
+		"%{prj.location}/Source",
 	}
 
 	libdirs

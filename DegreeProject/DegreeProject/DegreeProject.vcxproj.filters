@@ -48,6 +48,12 @@
     <ClInclude Include="Source\Engine\InputHandler.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\Log.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\TileMap.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Engine\Time.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -60,15 +66,27 @@
     <ClInclude Include="Source\Game\Components\MovingCircle.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Components\Player.h">
+      <Filter>Game\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Components\SpriteRenderer.h">
+      <Filter>Game\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Game.h">
+      <Filter>Game</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\MapDrawer.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Log.h" />
-    <ClInclude Include="Source\Game\Components\SpriteRenderer.h" />
-    <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h" />
+    <ClInclude Include="Source\Game\Systems\PlayerSystem.h">
+      <Filter>Game\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h">
+      <Filter>Game\Systems</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -80,16 +98,24 @@
     <ClCompile Include="Source\Engine\InputHandler.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\Log.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\TileMap.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Engine\Time.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Window.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Game\MapDrawer.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Engine\Log.cpp" />
   </ItemGroup>
 </Project>

@@ -2,10 +2,10 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../../ECS/Component.h"
-#include "../../ECS/EntityManager.h"
-#include "../../ECS/Components/Transform.h"
-#include "../../Engine/AssetHandler.h"
+#include "ECS/Component.h"
+#include "ECS/EntityManager.h"
+#include "ECS/Components/Transform.h"
+#include "Engine/AssetHandler.h"
 
 struct SpriteRenderer : public Component
 {
@@ -21,8 +21,8 @@ struct SpriteRenderer : public Component
 		: m_Width(width), m_Height(height)
 	{
 		m_Transform = &EntityManager::Get().GetComponent<Transform>(m_EntityID);
-		//m_Sprite = assetHandler->LoadImageFromFile(path, m_Texture);
-		m_Sprite.setTexture(assetHandler->LoadImageFromFile(path));
+		m_Texture = assetHandler->LoadImageFromFile(path);
+		m_Sprite.setTexture(m_Texture);
 		m_Sprite.setPosition(m_Transform->m_Position.x, m_Transform->m_Position.y);
 		UpdateSize();
 	}
