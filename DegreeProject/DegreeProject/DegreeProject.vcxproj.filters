@@ -67,6 +67,8 @@
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Log.h" />
+    <ClInclude Include="Source\Game\Components\SpriteRenderer.h" />
+    <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">

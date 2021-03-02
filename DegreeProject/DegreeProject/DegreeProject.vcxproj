@@ -112,8 +112,10 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Engine\Vector2D.h" />
     <ClInclude Include="Source\Engine\Window.h" />
     <ClInclude Include="Source\Game\Components\MovingCircle.h" />
+    <ClInclude Include="Source\Game\Components\SpriteRenderer.h" />
     <ClInclude Include="Source\Game\MapDrawer.h" />
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h" />
+    <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp" />

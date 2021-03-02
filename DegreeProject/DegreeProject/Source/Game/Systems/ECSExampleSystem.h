@@ -38,15 +38,6 @@ struct ECSExampleSystem : System
 		}
 	}
 
-	virtual void Render() override
-	{
-		for (auto entity : m_Entities)
-		{
-			MovingCircle* movingCircle = &m_EntityManager->GetComponent<MovingCircle>(entity);
-			Window::GetWindow()->draw(movingCircle->m_Shape);
-		}
-	}
-
 	// Custom method :)
 	void MoveCircle(Transform* transform, MovingCircle* movingCircle)
 	{

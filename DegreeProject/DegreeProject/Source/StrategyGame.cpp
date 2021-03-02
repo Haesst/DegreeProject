@@ -9,6 +9,7 @@
 
 // For ECS demo
 #include "Game/Systems/ECSExampleSystem.h"
+#include "Game/Systems/SpriteRenderSystem.h"
 #include "Game/Components/MovingCircle.h"
 
 int main()
@@ -46,11 +47,13 @@ int main()
 
 	// Register the system
 	entityManager->RegisterSystem<ECSExampleSystem>();
+	entityManager->RegisterSystem<SpriteRenderSystem>();
 
 	// Create an entity
 	EntityID dot1 = entityManager->AddNewEntity();
 	// Add necessary components
 	entityManager->AddComponent<MovingCircle>(dot1);
+	entityManager->AddComponent<SpriteRenderer>(dot1, "Assets/Graphics/Charizard.png", 32, 32, &AssetLoader);
 
 	// Get transform of entity (or any other component)
 	Transform* dot1Transform = &entityManager->GetComponent<Transform>(dot1);
@@ -58,6 +61,7 @@ int main()
 
 	// Create another entity
 	EntityID dot2 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(dot2, "Assets/Graphics/Test.jpg", 32, 32, &AssetLoader);
 	// Add necessary components
 	entityManager->AddComponent<MovingCircle>(dot2);
 
@@ -86,7 +90,6 @@ int main()
 		mapDrawer.DrawMap(&map, *window);
 		EntityManager::Get().Render();
 		window->display();
-
 	}
 
 	Window::Cleanup();
