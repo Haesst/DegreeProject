@@ -1,5 +1,6 @@
 #pragma once
 #include <SFML/Graphics.hpp>
+#include "Engine/Vector2D.h"
 
 class InputHandler
 {
@@ -11,12 +12,12 @@ public:
 	static bool GetLeftMouseClicked();
 	static bool GetMouseScrollWheelChanged();
 	static void SetMouseScrollWheelChanged(bool changed);
-	static sf::Vector2<float> GetMousePosition();
+	static Vector2D GetMousePosition();
 	static int GetMouseScrollDirection();
 protected:
 private:
 	static bool leftMouseClicked;
 	static bool mouseScrollWheelChanged;
-	static sf::Vector2<float> mousePosition;
+	static Vector2D mousePosition;
 	static int mouseScrollDirection;
 };

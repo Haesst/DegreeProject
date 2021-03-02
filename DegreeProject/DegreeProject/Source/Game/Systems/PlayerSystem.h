@@ -55,12 +55,15 @@ struct PlayerSystem : System
 		
 		if (InputHandler::GetLeftMouseClicked() == true)
 		{
-			player->m_Direction.x = InputHandler::GetMousePosition().x - transform->m_Position.x;
-			player->m_Direction.y = InputHandler::GetMousePosition().y - transform->m_Position.y;
+			player->m_Target = InputHandler::GetMousePosition();
+			player->m_Direction = InputHandler::GetMousePosition() - transform->m_Position;
 			player->m_Direction.Normalized();
 		}
-			
 		Vector2D movement = player->m_Direction * player->m_Speed * Time::DeltaTime();
+		if (transform->m_Position.NearlyEqual(player->m_Target, 1.0f))
+		{
+			movement = movement.Zero();
+		}
 		transform->Translate(movement);
 
 		if (transform->m_Position.x > window->getSize().x - 20)

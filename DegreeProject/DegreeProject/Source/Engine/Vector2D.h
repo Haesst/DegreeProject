@@ -113,6 +113,44 @@ struct Vec2D
 		}
 		return *this;
 	}
+
+	inline bool operator==(const Vec2D<T>& v2)
+	{
+		if (x == v2.x && y == v2.y)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	inline bool operator!=(const Vec2D<T>& v2)
+	{
+		if (x != v2.x || y != v2.y)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	inline bool NearlyEqual(const Vec2D<T>& v2, float tolerance)
+	{
+		float length = sqrtf(x * x + y * y);
+		float length2 = sqrtf(v2.x * v2.x + v2.y * v2.y);
+		if (abs(length - length2) <= tolerance)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
 };
 
 using Vector2DInt = Vec2D<int>;

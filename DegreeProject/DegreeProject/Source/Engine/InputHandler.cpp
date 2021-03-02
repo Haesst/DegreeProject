@@ -9,14 +9,14 @@ InputHandler::~InputHandler(){}
 bool InputHandler::leftMouseClicked = false;
 bool InputHandler::mouseScrollWheelChanged = false;
 int InputHandler::mouseScrollDirection = 0;
-sf::Vector2<float> InputHandler::mousePosition = sf::Vector2(0.0f, 0.0f);
+Vector2D InputHandler::mousePosition = Vector2D(0.0f, 0.0f);
 
 void InputHandler::Initialize()
 {
 	leftMouseClicked = false;
 	mouseScrollWheelChanged = false;
 	mouseScrollDirection = 0;
-	mousePosition = sf::Vector2(0.0f, 0.0f);
+	mousePosition = Vector2D(0.0f, 0.0f);
 }
 
 void InputHandler::HandleInputEvents()
@@ -186,7 +186,7 @@ void InputHandler::SetMouseScrollWheelChanged(bool changed)
 	mouseScrollWheelChanged = changed;
 }
 
-sf::Vector2<float> InputHandler::GetMousePosition()
+Vector2D InputHandler::GetMousePosition()
 {
 	return mousePosition;
 }
