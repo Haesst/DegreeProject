@@ -1,20 +1,33 @@
 #include "AssetHandler.h"
 
-sf::Sprite AssetHandler::LoadImageFromFile(const char* FilePath, sf::Texture& Texture)
+const sf::Sprite AssetHandler::LoadImageFromFile(const char* FilePath, sf::Texture& Texture)
 {
 	sf::Image Img;
-	sf::Sprite sprite;
+	sf::Sprite Sprite;
 
-	if (Img.loadFromFile(FilePath))
+	for(const auto& Pair : LoadedImages)
 	{
-		Texture.loadFromImage(Img);
-
-		sprite.setTexture(Texture);
-		
-		return sprite;
+		if (0 == strcmp(Pair.first, FilePath))
+		{
+			Texture.loadFromImage(Pair.second);
+			Sprite.setTexture(Texture);
+			return Sprite;
+		}
 	}
 
-	return sprite;
+	if(Img.loadFromFile(FilePath))
+	{
+		Texture.loadFromImage(Img);
+		Sprite.setTexture(Texture);
+
+		auto LoadedData = std::make_pair(FilePath, Img);
+
+		LoadedImages.push_back(LoadedData);
+		
+		return Sprite;
+	}
+
+	return Sprite;
 }
 
 sf::Text AssetHandler::LoadFontFromFileToText(const char* FilePath)
