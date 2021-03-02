@@ -1,11 +1,8 @@
 #include "TileMap.h"
 
-bool TileMap::Load(const std::string& TileSet, sf::Vector2u TileSize, const int* tiles, unsigned int width, unsigned int height)
+bool TileMap::Load(AssetHandler& AssetLoader, const std::string& TileSet, sf::Vector2u TileSize, const int* tiles, unsigned int width, unsigned int height)
 {
-	if (!m_TileSet.loadFromFile(TileSet))
-	{
-		return false;
-	}
+	m_TileSet = AssetLoader.GetTextureAtPath(AssetLoader.TileSet); 
 
 	//Resize the vertex array to fit the level size
 	m_Verticies.setPrimitiveType(sf::Quads);
@@ -18,7 +15,7 @@ bool TileMap::Load(const std::string& TileSet, sf::Vector2u TileSize, const int*
 		for (unsigned int y = 0; y < height; y++)
 		{
 			int TileNumber = tiles[x + y * width];
-			
+
 			//Find its position in the tileset texture
 			int Tu = TileNumber % (m_TileSet.getSize().x / TileSize.x);
 			int Tv = TileNumber / (m_TileSet.getSize().x / TileSize.x);

@@ -47,13 +47,18 @@ std::vector<sf::RectangleShape> MapDrawer::CreateMap(const std::vector<std::pair
 			map.push_back(rectangle);
 		}
 	}
+
+	m_Tile.Load(m_AssetLoader, m_AssetLoader.TileSet, sf::Vector2u(32, 32), level, 100, 40);
 	return map;
 }
 
 void MapDrawer::DrawMap(const std::vector<sf::RectangleShape>* mapData, sf::RenderWindow& window)
 {
-	for each (sf::RectangleShape rectangle in *mapData)
-	{
-		window.draw(rectangle);
-	}
+	window.draw(m_Tile);
+
+	//window.draw(Tile);
+	//for each (sf::RectangleShape rectangle in *mapData)
+	//{
+	//	window.draw(rectangle);
+	//}
 }

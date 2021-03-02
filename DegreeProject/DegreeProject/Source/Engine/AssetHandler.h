@@ -7,6 +7,7 @@ class AssetHandler
 public:
 
 	inline const static char* TestSprite = "Assets/Graphics/Test.jpg";
+	inline const static char* TileSet = "Assets/Graphics/TileSet.png";
 
 public:
 

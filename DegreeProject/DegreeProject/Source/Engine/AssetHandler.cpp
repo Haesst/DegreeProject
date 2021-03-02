@@ -63,5 +63,10 @@ const sf::Texture AssetHandler::GetTextureAtPath(const char* FilePath)
 		}
 	}
 
-	return sf::Texture();
+	sf::Texture TextureToLoad = LoadImageFromFile(FilePath);
+
+	auto LoadedData = std::make_pair(FilePath, TextureToLoad);
+	LoadedTextures.push_back(LoadedData);
+
+	return TextureToLoad;
 }
