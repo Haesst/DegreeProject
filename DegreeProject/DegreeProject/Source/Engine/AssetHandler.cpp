@@ -1,33 +1,30 @@
 #include "AssetHandler.h"
 
-const sf::Sprite AssetHandler::LoadImageFromFile(const char* FilePath, sf::Texture& Texture)
+const sf::Texture AssetHandler::LoadImageFromFile(const char* FilePath)
 {
-	sf::Image Img;
-	sf::Sprite Sprite;
 
-	for(const auto& Pair : LoadedImages)
+	for(const auto& Pair : LoadedTextures)
 	{
 		if (0 == strcmp(Pair.first, FilePath))
 		{
-			Texture.loadFromImage(Pair.second);
-			Sprite.setTexture(Texture);
-			return Sprite;
+			return GetTextureAtPath(FilePath);
 		}
 	}
+
+	sf::Image Img;
+	sf::Texture Texture;
 
 	if(Img.loadFromFile(FilePath))
 	{
 		Texture.loadFromImage(Img);
-		Sprite.setTexture(Texture);
 
-		auto LoadedData = std::make_pair(FilePath, Img);
-
-		LoadedImages.push_back(LoadedData);
+		const auto LoadedData = std::make_pair(FilePath, Texture);
+		LoadedTextures.push_back(LoadedData);
 		
-		return Sprite;
+		return Texture;
 	}
 
-	return Sprite;
+	return Texture;
 }
 
 sf::Text AssetHandler::LoadFontFromFileToText(const char* FilePath)
@@ -54,4 +51,17 @@ sf::Sound AssetHandler::LoadAudioFile(const char* FilePath, sf::SoundBuffer& Buf
 	}
 	
 	return sf::Sound();
+}
+
+const sf::Texture AssetHandler::GetTextureAtPath(const char* FilePath)
+{
+	for (const auto& Pair : LoadedTextures)
+	{
+		if (0 == strcmp(Pair.first, FilePath))
+		{
+			return Pair.second;
+		}
+	}
+
+	return sf::Texture();
 }
