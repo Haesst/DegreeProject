@@ -27,7 +27,13 @@
     <ClInclude Include="Source\ECS\ComponentList.h">
       <Filter>ECS</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ECS\Components\CharacterComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Source\ECS\Components\Transform.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\ECS\Components\Warmind.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\EntityManager.h">
@@ -80,6 +86,9 @@
     </ClInclude>
     <ClInclude Include="Source\Game\MapDrawer.h">
       <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Systems\AI.h">
+      <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h">
       <Filter>Game\Systems</Filter>
