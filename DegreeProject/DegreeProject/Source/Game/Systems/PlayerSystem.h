@@ -48,7 +48,6 @@ struct PlayerSystem : System
 		}
 	}
 
-	// Custom method :)
 	void MovePlayer(Transform* transform, Player* player)
 	{
 		sf::RenderWindow* window = Window::GetWindow();
@@ -62,19 +61,10 @@ struct PlayerSystem : System
 		Vector2D movement = player->m_Direction * player->m_Speed * Time::DeltaTime();
 		if (transform->m_Position.NearlyEqual(player->m_Target, 1.0f))
 		{
+			transform->m_Position = player->m_Target;
 			movement = movement.Zero();
 		}
 		transform->Translate(movement);
-
-		if (transform->m_Position.x > window->getSize().x - 20)
-		{
-			transform->m_Position.x = 0;
-		}
-		if (transform->m_Position.y > window->getSize().y - 20)
-		{
-			transform->m_Position.y = 0;
-		}
-
 		player->m_Shape.setPosition(transform->m_Position.x, transform->m_Position.y);
 	}
 };

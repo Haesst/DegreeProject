@@ -33,7 +33,8 @@ void Game::Init()
 void Game::Run()
 {
 	sf::RenderWindow* internalWindow = m_Window->GetWindow();
-
+	sf::View view(sf::Vector2(960.0f, 540.0f), sf::Vector2(1920.0f, 1080.0f));
+	internalWindow->setView(view);
 	while (internalWindow->isOpen())
 	{
 		// Time
@@ -58,7 +59,7 @@ void Game::Run()
 
 void Game::InitWindow()
 {
-	Window::Init(sf::VideoMode(m_Resolution.x, m_Resolution.y), m_GameTitle, sf::Style::Fullscreen);
+	Window::Init(sf::VideoMode(m_Resolution.x, m_Resolution.y), m_GameTitle, sf::Style::Default);
 }
 
 void Game::InitHotReloading()
@@ -75,7 +76,7 @@ void Game::InitAssets()
 void Game::InitSound()
 {
 	m_Sound = m_AssetHandler->LoadAudioFile("Assets/Audio/MenuMusic.wav", m_SoundBuffer);
-	m_Sound.setVolume(20);
+	m_Sound.setVolume(0);
 	m_Sound.play();
 }
 
@@ -119,7 +120,7 @@ void Game::AddEntitys()
 	Transform* playerDotTransform = &entityManager->GetComponent<Transform>(playerDot);
 	Player* playerDotCircle = &entityManager->GetComponent<Player>(playerDot);
 	playerDotTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.6f };
-	playerDotCircle->m_Direction = { 1.0f, 1.0f };
+	playerDotCircle->m_Direction = { 0.0f, 0.0f };
 	playerDotCircle->m_Color = sf::Color::Black;
 
 	// Get transform and moving circle of entity

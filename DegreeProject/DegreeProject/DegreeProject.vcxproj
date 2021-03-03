@@ -100,7 +100,9 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
   <ItemGroup>
     <ClInclude Include="Source\ECS\Component.h" />
     <ClInclude Include="Source\ECS\ComponentList.h" />
+    <ClInclude Include="Source\ECS\Components\CharacterComponent.h" />
     <ClInclude Include="Source\ECS\Components\Transform.h" />
+    <ClInclude Include="Source\ECS\Components\Warmind.h" />
     <ClInclude Include="Source\ECS\EntityManager.h" />
     <ClInclude Include="Source\ECS\EntityTag.h" />
     <ClInclude Include="Source\ECS\System.h" />
@@ -120,6 +122,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Game.h" />
     <ClInclude Include="Source\Game\HotReloader.h" />
     <ClInclude Include="Source\Game\MapDrawer.h" />
+    <ClInclude Include="Source\Game\Systems\AI.h" />
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h" />
     <ClInclude Include="Source\Game\Systems\MapSystem.h" />
     <ClInclude Include="Source\Game\Systems\PlayerSystem.h" />
