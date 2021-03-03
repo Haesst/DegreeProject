@@ -13,6 +13,7 @@
 struct PlayerSystem : System
 {
 	EntityManager* m_EntityManager = nullptr;
+	float m_Tolerance = 0.3f;
 
 	// Constructor, Runs when the system is initialized
 	// Do any kind of init here but remember to register
@@ -52,16 +53,15 @@ struct PlayerSystem : System
 	{
 		sf::RenderWindow* window = Window::GetWindow();
 		
-		if (InputHandler::GetLeftMouseClicked() == true)
+		if (InputHandler::GetRightMouseClicked() == true)
 		{
 			player->m_Target = InputHandler::GetMousePosition();
 			player->m_Direction = InputHandler::GetMousePosition() - transform->m_Position;
 			player->m_Direction.Normalized();
 		}
 		Vector2D movement = player->m_Direction * player->m_Speed * Time::DeltaTime();
-		if (transform->m_Position.NearlyEqual(player->m_Target, 1.0f))
+		if (transform->m_Position.NearlyEqual(player->m_Target, m_Tolerance))
 		{
-			transform->m_Position = player->m_Target;
 			movement = movement.Zero();
 		}
 		transform->Translate(movement);

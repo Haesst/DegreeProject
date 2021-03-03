@@ -8,15 +8,14 @@ InputHandler::InputHandler(){}
 InputHandler::~InputHandler(){}
 
 bool InputHandler::m_LeftMouseClicked = false;
+bool InputHandler::m_RightMouseClicked = false;
 bool InputHandler::m_MouseScrollWheelChanged = false;
 int InputHandler::m_MouseScrollDirection = 0;
 const float InputHandler::MAX_ZOOM = 1000.0f;
 const float InputHandler::MIN_ZOOM = 100.0f;
-const float InputHandler::MOVE_SPEED = 10000.0f;
-const float InputHandler::ZOOM_SPEED = 100.0f;
+const float InputHandler::MOVE_SPEED = 2500.0f;
+const float InputHandler::ZOOM_SPEED = 7.5f;
 Vector2D InputHandler::m_MousePosition = Vector2D(0.0f, 0.0f);
-
-void InputHandler::Initialize(){}
 
 void InputHandler::HandleInputEvents()
 {
@@ -36,31 +35,35 @@ void InputHandler::HandleInputEvents()
 			{
 				if (event.key.code == sf::Keyboard::W)
 				{
-					view.move(0.0f, -MOVE_SPEED * Time::DeltaTime());
-					window->setView(view);
-					printf("x: %f ", view.getCenter().x);
-					printf("y: %f\n", view.getCenter().y);
+					if (view.getCenter().y > sf::VideoMode::getDesktopMode().height * 0.1f)
+					{
+						view.move(0.0f, -MOVE_SPEED * Time::DeltaTime());
+						window->setView(view);
+					}
 				}
 				if (event.key.code == sf::Keyboard::A)
 				{
-					view.move(-MOVE_SPEED * Time::DeltaTime(), 0.0f);
-					window->setView(view);
-					printf("x: %f ", view.getCenter().x);
-					printf("y: %f\n", view.getCenter().y);
+					if (view.getCenter().x > sf::VideoMode::getDesktopMode().width * 0.1f)
+					{
+						view.move(-MOVE_SPEED * Time::DeltaTime(), 0.0f);
+						window->setView(view);
+					}
 				}
 				if (event.key.code == sf::Keyboard::S)
 				{
-					view.move(0.0f, MOVE_SPEED * Time::DeltaTime());
-					window->setView(view);
-					printf("x: %f ", view.getCenter().x);
-					printf("y: %f\n", view.getCenter().y);
+					if (view.getCenter().y < sf::VideoMode::getDesktopMode().height * 0.9f)
+					{
+						view.move(0.0f, MOVE_SPEED * Time::DeltaTime());
+						window->setView(view);
+					}
 				}
 				if (event.key.code == sf::Keyboard::D)
 				{
-					view.move(MOVE_SPEED * Time::DeltaTime(), 0.0f);
-					window->setView(view);
-					printf("x: %f ", view.getCenter().x);
-					printf("y: %f\n", view.getCenter().y);
+					if (view.getCenter().x < sf::VideoMode::getDesktopMode().width * 0.9f)
+					{
+						view.move(MOVE_SPEED * Time::DeltaTime(), 0.0f);
+						window->setView(view);
+					}
 				}
 				if (event.key.code == sf::Keyboard::Escape)
 				{
@@ -75,7 +78,7 @@ void InputHandler::HandleInputEvents()
 			}
 			case sf::Event::Resized:
 			{
-				sf::FloatRect visibleArea(0.f, 0.f, event.size.width, event.size.height);
+				sf::FloatRect visibleArea(0.0f, 0.0f, event.size.width, event.size.height);
 				window->setView(sf::View(visibleArea));
 				break;
 			}
@@ -103,13 +106,16 @@ void InputHandler::HandleInputEvents()
 				if (event.key.code == sf::Mouse::Left)
 				{
 					m_LeftMouseClicked = true;
-					m_MousePosition.x = event.mouseButton.x;
-					m_MousePosition.y = event.mouseButton.y;
+					sf::Vector2 worldPosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+					m_MousePosition.x = worldPosition.x;
+					m_MousePosition.y = worldPosition.y;
 				}
 				if (event.key.code == sf::Mouse::Right)
 				{
-					m_MousePosition.x = event.mouseButton.x;
-					m_MousePosition.y = event.mouseButton.y;
+					m_RightMouseClicked = true;
+					sf::Vector2 worldPosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+					m_MousePosition.x = worldPosition.x;
+					m_MousePosition.y = worldPosition.y;
 				}
 				if (event.key.code == sf::Mouse::Middle)
 				{
@@ -136,6 +142,7 @@ void InputHandler::HandleInputEvents()
 				}
 				if (event.key.code == sf::Mouse::Right)
 				{
+					m_RightMouseClicked = false;
 					//std::cout << "RightMouseReleased" << std::endl;
 					//std::cout << "MouseX: " << event.mouseButton.x << std::endl;
 					//std::cout << "MouseY: " << event.mouseButton.y << std::endl;
@@ -160,17 +167,11 @@ void InputHandler::HandleInputEvents()
 				{
 					m_MouseScrollWheelChanged = true;
 					m_MouseScrollDirection = event.mouseWheelScroll.delta;
-					if (m_MouseScrollDirection == 1 && (view.getSize().x > MIN_ZOOM || view.getSize().y > MIN_ZOOM))
+					if ((m_MouseScrollDirection == 1 && (view.getSize().x > MIN_ZOOM || view.getSize().y > MIN_ZOOM)) || (m_MouseScrollDirection == -1 && (view.getSize().x < MAX_ZOOM || view.getSize().y < MAX_ZOOM)))
 					{
-						view.zoom(0.9f);
+						view.zoom(1.0f - m_MouseScrollDirection * ZOOM_SPEED * Time::DeltaTime());
+						window->setView(view);
 					}
-					else if (m_MouseScrollDirection == -1 && (view.getSize().x < MAX_ZOOM || view.getSize().y < MAX_ZOOM))
-					{
-						view.zoom(1.1f);
-					}
-					window->setView(view);
-					printf("x: %f ", view.getSize().x);
-					printf("y: %f\n", view.getSize().y);
 				}
 				break;
 			}
@@ -199,6 +200,11 @@ void InputHandler::HandleInputEvents()
 bool InputHandler::GetLeftMouseClicked()
 {
 	return m_LeftMouseClicked;
+}
+
+bool InputHandler::GetRightMouseClicked()
+{
+	return m_RightMouseClicked;
 }
 
 bool InputHandler::GetMouseScrollWheelChanged()
