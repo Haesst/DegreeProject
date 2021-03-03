@@ -20,8 +20,6 @@ public:
 	const sf::Texture GetTextureAtPath(const char* FilePath);
 
 private:
-
 	std::vector<std::pair<const char*, sf::Texture>> LoadedTextures;
-
 	std::vector<std::pair<const char*, sf::Image>> LoadedImages;
 };
