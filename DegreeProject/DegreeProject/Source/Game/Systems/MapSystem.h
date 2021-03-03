@@ -18,12 +18,8 @@ struct MapSystem : public System
 		AddComponentSignature<Map>();
 		m_EntityManager = &EntityManager::Get();
 
-		HotReloader::Get()->SubscribeToFileChange("Assets\\Data\\Regions.json", std::bind(&MapSystem::RegionsChanged, this, std::placeholders::_1));
-		HotReloader::Get()->SubscribeToFileChange("Assets\\Map\\RegionMap.txt", std::bind(&MapSystem::RegionsChanged, this, std::placeholders::_1));
-	}
-
-	virtual void Update() override
-	{
+		HotReloader::Get()->SubscribeToFileChange("Assets\\Data\\Regions.json", std::bind(&MapSystem::RegionsChanged, this, std::placeholders::_1, std::placeholders::_2));
+		HotReloader::Get()->SubscribeToFileChange("Assets\\Map\\RegionMap.txt", std::bind(&MapSystem::RegionsChanged, this, std::placeholders::_1, std::placeholders::_2));
 	}
 
 	virtual void Render() override
@@ -51,8 +47,13 @@ struct MapSystem : public System
 		}
 	}
 
-	void RegionsChanged(FileStatus fileStatus)
+	void RegionsChanged(std::string path, FileStatus fileStatus)
 	{
+		if (fileStatus != FileStatus::Modified)
+		{
+			return;
+		}
+
 		for (auto& entity : m_Entities)
 		{
 			Map* map = &m_EntityManager->GetComponent<Map>(entity);
