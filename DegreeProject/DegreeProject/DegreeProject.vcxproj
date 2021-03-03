@@ -58,7 +58,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>SFML_DYNAMIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\ThirdParty\SFML-2.5.1\include;..\ThirdParty\spdlog\include;Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\SFML-2.5.1\include;..\ThirdParty\spdlog\include;..\ThirdParty\json-develop\include\nlohmann;Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -80,7 +80,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <WarningLevel>Level3</WarningLevel>
       <PreprocessorDefinitions>SFML_DYNAMIC;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\ThirdParty\SFML-2.5.1\include;..\ThirdParty\spdlog\include;Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>..\ThirdParty\SFML-2.5.1\include;..\ThirdParty\spdlog\include;..\ThirdParty\json-develop\include\nlohmann;Source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <Optimization>Disabled</Optimization>
       <LanguageStandard>stdcpp17</LanguageStandard>
     </ClCompile>
@@ -112,12 +112,14 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Engine\Time.h" />
     <ClInclude Include="Source\Engine\Vector2D.h" />
     <ClInclude Include="Source\Engine\Window.h" />
+    <ClInclude Include="Source\Game\Components\Map.h" />
     <ClInclude Include="Source\Game\Components\MovingCircle.h" />
     <ClInclude Include="Source\Game\Components\Player.h" />
     <ClInclude Include="Source\Game\Components\SpriteRenderer.h" />
     <ClInclude Include="Source\Game\Game.h" />
     <ClInclude Include="Source\Game\MapDrawer.h" />
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h" />
+    <ClInclude Include="Source\Game\Systems\MapSystem.h" />
     <ClInclude Include="Source\Game\Systems\PlayerSystem.h" />
     <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h" />
   </ItemGroup>

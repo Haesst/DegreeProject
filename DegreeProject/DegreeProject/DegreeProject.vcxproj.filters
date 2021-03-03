@@ -63,6 +63,9 @@
     <ClInclude Include="Source\Engine\Window.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Components\Map.h">
+      <Filter>Game\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Components\MovingCircle.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
@@ -79,6 +82,9 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h">
+      <Filter>Game\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Systems\MapSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\PlayerSystem.h">

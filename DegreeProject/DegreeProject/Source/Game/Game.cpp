@@ -7,9 +7,11 @@
 #include "ECS/EntityManager.h"
 #include <Game/Components/MovingCircle.h>
 #include <Game/Components/SpriteRenderer.h>
+#include <Game/Components/Map.h>
 #include <Game/Systems/PlayerSystem.h>
 #include <Game/Systems/ECSExampleSystem.h>
 #include <Game/Systems/SpriteRenderSystem.h>
+#include <Game/Systems/MapSystem.h>
 
 Game::~Game()
 {
@@ -43,7 +45,7 @@ void Game::Run()
 
 		// Render
 		internalWindow->clear(sf::Color::Blue);
-		m_MapDrawer->DrawMap(&m_Map, *internalWindow);
+		// m_MapDrawer->DrawMap(&m_Map, *internalWindow);
 		EntityManager::Get().Render();
 		internalWindow->display();
 	}
@@ -78,6 +80,7 @@ void Game::InitMap()
 void Game::InitSystems()
 {
 	EntityManager* entityManager = &EntityManager::Get();
+	entityManager->RegisterSystem<MapSystem>();
 	entityManager->RegisterSystem<ECSExampleSystem>();
 	entityManager->RegisterSystem<SpriteRenderSystem>();
 	entityManager->RegisterSystem<PlayerSystem>();
@@ -117,4 +120,7 @@ void Game::AddEntitys()
 	dot2Transform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.6f };
 	dot2Circle->m_Direction = { 0.0f, 1.0f };
 	dot2Circle->m_Color = sf::Color::Yellow;
+
+	EntityID map = entityManager->AddNewEntity();
+	entityManager->AddComponent<Map>(map, m_AssetHandler->GetTextureAtPath("Assets/Graphics/TileSet.png"));
 }

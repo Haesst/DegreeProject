@@ -13,6 +13,7 @@ workspace "DegreeProject"
 includedir = {}
 includedir["SFML"] = "ThirdParty/SFML-2.5.1/include"
 includedir["SpdLog"] = "ThirdParty/spdlog/include"
+includedir["json"] = "ThirdParty/json-develop/include/nlohmann"
 
 libdir = {}
 libdir["SFML"] = "ThirdParty/SFML-2.5.1/lib"
@@ -43,6 +44,7 @@ project "DegreeProject"
 	{
 		"%{includedir.SFML}",
 		"%{includedir.SpdLog}",
+		"%{includedir.json}",
 		"%{prj.location}/Source",
 	}
 
