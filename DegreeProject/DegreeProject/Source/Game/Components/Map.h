@@ -18,6 +18,7 @@ public:
 	char m_MapChar;
 
 	MapRegion() {};
+	~MapRegion() { m_MapSquares.clear(); }
 };
 
 struct Map : public Component
@@ -25,16 +26,30 @@ struct Map : public Component
 	std::vector<MapRegion> m_Regions;
 	sf::Texture m_LandTexture;
 	sf::Sprite m_LandSprite;
+	/*FileWatcher* m_DataWatcher;
+	FileWatcher* m_MapWatcher;*/
 
 	int m_XOffset = -10;
 	int m_YOffset = 7;
 	float m_MapScale = 0.6f;
+
+	bool m_ChangeFlag = false;
 
 	Map(sf::Texture landTexture)
 	{
 		Init();
 		m_LandTexture = landTexture;
 		m_LandSprite.setTexture(landTexture);
+		//m_DataWatcher = new FileWatcher("Assets/Data", std::chrono::milliseconds(1000));
+		////m_DataWatcher->start(Register([this](std::string path, FileStatus status) {}));
+		//m_DataWatcher->start(std::bind(&Map::OnFileChange, this, std::placeholders::_1, std::placeholders::_2));
+		////m_DataWatcher->start([this](std::string path, FileStatus status) {LOG_INFO(m_YOffset); OnFileChange(path, status); });
+		//m_MapWatcher = new FileWatcher("Assets/Map", std::chrono::milliseconds(1000));
+		//m_MapWatcher->start([this](std::string path, FileStatus status) { LOG_INFO(m_YOffset); OnFileChange(path, status); });
+	}
+
+	~Map()
+	{
 	}
 
 	void Init()
@@ -80,6 +95,8 @@ struct Map : public Component
 		json j;
 		file >> j;
 
+		m_Regions.clear();
+
 		for (auto& element : j)
 		{
 			MapRegion region;
@@ -101,6 +118,12 @@ struct Map : public Component
 		std::string tempString;
 		std::ifstream inData;
 		inData.open("Assets/Map/RegionMap.txt");
+		
+		for (auto region : m_Regions)
+		{
+			region.m_MapSquares.clear();
+		}
+
 		if (inData.is_open())
 		{
 			int y = 0;

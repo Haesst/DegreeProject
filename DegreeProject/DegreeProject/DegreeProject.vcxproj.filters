@@ -93,6 +93,8 @@
     <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\FileWatcher.h" />
+    <ClInclude Include="Source\Game\HotReloader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -123,5 +125,6 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
+    <ClCompile Include="Source\Game\HotReloader.cpp" />
   </ItemGroup>
 </Project>

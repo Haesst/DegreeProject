@@ -1,35 +1,29 @@
 #pragma once
 
+#include "Engine/FileWatcher.h"
 #include "Engine/Window.h"
 #include "ECS/System.h"
 #include "ECS/EntityManager.h"
-#include "Game/Components/Map.h"
 #include "ECS/Components/Transform.h"
+#include "Game/Components/Map.h"
 
 struct MapSystem : public System
 {
 	EntityManager* m_EntityManager;
+	FileWatcher* m_DataWatcher;
+	FileWatcher* m_MapWatcher;
 
 	MapSystem()
 	{
 		AddComponentSignature<Map>();
-
 		m_EntityManager = &EntityManager::Get();
+
+		HotReloader::Get()->SubscribeToFileChange("Assets\\Data\\Regions.json", std::bind(&MapSystem::RegionsChanged, this, std::placeholders::_1));
+		HotReloader::Get()->SubscribeToFileChange("Assets\\Map\\RegionMap.txt", std::bind(&MapSystem::RegionsChanged, this, std::placeholders::_1));
 	}
 
 	virtual void Update() override
 	{
-		for (auto& entity : m_Entities)
-		{
-			Map* map = &m_EntityManager->GetComponent<Map>(entity);
-
-			for (auto& region : map->m_Regions)
-			{
-				for (auto& square : region.m_MapSquares)
-				{
-				}
-			}
-		}
 	}
 
 	virtual void Render() override
@@ -54,6 +48,18 @@ struct MapSystem : public System
 					Window::GetWindow()->draw(map->m_LandSprite);
 				}
 			}
+		}
+	}
+
+	void RegionsChanged(FileStatus fileStatus)
+	{
+		for (auto& entity : m_Entities)
+		{
+			Map* map = &m_EntityManager->GetComponent<Map>(entity);
+			//mtx.lock();
+			map->LoadAllRegions();
+			map->LoadMap();
+			//mtx.unlock();
 		}
 	}
 };

@@ -3,8 +3,9 @@
 #include "Engine/Window.h"
 #include "Engine/Time.h"
 #include "Engine/InputHandler.h"
-#include "Game/MapDrawer.h"
 #include "ECS/EntityManager.h"
+#include "Game/MapDrawer.h"
+#include "Game/HotReloader.h"
 #include <Game/Components/MovingCircle.h>
 #include <Game/Components/SpriteRenderer.h>
 #include <Game/Components/Map.h>
@@ -22,6 +23,7 @@ Game::~Game()
 void Game::Init()
 {
 	InitWindow();
+	InitHotReloading();
 	InitAssets();
 	InitMap();
 	InitSystems();
@@ -50,12 +52,18 @@ void Game::Run()
 		internalWindow->display();
 	}
 
+	m_HotReloader->Close();
 	m_Window->Cleanup();
 }
 
 void Game::InitWindow()
 {
 	Window::Init(sf::VideoMode(m_Resolution.x, m_Resolution.y), m_GameTitle, sf::Style::Fullscreen);
+}
+
+void Game::InitHotReloading()
+{
+	m_HotReloader = HotReloader::Get();
 }
 
 void Game::InitAssets()
