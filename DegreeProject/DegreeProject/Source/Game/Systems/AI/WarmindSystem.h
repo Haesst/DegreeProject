@@ -18,20 +18,11 @@ struct WarmindSystem : System
 
 	virtual void Update() override
 	{
+		WarmindComponent* warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
+		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+
 		for (auto entity : m_Entities)
 		{
-			auto Warmind = &m_EntityManager->GetComponent<WarmindComponent>(entity);
-			auto Character = &m_EntityManager->GetComponent<CharacterComponent>(entity);
-
-			if (IsAcceptableGoldDiff(Character->m_CurrentGold, Warmind->m_Opponent.m_CurrentGold, Warmind->m_AcceptableGoldDiff))
-			{
-				//We could go to war?
-			}
-
-			if (IsAcceptableArmySize(Character->m_CurrentArmySize, Warmind->m_Opponent.m_CurrentArmySize, Warmind->m_AcceptableArmyDiff))
-			{
-				//We could go to war?
-			}
 		}
 	}
 

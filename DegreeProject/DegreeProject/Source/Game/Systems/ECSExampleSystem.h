@@ -27,14 +27,17 @@ struct ECSExampleSystem : System
 	// the system has registred and do the necessary update
 	virtual void Update() override
 	{
+		Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
+		MovingCircle* movingCircles = m_EntityManager->GetComponentArray<MovingCircle>();
+
 		for (auto entity : m_Entities)
 		{
-			Transform* transform = &m_EntityManager->GetComponent<Transform>(entity);
-			MovingCircle* movingCircle = &m_EntityManager->GetComponent<MovingCircle>(entity);
+			// Transform* transform = &m_EntityManager->GetComponent<Transform>(entity);
+			// MovingCircle* movingCircle = &m_EntityManager->GetComponent<MovingCircle>(entity);
 
-			MoveCircle(transform, movingCircle);
-			movingCircle->m_Shape.setFillColor(movingCircle->m_Color);
-			movingCircle->m_Shape.setRadius(movingCircle->m_Size);
+			MoveCircle(&transforms[entity], &movingCircles[entity]);
+			movingCircles[entity].m_Shape.setFillColor(movingCircles[entity].m_Color);
+			movingCircles[entity].m_Shape.setRadius(movingCircles[entity].m_Size);
 		}
 	}
 

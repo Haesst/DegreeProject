@@ -104,6 +104,10 @@
     </ClInclude>
     <ClInclude Include="Source\Engine\FileWatcher.h" />
     <ClInclude Include="Source\Game\HotReloader.h" />
+    <ClInclude Include="Source\ECS\DOComponentList.h" />
+    <ClInclude Include="Source\Game\Systems\AI\AI.h" />
+    <ClInclude Include="Source\Game\Systems\AI\AIConsideration.h" />
+    <ClInclude Include="Source\Game\Systems\AI\WarmindSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">

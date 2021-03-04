@@ -29,23 +29,24 @@ struct PlayerSystem : System
 	// the system has registered and do the necessary update
 	virtual void Update() override
 	{
+		Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
+		Player* players = m_EntityManager->GetComponentArray<Player>();
+
 		for (auto entity : m_Entities)
 		{
-			Transform* transform = &m_EntityManager->GetComponent<Transform>(entity);
-			Player* player = &m_EntityManager->GetComponent<Player>(entity);
-
-			MovePlayer(transform, player);
-			player->m_Shape.setFillColor(player->m_Color);
-			player->m_Shape.setSize(sf::Vector2(player->m_Size, player->m_Size));
+			MovePlayer(&transforms[entity], &players[entity]);
+			players[entity].m_Shape.setFillColor(players[entity].m_Color);
+			players[entity].m_Shape.setSize(sf::Vector2(players[entity].m_Size, players[entity].m_Size));
 		}
 	}
 
 	virtual void Render() override
 	{
+		Player* players = m_EntityManager->GetComponentArray<Player>();
+
 		for (auto entity : m_Entities)
 		{
-			Player* player = &m_EntityManager->GetComponent<Player>(entity);
-			Window::GetWindow()->draw(player->m_Shape);
+			Window::GetWindow()->draw(players[entity].m_Shape);
 		}
 	}
 

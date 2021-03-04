@@ -17,6 +17,9 @@ struct SpriteRenderer : public Component
 	int m_Width;
 	int m_Height;
 
+	SpriteRenderer()
+	{}
+
 	SpriteRenderer(const char* path, int width, int height, AssetHandler* assetHandler)
 		: m_Width(width), m_Height(height)
 	{

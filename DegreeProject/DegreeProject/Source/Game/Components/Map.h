@@ -35,6 +35,9 @@ struct Map : public Component
 
 	bool m_ChangeFlag = false;
 
+	Map()
+	{}
+
 	Map(sf::Texture landTexture)
 	{
 		Init();

@@ -8,7 +8,7 @@
 #include "Types.h"
 #include "System.h"
 #include "Component.h"
-#include "ComponentList.h"
+#include "DOComponentList.h"
 #include "EntityTag.h"
 #include "Components/Transform.h"
 
@@ -33,7 +33,7 @@ private:
 		const ComponentTypeID componentType = ComponentType<T>();
 
 		assert(m_ComponentArrays.find(componentType) == m_ComponentArrays.end() && "Component list already registered!");
-		m_ComponentArrays[componentType] = std::move(std::make_shared<ComponentList<T>>());
+		m_ComponentArrays[componentType] = std::move(std::make_shared<DOComponentList<T>>());
 	}
 
 	void AddEntitySignature(const EntityID entity)
@@ -191,7 +191,7 @@ public:
 		T component(std::forward<Args>(args)...);
 		component.m_EntityID = entity;
 		GetEntitySignature(entity)->insert(ComponentType<T>());
-		GetComponentList<T>()->Insert(component);
+		GetComponentList<T>()->Insert(component, entity);
 
 		const ComponentTypeID componentType = ComponentType<T>();
 		m_EntitySignatures.at(entity)->insert(componentType);
@@ -219,7 +219,15 @@ public:
 	}
 
 	template<typename T>
-	std::shared_ptr<ComponentList<T>> GetComponentList()
+	T* GetComponentArray()
+	{
+		const ComponentTypeID componentType = ComponentType<T>();
+		// return nullptr;
+		return GetComponentList<T>()->m_Components;
+	}
+
+	template<typename T>
+	std::shared_ptr<DOComponentList<T>> GetComponentList()
 	{
 		const ComponentTypeID componentType = ComponentType<T>();
 
@@ -228,7 +236,7 @@ public:
 			AddComponentList<T>();
 		}
 
-		return std::static_pointer_cast<ComponentList<T>>(m_ComponentArrays.at(componentType));
+		return std::static_pointer_cast<DOComponentList<T>>(m_ComponentArrays.at(componentType));
 	}
 
 	template<typename T>

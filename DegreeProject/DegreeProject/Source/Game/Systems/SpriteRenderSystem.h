@@ -18,23 +18,23 @@ struct SpriteRenderSystem : public System
 
 	virtual void Update() override
 	{
+		Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
+		SpriteRenderer* renderers = m_EntityManager->GetComponentArray<SpriteRenderer>();
+
 		for (auto& entity : m_Entities)
 		{
-			Transform* transform = &m_EntityManager->GetComponent<Transform>(entity);
-			SpriteRenderer* spriteRenderer = &m_EntityManager->GetComponent<SpriteRenderer>(entity);
-
-			spriteRenderer->m_Sprite.setPosition(transform->m_Position.x, transform->m_Position.y);
-			spriteRenderer->m_Sprite.setTexture(spriteRenderer->m_Texture);
-			spriteRenderer->UpdateSize();
+			renderers[entity].m_Sprite.setPosition(transforms[entity].m_Position.x, transforms[entity].m_Position.y);
+			renderers[entity].m_Sprite.setTexture(renderers[entity].m_Texture);
+			renderers[entity].UpdateSize();
 		}
 	}
 
 	virtual void Render() override
 	{
+		SpriteRenderer* renderers = m_EntityManager->GetComponentArray<SpriteRenderer>();
 		for (auto& entity : m_Entities)
 		{
-			SpriteRenderer* spriteRenderer = &m_EntityManager->GetComponent<SpriteRenderer>(entity);
-			Window::GetWindow()->draw(spriteRenderer->m_Sprite);
+			Window::GetWindow()->draw(renderers[entity].m_Sprite);
 		}
 	}
 };
