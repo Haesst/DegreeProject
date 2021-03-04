@@ -7,9 +7,9 @@ class InputHandler
 public:
 	InputHandler();
 	~InputHandler();
-	static void Initialize();
 	static void HandleInputEvents();
 	static bool GetLeftMouseClicked();
+	static bool GetRightMouseClicked();
 	static bool GetMouseScrollWheelChanged();
 	static void SetMouseScrollWheelChanged(bool changed);
 	static Vector2D GetMousePosition();
@@ -17,6 +17,7 @@ public:
 protected:
 private:
 	static bool m_LeftMouseClicked;
+	static bool m_RightMouseClicked;
 	static bool m_MouseScrollWheelChanged;
 	static Vector2D m_MousePosition;
 	static int m_MouseScrollDirection;
