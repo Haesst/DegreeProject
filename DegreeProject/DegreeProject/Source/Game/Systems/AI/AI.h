@@ -40,24 +40,28 @@ struct AISystem : System
 		//AI System update considerations
 		for (auto entity : m_Entities)
 		{
-						
+			WarDecision(entity);
 		}
-
 	}
 
 	float WarDecision(EntityID ent)
 	{
 		auto CharacterComp = m_EntityManager->GetComponent<CharacterComponent>(ent);
+		auto WarmindComp = m_EntityManager->GetComponent<WarmindComponent>(ent);
+
 		GoldConsideration goldConsideration;
 		ArmyConsideration armyConsideration;
+		EnemyArmyConsideration enemyArmy;
 
 		goldConsideration.SetContext(CharacterComp);
 		armyConsideration.SetContext(CharacterComp);
+		enemyArmy.SetContext(CharacterComp);
 
-		float goldEvaluation = goldConsideration.Evaluate();
-		float armyEvaluation = armyConsideration.Evaluate();
+		float goldEvaluation = goldConsideration.Evaluate(&CharacterComp);
+		float armyEvaluation = armyConsideration.Evaluate(&CharacterComp);
+		float enemyArmyEvaluation = enemyArmy.Evaluate(&CharacterComp, WarmindComp.m_Opponent);
 
-		float actionScore = goldEvaluation * armyEvaluation;
+		float actionScore = goldEvaluation * armyEvaluation * enemyArmyEvaluation;
 		return std::clamp(actionScore, 0.0f, 1.0f);
 	}
 };

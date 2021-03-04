@@ -4,18 +4,50 @@
 
 struct Consideration
 {
+	CharacterComponent* m_Context;
+
 	Consideration() { m_Context = nullptr; };
 
-	CharacterComponent* m_Context;
 
 	virtual void SetContext(CharacterComponent& context)
 	{
 		m_Context = &context;
 	}
 
-	virtual float Evaluate()
+	//context = Who is making the decision, target is optional if we need to compare values with another character
+	virtual float Evaluate(CharacterComponent* context, CharacterComponent* target = nullptr)
 	{
 		return 0.0f;
+	}
+};
+
+//The smaller army size of the enemy, the greater chance of winning the war
+struct EnemyArmyConsideration : public Consideration
+{
+	EnemyArmyConsideration() : Consideration()
+	{
+
+	}
+
+	void SetContext(CharacterComponent& context) override
+	{
+		m_Context = &context;
+	}
+
+	float Evaluate(CharacterComponent* context, CharacterComponent* target = nullptr) override
+	{
+		if (target == nullptr)
+		{
+			return 0.0f;
+		}
+
+		float armySizeDiff = context->m_CurrentArmySize - target->m_CurrentArmySize;
+		std::abs(armySizeDiff);
+
+
+		//y = mx + c
+		float eval = -.1 * armySizeDiff + 1;
+		return std::clamp(eval, 0.0f, 1.0f);
 	}
 };
 
@@ -31,33 +63,22 @@ struct GoldConsideration : public Consideration
 	}
 
 
-	float Evaluate() override
+	float Evaluate(CharacterComponent* context, CharacterComponent* target = nullptr) override
 	{
-		float m_MaxEvalGold = 200;
+		if (target == nullptr)
+		{
+			return 0.0f;
+		}
+
+		float targetGold = target->m_CurrentGold;
 		float m_EvalGold = m_Context->m_CurrentGold;
 
-		if (m_Context->m_CurrentGold <= 0 || m_Context->m_CurrentArmySize == 0)
-		{
-			return 0.0;
-		}
-		
-		else
-		{
-			if (m_EvalGold > m_MaxEvalGold)
-			{
-				return 1.0f;
-			}
+		float evalValue = targetGold / m_EvalGold;
 
-			else
-			{
-				//Todo: need to take army size into consideration
+		//y = mx + c
+		float eval = .5 * m_EvalGold + 0;
+		return std::clamp(eval, 0.0f, 1.0f);
 
-				//y = mx + c
-				float eval = .5 * m_EvalGold + 0;
-				return std::clamp(eval, 0.0f, 1.0f);
-				
-			}
-		}
 	}
 };
 
@@ -65,11 +86,11 @@ struct ArmyConsideration : public Consideration
 {
 	ArmyConsideration() : Consideration() {};
 
-	int m_MaxEvalSoldiers = 200;
-	int m_CurrentArmySize = m_Context->m_CurrentArmySize;
-
-	float Evaluate() override
+	float Evaluate(CharacterComponent* context, CharacterComponent* target = nullptr) override
 	{
+		int m_MaxEvalSoldiers = 200;
+		int m_CurrentArmySize = m_Context->m_CurrentArmySize;
+
 		if (m_Context->m_CurrentArmySize == 0) //Change later 
 		{
 			return 0.0;
