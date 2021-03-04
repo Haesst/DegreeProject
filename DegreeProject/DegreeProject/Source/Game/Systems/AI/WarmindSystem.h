@@ -23,12 +23,12 @@ struct WarmindSystem : System
 			auto Warmind = &m_EntityManager->GetComponent<WarmindComponent>(entity);
 			auto Character = &m_EntityManager->GetComponent<CharacterComponent>(entity);
 
-			if (IsAcceptableGoldDiff(Character->m_CurrentGold, Warmind->Opponent.m_CurrentGold, Warmind->m_AcceptableGoldDiff))
+			if (IsAcceptableGoldDiff(Character->m_CurrentGold, Warmind->m_Opponent.m_CurrentGold, Warmind->m_AcceptableGoldDiff))
 			{
 				//We could go to war?
 			}
 
-			if (IsAcceptableArmySize(Character->m_CurrentArmySize, Warmind->Opponent.m_CurrentArmySize, Warmind->m_AcceptableArmyDiff))
+			if (IsAcceptableArmySize(Character->m_CurrentArmySize, Warmind->m_Opponent.m_CurrentArmySize, Warmind->m_AcceptableArmyDiff))
 			{
 				//We could go to war?
 			}
