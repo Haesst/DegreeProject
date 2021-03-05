@@ -17,7 +17,7 @@ struct Vec2D
 		: x(x), y(y)
 	{}
 
-	Vec2D(sf::Vector2 sfmlVec)
+	Vec2D(sf::Vector2f sfmlVec)
 		: x(sfmlVec.x), y(sfmlVec(y))
 	{}
 
