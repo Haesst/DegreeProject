@@ -13,7 +13,8 @@
 struct PlayerSystem : System
 {
 	EntityManager* m_EntityManager = nullptr;
-	float m_Tolerance = 0.3f;
+	float m_MoveTolerance = 0.3f;
+	float m_ClickTolerance = 11.0f;
 
 	// Constructor, Runs when the system is initialized
 	// Do any kind of init here but remember to register
@@ -38,7 +39,6 @@ struct PlayerSystem : System
 			MovePlayer(&transforms[entity], &players[entity]);
 			players[entity].m_Shape.setFillColor(players[entity].m_FillColor);
 			players[entity].m_Shape.setOutlineColor(players[entity].m_OutlineColor);
-			players[entity].m_Shape.setFillColor(players[entity].m_FillColor);
 			players[entity].m_Shape.setSize(sf::Vector2(players[entity].m_Size, players[entity].m_Size));
 		}
 	}
@@ -57,7 +57,7 @@ struct PlayerSystem : System
 	{
 		if (InputHandler::GetLeftMouseClicked() == true)
 		{
-			if (transform->m_Position.NearlyEqual(InputHandler::GetMousePosition(), 11.0f))
+			if (transform->m_Position.NearlyEqual(InputHandler::GetMousePosition(), m_ClickTolerance))
 			{
 				player->m_Selected = true;
 				player->m_Shape.setOutlineThickness(player->m_OutlineThickness);
@@ -79,7 +79,7 @@ struct PlayerSystem : System
 			player->m_Direction = player->m_Target - transform->m_Position;
 			player->m_Direction.Normalized();
 		}
-		if (!transform->m_Position.NearlyEqual(player->m_Target, m_Tolerance))
+		if (!transform->m_Position.NearlyEqual(player->m_Target, m_MoveTolerance))
 		{
 			Vector2D movement = player->m_Direction * player->m_Speed * Time::DeltaTime();
 			transform->Translate(movement);

@@ -78,8 +78,6 @@ void InputHandler::HandleInputEvents()
 			}
 			case sf::Event::Resized:
 			{
-				sf::FloatRect visibleArea(0.0f, 0.0f, event.size.width, event.size.height);
-				window->setView(sf::View(visibleArea));
 				break;
 			}
 			case sf::Event::GainedFocus:
@@ -94,10 +92,8 @@ void InputHandler::HandleInputEvents()
 			}
 			case sf::Event::TextEntered:
 			{
-				//std::cout << "TextEntered" << std::endl;
 				if (event.text.unicode < 128)
 				{
-					//std::cout << "ASCII: " << static_cast<char>(event.text.unicode) << std::endl;
 				}
 				break;
 			}
@@ -119,15 +115,12 @@ void InputHandler::HandleInputEvents()
 				}
 				if (event.key.code == sf::Mouse::Middle)
 				{
-					//std::cout << "MiddleMousePressed" << std::endl;
 				}
 				if (event.key.code == sf::Mouse::XButton1)
 				{
-					//std::cout << "XButton1MousePressed" << std::endl;
 				}
 				if (event.key.code == sf::Mouse::XButton2)
 				{
-					//std::cout << "XButton2MousePressed" << std::endl;
 				}
 				break;
 			}
@@ -136,28 +129,19 @@ void InputHandler::HandleInputEvents()
 				if (event.key.code == sf::Mouse::Left)
 				{
 					m_LeftMouseClicked = false;
-					//std::cout << "LeftMouseReleased" << std::endl;
-					//std::cout << "MouseX: " << event.mouseButton.x << std::endl;
-					//std::cout << "MouseY: " << event.mouseButton.y << std::endl;
 				}
 				if (event.key.code == sf::Mouse::Right)
 				{
 					m_RightMouseClicked = false;
-					//std::cout << "RightMouseReleased" << std::endl;
-					//std::cout << "MouseX: " << event.mouseButton.x << std::endl;
-					//std::cout << "MouseY: " << event.mouseButton.y << std::endl;
 				}
 				if (event.key.code == sf::Mouse::Middle)
 				{
-					//std::cout << "MiddleMouseReleased" << std::endl;
 				}
 				if (event.key.code == sf::Mouse::XButton1)
 				{
-					//std::cout << "XButton1MouseReleased" << std::endl;
 				}
 				if (event.key.code == sf::Mouse::XButton2)
 				{
-					//std::cout << "XButton2MouseReleased" << std::endl;
 				}
 				break;
 			}
@@ -177,8 +161,6 @@ void InputHandler::HandleInputEvents()
 			}
 			case sf::Event::MouseMoved:
 			{
-				//std::cout << "NewMouseX: " << event.mouseMove.x << std::endl;
-				//std::cout << "NewMouseY: " << event.mouseMove.y << std::endl;
 				break;
 			}
 			case sf::Event::MouseEntered:

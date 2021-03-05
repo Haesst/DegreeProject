@@ -34,7 +34,7 @@ void Game::Init()
 void Game::Run()
 {
 	sf::RenderWindow* internalWindow = m_Window->GetWindow();
-	sf::View view(sf::Vector2(960.0f, 540.0f), sf::Vector2(1920.0f, 1080.0f));
+	sf::View view(sf::Vector2f(m_Resolution.x * 0.5f, m_Resolution.y * 0.5f), sf::Vector2f(m_Resolution.x, m_Resolution.y));
 	internalWindow->setView(view);
 	while (internalWindow->isOpen())
 	{
@@ -121,15 +121,15 @@ void Game::AddEntitys()
 	playerDotCircle->m_Direction = { 0.0f, 0.0f };
 	playerDotCircle->m_FillColor = sf::Color::Black;
 
-	////Create A Character
-	//EntityID character = entityManager->AddNewEntity();
-	//std::vector<int> id;
-	//id.push_back(1);
-	//entityManager->AddComponent<CharacterComponent>(character, Title::King, "Italia", "Mussolini", id, 100, 10, false);
-	//Transform* characterTransform = &entityManager->GetComponent<Transform>(character);
-	//characterTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.6f, m_Window->GetWindow()->getSize().y * 0.4f };
-	//CharacterComponent* characterComponent = &entityManager->GetComponent<CharacterComponent>(character);
-	//entityManager->AddComponent<SpriteRenderer>(character, "Assets/Graphics/Test.jpg", 32, 32, m_AssetHandler);
+	//Create A Character
+	EntityID character = entityManager->AddNewEntity();
+	std::vector<int> id;
+	id.push_back(1);
+	entityManager->AddComponent<CharacterComponent>(character, Title::King, "Italia", "Mussolini", id, 100, 10, false);
+	Transform* characterTransform = &entityManager->GetComponent<Transform>(character);
+	characterTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.6f, m_Window->GetWindow()->getSize().y * 0.4f };
+	CharacterComponent* characterComponent = &entityManager->GetComponent<CharacterComponent>(character);
+	entityManager->AddComponent<SpriteRenderer>(character, "Assets/Graphics/Test.jpg", 32, 32, m_AssetHandler);
 
 	// Get transform and moving circle of entity
 	Transform* dot2Transform = &entityManager->GetComponent<Transform>(dot2);

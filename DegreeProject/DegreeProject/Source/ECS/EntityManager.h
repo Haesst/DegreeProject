@@ -11,6 +11,7 @@
 #include "DOComponentList.h"
 #include "EntityTag.h"
 #include "Components/Transform.h"
+#include "Engine/Window.h"
 
 class EntityManager
 {

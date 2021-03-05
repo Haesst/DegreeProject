@@ -18,8 +18,8 @@ struct CharacterComponent : public Component
 	const char* m_KingdomName = "";
 	const char* m_Name = "";
 	std::vector<int> m_OwnedRegionIDs;
-	int m_CurrentGold;
-	int m_CurrentArmySize;
+	int m_CurrentGold = 0;
+	int m_CurrentArmySize = 0;
 	bool m_IsPlayerControlled = false;
 
 	CharacterComponent() {};
