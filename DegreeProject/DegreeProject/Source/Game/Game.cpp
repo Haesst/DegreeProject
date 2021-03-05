@@ -7,7 +7,7 @@
 #include "ECS/Components/CharacterComponent.h"
 #include "Game/MapDrawer.h"
 #include "Game/HotReloader.h"
-#include <Game/Components/MovingCircle.h>
+#include <Game/Components/MovingSprite.h>
 #include <Game/Components/SpriteRenderer.h>
 #include <Game/Components/Map.h>
 #include <Game/Systems/PlayerSystem.h>
@@ -99,7 +99,7 @@ void Game::AddEntitys()
 	// Create an entity
 	EntityID dot1 = entityManager->AddNewEntity();
 	// Add necessary components
-	entityManager->AddComponent<MovingCircle>(dot1);
+	entityManager->AddComponent<MovingSprite>(dot1);
 	entityManager->AddComponent<SpriteRenderer>(dot1, "Assets/Graphics/Charizard.png", 32, 32, m_AssetHandler);
 
 	// Get transform of entity (or any other component)
@@ -110,7 +110,7 @@ void Game::AddEntitys()
 	EntityID dot2 = entityManager->AddNewEntity();
 	entityManager->AddComponent<SpriteRenderer>(dot2, "Assets/Graphics/Test.jpg", 32, 32, m_AssetHandler);
 	// Add necessary components
-	entityManager->AddComponent<MovingCircle>(dot2);
+	entityManager->AddComponent<MovingSprite>(dot2);
 
 	//Create Player Dot
 	EntityID playerDot = entityManager->AddNewEntity();
@@ -133,7 +133,7 @@ void Game::AddEntitys()
 
 	// Get transform and moving circle of entity
 	Transform* dot2Transform = &entityManager->GetComponent<Transform>(dot2);
-	MovingCircle* dot2Circle = &entityManager->GetComponent<MovingCircle>(dot2);
+	MovingSprite* dot2Circle = &entityManager->GetComponent<MovingSprite>(dot2);
 	dot2Transform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.6f };
 	dot2Circle->m_Direction = { 0.0f, 1.0f };
 	dot2Circle->m_Color = sf::Color::Yellow;

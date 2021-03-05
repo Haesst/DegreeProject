@@ -2,12 +2,12 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../../ECS/Component.h"
-#include "../../ECS/EntityManager.h"
+#include "ECS/Component.h"
+#include "ECS/EntityManager.h"
 
-#include "../../Engine/Vector2D.h"
+#include "Engine/Vector2D.h"
 
-struct MovingCircle : public Component
+struct MovingSprite : public Component
 {
 	sf::CircleShape m_Shape;
 	sf::Color m_Color = sf::Color::Red;
