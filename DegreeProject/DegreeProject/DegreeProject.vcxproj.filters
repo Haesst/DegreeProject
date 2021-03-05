@@ -123,6 +123,7 @@
     <ClInclude Include="Source\Game\Components\MovingSprite.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Mutex.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">

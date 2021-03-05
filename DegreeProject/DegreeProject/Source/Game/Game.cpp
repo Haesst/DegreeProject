@@ -7,13 +7,13 @@
 #include "ECS/Components/CharacterComponent.h"
 #include "Game/MapDrawer.h"
 #include "Game/HotReloader.h"
-#include <Game/Components/MovingSprite.h>
-#include <Game/Components/SpriteRenderer.h>
-#include <Game/Components/Map.h>
-#include <Game/Systems/PlayerSystem.h>
-#include <Game/Systems/ECSExampleSystem.h>
-#include <Game/Systems/SpriteRenderSystem.h>
-#include <Game/Systems/MapSystem.h>
+#include "Game/Components/MovingSprite.h"
+#include "Game/Components/SpriteRenderer.h"
+#include "Game/Components/Map.h"
+#include "Game/Systems/PlayerSystem.h"
+#include "Game/Systems/ECSExampleSystem.h"
+#include "Game/Systems/SpriteRenderSystem.h"
+#include "Game/Systems/MapSystem.h"
 
 Game::~Game()
 {
