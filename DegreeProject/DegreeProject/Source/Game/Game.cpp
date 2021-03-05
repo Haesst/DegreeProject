@@ -48,10 +48,7 @@ void Game::Run()
 		EntityManager::Get().Update();
 
 		// Render
-		internalWindow->clear(sf::Color::Blue);
-		// m_MapDrawer->DrawMap(&m_Map, *internalWindow);
 		EntityManager::Get().Render();
-		internalWindow->display();
 	}
 
 	m_HotReloader->Close();

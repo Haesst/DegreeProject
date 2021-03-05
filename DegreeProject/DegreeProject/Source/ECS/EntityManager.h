@@ -116,10 +116,12 @@ public:
 
 	void Render()
 	{
+		Window::GetWindow()->clear(sf::Color::Blue);
 		for (auto& system : m_RegisteredSystems)
 		{
 			system.second->Render();
 		}
+		Window::GetWindow()->display();
 	}
 
 	const EntityID AddNewEntity()
