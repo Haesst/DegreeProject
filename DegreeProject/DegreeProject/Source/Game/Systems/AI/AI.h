@@ -14,7 +14,7 @@ struct AISystem : System
 
 	float m_TickAccu = 0.0f;
 
-	float m_AIUpdateTickRate = 2.0f;
+	float m_AIUpdateTickRate = 10.0f;
 
 	AISystem()
 	{
@@ -44,21 +44,5 @@ struct AISystem : System
 		}
 	}
 
-	float WarDecision(EntityID ent)
-	{
-		auto CharacterComp = m_EntityManager->GetComponent<CharacterComponent>(ent);
-		auto WarmindComp = m_EntityManager->GetComponent<WarmindComponent>(ent);
-
-		GoldConsideration goldConsideration;
-		ArmySizeConsideration enemyArmy;
-
-		goldConsideration.SetContext(ent);
-		enemyArmy.SetContext(ent);
-
-		float goldEvaluation = goldConsideration.Evaluate(ent, WarmindComp.m_Opponent);
-		float enemyArmyEvaluation = enemyArmy.Evaluate(ent, WarmindComp.m_Opponent);
-
-		float actionScore = goldEvaluation * enemyArmyEvaluation;
-		return std::clamp(actionScore, 0.0f, 1.0f);
-	}
+	float WarDecision(EntityID ent);
 };
