@@ -22,6 +22,8 @@ struct CharacterComponent : public Component
 	int m_CurrentArmySize;
 	bool m_IsPlayerControlled = false;
 
+	CharacterComponent() {};
+
 	CharacterComponent(Title title, const char* kingdomName, const char* characterName, std::vector<int> regionIDs, int gold, int armySize, bool isPlayerControlled)
 	{
 		m_CharacterTitle = title;

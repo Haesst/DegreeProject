@@ -50,18 +50,15 @@ struct AISystem : System
 		auto WarmindComp = m_EntityManager->GetComponent<WarmindComponent>(ent);
 
 		GoldConsideration goldConsideration;
-		ArmyConsideration armyConsideration;
-		EnemyArmyConsideration enemyArmy;
+		ArmySizeConsideration enemyArmy;
 
-		goldConsideration.SetContext(CharacterComp);
-		armyConsideration.SetContext(CharacterComp);
-		enemyArmy.SetContext(CharacterComp);
+		goldConsideration.SetContext(ent);
+		enemyArmy.SetContext(ent);
 
-		float goldEvaluation = goldConsideration.Evaluate(&CharacterComp);
-		float armyEvaluation = armyConsideration.Evaluate(&CharacterComp);
-		float enemyArmyEvaluation = enemyArmy.Evaluate(&CharacterComp, WarmindComp.m_Opponent);
+		float goldEvaluation = goldConsideration.Evaluate(ent, WarmindComp.m_Opponent);
+		float enemyArmyEvaluation = enemyArmy.Evaluate(ent, WarmindComp.m_Opponent);
 
-		float actionScore = goldEvaluation * armyEvaluation * enemyArmyEvaluation;
+		float actionScore = goldEvaluation * enemyArmyEvaluation;
 		return std::clamp(actionScore, 0.0f, 1.0f);
 	}
 };

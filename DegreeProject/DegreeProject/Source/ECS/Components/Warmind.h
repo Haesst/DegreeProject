@@ -6,11 +6,16 @@ struct WarmindComponent : Component
 {
 	int m_WargoalRegionId = 0;
 
-	CharacterComponent* m_Opponent;
+	EntityID m_Opponent;
 
-	WarmindComponent(int warGoalRegionId, CharacterComponent opponent)
+	WarmindComponent()
+	{
+
+	};
+
+	WarmindComponent(int warGoalRegionId,  EntityID opponent)
 	{
 		m_WargoalRegionId = warGoalRegionId;
-		m_Opponent = &opponent;
+		m_Opponent = opponent;
 	};
 };
