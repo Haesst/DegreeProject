@@ -17,10 +17,15 @@ enum class FileStatus
 
 class FileWatcher
 {
-public:
+
+private:
+	std::unordered_map<std::string, std::filesystem::file_time_type> m_Paths;
+	bool m_Running = true;
+	std::thread m_RunThread;
 	const char* m_Path;
 	std::chrono::duration<int, std::milli> delay; // Time interval at which we check the base folder for changes
 
+public:
 	// Keep a record of files from the base directory and their last modification time
 	FileWatcher(const char* path, std::chrono::duration<int, std::milli> delay)
 		: m_Path(path), delay{ delay } {
@@ -45,11 +50,7 @@ public:
 	}
 
 private:
-	std::unordered_map<std::string, std::filesystem::file_time_type> m_Paths;
-	bool m_Running = true;
-	std::thread m_RunThread;
-
-	// Check if "paths_" contains a given key
+	// Check if "m_Paths" contains a given key
 	bool contains(const std::string& key)
 	{
 		auto el = m_Paths.find(key);

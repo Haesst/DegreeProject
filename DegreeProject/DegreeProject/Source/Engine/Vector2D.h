@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <SFML/Graphics.hpp>
 
 template <typename T>
 struct Vec2D
@@ -14,6 +15,10 @@ struct Vec2D
 
 	Vec2D(T x, T y)
 		: x(x), y(y)
+	{}
+
+	Vec2D(sf::Vector2 sfmlVec)
+		: x(sfmlVec.x), y(sfmlVec(y))
 	{}
 
 	inline Vec2D<T> operator+(const Vec2D<T>& v2) const

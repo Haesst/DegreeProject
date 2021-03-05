@@ -13,11 +13,11 @@ class HotReloader
 private:
 	FileWatcher* m_FileWatcher;
 	std::map<std::string, const std::function<void(std::string, FileStatus)>> m_Actions;
-	std::map<int, char> m_Test = {};
 	static HotReloader* m_Instance;
+	static const char* ASSET_DIRECTORY;
 
 public:
-	HotReloader(char* path);
+	HotReloader(const char* path);
 	~HotReloader();
 
 	static HotReloader* Get();

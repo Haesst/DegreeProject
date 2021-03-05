@@ -4,11 +4,12 @@
 #include "Engine/Log.h"
 
 HotReloader* HotReloader::m_Instance = nullptr;
+const char* HotReloader::ASSET_DIRECTORY = "Assets";
 
-HotReloader::HotReloader(char* path)
+HotReloader::HotReloader(const char* path)
 {
-		m_FileWatcher = new FileWatcher(path, std::chrono::milliseconds(1000));
-		m_FileWatcher->start(std::bind(&HotReloader::OnFileChange, this, std::placeholders::_1, std::placeholders::_2));
+	m_FileWatcher = new FileWatcher(path, std::chrono::milliseconds(1000));
+	m_FileWatcher->start(std::bind(&HotReloader::OnFileChange, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 HotReloader::~HotReloader()
@@ -41,7 +42,7 @@ HotReloader* HotReloader::Get()
 {
 	if (m_Instance == nullptr)
 	{
-		m_Instance = new HotReloader("Assets");
+		m_Instance = new HotReloader(ASSET_DIRECTORY);
 	}
 
 	return m_Instance;
