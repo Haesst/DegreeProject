@@ -34,8 +34,11 @@ struct PlayerSystem : System
 
 		for (auto entity : m_Entities)
 		{
+			SelectPlayer(&transforms[entity], &players[entity]);
 			MovePlayer(&transforms[entity], &players[entity]);
-			players[entity].m_Shape.setFillColor(players[entity].m_Color);
+			players[entity].m_Shape.setFillColor(players[entity].m_FillColor);
+			players[entity].m_Shape.setOutlineColor(players[entity].m_OutlineColor);
+			players[entity].m_Shape.setFillColor(players[entity].m_FillColor);
 			players[entity].m_Shape.setSize(sf::Vector2(players[entity].m_Size, players[entity].m_Size));
 		}
 	}
@@ -50,22 +53,37 @@ struct PlayerSystem : System
 		}
 	}
 
+	void SelectPlayer(Transform* transform, Player* player)
+	{
+		if (InputHandler::GetLeftMouseClicked() == true)
+		{
+			if (transform->m_Position.NearlyEqual(InputHandler::GetMousePosition(), 11.0f))
+			{
+				player->m_Selected = true;
+				player->m_Shape.setOutlineThickness(player->m_OutlineThickness);
+			}
+			else
+			{
+				player->m_Selected = false;
+				player->m_Shape.setOutlineThickness(0.0f);
+			}
+		}
+	}
+
 	void MovePlayer(Transform* transform, Player* player)
 	{
 		sf::RenderWindow* window = Window::GetWindow();
-		
-		if (InputHandler::GetRightMouseClicked() == true)
+		if (InputHandler::GetRightMouseClicked() == true && player->m_Selected == true)
 		{
 			player->m_Target = InputHandler::GetMousePosition();
-			player->m_Direction = InputHandler::GetMousePosition() - transform->m_Position;
+			player->m_Direction = player->m_Target - transform->m_Position;
 			player->m_Direction.Normalized();
 		}
-		Vector2D movement = player->m_Direction * player->m_Speed * Time::DeltaTime();
-		if (transform->m_Position.NearlyEqual(player->m_Target, m_Tolerance))
+		if (!transform->m_Position.NearlyEqual(player->m_Target, m_Tolerance))
 		{
-			movement = movement.Zero();
+			Vector2D movement = player->m_Direction * player->m_Speed * Time::DeltaTime();
+			transform->Translate(movement);
+			player->m_Shape.setPosition(transform->m_Position.x, transform->m_Position.y);
 		}
-		transform->Translate(movement);
-		player->m_Shape.setPosition(transform->m_Position.x, transform->m_Position.y);
 	}
 };

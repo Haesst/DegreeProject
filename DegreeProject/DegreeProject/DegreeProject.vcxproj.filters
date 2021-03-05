@@ -19,6 +19,9 @@
     <Filter Include="Game\Systems">
       <UniqueIdentifier>{860EB599-7271-443E-1BF7-7CF4073910C1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Systems\AI">
+      <UniqueIdentifier>{5F998C41-CB24-FA05-D435-7DFA40405606}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\ECS\Component.h">
@@ -36,6 +39,9 @@
     <ClInclude Include="Source\ECS\Components\Warmind.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source\ECS\DOComponentList.h">
+      <Filter>ECS</Filter>
+    </ClInclude>
     <ClInclude Include="Source\ECS\EntityManager.h">
       <Filter>ECS</Filter>
     </ClInclude>
@@ -49,6 +55,9 @@
       <Filter>ECS</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\AssetHandler.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\FileWatcher.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\InputHandler.h">
@@ -84,10 +93,22 @@
     <ClInclude Include="Source\Game\Game.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\HotReloader.h">
+      <Filter>Game</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\MapDrawer.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Systems\AI.h">
+    <ClInclude Include="Source\Game\Systems\AI\AI.h">
+      <Filter>Game\Systems\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Systems\AI\AIConsideration.h">
+      <Filter>Game\Systems\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Systems\AI\WarmindSystem.h">
+      <Filter>Game\Systems\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Systems\CharacterSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h">
@@ -102,12 +123,6 @@
     <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\FileWatcher.h" />
-    <ClInclude Include="Source\Game\HotReloader.h" />
-    <ClInclude Include="Source\ECS\DOComponentList.h" />
-    <ClInclude Include="Source\Game\Systems\AI\AI.h" />
-    <ClInclude Include="Source\Game\Systems\AI\AIConsideration.h" />
-    <ClInclude Include="Source\Game\Systems\AI\WarmindSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -134,10 +149,12 @@
     <ClCompile Include="Source\Game\Game.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\HotReloader.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Game\MapDrawer.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Game\HotReloader.cpp" />
   </ItemGroup>
 </Project>

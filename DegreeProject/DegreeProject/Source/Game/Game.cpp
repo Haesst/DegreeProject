@@ -4,6 +4,7 @@
 #include "Engine/Time.h"
 #include "Engine/InputHandler.h"
 #include "ECS/EntityManager.h"
+#include "ECS/Components/CharacterComponent.h"
 #include "Game/MapDrawer.h"
 #include "Game/HotReloader.h"
 #include <Game/Components/MovingCircle.h>
@@ -121,7 +122,17 @@ void Game::AddEntitys()
 	Player* playerDotCircle = &entityManager->GetComponent<Player>(playerDot);
 	playerDotTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.6f };
 	playerDotCircle->m_Direction = { 0.0f, 0.0f };
-	playerDotCircle->m_Color = sf::Color::Black;
+	playerDotCircle->m_FillColor = sf::Color::Black;
+
+	////Create A Character
+	//EntityID character = entityManager->AddNewEntity();
+	//std::vector<int> id;
+	//id.push_back(1);
+	//entityManager->AddComponent<CharacterComponent>(character, Title::King, "Italia", "Mussolini", id, 100, 10, false);
+	//Transform* characterTransform = &entityManager->GetComponent<Transform>(character);
+	//characterTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.6f, m_Window->GetWindow()->getSize().y * 0.4f };
+	//CharacterComponent* characterComponent = &entityManager->GetComponent<CharacterComponent>(character);
+	//entityManager->AddComponent<SpriteRenderer>(character, "Assets/Graphics/Test.jpg", 32, 32, m_AssetHandler);
 
 	// Get transform and moving circle of entity
 	Transform* dot2Transform = &entityManager->GetComponent<Transform>(dot2);
