@@ -9,9 +9,7 @@
 
 struct MapSystem : public System
 {
-	EntityManager* m_EntityManager;
-	FileWatcher* m_DataWatcher;
-	FileWatcher* m_MapWatcher;
+	EntityManager* m_EntityManager = nullptr;
 
 	MapSystem()
 	{

@@ -21,10 +21,10 @@ private:
 	char* m_GameTitle = "GRAND STRATEGY GAME 2.5!";
 	Vector2DInt m_Resolution = { 1920, 1080 };
 private:
-	Window* m_Window;
-	AssetHandler* m_AssetHandler;
-	MapDrawer* m_MapDrawer;
-	HotReloader* m_HotReloader;
+	Window* m_Window = nullptr;
+	AssetHandler* m_AssetHandler = nullptr;
+	MapDrawer* m_MapDrawer = nullptr;
+	HotReloader* m_HotReloader = nullptr;
 	std::vector<sf::RectangleShape> m_Map;
 	sf::SoundBuffer m_SoundBuffer;
 	sf::Sound m_Sound;

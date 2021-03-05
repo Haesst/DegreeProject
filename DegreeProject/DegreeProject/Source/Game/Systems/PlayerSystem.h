@@ -1,13 +1,13 @@
 #pragma once
 
-#include "../../ECS/EntityManager.h"
-#include "../../ECS/System.h"
+#include "ECS/EntityManager.h"
+#include "ECS/System.h"
 
-#include "../../Engine/Time.h"
-#include "../../Engine/Window.h"
+#include "Engine/Time.h"
+#include "Engine/Window.h"
 
-#include "../../ECS/Components/Transform.h"
-#include "../Components/Player.h";
+#include "ECS/Components/Transform.h"
+#include "Game/Components/Player.h";
 #include "Engine/InputHandler.h"
 
 struct PlayerSystem : System

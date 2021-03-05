@@ -5,8 +5,8 @@
 template <typename T>
 struct Vec2D
 {
-	T x;
-	T y;
+	T x = 0;
+	T y = 0;
 
 	Vec2D()
 		: x(x), y(y)

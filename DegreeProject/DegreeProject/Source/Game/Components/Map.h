@@ -13,9 +13,9 @@ using json = nlohmann::json;
 struct MapRegion
 {
 public:
-	std::vector<Vector2DInt> m_MapSquares;
-	sf::Color m_HighlightColor;
-	char m_MapChar;
+	std::vector<Vector2DInt> m_MapSquares = {};
+	sf::Color m_HighlightColor = sf::Color::White;
+	char m_MapChar = '1';
 
 	MapRegion() {};
 	~MapRegion() { m_MapSquares.clear(); }
@@ -151,9 +151,9 @@ struct Map : public Component
 		inData.close();
 	}
 
-	int GetRegionPosition(const char& c)
+	size_t GetRegionPosition(const char& c)
 	{
-		for (int i = 0; i < m_Regions.size(); i++)
+		for (size_t i = 0; i < m_Regions.size(); ++i)
 		{
 			if (m_Regions[i].m_MapChar == c)
 			{

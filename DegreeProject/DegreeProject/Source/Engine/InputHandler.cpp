@@ -166,7 +166,7 @@ void InputHandler::HandleInputEvents()
 				if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
 				{
 					m_MouseScrollWheelChanged = true;
-					m_MouseScrollDirection = event.mouseWheelScroll.delta;
+					m_MouseScrollDirection = (int)event.mouseWheelScroll.delta;
 					if ((m_MouseScrollDirection == 1 && (view.getSize().x > MIN_ZOOM || view.getSize().y > MIN_ZOOM)) || (m_MouseScrollDirection == -1 && (view.getSize().x < MAX_ZOOM || view.getSize().y < MAX_ZOOM)))
 					{
 						view.zoom(1.0f - m_MouseScrollDirection * ZOOM_SPEED * Time::DeltaTime());

@@ -36,7 +36,7 @@ std::vector<sf::RectangleShape> MapDrawer::GetMap(const char* path, const char w
 std::vector<sf::RectangleShape> MapDrawer::CreateMap(const std::vector<std::pair<char, std::pair<int, int> > > mapData, const char walkable,const sf::Vector2<int> resolution, const float size)
 {
 	std::vector<sf::RectangleShape> map;
-	for (int i = 0; i < mapData.size(); i++)
+	for (size_t i = 0; i < mapData.size(); ++i)
 	{
 		if (mapData[i].first == walkable)
 		{
