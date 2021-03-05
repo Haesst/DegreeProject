@@ -81,9 +81,6 @@
     <ClInclude Include="Source\Game\Components\Map.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Components\MovingCircle.h">
-      <Filter>Game\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Components\Player.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
@@ -122,6 +119,9 @@
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h">
       <Filter>Game\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Components\MovingSprite.h">
+      <Filter>Game\Components</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
