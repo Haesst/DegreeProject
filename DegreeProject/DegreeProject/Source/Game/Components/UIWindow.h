@@ -23,6 +23,11 @@ struct UIWindow : public Component
 
 	UIWindow()
 	{
-		m_Font.loadFromFile("Assets/Fonts/TestFont.ttf");
+		//m_Font.loadFromFile("Assets/Fonts/TestFont.ttf");
+	}
+
+	UIWindow(sf::Font font)
+	{
+		m_Font = font;
 	}
 };

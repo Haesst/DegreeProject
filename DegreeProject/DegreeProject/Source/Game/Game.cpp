@@ -147,7 +147,7 @@ void Game::AddEntitys()
 
 	//Create UI window
 	EntityID windowUI = entityManager->AddNewEntity();
-	entityManager->AddComponent<UIWindow>(windowUI);
+	entityManager->AddComponent<UIWindow>(windowUI, m_AssetHandler->LoadFontFromFileToText("Assets/Fonts/TestFont.ttf"));
 	Transform* windowUITransform = &entityManager->GetComponent<Transform>(windowUI);
 	UIWindow* windowUIRectangle = &entityManager->GetComponent<UIWindow>(windowUI);
 

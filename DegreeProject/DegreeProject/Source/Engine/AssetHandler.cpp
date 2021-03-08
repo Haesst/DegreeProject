@@ -26,7 +26,7 @@ const sf::Texture AssetHandler::LoadImageFromFile(const char* FilePath)
 	return Texture;
 }
 
-sf::Text AssetHandler::LoadFontFromFileToText(const char* FilePath)
+sf::Font AssetHandler::LoadFontFromFileToText(const char* FilePath)
 {
 	sf::Text Text;
 	sf::Font Font;
@@ -34,10 +34,11 @@ sf::Text AssetHandler::LoadFontFromFileToText(const char* FilePath)
 	if (Font.loadFromFile(FilePath))
 	{
 		Text.setFont(Font);
-		return Text;
+		return Font;
+		//return Text;
 	}
 
-	return Text;
+	return Font;
 }
 
 sf::Sound AssetHandler::LoadAudioFile(const char* FilePath, sf::SoundBuffer& Buffer)
