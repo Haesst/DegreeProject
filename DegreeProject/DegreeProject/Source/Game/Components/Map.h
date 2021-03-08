@@ -16,7 +16,7 @@ public:
 	std::vector<Vector2DInt> m_MapSquares = {};
 	sf::Color m_HighlightColor = sf::Color::White;
 	char m_MapChar = '1';
-
+	int m_RegionId = INT_MAX;
 	MapRegion() {};
 	~MapRegion() { m_MapSquares.clear(); }
 };
@@ -79,8 +79,12 @@ struct Map : public Component
 			return sf::Color::Color(40,26,13);
 		}
 		
-
 		return sf::Color::White;
+	}
+
+	void SetRegionColor(int regionId, sf::Color color)
+	{
+		m_Regions[regionId].m_HighlightColor = color;
 	}
 
 	void LoadAllRegions()
@@ -97,6 +101,7 @@ struct Map : public Component
 
 			region.m_HighlightColor = GetColor(element["color"].get<std::string>());
 			std::string mapCharString = element["mapchar"].get<std::string>();
+			region.m_RegionId = element["id"].get<int>();
 
 			if (mapCharString.size() > 0)
 			{

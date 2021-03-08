@@ -21,10 +21,11 @@ struct CharacterComponent : public Component
 	int m_CurrentGold = 0;
 	int m_CurrentArmySize = 0;
 	bool m_IsPlayerControlled = false;
+	sf::Color m_RegionColor = sf::Color::Black;
 
 	CharacterComponent() {};
 
-	CharacterComponent(Title title, const char* kingdomName, const char* characterName, std::vector<int> regionIDs, int gold, int armySize, bool isPlayerControlled)
+	CharacterComponent(Title title, const char* kingdomName, const char* characterName, std::vector<int> regionIDs, int gold, int armySize, bool isPlayerControlled, sf::Color regionColor)
 	{
 		m_CharacterTitle = title;
 		m_KingdomName = kingdomName;
@@ -33,6 +34,7 @@ struct CharacterComponent : public Component
 		m_CurrentGold = gold;
 		m_CurrentArmySize = armySize;
 		m_IsPlayerControlled = isPlayerControlled;
+		m_RegionColor = regionColor;
 	}
 };
 

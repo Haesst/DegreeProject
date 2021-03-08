@@ -123,9 +123,8 @@ void Game::AddEntitys()
 
 	//Create A Character
 	EntityID character = entityManager->AddNewEntity();
-	std::vector<int> id;
-	id.push_back(1);
-	entityManager->AddComponent<CharacterComponent>(character, Title::King, "Italia", "Mussolini", id, 100, 10, false);
+	std::vector<int> id{1, 2, 3, 4, 5,6, 7, 8, 9, 10};
+	entityManager->AddComponent<CharacterComponent>(character, Title::King, "Italia", "Mussolini", id, 100, 10, false, sf::Color::Red);
 	Transform* characterTransform = &entityManager->GetComponent<Transform>(character);
 	characterTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.6f, m_Window->GetWindow()->getSize().y * 0.4f };
 	CharacterComponent* characterComponent = &entityManager->GetComponent<CharacterComponent>(character);
@@ -140,4 +139,11 @@ void Game::AddEntitys()
 
 	EntityID map = entityManager->AddNewEntity();
 	entityManager->AddComponent<Map>(map, m_AssetHandler->GetTextureAtPath("Assets/Graphics/TileSet.png"));
+	Map* mapComp = entityManager->GetComponentArray<Map>();
+	CharacterComponent* characters = entityManager->GetComponentArray<CharacterComponent>();
+
+	for (auto region : characters[character].m_OwnedRegionIDs)
+	{
+		mapComp[map].SetRegionColor(region, characters[character].m_RegionColor);
+	}
 }
