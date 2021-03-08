@@ -133,6 +133,8 @@
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\MapInfo.h" />
+    <ClInclude Include="Source\Game\Components\Unit.h" />
+    <ClInclude Include="Source\Game\Systems\AI\UnitSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
