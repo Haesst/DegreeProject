@@ -1,119 +1,119 @@
 [
 	{
 	"name": "Piedmonte",
-	"id": "1",
+	"id": 1,
 	"mapchar": "1",
 	"color": "Red",
 	"tax": "5"
 	},
 	{
 	"name": "Lombardy",
-	"id": "2",
+	"id": 2,
 	"mapchar": "2",
 	"color": "Yellow",
 	"tax": "7"
 	},
 	{
 	"name": "Trentino",
-	"id": "3",
+	"id": 3,
 	"mapchar": "3",
 	"color": "Purple",
 	"tax": "3"
 	},
 	{
 	"name": "Veneto",
-	"id": "4",
+	"id": 4,
 	"mapchar": "4",
 	"color": "Cyan",
-	"tax": "7"
+	"tax": 7
 	},
 	{
 	"name": "Friuli",
-	"id": "5",
+	"id": 5,
 	"mapchar": "5",
 	"color": "Blue",
 	"tax": "3"
 	},
 	{
 	"name": "Liguria",
-	"id": "6",
+	"id": 6,
 	"mapchar": "6",
 	"color": "Brown",
 	"tax": "2"
 	},
 	{
 	"name": "Emilia Romagna",
-	"id": "7",
+	"id": 7,
 	"mapchar": "7",
 	"color": "Red",
 	"tax": "6"
 	},
 	{
 	"name": "Toscany",
-	"id": "8",
+	"id": 8,
 	"mapchar": "8",
 	"color": "Yellow",
 	"tax": "5"
 	},
 	{
 	"name": "Marches",
-	"id": "9",
+	"id": 9,
 	"mapchar": "9",
 	"color": "Cyan",
 	"tax": "4"
 	},
 	{
 	"name": "Umbria",
-	"id": "10",
+	"id": 10,
 	"mapchar": "U",
 	"color": "Blue",
 	"tax": "2"
 	},
 	{
 	"name": "Latium",
-	"id": "11",
+	"id": 11,
 	"mapchar": "L",
 	"color": "Brown",
 	"tax": "8"
 	},
 	{
 	"name": "Abruzzo",
-	"id": "12",
+	"id": 12,
 	"mapchar": "A",
 	"color": "Yellow",
 	"tax": "4"
 	},
 	{
 	"name": "Campania",
-	"id": "13",
+	"id": 13,
 	"mapchar": "C",
 	"color": "Red",
 	"tax": "4"
 	},
 	{
 	"name": "Apulia",
-	"id": "14",
+	"id": 14,
 	"mapchar": "P",
 	"color": "Purple",
 	"tax": "5"
 	},
 	{
 	"name": "Basilicata",
-	"id": "15",
+	"id": 15,
 	"mapchar": "B",
 	"color": "Blue",
 	"tax": "3"
 	},
 	{
 	"name": "Calabria",
-	"id": "16",
+	"id": 16,
 	"mapchar": "R",
 	"color": "Brown",
 	"tax": "4"
 	},
 	{
 	"name": "Sicily",
-	"id": "17",
+	"id": 17,
 	"mapchar": "S",
 	"color": "Yellow",
 	"tax": "5"
