@@ -13,7 +13,7 @@ struct Player : public Component
 	sf::Color m_FillColor = sf::Color::Black;
 	sf::Color m_OutlineColor = sf::Color::White;
 	float m_Size = 10.0f;
-	float m_OutlineThickness = 1.0f;
+	float m_OutlineThickness = 0.0f;
 	bool m_Selected = false;
 
 	Vector2D m_Direction = Vector2D(0.0f, 0.0f);

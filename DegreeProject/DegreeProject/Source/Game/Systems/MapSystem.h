@@ -21,6 +21,21 @@ struct MapSystem : public System
 		HotReloader::Get()->SubscribeToFileChange("Assets\\Map\\RegionMap.txt", std::bind(&MapSystem::RegionsChanged, this, std::placeholders::_1, std::placeholders::_2));
 	}
 
+	virtual void Update() override
+	{
+		Map* maps = m_EntityManager->GetComponentArray<Map>();
+		for (auto& entity : m_Entities)
+		{
+			unsigned int index = 0;
+			for (auto& region : maps[entity].m_Regions)
+			{
+				MapInfo::SetRegionName(maps[entity].m_Regions[index].m_RegionName, index);
+				MapInfo::SetRegionTax(maps[entity].m_Regions[index].m_RegionTax, index);
+				index++;
+			}
+		}
+	}
+
 	virtual void Render() override
 	{
 		Map* maps = m_EntityManager->GetComponentArray<Map>();
@@ -32,7 +47,7 @@ struct MapSystem : public System
 				{
 					sf::Vector2 resolution = Window::GetWindow()->getSize();
 					maps[entity].m_LandSprite.setTexture(maps[entity].m_LandTexture);
-					maps[entity].m_LandSprite.setTextureRect({ 0,0,32,32 });
+					maps[entity].m_LandSprite.setTextureRect({ 0, 0, 32, 32 });
 					maps[entity].m_LandSprite.setColor(region.m_HighlightColor);
 					float spriteWidth = maps[entity].m_LandSprite.getLocalBounds().width;
 					float spriteHeight = maps[entity].m_LandSprite.getLocalBounds().height;

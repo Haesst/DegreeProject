@@ -3,13 +3,12 @@
 #include "Window.h"
 #include "Time.h"
 
-InputHandler::InputHandler(){}
-
-InputHandler::~InputHandler(){}
-
 bool InputHandler::m_LeftMouseClicked = false;
 bool InputHandler::m_RightMouseClicked = false;
+bool InputHandler::m_LeftMouseReleased = false;
+bool InputHandler::m_RightMouseReleased = false;
 bool InputHandler::m_MouseScrollWheelChanged = false;
+bool InputHandler::m_PlayerSelected = false;
 int InputHandler::m_MouseScrollDirection = 0;
 const float InputHandler::MAX_ZOOM = 1000.0f;
 const float InputHandler::MIN_ZOOM = 100.0f;
@@ -19,6 +18,8 @@ Vector2D InputHandler::m_MousePosition = Vector2D(0.0f, 0.0f);
 
 void InputHandler::HandleInputEvents()
 {
+	m_RightMouseReleased = false;
+	m_LeftMouseReleased = false;
 	sf::RenderWindow* window = Window::GetWindow();
 	sf::View view = window->getView();
 	sf::Event event;
@@ -33,7 +34,7 @@ void InputHandler::HandleInputEvents()
 			}
 			case sf::Event::KeyPressed:
 			{
-				if (event.key.code == sf::Keyboard::W)
+				if (event.key.code == sf::Keyboard::W || event.key.code == sf::Keyboard::Up)
 				{
 					if (view.getCenter().y > sf::VideoMode::getDesktopMode().height * 0.1f)
 					{
@@ -41,7 +42,7 @@ void InputHandler::HandleInputEvents()
 						window->setView(view);
 					}
 				}
-				if (event.key.code == sf::Keyboard::A)
+				if (event.key.code == sf::Keyboard::A || event.key.code == sf::Keyboard::Left)
 				{
 					if (view.getCenter().x > sf::VideoMode::getDesktopMode().width * 0.1f)
 					{
@@ -49,7 +50,7 @@ void InputHandler::HandleInputEvents()
 						window->setView(view);
 					}
 				}
-				if (event.key.code == sf::Keyboard::S)
+				if (event.key.code == sf::Keyboard::S || event.key.code == sf::Keyboard::Down)
 				{
 					if (view.getCenter().y < sf::VideoMode::getDesktopMode().height * 0.9f)
 					{
@@ -57,7 +58,7 @@ void InputHandler::HandleInputEvents()
 						window->setView(view);
 					}
 				}
-				if (event.key.code == sf::Keyboard::D)
+				if (event.key.code == sf::Keyboard::D || event.key.code == sf::Keyboard::Right)
 				{
 					if (view.getCenter().x < sf::VideoMode::getDesktopMode().width * 0.9f)
 					{
@@ -129,10 +130,12 @@ void InputHandler::HandleInputEvents()
 				if (event.key.code == sf::Mouse::Left)
 				{
 					m_LeftMouseClicked = false;
+					m_LeftMouseReleased = true;
 				}
 				if (event.key.code == sf::Mouse::Right)
 				{
 					m_RightMouseClicked = false;
+					m_RightMouseReleased = true;
 				}
 				if (event.key.code == sf::Mouse::Middle)
 				{
@@ -174,7 +177,9 @@ void InputHandler::HandleInputEvents()
 				break;
 			}
 			default:
+			{
 				break;
+			}
 		}
 	}
 }
@@ -189,14 +194,19 @@ bool InputHandler::GetRightMouseClicked()
 	return m_RightMouseClicked;
 }
 
+bool InputHandler::GetLeftMouseReleased()
+{
+	return m_LeftMouseReleased;
+}
+
+bool InputHandler::GetRightMouseReleased()
+{
+	return m_RightMouseReleased;
+}
+
 bool InputHandler::GetMouseScrollWheelChanged()
 {
 	return m_MouseScrollWheelChanged;
-}
-
-void InputHandler::SetMouseScrollWheelChanged(bool changed)
-{
-	m_MouseScrollWheelChanged = changed;
 }
 
 Vector2D InputHandler::GetMousePosition()
@@ -207,4 +217,14 @@ Vector2D InputHandler::GetMousePosition()
 int InputHandler::GetMouseScrollDirection()
 {
 	return m_MouseScrollDirection;
+}
+
+bool InputHandler::GetPlayerSelected()
+{
+	return m_PlayerSelected;
+}
+
+void InputHandler::SetPlayerSelected(bool selected)
+{
+	m_PlayerSelected = selected;
 }

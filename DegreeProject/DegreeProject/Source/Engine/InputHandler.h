@@ -5,20 +5,23 @@
 class InputHandler
 {
 public:
-	InputHandler();
-	~InputHandler();
 	static void HandleInputEvents();
 	static bool GetLeftMouseClicked();
 	static bool GetRightMouseClicked();
+	static bool GetLeftMouseReleased();
+	static bool GetRightMouseReleased();
 	static bool GetMouseScrollWheelChanged();
-	static void SetMouseScrollWheelChanged(bool changed);
 	static Vector2D GetMousePosition();
 	static int GetMouseScrollDirection();
-protected:
+	static bool GetPlayerSelected();
+	static void SetPlayerSelected(bool selected);
 private:
 	static bool m_LeftMouseClicked;
 	static bool m_RightMouseClicked;
+	static bool m_LeftMouseReleased;
+	static bool m_RightMouseReleased;
 	static bool m_MouseScrollWheelChanged;
+	static bool m_PlayerSelected;
 	static Vector2D m_MousePosition;
 	static int m_MouseScrollDirection;
 	static const float MAX_ZOOM;

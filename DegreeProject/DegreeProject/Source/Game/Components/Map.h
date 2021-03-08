@@ -17,6 +17,8 @@ public:
 	sf::Color m_HighlightColor = sf::Color::White;
 	char m_MapChar = '1';
 	int m_RegionId = INT_MAX;
+	unsigned int m_RegionTax = 0;
+	std::string m_RegionName = "";
 	MapRegion() {};
 	~MapRegion() { m_MapSquares.clear(); }
 };
@@ -102,6 +104,8 @@ struct Map : public Component
 			region.m_HighlightColor = GetColor(element["color"].get<std::string>());
 			std::string mapCharString = element["mapchar"].get<std::string>();
 			region.m_RegionId = element["id"].get<int>();
+			region.m_RegionTax = element["tax"].get<unsigned int>();
+			region.m_RegionName = element["name"].get<std::string>();
 
 			if (mapCharString.size() > 0)
 			{

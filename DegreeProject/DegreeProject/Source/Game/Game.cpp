@@ -3,8 +3,9 @@
 #include "Engine/Window.h"
 #include "Engine/Time.h"
 #include "Engine/InputHandler.h"
+#include "Game/MapInfo.h"
 #include "ECS/EntityManager.h"
-#include "ECS/Components/CharacterComponent.h"
+#include "Game/Systems/CharacterSystem.h"
 #include "Game/MapDrawer.h"
 #include "Game/HotReloader.h"
 #include "Game/Components/MovingSprite.h"
@@ -14,6 +15,7 @@
 #include "Game/Systems/ECSExampleSystem.h"
 #include "Game/Systems/SpriteRenderSystem.h"
 #include "Game/Systems/MapSystem.h"
+#include "Game/Systems/UIWindowSystem.h"
 
 Game::~Game()
 {
@@ -28,6 +30,7 @@ void Game::Init()
 	InitAssets();
 	InitMap();
 	InitSystems();
+	MapInfo::Initialization(17);
 	AddEntitys();
 }
 
@@ -57,7 +60,7 @@ void Game::Run()
 
 void Game::InitWindow()
 {
-	Window::Init(sf::VideoMode(m_Resolution.x, m_Resolution.y), m_GameTitle, sf::Style::Default);
+	Window::Init(sf::VideoMode(m_Resolution.x, m_Resolution.y), m_GameTitle, sf::Style::Fullscreen);
 }
 
 void Game::InitHotReloading()
@@ -91,11 +94,18 @@ void Game::InitSystems()
 	entityManager->RegisterSystem<ECSExampleSystem>();
 	entityManager->RegisterSystem<SpriteRenderSystem>();
 	entityManager->RegisterSystem<PlayerSystem>();
+	entityManager->RegisterSystem<UIWindowSystem>();
 }
 
 void Game::AddEntitys()
 {
 	EntityManager* entityManager = &EntityManager::Get();
+
+	//Create map
+	EntityID map = entityManager->AddNewEntity();
+	entityManager->AddComponent<Map>(map, m_AssetHandler->GetTextureAtPath("Assets/Graphics/TileSet.png"));
+	Map* mapComp = entityManager->GetComponentArray<Map>();
+
 	// Create an entity
 	EntityID dot1 = entityManager->AddNewEntity();
 	// Add necessary components
@@ -123,12 +133,23 @@ void Game::AddEntitys()
 
 	//Create A Character
 	EntityID character = entityManager->AddNewEntity();
-	std::vector<int> id{1, 2, 3, 4, 5,6, 7, 8, 9, 10};
+	std::vector<int> id{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 	entityManager->AddComponent<CharacterComponent>(character, Title::King, "Italia", "Mussolini", id, 100, 10, false, sf::Color::Red);
 	Transform* characterTransform = &entityManager->GetComponent<Transform>(character);
 	characterTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.6f, m_Window->GetWindow()->getSize().y * 0.4f };
 	CharacterComponent* characterComponent = &entityManager->GetComponent<CharacterComponent>(character);
 	entityManager->AddComponent<SpriteRenderer>(character, "Assets/Graphics/Test.jpg", 32, 32, m_AssetHandler);
+	CharacterComponent* characters = entityManager->GetComponentArray<CharacterComponent>();
+	for (auto region : characters[character].m_OwnedRegionIDs)
+	{
+		mapComp[map].SetRegionColor(region, characters[character].m_RegionColor);
+	}
+
+	//Create UI window
+	EntityID windowUI = entityManager->AddNewEntity();
+	entityManager->AddComponent<UIWindow>(windowUI);
+	Transform* windowUITransform = &entityManager->GetComponent<Transform>(windowUI);
+	UIWindow* windowUIRectangle = &entityManager->GetComponent<UIWindow>(windowUI);
 
 	// Get transform and moving circle of entity
 	Transform* dot2Transform = &entityManager->GetComponent<Transform>(dot2);
@@ -136,14 +157,4 @@ void Game::AddEntitys()
 	dot2Transform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.6f };
 	dot2Circle->m_Direction = { 0.0f, 1.0f };
 	dot2Circle->m_Color = sf::Color::Yellow;
-
-	EntityID map = entityManager->AddNewEntity();
-	entityManager->AddComponent<Map>(map, m_AssetHandler->GetTextureAtPath("Assets/Graphics/TileSet.png"));
-	Map* mapComp = entityManager->GetComponentArray<Map>();
-	CharacterComponent* characters = entityManager->GetComponentArray<CharacterComponent>();
-
-	for (auto region : characters[character].m_OwnedRegionIDs)
-	{
-		mapComp[map].SetRegionColor(region, characters[character].m_RegionColor);
-	}
 }

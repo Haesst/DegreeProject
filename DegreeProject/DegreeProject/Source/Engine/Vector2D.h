@@ -143,11 +143,9 @@ struct Vec2D
 		}
 	}
 
-	inline bool NearlyEqual(const Vec2D<T>& v2, float tolerance)
+	inline bool NearlyEqual(const Vec2D<T>& v2, float tolerance = 0.0f, float centerOffsetX = 0.0f, float centerOffsetY = 0.0f)
 	{
-		float length = sqrtf(x * x + y * y);
-		float length2 = sqrtf(v2.x * v2.x + v2.y * v2.y);
-		if (abs(length - length2) <= tolerance)
+		if (abs(x + centerOffsetX - v2.x) <= tolerance && abs(y + centerOffsetY - v2.y) <= tolerance)
 		{
 			return true;
 		}
