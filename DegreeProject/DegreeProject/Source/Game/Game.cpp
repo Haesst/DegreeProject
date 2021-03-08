@@ -16,6 +16,7 @@
 #include "Game/Systems/SpriteRenderSystem.h"
 #include "Game/Systems/MapSystem.h"
 #include "Game/Systems/UIWindowSystem.h"
+#include "Game/Systems/UITextSystem.h"
 
 Game::~Game()
 {
@@ -39,6 +40,7 @@ void Game::Run()
 	sf::RenderWindow* internalWindow = m_Window->GetWindow();
 	sf::View view(sf::Vector2f(m_Resolution.x * 0.5f, m_Resolution.y * 0.5f), sf::Vector2f(m_Resolution.x, m_Resolution.y));
 	internalWindow->setView(view);
+
 	while (internalWindow->isOpen())
 	{
 		// Time
@@ -95,6 +97,7 @@ void Game::InitSystems()
 	entityManager->RegisterSystem<SpriteRenderSystem>();
 	entityManager->RegisterSystem<PlayerSystem>();
 	entityManager->RegisterSystem<UIWindowSystem>();
+	entityManager->RegisterSystem<UITextSystem>();
 }
 
 void Game::AddEntitys()
@@ -128,12 +131,10 @@ void Game::AddEntitys()
 	Transform* playerDotTransform = &entityManager->GetComponent<Transform>(playerDot);
 	Player* playerDotCircle = &entityManager->GetComponent<Player>(playerDot);
 	playerDotTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.6f };
-	playerDotCircle->m_Direction = { 0.0f, 0.0f };
-	playerDotCircle->m_FillColor = sf::Color::Black;
 
 	//Create A Character
 	EntityID character = entityManager->AddNewEntity();
-	std::vector<int> id{1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
+	std::vector<int> id{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
 	entityManager->AddComponent<CharacterComponent>(character, Title::King, "Italia", "Mussolini", id, 100, 10, false, sf::Color::Red);
 	Transform* characterTransform = &entityManager->GetComponent<Transform>(character);
 	characterTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.6f, m_Window->GetWindow()->getSize().y * 0.4f };
@@ -148,8 +149,14 @@ void Game::AddEntitys()
 	//Create UI window
 	EntityID windowUI = entityManager->AddNewEntity();
 	entityManager->AddComponent<UIWindow>(windowUI, m_AssetHandler->LoadFontFromFileToText("Assets/Fonts/TestFont.ttf"));
-	Transform* windowUITransform = &entityManager->GetComponent<Transform>(windowUI);
-	UIWindow* windowUIRectangle = &entityManager->GetComponent<UIWindow>(windowUI);
+
+	//Create UI Text
+	EntityID textUI = entityManager->AddNewEntity();
+	entityManager->AddComponent<UIText>(textUI, m_AssetHandler->LoadFontFromFileToText("Assets/Fonts/TestFont.ttf"), "Kingdom of Bonito", 1150.0f, 475.0f);
+
+	//Create second UI Text
+	EntityID textUI2 = entityManager->AddNewEntity();
+	entityManager->AddComponent<UIText>(textUI2, m_AssetHandler->LoadFontFromFileToText("Assets/Fonts/TestFont.ttf"), "Republic of Malo", 700.0f, 250.0f, 50, 30.0f, sf::Color::Green, sf::Color::Black, 1.0f, sf::Text::Italic);
 
 	// Get transform and moving circle of entity
 	Transform* dot2Transform = &entityManager->GetComponent<Transform>(dot2);

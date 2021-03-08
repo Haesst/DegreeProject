@@ -12,6 +12,7 @@ public:
 	static bool GetRightMouseReleased();
 	static bool GetMouseScrollWheelChanged();
 	static Vector2D GetMousePosition();
+	static Vector2DInt GetMouseScreenPosition();
 	static int GetMouseScrollDirection();
 	static bool GetPlayerSelected();
 	static void SetPlayerSelected(bool selected);
@@ -23,6 +24,7 @@ private:
 	static bool m_MouseScrollWheelChanged;
 	static bool m_PlayerSelected;
 	static Vector2D m_MousePosition;
+	static Vector2DInt m_MouseScreenPosition;
 	static int m_MouseScrollDirection;
 	static const float MAX_ZOOM;
 	static const float MIN_ZOOM;

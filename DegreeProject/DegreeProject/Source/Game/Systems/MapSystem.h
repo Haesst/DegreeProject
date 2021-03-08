@@ -7,6 +7,7 @@
 #include "ECS/EntityManager.h"
 #include "ECS/Components/Transform.h"
 #include "Game/Components/Map.h"
+#include <iostream>
 
 struct MapSystem : public System
 {
@@ -31,6 +32,8 @@ struct MapSystem : public System
 			{
 				MapInfo::SetRegionName(maps[entity].m_Regions[index].m_RegionName, index);
 				MapInfo::SetRegionTax(maps[entity].m_Regions[index].m_RegionTax, index);
+				MapInfo::SetOwnerName(std::to_string(maps[entity].m_Regions[index].m_RegionId), index);
+				MapInfo::SetRegionPositions(maps[entity].m_Regions[index].m_MapSquares, index);
 				index++;
 			}
 		}

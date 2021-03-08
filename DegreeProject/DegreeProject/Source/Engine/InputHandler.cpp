@@ -15,6 +15,7 @@ const float InputHandler::MIN_ZOOM = 100.0f;
 const float InputHandler::MOVE_SPEED = 2500.0f;
 const float InputHandler::ZOOM_SPEED = 7.5f;
 Vector2D InputHandler::m_MousePosition = Vector2D(0.0f, 0.0f);
+Vector2DInt InputHandler::m_MouseScreenPosition = Vector2DInt(0, 0);
 
 void InputHandler::HandleInputEvents()
 {
@@ -72,8 +73,8 @@ void InputHandler::HandleInputEvents()
 				}
 				if (event.key.code == sf::Keyboard::Space)
 				{
-					std::cout << "SpacePressed" << std::endl;
-					std::cout << "PauseGame" << std::endl;
+					//std::cout << "SpacePressed" << std::endl;
+					//std::cout << "PauseGame" << std::endl;
 				}
 				break;
 			}
@@ -83,12 +84,12 @@ void InputHandler::HandleInputEvents()
 			}
 			case sf::Event::GainedFocus:
 			{
-				std::cout << "ResumeGame" << std::endl;
+				//std::cout << "ResumeGame" << std::endl;
 				break;
 			}
 			case sf::Event::LostFocus:
 			{
-				std::cout << "PauseGame" << std::endl;
+				//std::cout << "PauseGame" << std::endl;
 				break;
 			}
 			case sf::Event::TextEntered:
@@ -103,16 +104,14 @@ void InputHandler::HandleInputEvents()
 				if (event.key.code == sf::Mouse::Left)
 				{
 					m_LeftMouseClicked = true;
-					sf::Vector2 worldPosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-					m_MousePosition.x = worldPosition.x;
-					m_MousePosition.y = worldPosition.y;
+					m_MouseScreenPosition = Vector2DInt(event.mouseButton.x, event.mouseButton.y);
+					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(m_MouseScreenPosition.x, m_MouseScreenPosition.y));
 				}
 				if (event.key.code == sf::Mouse::Right)
 				{
 					m_RightMouseClicked = true;
-					sf::Vector2 worldPosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-					m_MousePosition.x = worldPosition.x;
-					m_MousePosition.y = worldPosition.y;
+					m_MouseScreenPosition = Vector2DInt(event.mouseButton.x, event.mouseButton.y);
+					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(m_MouseScreenPosition.x, m_MouseScreenPosition.y));
 				}
 				if (event.key.code == sf::Mouse::Middle)
 				{
@@ -168,12 +167,12 @@ void InputHandler::HandleInputEvents()
 			}
 			case sf::Event::MouseEntered:
 			{
-				std::cout << "ResumeGame" << std::endl;
+				//std::cout << "ResumeGame" << std::endl;
 				break;
 			}
 			case sf::Event::MouseLeft:
 			{
-				std::cout << "PauseGame" << std::endl;
+				//std::cout << "PauseGame" << std::endl;
 				break;
 			}
 			default:
@@ -212,6 +211,11 @@ bool InputHandler::GetMouseScrollWheelChanged()
 Vector2D InputHandler::GetMousePosition()
 {
 	return m_MousePosition;
+}
+
+Vector2DInt InputHandler::GetMouseScreenPosition()
+{
+	return m_MouseScreenPosition;
 }
 
 int InputHandler::GetMouseScrollDirection()

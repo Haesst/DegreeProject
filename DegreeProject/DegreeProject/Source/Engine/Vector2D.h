@@ -18,7 +18,7 @@ struct Vec2D
 	{}
 
 	Vec2D(sf::Vector2f sfmlVec)
-		: x(sfmlVec.x), y(sfmlVec(y))
+		: x(sfmlVec.x), y(sfmlVec.y)
 	{}
 
 	inline Vec2D<T> operator+(const Vec2D<T>& v2) const
@@ -117,6 +117,11 @@ struct Vec2D
 			y =	y / length;
 		}
 		return *this;
+	}
+
+	inline float GetLength()
+	{
+		return float length = sqrtf(x * x + y * y);
 	}
 
 	inline bool operator==(const Vec2D<T>& v2)
