@@ -25,7 +25,10 @@ void HotReloader::OnFileChange(std::string path, FileStatus fileStatus)
 
 	if (m_Actions.find(path) != m_Actions.end())
 	{
-		m_Actions[path](path, fileStatus);
+		for (int i = 0; i < m_Actions[path].size(); ++i)
+		{
+			m_Actions[path][i](path, fileStatus);
+		}
 	}
 	else
 	{
@@ -33,9 +36,16 @@ void HotReloader::OnFileChange(std::string path, FileStatus fileStatus)
 	}
 }
 
-void HotReloader::SubscribeToFileChange(std::string path, const std::function<void(std::string, FileStatus)>& action)
+void HotReloader::SubscribeToFileChange(std::string path, const std::function<void(std::string, FileStatus)> action)
 {
-	m_Actions.insert(std::pair<std::string, const std::function<void(std::string, FileStatus)>>(path, action));
+	if (m_Actions.find(path) != m_Actions.end())
+	{
+		m_Actions[path].push_back(action);
+	}
+	else
+	{
+		m_Actions.insert(std::pair(path, std::vector{ action }));
+	}
 }
 
 HotReloader* HotReloader::Get()

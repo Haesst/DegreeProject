@@ -12,7 +12,7 @@ class HotReloader
 {
 private:
 	FileWatcher* m_FileWatcher;
-	std::map<std::string, const std::function<void(std::string, FileStatus)>> m_Actions;
+	std::map<std::string, std::vector<std::function<void(std::string, FileStatus)>>> m_Actions;
 	static HotReloader* m_Instance;
 	static const char* ASSET_DIRECTORY;
 
@@ -25,5 +25,5 @@ public:
 
 	void OnFileChange(std::string path, FileStatus fileStatus);
 
-	void SubscribeToFileChange(std::string path, const std::function<void(std::string, FileStatus)>& action);
+	void SubscribeToFileChange(std::string path, const std::function<void(std::string, FileStatus)> action);
 };
