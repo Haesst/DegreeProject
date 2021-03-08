@@ -47,4 +47,25 @@ struct CharacterSystem : System
 			
 		}
 	}
+
+	void ConquerRegion(int regionId, int conqueringEntity)
+	{
+		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+		characters[conqueringEntity].m_OwnedRegionIDs.push_back(regionId);
+	}
+
+	void loseRegion(int regionId, int losingEntity)
+	{
+		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+		auto& regions = characters[losingEntity].m_OwnedRegionIDs;
+
+		for (int i = 0; i < regions.size; i++)
+		{
+			if (regions[i] == regionId)
+			{
+				regions.erase(regions.begin() + i);
+				return;
+			}
+		} 
+	}
 };
