@@ -59,7 +59,7 @@ struct CharacterSystem : System
 		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 		auto& regions = characters[losingEntity].m_OwnedRegionIDs;
 
-		for (int i = 0; i < regions.size; i++)
+		for (int i = 0; i < regions.size(); i++)
 		{
 			if (regions[i] == regionId)
 			{

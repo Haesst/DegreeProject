@@ -54,7 +54,7 @@ struct ArmySizeConsideration : public Consideration
 		if (armySizeDiff > 0)
 		{
 			//y = x^2
-			return std::clamp(std::pow(percentDiff, 2), 0.0f, 1.0f);
+			return std::clamp(std::pow(percentDiff, 2.0f), 0.0f, 1.0f);
 		}
 
 		else
@@ -100,7 +100,7 @@ struct GoldConsideration : public Consideration
 		if (goldDiff > 0)
 		{
 			//y = x^2
-			return std::clamp(std::pow(percentDiff, 2), 0.0f, 1.0f);
+			return std::clamp(std::pow(percentDiff, 2.0f), 0.0f, 1.0f);
 		}
 
 		else
