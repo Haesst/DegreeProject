@@ -70,6 +70,11 @@ std::vector<Vector2DInt> MapInfo::GetRegionPositions(unsigned int index)
 	return m_RegionPositions[index];
 }
 
+std::vector<std::vector<Vector2DInt> >MapInfo::GetRegions()
+{
+	return m_RegionPositions;
+}
+
 void MapInfo::SetRegionPositions(std::vector<Vector2DInt> regionPositions, unsigned int index)
 {
 	m_RegionPositions[index] = regionPositions;

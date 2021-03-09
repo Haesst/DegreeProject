@@ -6,7 +6,6 @@
 #include "Engine/Window.h"
 #include "ECS/Components/Transform.h"
 #include "Game/Components/UIText.h";
-#include "Engine/InputHandler.h"
 
 struct UITextSystem : System
 {
@@ -33,11 +32,11 @@ struct UITextSystem : System
 
 		for (auto entity : m_Entities)
 		{
-			//AdjustText(&UITexts[entity]);
+			AdjustText(&UITexts[entity]);
 			UITexts[entity].m_CountryNameText.setFont(UITexts[entity].m_Font);
 			UITexts[entity].m_CountryNameText.setCharacterSize(UITexts[entity].m_CharacterSize);
 			UITexts[entity].m_CountryNameText.setStyle(UITexts[entity].m_Style);
-			UITexts[entity].m_CountryNameText.setString(UITexts[entity].m_CountryName);
+			UITexts[entity].m_CountryNameText.setString(std::to_string(UITexts[entity].m_OwnedRegions[0] + 1) + ": " + UITexts[entity].m_CountryName);
 			UITexts[entity].m_CountryNameText.setPosition(UITexts[entity].m_PositionX, UITexts[entity].m_PositionY);
 			UITexts[entity].m_CountryNameText.setFillColor(UITexts[entity].m_FillColor);
 			UITexts[entity].m_CountryNameText.setOutlineColor(UITexts[entity].m_OutlineColor);
@@ -58,9 +57,12 @@ struct UITextSystem : System
 
 	void AdjustText(UIText* UIText)
 	{
-		sf::Vector2 resolution = m_Window->getSize();
-		Vector2DInt middle = MapInfo::GetRegionPositions(0)[MapInfo::GetRegionPositions(0).size() / 2];
-		UIText->m_PositionX = resolution.x * 0.1f + (middle.x + (-10)) * 32 * 0.6f;
-		UIText->m_PositionY = middle.y + 7 * 32 * 0.6f;
+		std::vector<Vector2DInt> firstRegion = MapInfo::GetRegionPositions(UIText->m_OwnedRegions.front());
+		std::vector<Vector2DInt> lastRegion = MapInfo::GetRegionPositions(UIText->m_OwnedRegions.back());
+		Vector2DInt firstPosition = firstRegion.front();
+		Vector2DInt lastPosition = lastRegion.back();
+		Vector2DInt middlePosition = (firstPosition + lastPosition) / 2;
+		UIText->m_PositionX = middlePosition.x;
+		UIText->m_PositionY = middlePosition.y;
 	}
 };

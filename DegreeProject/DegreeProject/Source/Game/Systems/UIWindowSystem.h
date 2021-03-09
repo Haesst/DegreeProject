@@ -6,13 +6,15 @@
 #include "Engine/Window.h"
 #include "ECS/Components/Transform.h"
 #include "Game/Components/UIWindow.h";
+#include "Game/Components/UISpriteRenderer.h";
 #include "Engine/InputHandler.h"
 
 struct UIWindowSystem : System
 {
 	EntityManager* m_EntityManager = nullptr;
-	sf::RenderWindow* m_Window;
-
+	sf::RenderWindow* m_Window = nullptr;
+	AssetHandler* m_AssetHandler= nullptr;
+	sf::RectangleShape rect;
 	// Constructor, Runs when the system is initialized
 	// Do any kind of init here but remember to register
 	// the systems component signature. IE: add every component
@@ -22,6 +24,12 @@ struct UIWindowSystem : System
 		AddComponentSignature<UIWindow>();
 		m_EntityManager = &EntityManager::Get();
 		m_Window = Window::GetWindow();
+		m_AssetHandler = new AssetHandler();
+	}
+
+	~UIWindowSystem()
+	{
+		delete m_AssetHandler;
 	}
 
 	// Update gets called every frame and loops through every entity that has the signature that
@@ -33,8 +41,8 @@ struct UIWindowSystem : System
 
 		for (auto entity : m_Entities)
 		{
-			SetOptions(&transforms[entity], &UIWindows[entity]);
-			OpenWindow(&transforms[entity], &UIWindows[entity]);
+			SetOptions(&UIWindows[entity]);
+			OpenWindow(&UIWindows[entity]);
 			UIWindows[entity].m_Shape.setPosition(10.0f, 10.0f);
 			UIWindows[entity].m_Shape.setFillColor(UIWindows[entity].m_FillColor);
 			UIWindows[entity].m_Shape.setOutlineColor(UIWindows[entity].m_OutlineColor);
@@ -77,24 +85,56 @@ struct UIWindowSystem : System
 		}
 	}
 
-	void SetOptions(Transform* transform, UIWindow* UIWindow)
+	void SetOptions(UIWindow* UIWindow)
 	{
 		if (InputHandler::GetRightMouseClicked() == true && InputHandler::GetPlayerSelected() == false && !UIWindow->m_Visible)
 		{
-			unsigned int random = std::rand() % (16 + 1); 
 			Vector2D mousePosition = InputHandler::GetMousePosition();
-			unsigned int index = MapInfo::GetRegionIndex(Vector2DInt(mousePosition.x, mousePosition.y));
-			UIWindow->m_RegionTax = MapInfo::GetRegionTax(random);
-			UIWindow->m_RegionName = MapInfo::GetRegionName(random);
-			UIWindow->m_OwnerName = MapInfo::GetOwnerName(random);
+			rect.setSize(sf::Vector2f(32.0f, 32.0f));
+			rect.setPosition(mousePosition.x - rect.getSize().x * 0.5f, mousePosition.y - rect.getSize().x * 0.5f);
+			std::vector<std::vector<Vector2DInt> > regions = MapInfo::GetRegions();
+			unsigned int regionIndex = 0;
+			for each (std::vector<Vector2DInt> region in regions)
+			{
+				for each (Vector2DInt position in region)
+				{
+					if (rect.getGlobalBounds().contains(position.x, position.y))
+					{
+						UIWindow->m_RegionTax = MapInfo::GetRegionTax(regionIndex);
+						UIWindow->m_RegionName = MapInfo::GetRegionName(regionIndex);
+						UIWindow->m_OwnerName = MapInfo::GetOwnerName(regionIndex);
+						UIWindow->m_Open = true;
+						break;
+					}
+					else
+					{
+						UIWindow->m_Open = false;
+					}
+				}
+				if (UIWindow->m_Open == true)
+				{
+					break;
+				}
+				regionIndex++;
+			}
 		}
 	}
 
-	void OpenWindow(Transform* transform, UIWindow* UIWindow)
+	void OpenWindow(UIWindow* UIWindow)
 	{
-		if (InputHandler::GetRightMouseReleased() == true && InputHandler::GetPlayerSelected() == false)
+		if (InputHandler::GetRightMouseReleased() == true && InputHandler::GetPlayerSelected() == false && UIWindow->m_Open == true)
 		{
 			UIWindow->m_Visible = !UIWindow->m_Visible;
+			if (UIWindow->m_Visible == true)
+			{
+				m_EntityManager->AddComponent<UISpriteRenderer>(UIWindow->GetID(), "Assets/Graphics/Unit.png", 64, 64, m_AssetHandler);
+				Transform* windowUIPortraitTransform = &m_EntityManager->GetComponent<Transform>(UIWindow->GetID());
+				windowUIPortraitTransform->m_Position = { UIWindow->m_SizeX * 0.1f, UIWindow->m_SizeY * 0.025f };
+			}
+			else
+			{
+				m_EntityManager->RemoveComponent<UISpriteRenderer>(UIWindow->GetID());
+			}
 		}
 	}
 };

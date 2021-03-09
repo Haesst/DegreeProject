@@ -26,16 +26,13 @@ const sf::Texture AssetHandler::LoadImageFromFile(const char* FilePath)
 	return Texture;
 }
 
-sf::Font AssetHandler::LoadFontFromFileToText(const char* FilePath)
+sf::Font AssetHandler::LoadFontFromFile(const char* FilePath)
 {
-	sf::Text Text;
 	sf::Font Font;
 
 	if (Font.loadFromFile(FilePath))
 	{
-		Text.setFont(Font);
 		return Font;
-		//return Text;
 	}
 
 	return Font;

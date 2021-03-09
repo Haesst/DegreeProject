@@ -13,7 +13,7 @@ public:
 
 	const sf::Texture LoadImageFromFile(const char* FilePath);
 
-	sf::Font LoadFontFromFileToText(const char* FilePath);
+	sf::Font LoadFontFromFile(const char* FilePath);
 
 	sf::Sound LoadAudioFile(const char* FilePath, sf::SoundBuffer& Buffer);
 

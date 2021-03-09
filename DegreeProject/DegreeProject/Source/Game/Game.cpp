@@ -1,5 +1,4 @@
 #include "Game.h"
-
 #include "Engine/Window.h"
 #include "Engine/Time.h"
 #include "Engine/InputHandler.h"
@@ -18,6 +17,7 @@
 #include "Game/Systems/MapSystem.h"
 #include "Game/Systems/UIWindowSystem.h"
 #include "Game/Systems/UITextSystem.h"
+#include "Game/Systems/UISpriteRenderSystem.h"	
 #include <Game/Systems/AI/AI.h>
 
 Game::~Game()
@@ -96,11 +96,12 @@ void Game::InitSystems()
 {
 	EntityManager* entityManager = &EntityManager::Get();
 	entityManager->RegisterSystem<MapSystem>();
+	entityManager->RegisterSystem<UITextSystem>();
 	entityManager->RegisterSystem<ECSExampleSystem>();
 	entityManager->RegisterSystem<SpriteRenderSystem>();
 	entityManager->RegisterSystem<PlayerSystem>();
 	entityManager->RegisterSystem<UIWindowSystem>();
-	entityManager->RegisterSystem<UITextSystem>();
+	entityManager->RegisterSystem<UISpriteRenderSystem>();
 }
 
 void Game::AddEntitys()
@@ -137,39 +138,93 @@ void Game::AddEntitys()
 
 	//Create A Character
 	EntityID character = entityManager->AddNewEntity();
-	std::vector<int> id{ 0, 1, 2, 3};
-	entityManager->AddComponent<CharacterComponent>(character, Title::King, "Italia", "Mussolini", id, 100, 5, false, sf::Color::Red, 0);
-	Transform* characterTransform = &entityManager->GetComponent<Transform>(character);
+	std::vector<unsigned int> id{ 0, 1, 2, 3, 4 };
+	entityManager->AddComponent<CharacterComponent>(character, Title::King, "Kingom of Milano", "Erik", id, 100, 5, false, sf::Color::Red, 0);
 
-	characterTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.6f, m_Window->GetWindow()->getSize().y * 0.4f };
+	Transform* characterTransform = &entityManager->GetComponent<Transform>(character);
+	characterTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.3f, m_Window->GetWindow()->getSize().y * 0.2f };
 	CharacterComponent* characterComponent = &entityManager->GetComponent<CharacterComponent>(character);
 	entityManager->AddComponent<SpriteRenderer>(character, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
 	CharacterComponent* characters = entityManager->GetComponentArray<CharacterComponent>();
 
 	EntityID Char2 = entityManager->AddNewEntity();
-	std::vector<int> id2{ 4, 5, 6, 7, 8, 9 };
-	entityManager->AddComponent<CharacterComponent>(Char2, Title::Count, "Hello", "asdfasdf", id2, 100, 10, false, sf::Color::Green, 0);
+	std::vector<unsigned int> id2{ 5, 6, 7, 8, 9 };
+	entityManager->AddComponent<CharacterComponent>(Char2, Title::Count, "Roman Republic", "Robin", id2, 100, 10, false, sf::Color::Green, 0);
+
+	CharacterComponent* characterComponent2 = &entityManager->GetComponent<CharacterComponent>(Char2);
+	entityManager->AddComponent<SpriteRenderer>(Char2, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterTransform2 = &entityManager->GetComponent<Transform>(Char2);
+	characterTransform2->m_Position = { m_Window->GetWindow()->getSize().x * 0.4f, m_Window->GetWindow()->getSize().y * 0.3f };
+
 	entityManager->AddComponent<WarmindComponent>(Char2, 1, character);
-
 	entityManager->AddComponent<WarmindComponent>(character, 4, Char2);
-
 
 	for (auto region : characters[character].m_OwnedRegionIDs)
 	{
 		mapComp[map].SetRegionColor(region, characters[character].m_RegionColor);
 	}
+	for (auto region : characters[Char2].m_OwnedRegionIDs)
+	{
+		mapComp[map].SetRegionColor(region, characters[Char2].m_RegionColor);
+	}
+
+	sf::Font font = m_AssetHandler->LoadFontFromFile("Assets/Fonts/TestFont.ttf");
 
 	//Create UI window
 	EntityID windowUI = entityManager->AddNewEntity();
-	entityManager->AddComponent<UIWindow>(windowUI, m_AssetHandler->LoadFontFromFileToText("Assets/Fonts/TestFont.ttf"));
+	entityManager->AddComponent<UIWindow>(windowUI, font);
 
-	//Create UI Text
-	EntityID textUI = entityManager->AddNewEntity();
-	entityManager->AddComponent<UIText>(textUI, m_AssetHandler->LoadFontFromFileToText("Assets/Fonts/TestFont.ttf"), "Kingdom of Bonito", 1150.0f, 475.0f);
+	//Create UI texts
+	EntityID textUI0 = entityManager->AddNewEntity();
+	entityManager->AddComponent<UIText>(textUI0, font, characterComponent->m_KingdomName, characterComponent->m_OwnedRegionIDs);
 
-	//Create second UI Text
-	EntityID textUI2 = entityManager->AddNewEntity();
-	entityManager->AddComponent<UIText>(textUI2, m_AssetHandler->LoadFontFromFileToText("Assets/Fonts/TestFont.ttf"), "Republic of Malo", 700.0f, 250.0f, 50, 30.0f, sf::Color::Green, sf::Color::Black, 1.0f, sf::Text::Italic);
+	EntityID textUI1 = entityManager->AddNewEntity();
+	entityManager->AddComponent<UIText>(textUI1, font, characterComponent2->m_KingdomName, characterComponent2->m_OwnedRegionIDs);
+
+	//EntityID textUI2 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI2, font, "Kingdom of Three", std::vector<unsigned int> { 2 });
+
+	//EntityID textUI3 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI3, font, "Kingdom of Four", std::vector<unsigned int> { 3 });
+
+	//EntityID textUI4 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI4, font, "Republic of Five", std::vector<unsigned int> { 4 });
+
+	//EntityID textUI5 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI5, font, "Kingdom of Six", std::vector<unsigned int> { 5 });
+
+	//EntityID textUI6 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI6, font, "Kingdom of Seven", std::vector<unsigned int> { 6 });
+
+	//EntityID textUI7 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI7, font, "Kingdom of Eight", std::vector<unsigned int> { 7 });
+
+	//EntityID textUI8 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI8, font, "Kingdom of Nine", std::vector<unsigned int> { 8 });
+
+	//EntityID textUI9 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI9, font, "Kingdom of Ten", std::vector<unsigned int> { 9 });
+
+	//EntityID textUI10 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI10, font, "Kingdom of Eleven", std::vector<unsigned int> { 10 });
+
+	//EntityID textUI11 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI11, font, "Kingdom of Twelve", std::vector<unsigned int> { 11 });
+
+	//EntityID textUI12 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI12, font, "Kingdom of Thirteen", std::vector<unsigned int> { 12 });
+
+	//EntityID textUI13 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI13, font, "Republic of Fourteen", std::vector<unsigned int> { 13 });
+
+	//EntityID textUI14 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI14, font, "Kingdom of Fifteen", std::vector<unsigned int> { 14 });
+
+	//EntityID textUI15 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI15, font, "Kingdom of Sixteen", std::vector<unsigned int> { 15 });
+
+	//EntityID textUI16 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<UIText>(textUI16, font, "Kingdom of Seventeen", std::vector<unsigned int> { 16 });
 
 	// Get transform and moving circle of entity
 	Transform* dot2Transform = &entityManager->GetComponent<Transform>(dot2);

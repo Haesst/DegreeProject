@@ -16,6 +16,7 @@ public:
 	static std::vector<Vector2DInt> GetRegionPositions(unsigned int index);
 	static void SetRegionPositions(std::vector<Vector2DInt> regionPositions, unsigned int index);
 	static unsigned int GetRegionIndex(Vector2DInt position);
+	static std::vector<std::vector<Vector2DInt> > GetRegions();
 private:
 	static unsigned int m_NumberOfIDs;
 	static std::vector<unsigned int> m_RegionTax;

@@ -13,16 +13,18 @@ struct UIText : public Component
 	sf::Text m_CountryNameText;
 	sf::Font m_Font;
 	std::string m_CountryName = "";
-	int m_CharacterSize = 25;
+	int m_CharacterSize = 20;
 	sf::Text::Style m_Style = sf::Text::Regular;
 	float m_Rotation = 0.0f;
+	std::vector<unsigned int> m_OwnedRegions;
 
 	UIText(){}
 
-	UIText(sf::Font font, std::string countryName, float positionX, float positionY, unsigned int size = 25, float rotation = 0.0f, sf::Color fillColor = sf::Color::White, sf::Color outlineColor = sf::Color::Black, float outlineThickness = 1.0f, sf::Text::Style textStyle = sf::Text::Regular)
+	UIText(sf::Font font, std::string countryName, std::vector<unsigned int> ownedRegions, float positionX = 0.0f, float positionY = 0.0f, unsigned int size = 20, float rotation = 0.0f, sf::Color fillColor = sf::Color::White, sf::Color outlineColor = sf::Color::Black, float outlineThickness = 1.0f, sf::Text::Style textStyle = sf::Text::Regular)
 	{
 		m_Font = font;
 		m_CountryName = countryName;
+		m_OwnedRegions = ownedRegions;
 		m_PositionX = positionX;
 		m_PositionY = positionY;
 		m_CharacterSize = size;

@@ -17,7 +17,7 @@ struct CharacterComponent : public Component
 	Title m_CharacterTitle = Title::Baron;
 	const char* m_KingdomName = "";
 	const char* m_Name = "";
-	std::vector<int> m_OwnedRegionIDs;
+	std::vector<unsigned int> m_OwnedRegionIDs;
 	int m_CurrentGold = 0;
 	int m_CurrentArmySize = 0;
 	bool m_IsPlayerControlled = false;
@@ -27,7 +27,7 @@ struct CharacterComponent : public Component
 
 	CharacterComponent() {};
 
-	CharacterComponent(Title title, const char* kingdomName, const char* characterName, std::vector<int> regionIDs, int gold, int armySize, bool isPlayerControlled, sf::Color regionColor, int personalityIndex)
+	CharacterComponent(Title title, const char* kingdomName, const char* characterName, std::vector<unsigned int> regionIDs, int gold, int armySize, bool isPlayerControlled, sf::Color regionColor, int personalityIndex)
 	{
 		m_CharacterTitle = title;
 		m_KingdomName = kingdomName;

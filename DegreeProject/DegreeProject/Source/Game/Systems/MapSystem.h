@@ -27,16 +27,25 @@ struct MapSystem : public System
 	virtual void Update() override
 	{
 		Map* maps = m_EntityManager->GetComponentArray<Map>();
+		sf::Vector2 resolution = Window::GetWindow()->getSize();
 		for (auto& entity : m_Entities)
 		{
-			unsigned int index = 0;
+			unsigned int regionIndex = 0;
 			for (auto& region : maps[entity].m_Regions)
 			{
-				MapInfo::SetRegionName(maps[entity].m_Regions[index].m_RegionName, index);
-				MapInfo::SetRegionTax(maps[entity].m_Regions[index].m_RegionTax, index);
-				MapInfo::SetOwnerName(std::to_string(maps[entity].m_Regions[index].m_RegionId), index);
-				MapInfo::SetRegionPositions(maps[entity].m_Regions[index].m_MapSquares, index);
-				index++;
+				MapInfo::SetRegionName(maps[entity].m_Regions[regionIndex].m_RegionName, regionIndex);
+				MapInfo::SetRegionTax(maps[entity].m_Regions[regionIndex].m_RegionTax, regionIndex);
+				MapInfo::SetOwnerName(std::to_string(maps[entity].m_Regions[regionIndex].m_RegionId), regionIndex);
+				unsigned int squareIndex = 0;
+				for (auto& square : region.m_MapSquares)
+				{
+					float spritePositionX = resolution.x * 0.1f + (square.x + maps[entity].m_XOffset) * 32 * maps[entity].m_MapScale;
+					float spritePositionY = (square.y + maps[entity].m_YOffset) * 32 * maps[entity].m_MapScale;
+					maps[entity].m_Regions[regionIndex].m_RegionPositions[squareIndex] = Vector2DInt(spritePositionX, spritePositionY);
+					squareIndex++;
+				}
+				MapInfo::SetRegionPositions(maps[entity].m_Regions[regionIndex].m_RegionPositions, regionIndex);
+				regionIndex++;
 			}
 		}
 	}

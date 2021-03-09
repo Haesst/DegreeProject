@@ -124,6 +124,11 @@ struct Vec2D
 		return float length = sqrtf(x * x + y * y);
 	}
 
+	inline Vec2D Abs()
+	{
+		return Vec2D(abs(x), abs(y));
+	}
+
 	inline bool operator==(const Vec2D<T>& v2)
 	{
 		if (x == v2.x && y == v2.y)

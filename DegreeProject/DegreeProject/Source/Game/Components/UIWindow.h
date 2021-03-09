@@ -20,6 +20,7 @@ struct UIWindow : public Component
 	std::string m_OwnerName = "";
 	int m_CharacterSize = 50;
 	sf::Text::Style m_Style = sf::Text::Regular;
+	bool m_Open = false;
 
 	UIWindow(){}
 
