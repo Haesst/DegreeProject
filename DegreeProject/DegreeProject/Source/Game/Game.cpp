@@ -17,6 +17,7 @@
 #include "Game/Systems/MapSystem.h"
 #include "Game/Systems/UIWindowSystem.h"
 #include "Game/Systems/UITextSystem.h"
+#include <Game/Systems/AI/AI.h>
 
 Game::~Game()
 {
@@ -33,6 +34,7 @@ void Game::Init()
 	InitSystems();
 	MapInfo::Initialization(17);
 	AddEntitys();
+	InitAI();
 }
 
 void Game::Run()
@@ -135,7 +137,7 @@ void Game::AddEntitys()
 	//Create A Character
 	EntityID character = entityManager->AddNewEntity();
 	std::vector<int> id{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	entityManager->AddComponent<CharacterComponent>(character, Title::King, "Italia", "Mussolini", id, 100, 10, false, sf::Color::Red);
+	entityManager->AddComponent<CharacterComponent>(character, Title::King, "Italia", "Mussolini", id, 100, 10, false, sf::Color::Red, 0);
 	Transform* characterTransform = &entityManager->GetComponent<Transform>(character);
 	characterTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.6f, m_Window->GetWindow()->getSize().y * 0.4f };
 	CharacterComponent* characterComponent = &entityManager->GetComponent<CharacterComponent>(character);
@@ -164,4 +166,21 @@ void Game::AddEntitys()
 	dot2Transform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.6f };
 	dot2Circle->m_Direction = { 0.0f, 1.0f };
 	dot2Circle->m_Color = sf::Color::Yellow;
+}
+
+void Game::InitAI()
+{
+	EntityManager* entityManager = &EntityManager::Get();
+
+	// Create entity with AIManagerComoponent
+	EntityID managerEntity = entityManager->AddNewEntity();
+	entityManager->AddComponent<AIManagerComponent>(managerEntity);
+
+	// Register system
+	entityManager->RegisterSystem<AISystem>();
+	// Get system
+	AISystem* sys = (AISystem*)entityManager->GetSystem<AISystem>().get();
+
+	// Init system with manager component
+	sys->Init(&entityManager->GetComponent<AIManagerComponent>(managerEntity));
 }

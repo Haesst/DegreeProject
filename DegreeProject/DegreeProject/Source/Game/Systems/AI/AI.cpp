@@ -8,6 +8,8 @@ float AISystem::WarDecision(EntityID ent)
 	GoldConsideration goldConsideration;
 	ArmySizeConsideration armySizeConsideration;
 
+	Personality personality = m_ManagerComponent->m_Personalities[characterComponents->m_PersonalityIndex];
+
 	goldConsideration.SetContext(ent);
 	armySizeConsideration.SetContext(ent);
 

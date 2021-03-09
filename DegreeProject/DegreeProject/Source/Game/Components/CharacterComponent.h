@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "ECS/Component.h"
+#include "Game/Components/AIManagerComponent.h"
 
 enum class Title
 {
@@ -23,9 +24,11 @@ struct CharacterComponent : public Component
 	bool m_IsPlayerControlled = false;
 	sf::Color m_RegionColor = sf::Color::Black;
 
+	int m_PersonalityIndex = 0;
+
 	CharacterComponent() {};
 
-	CharacterComponent(Title title, const char* kingdomName, const char* characterName, std::vector<int> regionIDs, int gold, int armySize, bool isPlayerControlled, sf::Color regionColor)
+	CharacterComponent(Title title, const char* kingdomName, const char* characterName, std::vector<int> regionIDs, int gold, int armySize, bool isPlayerControlled, sf::Color regionColor, int personalityIndex)
 	{
 		m_CharacterTitle = title;
 		m_KingdomName = kingdomName;
@@ -35,6 +38,7 @@ struct CharacterComponent : public Component
 		m_CurrentArmySize = armySize;
 		m_IsPlayerControlled = isPlayerControlled;
 		m_RegionColor = regionColor;
+		m_PersonalityIndex = personalityIndex;
 	}
 };
 

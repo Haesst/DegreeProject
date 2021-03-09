@@ -43,5 +43,5 @@ private:
 
 	void InitSystems();
 	void AddEntitys();
-	void Test(FileStatus status);
+	void InitAI();
 };

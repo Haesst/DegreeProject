@@ -1,5 +1,5 @@
 #pragma once
-#include "ECS/Components/CharacterComponent.h"
+#include "Game/Components/CharacterComponent.h"
 #include <algorithm>
 
 struct Consideration

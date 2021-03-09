@@ -1,6 +1,6 @@
 #pragma once
-#include "../Component.h"
-#include <ECS\Components\CharacterComponent.h>
+#include "ECS/Component.h"
+#include "Game\Components\CharacterComponent.h"
 
 struct WarmindComponent : Component
 {

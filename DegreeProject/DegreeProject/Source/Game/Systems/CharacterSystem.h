@@ -7,7 +7,7 @@
 #include "Engine/Window.h"
 
 #include "ECS/Components/Transform.h"
-#include "ECS/Components/CharacterComponent.h";
+#include "Game/Components/CharacterComponent.h";
 
 struct CharacterSystem : System
 {

@@ -30,13 +30,13 @@
     <ClInclude Include="Source\ECS\ComponentList.h">
       <Filter>ECS</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Components\CharacterComponent.h">
+    <ClInclude Include="Source\Game\Components\CharacterComponent.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\Components\Transform.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\ECS\Components\Warmind.h">
+    <ClInclude Include="Source\Game\Components\Warmind.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\ECS\DOComponentList.h">
@@ -147,7 +147,7 @@
     <ClInclude Include="Source\Game\Systems\UIWindowSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="AIManagerComponent.h">
+    <ClInclude Include="Source\Game\Components\AIManagerComponent.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
   </ItemGroup>
