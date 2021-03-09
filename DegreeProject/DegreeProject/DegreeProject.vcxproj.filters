@@ -147,9 +147,6 @@
     <ClInclude Include="Source\Game\Systems\UIWindowSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Components\AIManagerComponent.h">
-      <Filter>ECS\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\AI\AIManager.h" />
   </ItemGroup>
   <ItemGroup>

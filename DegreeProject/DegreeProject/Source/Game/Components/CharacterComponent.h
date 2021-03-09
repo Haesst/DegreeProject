@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include "ECS/Component.h"
-#include "Game/Components/AIManagerComponent.h"
 
 enum class Title
 {
