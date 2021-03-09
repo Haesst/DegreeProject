@@ -1,3 +1,10 @@
 [
-  {}
+  {
+	  "debugName": "Warmonger",
+	  "declareWarMod": 0.2
+  },
+  {
+	  "debugName": "Pacifist",
+	  "declareWarMod": -0.2
+  }
 ]
