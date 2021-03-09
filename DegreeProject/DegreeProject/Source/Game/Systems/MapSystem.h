@@ -8,10 +8,12 @@
 #include "ECS/Components/Transform.h"
 #include "Game/Components/Map.h"
 #include <iostream>
+#include <mutex>
 
 struct MapSystem : public System
 {
 	EntityManager* m_EntityManager = nullptr;
+	//std::mutex m_RegionMutex;
 
 	MapSystem()
 	{
@@ -73,10 +75,10 @@ struct MapSystem : public System
 		Map* maps = m_EntityManager->GetComponentArray<Map>();
 		for (auto& entity : m_Entities)
 		{
-			mtx.lock();
+			//mtx->lock();
 			maps[entity].LoadAllRegions();
 			maps[entity].LoadMap();
-			mtx.unlock();
+			//mtx->unlock();
 		}
 	}
 };
