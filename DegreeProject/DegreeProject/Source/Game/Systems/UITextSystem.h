@@ -6,6 +6,9 @@
 #include "Engine/Window.h"
 #include "ECS/Components/Transform.h"
 #include "Game/Components/UIText.h";
+#define _USE_MATH_DEFINES
+#include <math.h>
+
 
 struct UITextSystem : System
 {
@@ -36,7 +39,7 @@ struct UITextSystem : System
 			UITexts[entity].m_CountryNameText.setFont(UITexts[entity].m_Font);
 			UITexts[entity].m_CountryNameText.setCharacterSize(UITexts[entity].m_CharacterSize);
 			UITexts[entity].m_CountryNameText.setStyle(UITexts[entity].m_Style);
-			UITexts[entity].m_CountryNameText.setString(std::to_string(UITexts[entity].m_OwnedRegions[0] + 1) + ": " + UITexts[entity].m_CountryName);
+			UITexts[entity].m_CountryNameText.setString(UITexts[entity].m_CountryName);
 			UITexts[entity].m_CountryNameText.setPosition(UITexts[entity].m_PositionX, UITexts[entity].m_PositionY);
 			UITexts[entity].m_CountryNameText.setFillColor(UITexts[entity].m_FillColor);
 			UITexts[entity].m_CountryNameText.setOutlineColor(UITexts[entity].m_OutlineColor);
@@ -61,8 +64,34 @@ struct UITextSystem : System
 		std::vector<Vector2DInt> lastRegion = MapInfo::GetRegionPositions(UIText->m_OwnedRegions.back());
 		Vector2DInt firstPosition = firstRegion.front();
 		Vector2DInt lastPosition = lastRegion.back();
+		std::vector<std::vector<Vector2DInt> > regions = MapInfo::GetRegions();
+		unsigned int regionIndex = 0;
+		for each (std::vector<Vector2DInt> region in regions)
+		{
+			for each (unsigned int index in UIText->m_OwnedRegions)
+			{
+				if (index == regionIndex)
+				{
+					for each (Vector2DInt position in region)
+					{
+						if (position.x < firstPosition.x)
+						{
+							firstPosition.x = position.x;
+						}
+						if (position.x > lastPosition.x)
+						{
+							lastPosition.x = position.x;
+						}
+					}
+				}
+			}
+			regionIndex++;
+		}
 		Vector2DInt middlePosition = (firstPosition + lastPosition) / 2;
-		UIText->m_PositionX = middlePosition.x;
-		UIText->m_PositionY = middlePosition.y;
+		Vector2DInt diagonal = lastPosition - firstPosition;
+		UIText->m_CharacterSize = (unsigned int)(diagonal.y + diagonal.x) * 0.1f;
+		UIText->m_PositionX = middlePosition.x - UIText->m_CharacterSize * 2;
+		UIText->m_PositionY = middlePosition.y - UIText->m_CharacterSize;
+		UIText->m_Rotation = std::atan2f((float)diagonal.y, (float)diagonal.x) * 180.0f / (float)M_PI;
 	}
 };

@@ -98,8 +98,8 @@ void Game::InitSystems()
 	entityManager->RegisterSystem<MapSystem>();
 	entityManager->RegisterSystem<UITextSystem>();
 	entityManager->RegisterSystem<ECSExampleSystem>();
-	entityManager->RegisterSystem<SpriteRenderSystem>();
 	entityManager->RegisterSystem<PlayerSystem>();
+	entityManager->RegisterSystem<SpriteRenderSystem>();
 	entityManager->RegisterSystem<UIWindowSystem>();
 	entityManager->RegisterSystem<UISpriteRenderSystem>();
 }
@@ -113,59 +113,102 @@ void Game::AddEntitys()
 	entityManager->AddComponent<Map>(map, m_AssetHandler->GetTextureAtPath("Assets/Graphics/TileSet.png"));
 	Map* mapComp = entityManager->GetComponentArray<Map>();
 
-	// Create an entity
-	EntityID dot1 = entityManager->AddNewEntity();
-	// Add necessary components
-	entityManager->AddComponent<MovingSprite>(dot1);
-	entityManager->AddComponent<SpriteRenderer>(dot1, "Assets/Graphics/Charizard.png", 32, 32, m_AssetHandler);
+	//// Create an entity
+	//EntityID dot1 = entityManager->AddNewEntity();
+	//// Add necessary components
+	//entityManager->AddComponent<MovingSprite>(dot1);
+	//entityManager->AddComponent<SpriteRenderer>(dot1, "Assets/Graphics/Charizard.png", 32, 32, m_AssetHandler);
 
-	// Get transform of entity (or any other component)
-	Transform* dot1Transform = &entityManager->GetComponent<Transform>(dot1);
-	dot1Transform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.5f };
+	//// Get transform of entity (or any other component)
+	//Transform* dot1Transform = &entityManager->GetComponent<Transform>(dot1);
+	//dot1Transform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.5f };
 
-	// Create another entity
-	EntityID dot2 = entityManager->AddNewEntity();
-	entityManager->AddComponent<SpriteRenderer>(dot2, "Assets/Graphics/Test.jpg", 32, 32, m_AssetHandler);
-	// Add necessary components
-	entityManager->AddComponent<MovingSprite>(dot2);
+	//// Create another entity
+	//EntityID dot2 = entityManager->AddNewEntity();
+	//entityManager->AddComponent<SpriteRenderer>(dot2, "Assets/Graphics/Test.jpg", 32, 32, m_AssetHandler);
+	//// Add necessary components
+	//entityManager->AddComponent<MovingSprite>(dot2);
 
 	//Create Player Dot
-	EntityID playerDot = entityManager->AddNewEntity();
-	entityManager->AddComponent<Player>(playerDot);
-	Transform* playerDotTransform = &entityManager->GetComponent<Transform>(playerDot);
-	Player* playerDotCircle = &entityManager->GetComponent<Player>(playerDot);
-	playerDotTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.6f };
+	EntityID playerUnit = entityManager->AddNewEntity();
+	entityManager->AddComponent<Player>(playerUnit);
+	Transform* playerUnitTransform = &entityManager->GetComponent<Transform>(playerUnit);
+	playerUnitTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.5f };
+	entityManager->AddComponent<SpriteRenderer>(playerUnit, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
 
-	//Create A Character
-	EntityID character = entityManager->AddNewEntity();
-	std::vector<unsigned int> id{ 0, 1, 2, 3, 4 };
-	entityManager->AddComponent<CharacterComponent>(character, Title::King, "Kingom of Milano", "Erik", id, 100, 5, false, sf::Color::Red, 0);
+	//Create Character 0
+	EntityID char0 = entityManager->AddNewEntity();
+	std::vector<unsigned int> id0{ 0, 1, 2, 3, 4 };
+	entityManager->AddComponent<CharacterComponent>(char0, Title::King, "Kingdom of Milano", "Erik", id0, 100, 5, false, sf::Color::Red, 0);
 
-	Transform* characterTransform = &entityManager->GetComponent<Transform>(character);
-	characterTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.3f, m_Window->GetWindow()->getSize().y * 0.2f };
-	CharacterComponent* characterComponent = &entityManager->GetComponent<CharacterComponent>(character);
-	entityManager->AddComponent<SpriteRenderer>(character, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	CharacterComponent* characterComponent0 = &entityManager->GetComponent<CharacterComponent>(char0);
+	entityManager->AddComponent<SpriteRenderer>(char0, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterTransform0 = &entityManager->GetComponent<Transform>(char0);
+	characterTransform0->m_Position = { m_Window->GetWindow()->getSize().x * 0.3f, m_Window->GetWindow()->getSize().y * 0.2f };
+
+	//Create Character 1
+	EntityID char1 = entityManager->AddNewEntity();
+	std::vector<unsigned int> id1{ 5, 6, 7, 8, 9 };
+	entityManager->AddComponent<CharacterComponent>(char1, Title::King, "Roman Republic", "Robin", id1, 100, 10, false, sf::Color::Green, 0);
+
+	CharacterComponent* characterComponent1 = &entityManager->GetComponent<CharacterComponent>(char1);
+	entityManager->AddComponent<SpriteRenderer>(char1, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterTransform1 = &entityManager->GetComponent<Transform>(char1);
+	characterTransform1->m_Position = { m_Window->GetWindow()->getSize().x * 0.4f, m_Window->GetWindow()->getSize().y * 0.3f };
+
+	//Create Character 2
+	EntityID char2 = entityManager->AddNewEntity();
+	std::vector<unsigned int> id2{ 12, 13, 14, 15, 16 };
+	entityManager->AddComponent<CharacterComponent>(char2, Title::King, "Sicilian Mobsters", "Fredrik", id2, 100, 10, false, sf::Color::Color(165, 42, 42), 0);
+
+	CharacterComponent* characterComponent2 = &entityManager->GetComponent<CharacterComponent>(char2);
+	entityManager->AddComponent<SpriteRenderer>(char2, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterTransform2 = &entityManager->GetComponent<Transform>(char2);
+	characterTransform2->m_Position = { m_Window->GetWindow()->getSize().x * 0.725f, m_Window->GetWindow()->getSize().y * 0.5f };
+
+	//Create Character 3
+	EntityID char3 = entityManager->AddNewEntity();
+	std::vector<unsigned int> id3{ 10 };
+	entityManager->AddComponent<CharacterComponent>(char3, Title::Baron, "Roman Puppet", "Robin", id3, 100, 10, false, sf::Color::Yellow, 0);
+
+	CharacterComponent* characterComponent3 = &entityManager->GetComponent<CharacterComponent>(char3);
+	entityManager->AddComponent<SpriteRenderer>(char3, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterTransform3 = &entityManager->GetComponent<Transform>(char3);
+	characterTransform3->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.45f };
+
+	//Create Character 4
+	EntityID char4 = entityManager->AddNewEntity();
+	std::vector<unsigned int> id4{ 11 };
+	entityManager->AddComponent<CharacterComponent>(char4, Title::Baron, "Sicilian Vassal", "Fredrik", id4, 100, 10, false, sf::Color::Color(128, 128, 128), 0);
+
+	CharacterComponent* characterComponent4 = &entityManager->GetComponent<CharacterComponent>(char4);
+	entityManager->AddComponent<SpriteRenderer>(char4, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterTransform4 = &entityManager->GetComponent<Transform>(char4);
+	characterTransform4->m_Position = { m_Window->GetWindow()->getSize().x * 0.625f, m_Window->GetWindow()->getSize().y * 0.45f };
+
+	entityManager->AddComponent<WarmindComponent>(char1, 1, char0);
+	entityManager->AddComponent<WarmindComponent>(char0, 4, char1);
+
 	CharacterComponent* characters = entityManager->GetComponentArray<CharacterComponent>();
-
-	EntityID Char2 = entityManager->AddNewEntity();
-	std::vector<unsigned int> id2{ 5, 6, 7, 8, 9 };
-	entityManager->AddComponent<CharacterComponent>(Char2, Title::Count, "Roman Republic", "Robin", id2, 100, 10, false, sf::Color::Green, 0);
-
-	CharacterComponent* characterComponent2 = &entityManager->GetComponent<CharacterComponent>(Char2);
-	entityManager->AddComponent<SpriteRenderer>(Char2, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
-	Transform* characterTransform2 = &entityManager->GetComponent<Transform>(Char2);
-	characterTransform2->m_Position = { m_Window->GetWindow()->getSize().x * 0.4f, m_Window->GetWindow()->getSize().y * 0.3f };
-
-	entityManager->AddComponent<WarmindComponent>(Char2, 1, character);
-	entityManager->AddComponent<WarmindComponent>(character, 4, Char2);
-
-	for (auto region : characters[character].m_OwnedRegionIDs)
+	for (auto region : characters[char0].m_OwnedRegionIDs)
 	{
-		mapComp[map].SetRegionColor(region, characters[character].m_RegionColor);
+		mapComp[map].SetRegionColor(region, characters[char0].m_RegionColor);
 	}
-	for (auto region : characters[Char2].m_OwnedRegionIDs)
+	for (auto region : characters[char1].m_OwnedRegionIDs)
 	{
-		mapComp[map].SetRegionColor(region, characters[Char2].m_RegionColor);
+		mapComp[map].SetRegionColor(region, characters[char1].m_RegionColor);
+	}
+	for (auto region : characters[char2].m_OwnedRegionIDs)
+	{
+		mapComp[map].SetRegionColor(region, characters[char2].m_RegionColor);
+	}
+	for (auto region : characters[char3].m_OwnedRegionIDs)
+	{
+		mapComp[map].SetRegionColor(region, characters[char3].m_RegionColor);
+	}
+	for (auto region : characters[char4].m_OwnedRegionIDs)
+	{
+		mapComp[map].SetRegionColor(region, characters[char4].m_RegionColor);
 	}
 
 	sf::Font font = m_AssetHandler->LoadFontFromFile("Assets/Fonts/TestFont.ttf");
@@ -176,19 +219,19 @@ void Game::AddEntitys()
 
 	//Create UI texts
 	EntityID textUI0 = entityManager->AddNewEntity();
-	entityManager->AddComponent<UIText>(textUI0, font, characterComponent->m_KingdomName, characterComponent->m_OwnedRegionIDs);
+	entityManager->AddComponent<UIText>(textUI0, font, characterComponent0->m_KingdomName, characterComponent0->m_OwnedRegionIDs);
 
 	EntityID textUI1 = entityManager->AddNewEntity();
-	entityManager->AddComponent<UIText>(textUI1, font, characterComponent2->m_KingdomName, characterComponent2->m_OwnedRegionIDs);
+	entityManager->AddComponent<UIText>(textUI1, font, characterComponent1->m_KingdomName, characterComponent1->m_OwnedRegionIDs);
 
-	//EntityID textUI2 = entityManager->AddNewEntity();
-	//entityManager->AddComponent<UIText>(textUI2, font, "Kingdom of Three", std::vector<unsigned int> { 2 });
+	EntityID textUI2 = entityManager->AddNewEntity();
+	entityManager->AddComponent<UIText>(textUI2, font, characterComponent2->m_KingdomName, characterComponent2->m_OwnedRegionIDs);
 
-	//EntityID textUI3 = entityManager->AddNewEntity();
-	//entityManager->AddComponent<UIText>(textUI3, font, "Kingdom of Four", std::vector<unsigned int> { 3 });
+	EntityID textUI3 = entityManager->AddNewEntity();
+	entityManager->AddComponent<UIText>(textUI3, font, characterComponent3->m_KingdomName, characterComponent3->m_OwnedRegionIDs);
 
-	//EntityID textUI4 = entityManager->AddNewEntity();
-	//entityManager->AddComponent<UIText>(textUI4, font, "Republic of Five", std::vector<unsigned int> { 4 });
+	EntityID textUI4 = entityManager->AddNewEntity();
+	entityManager->AddComponent<UIText>(textUI4, font, characterComponent4->m_KingdomName, characterComponent4->m_OwnedRegionIDs);
 
 	//EntityID textUI5 = entityManager->AddNewEntity();
 	//entityManager->AddComponent<UIText>(textUI5, font, "Kingdom of Six", std::vector<unsigned int> { 5 });
@@ -227,11 +270,11 @@ void Game::AddEntitys()
 	//entityManager->AddComponent<UIText>(textUI16, font, "Kingdom of Seventeen", std::vector<unsigned int> { 16 });
 
 	// Get transform and moving circle of entity
-	Transform* dot2Transform = &entityManager->GetComponent<Transform>(dot2);
-	MovingSprite* dot2Circle = &entityManager->GetComponent<MovingSprite>(dot2);
-	dot2Transform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.6f };
-	dot2Circle->m_Direction = { 0.0f, 1.0f };
-	dot2Circle->m_Color = sf::Color::Yellow;
+	//Transform* dot2Transform = &entityManager->GetComponent<Transform>(dot2);
+	//MovingSprite* dot2Circle = &entityManager->GetComponent<MovingSprite>(dot2);
+	//dot2Transform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.6f };
+	//dot2Circle->m_Direction = { 0.0f, 1.0f };
+	//dot2Circle->m_Color = sf::Color::Yellow;
 }
 
 void Game::InitAI()

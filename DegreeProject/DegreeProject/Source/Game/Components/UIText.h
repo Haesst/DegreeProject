@@ -13,7 +13,7 @@ struct UIText : public Component
 	sf::Text m_CountryNameText;
 	sf::Font m_Font;
 	std::string m_CountryName = "";
-	int m_CharacterSize = 20;
+	unsigned int m_CharacterSize = 20;
 	sf::Text::Style m_Style = sf::Text::Regular;
 	float m_Rotation = 0.0f;
 	std::vector<unsigned int> m_OwnedRegions;

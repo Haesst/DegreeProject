@@ -13,8 +13,8 @@
 struct PlayerSystem : System
 {
 	EntityManager* m_EntityManager = nullptr;
-	float m_MoveTolerance = 1.0f;
-	float m_ClickTolerance = 5.0f;
+	float m_MoveTolerance = 2.0f;
+	float m_ClickTolerance = 16.0f;
 	sf::RenderWindow* window;
 
 	// Constructor, Runs when the system is initialized

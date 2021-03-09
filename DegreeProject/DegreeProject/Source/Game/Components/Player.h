@@ -10,9 +10,9 @@
 struct Player : public Component
 {
 	sf::RectangleShape m_Shape;
-	sf::Color m_FillColor = sf::Color::Black;
+	sf::Color m_FillColor = sf::Color::Transparent;
 	sf::Color m_OutlineColor = sf::Color::White;
-	float m_Size = 10.0f;
+	float m_Size = 32.0f;
 	float m_OutlineThickness = 0.0f;
 	bool m_Selected = false;
 
