@@ -136,13 +136,23 @@ void Game::AddEntitys()
 
 	//Create A Character
 	EntityID character = entityManager->AddNewEntity();
-	std::vector<int> id{ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9};
-	entityManager->AddComponent<CharacterComponent>(character, Title::King, "Italia", "Mussolini", id, 100, 10, false, sf::Color::Red, 0);
+	std::vector<int> id{ 0, 1, 2, 3};
+	entityManager->AddComponent<CharacterComponent>(character, Title::King, "Italia", "Mussolini", id, 100, 5, false, sf::Color::Red, 0);
 	Transform* characterTransform = &entityManager->GetComponent<Transform>(character);
+
 	characterTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.6f, m_Window->GetWindow()->getSize().y * 0.4f };
 	CharacterComponent* characterComponent = &entityManager->GetComponent<CharacterComponent>(character);
 	entityManager->AddComponent<SpriteRenderer>(character, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
 	CharacterComponent* characters = entityManager->GetComponentArray<CharacterComponent>();
+
+	EntityID Char2 = entityManager->AddNewEntity();
+	std::vector<int> id2{ 4, 5, 6, 7, 8, 9 };
+	entityManager->AddComponent<CharacterComponent>(Char2, Title::Count, "Hello", "asdfasdf", id2, 100, 10, false, sf::Color::Green, 0);
+	entityManager->AddComponent<WarmindComponent>(Char2, 1, character);
+
+	entityManager->AddComponent<WarmindComponent>(character, 4, Char2);
+
+
 	for (auto region : characters[character].m_OwnedRegionIDs)
 	{
 		mapComp[map].SetRegionColor(region, characters[character].m_RegionColor);

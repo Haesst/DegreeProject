@@ -17,5 +17,6 @@ float AISystem::WarDecision(EntityID ent)
 	float enemyArmyEvaluation = armySizeConsideration.Evaluate(ent, warmindComponents[ent].m_Opponent);
 
 	float actionScore = goldEvaluation * enemyArmyEvaluation;
+	actionScore += personality.m_DeclareWarModifier;
 	return std::clamp(actionScore, 0.0f, 1.0f);
 }
