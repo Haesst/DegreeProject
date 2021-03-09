@@ -38,8 +38,6 @@ struct AIManager
 		json j;
 		file >> j;
 
-		LOG_INFO(path);
-
 		std::lock_guard<std::mutex> lock{ m_PersonalityMtx };
 		m_Personalities.clear();
 
