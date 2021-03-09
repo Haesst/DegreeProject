@@ -139,7 +139,7 @@ void Game::AddEntitys()
 	Transform* characterTransform = &entityManager->GetComponent<Transform>(character);
 	characterTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.6f, m_Window->GetWindow()->getSize().y * 0.4f };
 	CharacterComponent* characterComponent = &entityManager->GetComponent<CharacterComponent>(character);
-	entityManager->AddComponent<SpriteRenderer>(character, "Assets/Graphics/Test.jpg", 32, 32, m_AssetHandler);
+	entityManager->AddComponent<SpriteRenderer>(character, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
 	CharacterComponent* characters = entityManager->GetComponentArray<CharacterComponent>();
 	for (auto region : characters[character].m_OwnedRegionIDs)
 	{
