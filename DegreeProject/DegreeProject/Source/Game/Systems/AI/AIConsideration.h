@@ -113,51 +113,51 @@ struct GoldConsideration : public Consideration
 		return 0.0f;
 	}
 
-	struct ValidRegionToConquerConsideration : public Consideration
-	{
-		ValidRegionToConquerConsideration() : Consideration()
-		{
-
-		}
-
-
-		float Evaluate(EntityID context, EntityID target, int regionIndex)
-		{
-			m_EntityManager = &EntityManager::Get();
-			CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-
-			//Consider distance, don't want too far away.
-
-			//Vector2DInt wantedRegionPosition = MapInfo::GetRegionPositions(regionIndex)[regionIndex];
-			//Vector2D floatWantedPosition({ wantedRegionPosition.x, wantedRegionPosition.y });
-
-			Vector2DInt lowestDistance{ INT_MAX, INT_MAX };
-
-
-			//for (int ownedRegion : characters[context].m_OwnedRegionIDs)
-			//{
-			//	Vector2DInt pos = MapInfo::GetRegionPositions(ownedRegion)[ownedRegion];
-			//	Vector2D floatPos({ pos.x, pos.y });
-			//
-			//	if ((floatPos - floatWantedPosition).GetLength() < lowestDistance.GetLength())
-			//	{
-			//		lowestDistance = pos - wantedRegionPosition;
-			//	}
-			//}
-
-			//Consider potential gold gain
-			int wantedRegionTax = MapInfo::GetRegionTax(regionIndex);
-			
-			std::vector<int> regionTax;
-			for (int region : characters[context].m_OwnedRegionIDs)
-			{
-				regionTax.push_back(MapInfo::GetRegionTax(region));
-			}
-
-			float avgTax = 1.0 * std::accumulate(regionTax.begin(), regionTax.end(), 0LL) / regionTax.size();
-			float percentDiff = (float)wantedRegionTax / avgTax;
-
-			return std::clamp(std::pow(percentDiff, 2.0f), 0.0f, 1.0f);
-		}
-	};
+	//struct ValidRegionToConquerConsideration : public Consideration
+	//{
+	//	ValidRegionToConquerConsideration() : Consideration()
+	//	{
+	//
+	//	}
+	//
+	//
+	//	float Evaluate(EntityID context, EntityID target, int regionIndex)
+	//	{
+	//		m_EntityManager = &EntityManager::Get();
+	//		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+	//
+	//		//Consider distance, don't want too far away.
+	//
+	//		//Vector2DInt wantedRegionPosition = MapInfo::GetRegionPositions(regionIndex)[regionIndex];
+	//		//Vector2D floatWantedPosition({ wantedRegionPosition.x, wantedRegionPosition.y });
+	//
+	//		Vector2DInt lowestDistance{ INT_MAX, INT_MAX };
+	//
+	//
+	//		//for (int ownedRegion : characters[context].m_OwnedRegionIDs)
+	//		//{
+	//		//	Vector2DInt pos = MapInfo::GetRegionPositions(ownedRegion)[ownedRegion];
+	//		//	Vector2D floatPos({ pos.x, pos.y });
+	//		//
+	//		//	if ((floatPos - floatWantedPosition).GetLength() < lowestDistance.GetLength())
+	//		//	{
+	//		//		lowestDistance = pos - wantedRegionPosition;
+	//		//	}
+	//		//}
+	//
+	//		//Consider potential gold gain
+	//		//int wantedRegionTax = MapInfo::GetRegionTax(regionIndex);
+	//		//
+	//		//std::vector<int> regionTax;
+	//		//for (int region : characters[context].m_OwnedRegionIDs)
+	//		//{
+	//		//	regionTax.push_back(MapInfo::GetRegionTax(region));
+	//		//}
+	//		//
+	//		//float avgTax = 1.0 * std::accumulate(regionTax.begin(), regionTax.end(), 0LL) / regionTax.size();
+	//		//float percentDiff = (float)wantedRegionTax / avgTax;
+	//		//
+	//		//return std::clamp(std::pow(percentDiff, 2.0f), 0.0f, 1.0f);
+	//	}
+	//};
 };
