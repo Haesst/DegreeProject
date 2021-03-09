@@ -98,6 +98,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AIManagerComponent.h" />
     <ClInclude Include="Source\ECS\Component.h" />
     <ClInclude Include="Source\ECS\ComponentList.h" />
     <ClInclude Include="Source\ECS\Components\CharacterComponent.h" />

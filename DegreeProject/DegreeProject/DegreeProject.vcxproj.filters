@@ -147,6 +147,9 @@
     <ClInclude Include="Source\Game\Systems\UIWindowSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="AIManagerComponent.h">
+      <Filter>ECS\Components</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
