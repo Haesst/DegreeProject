@@ -7,6 +7,7 @@
 #include "ECS/EntityManager.h"
 #include "ECS/Components/Transform.h"
 #include "Game/Components/Map.h"
+#include "Engine/Vector2D.h"
 #include <iostream>
 #include <mutex>
 
@@ -57,8 +58,37 @@ struct MapSystem : public System
 		{
 			for (auto& region : maps[entity].m_Regions)
 			{
+				//const sf::Vector2f shapeSize{ 30.0f, 30.0f };
+				//sf::VertexArray shape;
+				//shape.setPrimitiveType(sf::Quads); // Maybe quads??
+				//maps[entity].m_LandTexture.setRepeated(true);
+
 				for (auto& square : region.m_MapSquares)
 				{
+					//sf::Vector2f position;
+					//sf::Vector2f vertexPosition; // shape vertex positions ranging from 0 - shape size (position scaled to shape size)
+					//sf::Vector2f texturePosition; // shape texture positions ranging from 0 - texture size (texture scaled to texture size)
+
+					//position = { (float)square.x, (float)square.y };
+					//vertexPosition = { position.x * shapeSize.x, position.y * shapeSize.y };
+					//texturePosition = { 0.0f, 1.0f };
+
+					//sf::Vector2f internalPositions[] = {
+					//	{ -0.5f, -0.5f, },
+					//	{ 0.05f, -0.5f },
+					//	{ 0.5f, 0.5f },
+					//	{ -0.5f, 0.5f }
+					//};
+
+					//for (int i = 0; i < 4; ++i)
+					//{
+					//	sf::Vertex vertex;
+					//	vertex.position = vertexPosition + internalPositions[i];
+					//	vertex.texCoords = texturePosition;
+					//	shape.append(vertex);
+					//}
+
+
 					sf::Vector2 resolution = Window::GetWindow()->getSize();
 					maps[entity].m_LandSprite.setTexture(maps[entity].m_LandTexture);
 					maps[entity].m_LandSprite.setTextureRect({ 0, 0, 32, 32 });
@@ -70,6 +100,7 @@ struct MapSystem : public System
 						(square.y + maps[entity].m_YOffset) * spriteHeight * maps[entity].m_MapScale);
 					Window::GetWindow()->draw(maps[entity].m_LandSprite);
 				}
+				// Window::GetWindow()->draw(shape, &maps[entity].m_LandTexture); // draw the vertex array using our texture
 			}
 		}
 	}
