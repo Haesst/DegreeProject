@@ -8,6 +8,7 @@
 #include "Game/Systems/CharacterSystem.h"
 #include "Game/MapDrawer.h"
 #include "Game/HotReloader.h"
+#include "Game/AI/AIManager.h"
 #include "Game/Components/MovingSprite.h"
 #include "Game/Components/SpriteRenderer.h"
 #include "Game/Components/Map.h"
@@ -183,8 +184,9 @@ void Game::InitAI()
 	EntityManager* entityManager = &EntityManager::Get();
 
 	// Create entity with AIManagerComoponent
-	EntityID managerEntity = entityManager->AddNewEntity();
-	entityManager->AddComponent<AIManagerComponent>(managerEntity);
+	/*EntityID managerEntity = entityManager->AddNewEntity();
+	entityManager->AddComponent<AIManagerComponent>(managerEntity);*/
+	m_AIManager = new AIManager();
 
 	// Register system
 	entityManager->RegisterSystem<AISystem>();
@@ -192,5 +194,5 @@ void Game::InitAI()
 	AISystem* sys = (AISystem*)entityManager->GetSystem<AISystem>().get();
 
 	// Init system with manager component
-	sys->Init(&entityManager->GetComponent<AIManagerComponent>(managerEntity));
+	sys->Init(m_AIManager);
 }

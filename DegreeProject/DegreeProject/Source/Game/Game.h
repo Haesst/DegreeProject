@@ -12,6 +12,7 @@ class Window;
 class AssetHandler;
 class MapDrawer;
 class HotReloader;
+class AIManager;
 
 enum class FileStatus;
 
@@ -25,6 +26,7 @@ private:
 	AssetHandler* m_AssetHandler = nullptr;
 	MapDrawer* m_MapDrawer = nullptr;
 	HotReloader* m_HotReloader = nullptr;
+	AIManager* m_AIManager = nullptr;
 	std::vector<sf::RectangleShape> m_Map;
 	sf::SoundBuffer m_SoundBuffer;
 	sf::Sound m_Sound;

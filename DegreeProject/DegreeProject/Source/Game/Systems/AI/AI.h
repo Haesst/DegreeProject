@@ -12,11 +12,12 @@ using json = nlohmann::json;
 #include <Game\Components\CharacterComponent.h>
 #include <Game\Systems\AI\AIConsideration.h>
 #include <Game\Components\Warmind.h>
+#include "Game/AI/AIManager.h"
 
 struct AISystem : System
 {
 	EntityManager* m_EntityManager = nullptr;
-	AIManagerComponent* m_ManagerComponent = nullptr;
+	AIManager* m_AIManager = nullptr;
 
 	float m_TickAccu = 0.0f;
 
@@ -29,9 +30,9 @@ struct AISystem : System
 		m_EntityManager = &EntityManager::Get();
 	}
 
-	void Init(AIManagerComponent* managerComponent)
+	void Init(AIManager* manager)
 	{
-		m_ManagerComponent = managerComponent;
+		m_AIManager = manager;
 	}
 
 	virtual void Update() override

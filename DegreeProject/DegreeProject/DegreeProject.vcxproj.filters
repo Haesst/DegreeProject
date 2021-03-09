@@ -150,6 +150,7 @@
     <ClInclude Include="Source\Game\Components\AIManagerComponent.h">
       <Filter>ECS\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\AI\AIManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
