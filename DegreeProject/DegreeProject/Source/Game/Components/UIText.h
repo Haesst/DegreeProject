@@ -17,7 +17,7 @@ struct UIText : public Component
 	sf::Text::Style m_Style = sf::Text::Regular;
 	float m_Rotation = 0.0f;
 	std::vector<unsigned int> m_OwnedRegions;
-	bool m_AdjustText = true;
+	bool m_AdjustText = false;
 
 	UIText(){}
 

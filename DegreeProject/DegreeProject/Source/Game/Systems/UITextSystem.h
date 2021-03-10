@@ -26,6 +26,25 @@ struct UITextSystem : System
 		m_Window = Window::GetWindow();
 	}
 
+	virtual void Start() override
+	{
+		UIText* UITexts = m_EntityManager->GetComponentArray<UIText>();
+
+		for (auto entity : m_Entities)
+		{
+			AdjustText(&UITexts[entity]);
+			UITexts[entity].m_CountryNameText.setFont(UITexts[entity].m_Font);
+			UITexts[entity].m_CountryNameText.setCharacterSize(UITexts[entity].m_CharacterSize);
+			UITexts[entity].m_CountryNameText.setStyle(UITexts[entity].m_Style);
+			UITexts[entity].m_CountryNameText.setString(UITexts[entity].m_CountryName);
+			UITexts[entity].m_CountryNameText.setPosition(UITexts[entity].m_PositionX, UITexts[entity].m_PositionY);
+			UITexts[entity].m_CountryNameText.setFillColor(UITexts[entity].m_FillColor);
+			UITexts[entity].m_CountryNameText.setOutlineColor(UITexts[entity].m_OutlineColor);
+			UITexts[entity].m_CountryNameText.setOutlineThickness(UITexts[entity].m_OutlineThickness);
+			UITexts[entity].m_CountryNameText.setRotation(UITexts[entity].m_Rotation);
+		}
+	}
+
 	// Update gets called every frame and loops through every entity that has the signature that
 	// the system has registered and do the necessary update
 	virtual void Update() override
@@ -58,7 +77,7 @@ struct UITextSystem : System
 
 		for (auto entity : m_Entities)
 		{
-				m_Window->draw(UITexts[entity].m_CountryNameText);
+			m_Window->draw(UITexts[entity].m_CountryNameText);
 		}
 	}
 
