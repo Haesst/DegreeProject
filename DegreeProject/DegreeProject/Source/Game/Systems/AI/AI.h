@@ -58,4 +58,5 @@ struct AISystem : System
 	}
 
 	float WarDecision(EntityID ent);
+	float ExpansionDecision(EntityID ent);
 };

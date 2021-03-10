@@ -21,3 +21,20 @@ float AISystem::WarDecision(EntityID ent)
 
 	return std::clamp(actionScore, 0.0f, 1.0f);
 }
+
+float AISystem::ExpansionDecision(EntityID ent)
+{
+	CharacterComponent* characterComponents = m_EntityManager->GetComponentArray<CharacterComponent>();
+	WarmindComponent* warmindComponents = m_EntityManager->GetComponentArray<WarmindComponent>();
+
+	ExpansionConsideration expansionConsideration;
+
+	expansionConsideration.SetContext(ent);
+
+	float highestEvaluation = -1.f;
+
+	//Get characters in certain range,
+	//Iterate through them and return best evaluation.
+
+	return 0.0f;
+}

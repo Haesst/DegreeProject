@@ -112,56 +112,56 @@ struct GoldConsideration : public Consideration
 
 		return 0.0f;
 	}
+};
 
-	struct ExpansionConsideration : public Consideration
+struct ExpansionConsideration : public Consideration
+{
+	ExpansionConsideration() : Consideration()
 	{
-		ExpansionConsideration() : Consideration()
+
+	}
+
+	void SetContext(EntityID context)
+	{
+		m_Context = context;
+	}
+
+
+	float Evaluate(EntityID context, EntityID target, int regionIndex)
+	{
+		m_EntityManager = &EntityManager::Get();
+		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+
+		float distanceWeight = 0.0f;
+
+		int wantedRegionIndex = MapInfo::GetRegionIndex(MapInfo::GetRegionPositions(regionIndex)[regionIndex]);
+
+		for (int ownedRegion : characters[context].m_OwnedRegionIDs)
 		{
-
-		}
-
-		void SetContext(EntityID context)
-		{
-			m_Context = context;
-		}
-
-
-		float Evaluate(EntityID context, EntityID target, int regionIndex)
-		{
-			m_EntityManager = &EntityManager::Get();
-			CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-
-			float distanceWeight = 0.0f;
-			
-			int wantedRegionIndex = MapInfo::GetRegionIndex(MapInfo::GetRegionPositions(regionIndex)[regionIndex]);
-
-			for (int ownedRegion : characters[context].m_OwnedRegionIDs)
+			if (std::abs(ownedRegion - regionIndex) > 1)
 			{
-				if (std::abs(ownedRegion - regionIndex) > 1)
-				{
-					distanceWeight = -0.5f;
-				}
-
-				else
-				{
-					distanceWeight = 0.0f;
-					break;
-				}
+				distanceWeight = -0.5f;
 			}
 
-			//Consider potential gold gain
-			int wantedRegionTax = MapInfo::GetRegionTax(regionIndex);
-
-			std::vector<int> regionTax;
-			for (int region : characters[context].m_OwnedRegionIDs)
+			else
 			{
-				regionTax.push_back(MapInfo::GetRegionTax(region));
+				distanceWeight = 0.0f;
+				break;
 			}
-
-			float avgTax = 1.0 * std::accumulate(regionTax.begin(), regionTax.end(), 0LL) / regionTax.size();
-			float percentDiff = (float)wantedRegionTax / avgTax;
-
-			return std::clamp(std::pow(percentDiff, 2.0f) + distanceWeight, 0.0f, 1.0f);
 		}
-	};
+
+		//Consider potential gold gain
+		int wantedRegionTax = MapInfo::GetRegionTax(regionIndex);
+
+		std::vector<int> regionTax;
+		for (int region : characters[context].m_OwnedRegionIDs)
+		{
+			regionTax.push_back(MapInfo::GetRegionTax(region));
+		}
+
+		float avgTax = 1.0 * std::accumulate(regionTax.begin(), regionTax.end(), 0LL) / regionTax.size();
+		float percentDiff = (float)wantedRegionTax / avgTax;
+
+		return std::clamp(std::pow(percentDiff, 2.0f) + distanceWeight, 0.0f, 1.0f);
+	}
 };
