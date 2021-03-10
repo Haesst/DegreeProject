@@ -35,16 +35,20 @@ struct UITextSystem : System
 
 		for (auto entity : m_Entities)
 		{
-			AdjustText(&UITexts[entity]);
-			UITexts[entity].m_CountryNameText.setFont(UITexts[entity].m_Font);
-			UITexts[entity].m_CountryNameText.setCharacterSize(UITexts[entity].m_CharacterSize);
-			UITexts[entity].m_CountryNameText.setStyle(UITexts[entity].m_Style);
-			UITexts[entity].m_CountryNameText.setString(UITexts[entity].m_CountryName);
-			UITexts[entity].m_CountryNameText.setPosition(UITexts[entity].m_PositionX, UITexts[entity].m_PositionY);
-			UITexts[entity].m_CountryNameText.setFillColor(UITexts[entity].m_FillColor);
-			UITexts[entity].m_CountryNameText.setOutlineColor(UITexts[entity].m_OutlineColor);
-			UITexts[entity].m_CountryNameText.setOutlineThickness(UITexts[entity].m_OutlineThickness);
-			UITexts[entity].m_CountryNameText.setRotation(UITexts[entity].m_Rotation);
+			if (UITexts[entity].m_AdjustText == true)
+			{
+				UITexts[entity].m_AdjustText = false;
+				AdjustText(&UITexts[entity]);
+				UITexts[entity].m_CountryNameText.setFont(UITexts[entity].m_Font);
+				UITexts[entity].m_CountryNameText.setCharacterSize(UITexts[entity].m_CharacterSize);
+				UITexts[entity].m_CountryNameText.setStyle(UITexts[entity].m_Style);
+				UITexts[entity].m_CountryNameText.setString(UITexts[entity].m_CountryName);
+				UITexts[entity].m_CountryNameText.setPosition(UITexts[entity].m_PositionX, UITexts[entity].m_PositionY);
+				UITexts[entity].m_CountryNameText.setFillColor(UITexts[entity].m_FillColor);
+				UITexts[entity].m_CountryNameText.setOutlineColor(UITexts[entity].m_OutlineColor);
+				UITexts[entity].m_CountryNameText.setOutlineThickness(UITexts[entity].m_OutlineThickness);
+				UITexts[entity].m_CountryNameText.setRotation(UITexts[entity].m_Rotation);
+			}
 		}
 	}
 
@@ -62,8 +66,8 @@ struct UITextSystem : System
 	{
 		std::vector<Vector2DInt> firstRegion = MapInfo::GetRegionPositions(UIText->m_OwnedRegions.front());
 		std::vector<Vector2DInt> lastRegion = MapInfo::GetRegionPositions(UIText->m_OwnedRegions.back());
-		Vector2DInt firstPosition = firstRegion.front();
-		Vector2DInt lastPosition = lastRegion.back();
+		Vector2DInt leftMostPosition = firstRegion.front();
+		Vector2DInt rightMostPosition = lastRegion.back();
 		std::vector<std::vector<Vector2DInt> > regions = MapInfo::GetRegions();
 		unsigned int regionIndex = 0;
 		for each (std::vector<Vector2DInt> region in regions)
@@ -74,24 +78,23 @@ struct UITextSystem : System
 				{
 					for each (Vector2DInt position in region)
 					{
-						if (position.x < firstPosition.x)
+						if (position.x <= leftMostPosition.x)
 						{
-							firstPosition.x = position.x;
+							leftMostPosition = position;
 						}
-						if (position.x > lastPosition.x)
+						if (position.x >= rightMostPosition.x)
 						{
-							lastPosition.x = position.x;
+							rightMostPosition = position;
 						}
 					}
 				}
 			}
 			regionIndex++;
 		}
-		Vector2DInt middlePosition = (firstPosition + lastPosition) / 2;
-		Vector2DInt diagonal = lastPosition - firstPosition;
-		UIText->m_CharacterSize = (unsigned int)(diagonal.y + diagonal.x) * 0.1f;
-		UIText->m_PositionX = middlePosition.x - UIText->m_CharacterSize * 2;
-		UIText->m_PositionY = middlePosition.y - UIText->m_CharacterSize;
-		UIText->m_Rotation = std::atan2f((float)diagonal.y, (float)diagonal.x) * 180.0f / (float)M_PI;
+		Vector2DInt diagonal = rightMostPosition - leftMostPosition;
+		UIText->m_CharacterSize = diagonal.x * 0.1f;
+		UIText->m_PositionX = diagonal.x * 0.5f + leftMostPosition.x - UIText->m_CharacterSize * 3;
+		UIText->m_PositionY = diagonal.y * 0.5f + leftMostPosition.y - UIText->m_CharacterSize;
+		UIText->m_Rotation = std::atan2f(diagonal.y, diagonal.x) * 180.0f / M_PI;
 	}
 };
