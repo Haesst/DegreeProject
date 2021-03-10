@@ -5,7 +5,6 @@
 #include "Game/MapInfo.h"
 #include "ECS/EntityManager.h"
 #include "Game/Systems/CharacterSystem.h"
-#include "Game/MapDrawer.h"
 #include "Game/HotReloader.h"
 #include "Game/AI/AIManager.h"
 #include "Game/Components/MovingSprite.h"
@@ -31,9 +30,8 @@ void Game::Init()
 	InitWindow();
 	InitHotReloading();
 	InitAssets();
-	InitMap();
 	InitSystems();
-	MapInfo::Initialization(17);
+	MapInfo::Initialization(m_NumberOfRegions);
 	AddEntitys();
 	InitAI();
 }
@@ -43,6 +41,8 @@ void Game::Run()
 	sf::RenderWindow* internalWindow = m_Window->GetWindow();
 	sf::View view(sf::Vector2f(m_Resolution.x * 0.5f, m_Resolution.y * 0.5f), sf::Vector2f(m_Resolution.x, m_Resolution.y));
 	internalWindow->setView(view);
+
+	EntityManager::Get().Start();
 
 	while (internalWindow->isOpen())
 	{
@@ -84,12 +84,6 @@ void Game::InitSound()
 	m_Sound = m_AssetHandler->LoadAudioFile("Assets/Audio/MenuMusic.wav", m_SoundBuffer);
 	m_Sound.setVolume(0);
 	m_Sound.play();
-}
-
-void Game::InitMap()
-{
-	m_MapDrawer = new MapDrawer();
-	m_Map = m_MapDrawer->GetMap("Assets/Map/Map.txt", 'O', { m_Resolution.x, m_Resolution.y }, 30.0f);
 }
 
 void Game::InitSystems()

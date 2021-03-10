@@ -107,6 +107,14 @@ public:
 		return *m_Instance;
 	}
 
+	void Start()
+	{
+		for (auto& system : m_RegisteredSystems)
+		{
+			system.second->Start();
+		}
+	}
+
 	void Update()
 	{
 		for (auto& system : m_RegisteredSystems)
@@ -268,7 +276,6 @@ public:
 			AddEntityToSystem(entity, system.get());
 		}
 
-		system->Start();
 		m_RegisteredSystems[systemType] = std::move(system);
 	}
 

@@ -35,6 +35,7 @@ struct Map : public Component
 	float m_MapScale = 0.6f;
 
 	bool m_ChangeFlag = false;
+	bool m_UpdateMapInfo = false;
 
 	Map()
 	{}
