@@ -58,37 +58,8 @@ struct MapSystem : public System
 		{
 			for (auto& region : maps[entity].m_Regions)
 			{
-				//const sf::Vector2f shapeSize{ 30.0f, 30.0f };
-				//sf::VertexArray shape;
-				//shape.setPrimitiveType(sf::Quads); // Maybe quads??
-				//maps[entity].m_LandTexture.setRepeated(true);
-
 				for (auto& square : region.m_MapSquares)
 				{
-					//sf::Vector2f position;
-					//sf::Vector2f vertexPosition; // shape vertex positions ranging from 0 - shape size (position scaled to shape size)
-					//sf::Vector2f texturePosition; // shape texture positions ranging from 0 - texture size (texture scaled to texture size)
-
-					//position = { (float)square.x, (float)square.y };
-					//vertexPosition = { position.x * shapeSize.x, position.y * shapeSize.y };
-					//texturePosition = { 0.0f, 1.0f };
-
-					//sf::Vector2f internalPositions[] = {
-					//	{ -0.5f, -0.5f, },
-					//	{ 0.05f, -0.5f },
-					//	{ 0.5f, 0.5f },
-					//	{ -0.5f, 0.5f }
-					//};
-
-					//for (int i = 0; i < 4; ++i)
-					//{
-					//	sf::Vertex vertex;
-					//	vertex.position = vertexPosition + internalPositions[i];
-					//	vertex.texCoords = texturePosition;
-					//	shape.append(vertex);
-					//}
-
-
 					sf::Vector2 resolution = Window::GetWindow()->getSize();
 					maps[entity].m_LandSprite.setTexture(maps[entity].m_LandTexture);
 					maps[entity].m_LandSprite.setTextureRect({ 0, 0, 32, 32 });
@@ -100,9 +71,140 @@ struct MapSystem : public System
 						(square.y + maps[entity].m_YOffset) * spriteHeight * maps[entity].m_MapScale);
 					Window::GetWindow()->draw(maps[entity].m_LandSprite);
 				}
-				// Window::GetWindow()->draw(shape, &maps[entity].m_LandTexture); // draw the vertex array using our texture
+				//sf::VertexArray va;
+				//va.setPrimitiveType(sf::Triangles);
+
+				//sf::VertexArray va2;
+				//va.setPrimitiveType(sf::Triangles);
+
+				//float squareSize = 32.0f;
+				//float halfSquare = squareSize * 0.5f;
+
+				//float xOffset = 100.0f;
+				//float yOffset = 100.0f;
+
+				//int i = 0;
+
+				//for (auto& square : region.m_MapSquares)
+				//{
+				//	sf::Vertex v1;
+				//	sf::Vertex v2;
+				//	sf::Vertex v3;
+				//	sf::Vertex v4;
+
+				//	sf::Vertex vav1;
+				//	sf::Vertex vav2;
+				//	sf::Vertex vav3;
+				//	sf::Vertex vav4;
+
+				//	v1.position = { (square.x * squareSize) - halfSquare + xOffset, (square.y * squareSize) - halfSquare + yOffset }; // Top left
+				//	v1.color = sf::Color::Green;
+				//	v2.position = { (square.x * squareSize) + halfSquare + xOffset, (square.y * squareSize) - halfSquare + yOffset }; // Top right
+				//	v2.color = sf::Color::Green;
+				//	v3.position = { (square.x * squareSize) + halfSquare + xOffset, (square.y * squareSize) + halfSquare + yOffset }; // Bottom right
+				//	v3.color = sf::Color::Green;
+				//	v4.position = { (square.x * squareSize) - halfSquare + xOffset, (square.y * squareSize) + halfSquare + yOffset }; // Bottom Left
+				//	v4.color = sf::Color::Green;
+
+				//	vav1.position = { ((square.x * squareSize) - halfSquare) + xOffset, ((square.y * squareSize) - halfSquare) * 0.8f + yOffset }; // Top left
+				//	vav1.color = sf::Color::Green;
+				//	vav2.position = { ((square.x * squareSize) + halfSquare) + xOffset, ((square.y * squareSize) - halfSquare) * 0.8f + yOffset }; // Top right
+				//	vav2.color = sf::Color::Green;
+				//	vav3.position = { ((square.x * squareSize) + halfSquare) + xOffset, ((square.y * squareSize) + halfSquare) * 0.8f + yOffset }; // Bottom right
+				//	vav3.color = sf::Color::Green;
+				//	vav4.position = { ((square.x * squareSize) - halfSquare) + xOffset, ((square.y * squareSize) + halfSquare) * 0.8f + yOffset }; // Bottom Left
+				//	vav4.color = sf::Color::Green;
+
+				//	va.append(v1);
+				//	va.append(v2);
+				//	va.append(v3);
+				//	va.append(v1);
+				//	va.append(v3);
+				//	va.append(v4);
+
+				//	va2.append(vav1);
+				//	va2.append(vav2);
+				//	va2.append(vav3);
+				//	va2.append(vav1);
+				//	va2.append(vav3);
+				//	va2.append(vav4);
+				//	i++;
+				//}
+
+				//sf::Shader borderShader;
+				//borderShader.loadFromFile("Assets/Shaders/BorderShader.frag", sf::Shader::Fragment);
+
+				//sf::RenderStates borderStates;
+				//borderStates.shader = &borderShader;
+
+				//sf::Shader landVertShader;
+				//landVertShader.loadFromFile("Assets/Shaders/LandShader.vert", sf::Shader::Vertex);
+				//landVertShader.loadFromFile("Assets/Shaders/LandShader.frag", sf::Shader::Fragment);
+
+				//sf::RenderStates landStates;
+				//landStates.shader = &landVertShader;
+
+				//Window::GetWindow()->draw(va, borderStates);
+				//Window::GetWindow()->draw(va2, landStates);
 			}
 		}
+	}
+
+	bool IsBorderTile(const std::vector<Vector2DInt>& tiles, const Vector2DInt currentTile)
+	{
+		// Figure out if the tile only borders same tile as this region or not
+
+		sf::Vector2f upLeft(currentTile.x - 1.0f, currentTile.y + 1.0f);
+		sf::Vector2f up(currentTile.x, currentTile.y + 1.0f);
+		sf::Vector2f upRight(currentTile.x + 1.0f, currentTile.y + 1.0f);
+		sf::Vector2f left(currentTile.x - 1.0f, currentTile.y);
+		sf::Vector2f right(currentTile.x + 1.0f, currentTile.y);
+		sf::Vector2f downRight(currentTile.x + 1.0f, currentTile.y - 1.0f);
+		sf::Vector2f down(currentTile.x, currentTile.y -1.0f);
+		sf::Vector2f downLeft(currentTile.x -1.0f, currentTile.y -1.0f);
+
+		for (auto& t : tiles)
+		{
+			float currentX = (float)t.x;
+			float currentY = (float)t.y;
+
+			if (upLeft.x == currentX && upLeft.y == currentY)
+			{
+				return true;
+			}
+
+			if (up.x == currentX && up.y == currentY)
+			{
+				return true;
+			}
+
+			if (upRight.x == currentX && upRight.y == currentY)
+			{
+				return true;
+			}
+
+			if (right.x == currentX && right.y == currentY)
+			{
+				return true;
+			}
+
+			if (downRight.x == currentX && downRight.y == currentY)
+			{
+				return true;
+			}
+
+			if (down.x == currentX && down.y == currentY)
+			{
+				return true;
+			}
+
+			if (downLeft.x == currentX && downLeft.y == currentY)
+			{
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	void RegionsChanged(std::string path, FileStatus fileStatus)
