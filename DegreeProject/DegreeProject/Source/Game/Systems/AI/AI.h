@@ -23,11 +23,16 @@ struct AISystem : System
 
 	float m_AIUpdateTickRate = 10.0f;
 
+	CharacterComponent* m_Characters;
+	WarmindComponent* m_Warminds;
+
 	AISystem()
 	{
 		AddComponentSignature<CharacterComponent>();
 		AddComponentSignature<WarmindComponent>();
 		m_EntityManager = &EntityManager::Get();
+		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
 	}
 
 	void Init(AIManager* manager)
@@ -53,9 +58,12 @@ struct AISystem : System
 		//AI System update considerations
 		for (auto entity : m_Entities)
 		{
-			if (ExpansionDecision(entity) > .5f) //Add personality weight
+			if (ExpansionDecision(entity) > .1f) //Add personality weight
 			{
-				WarDecision(entity);
+				if (WarDecision(entity) > .1f)
+				{
+					DeclareWar(entity, m_Warminds[entity].m_Opponent, m_Warminds[entity].m_WargoalRegionId);
+				}
 			}
 
 			m_TickAccu = 0.0f;
@@ -64,4 +72,6 @@ struct AISystem : System
 
 	float WarDecision(EntityID ent);
 	float ExpansionDecision(EntityID ent);
+
+	void DeclareWar(EntityID instigator, EntityID target, int warGoalRegion);
 };

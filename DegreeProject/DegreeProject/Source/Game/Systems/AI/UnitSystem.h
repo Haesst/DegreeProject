@@ -35,11 +35,5 @@ struct UnitSystem : System
 
 	virtual void Render() override
 	{
-		//UnitComponent* units = m_EntityManager->GetComponentArray<UnitComponent>();
-		//
-		//for (auto unit : units)
-		//{
-		//	Window::GetWindow()->draw(unit->m_UnitSprite);
-		//}
 	}
 };

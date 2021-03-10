@@ -22,7 +22,7 @@ struct CharacterComponent : public Component
 	int m_CurrentArmySize = 0;
 	bool m_IsPlayerControlled = false;
 	sf::Color m_RegionColor = sf::Color::Black;
-
+	bool m_AtWar = false;
 	int m_PersonalityIndex = 0;
 
 	CharacterComponent() {};

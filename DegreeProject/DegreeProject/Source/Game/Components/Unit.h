@@ -1,6 +1,6 @@
 #pragma once
 #include "ECS/Component.h"
-#include <ECS\Components\CharacterComponent.h>
+#include "Game/Components/CharacterComponent.h"
 #include <string>
 
 struct UnitComponent : public Component
@@ -8,6 +8,7 @@ struct UnitComponent : public Component
 	sf::Sprite m_UnitSprite;
 	int m_RepresentedForce = 0;
 	sf::Vector2f m_Position = sf::Vector2f(0.0f, 0.0f);
+	bool m_Raised = false;
 
 	UnitComponent()
 	{

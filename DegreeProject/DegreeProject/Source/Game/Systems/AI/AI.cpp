@@ -66,3 +66,14 @@ float AISystem::ExpansionDecision(EntityID ent)
 
 	return actionScorePerRegion[bestIndex].first;
 }
+
+void AISystem::DeclareWar(EntityID instigator, EntityID target, int warGoalRegion)
+{
+	m_Characters[instigator].m_AtWar = true;
+	m_Warminds[instigator].m_Defending = false;
+
+	m_Characters[target].m_AtWar = true;
+	m_Warminds[target].m_Opponent = instigator;
+	m_Warminds[target].m_Defending = true;
+	m_Warminds[target].m_WargoalRegionId = warGoalRegion;
+}
