@@ -10,7 +10,7 @@
 #include "Game/Components/MovingSprite.h"
 #include "Game/Components/SpriteRenderer.h"
 #include "Game/Components/Map.h"
-#include "Game/Systems/PlayerSystem.h"
+#include "Game/Systems/PlayerUnitSystem.h"
 #include "Game/Systems/ECSExampleSystem.h"
 #include "Game/Systems/SpriteRenderSystem.h"
 #include "Game/Systems/MapSystem.h"
@@ -92,7 +92,7 @@ void Game::InitSystems()
 	entityManager->RegisterSystem<MapSystem>();
 	entityManager->RegisterSystem<UITextSystem>();
 	entityManager->RegisterSystem<ECSExampleSystem>();
-	entityManager->RegisterSystem<PlayerSystem>();
+	entityManager->RegisterSystem<PlayerUnitSystem>();
 	entityManager->RegisterSystem<SpriteRenderSystem>();
 	entityManager->RegisterSystem<UIWindowSystem>();
 	entityManager->RegisterSystem<UISpriteRenderSystem>();
@@ -123,12 +123,19 @@ void Game::AddEntitys()
 	//// Add necessary components
 	//entityManager->AddComponent<MovingSprite>(dot2);
 
-	//Create Player Dot
-	EntityID playerUnit = entityManager->AddNewEntity();
-	entityManager->AddComponent<Player>(playerUnit);
-	Transform* playerUnitTransform = &entityManager->GetComponent<Transform>(playerUnit);
-	playerUnitTransform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.5f };
-	entityManager->AddComponent<SpriteRenderer>(playerUnit, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	//Create PlayerUnit0
+	EntityID playerUnit0 = entityManager->AddNewEntity();
+	entityManager->AddComponent<PlayerUnit>(playerUnit0);
+	Transform* playerUnitTransform0 = &entityManager->GetComponent<Transform>(playerUnit0);
+	playerUnitTransform0->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.5f };
+	entityManager->AddComponent<SpriteRenderer>(playerUnit0, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+
+	//Create PlayerUnit1
+	EntityID playerUnit1 = entityManager->AddNewEntity();
+	entityManager->AddComponent<PlayerUnit>(playerUnit1);
+	Transform* playerUnitTransform1 = &entityManager->GetComponent<Transform>(playerUnit1);
+	playerUnitTransform1->m_Position = { m_Window->GetWindow()->getSize().x * 0.4f, m_Window->GetWindow()->getSize().y * 0.5f };
+	entityManager->AddComponent<SpriteRenderer>(playerUnit1, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
 
 	//Create Character 0
 	EntityID char0 = entityManager->AddNewEntity();

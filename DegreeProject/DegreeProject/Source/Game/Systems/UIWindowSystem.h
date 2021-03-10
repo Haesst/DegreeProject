@@ -14,7 +14,8 @@ struct UIWindowSystem : System
 	EntityManager* m_EntityManager = nullptr;
 	sf::RenderWindow* m_Window = nullptr;
 	AssetHandler* m_AssetHandler= nullptr;
-	sf::RectangleShape rect;
+	sf::RectangleShape m_ClickArea;
+
 	// Constructor, Runs when the system is initialized
 	// Do any kind of init here but remember to register
 	// the systems component signature. IE: add every component
@@ -87,18 +88,18 @@ struct UIWindowSystem : System
 
 	void SetOptions(UIWindow* UIWindow)
 	{
-		if (InputHandler::GetRightMouseClicked() == true && InputHandler::GetPlayerSelected() == false && !UIWindow->m_Visible)
+		if (InputHandler::GetRightMouseClicked() == true && InputHandler::GetPlayerUnitSelected() == false && !UIWindow->m_Visible)
 		{
 			Vector2D mousePosition = InputHandler::GetMousePosition();
-			rect.setSize(sf::Vector2f(32.0f, 32.0f));
-			rect.setPosition(mousePosition.x - rect.getSize().x * 0.5f, mousePosition.y - rect.getSize().x * 0.5f);
+			m_ClickArea.setSize(sf::Vector2f(32.0f, 32.0f));
+			m_ClickArea.setPosition(mousePosition.x - m_ClickArea.getSize().x * 0.5f, mousePosition.y - m_ClickArea.getSize().x * 0.5f);
 			std::vector<std::vector<Vector2DInt> > regions = MapInfo::GetRegions();
 			unsigned int regionIndex = 0;
 			for each (std::vector<Vector2DInt> region in regions)
 			{
 				for each (Vector2DInt position in region)
 				{
-					if (rect.getGlobalBounds().contains(position.x, position.y))
+					if (m_ClickArea.getGlobalBounds().contains(position.x, position.y))
 					{
 						UIWindow->m_RegionTax = MapInfo::GetRegionTax(regionIndex);
 						UIWindow->m_RegionName = MapInfo::GetRegionName(regionIndex);
@@ -122,7 +123,7 @@ struct UIWindowSystem : System
 
 	void OpenWindow(UIWindow* UIWindow)
 	{
-		if (InputHandler::GetRightMouseReleased() == true && InputHandler::GetPlayerSelected() == false && UIWindow->m_Open == true)
+		if (InputHandler::GetRightMouseReleased() == true && InputHandler::GetPlayerUnitSelected() == false && UIWindow->m_Open == true)
 		{
 			UIWindow->m_Visible = !UIWindow->m_Visible;
 			if (UIWindow->m_Visible == true)

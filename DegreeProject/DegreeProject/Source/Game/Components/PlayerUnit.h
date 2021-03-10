@@ -7,7 +7,7 @@
 
 #include "Engine/Vector2D.h"
 
-struct Player : public Component
+struct PlayerUnit : public Component
 {
 	sf::RectangleShape m_Shape;
 	sf::Color m_FillColor = sf::Color::Transparent;

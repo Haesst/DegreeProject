@@ -118,7 +118,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Components\CharacterComponent.h" />
     <ClInclude Include="Source\Game\Components\Map.h" />
     <ClInclude Include="Source\Game\Components\MovingSprite.h" />
-    <ClInclude Include="Source\Game\Components\Player.h" />
+    <ClInclude Include="Source\Game\Components\PlayerUnit.h" />
     <ClInclude Include="Source\Game\Components\SpriteRenderer.h" />
     <ClInclude Include="Source\Game\Components\UISpriteRenderer.h" />
     <ClInclude Include="Source\Game\Components\UIText.h" />
@@ -137,7 +137,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Systems\CharacterSystem.h" />
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h" />
     <ClInclude Include="Source\Game\Systems\MapSystem.h" />
-    <ClInclude Include="Source\Game\Systems\PlayerSystem.h" />
+    <ClInclude Include="Source\Game\Systems\PlayerUnitSystem.h" />
     <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h" />
     <ClInclude Include="Source\Game\Systems\UISpriteRenderSystem.h" />
     <ClInclude Include="Source\Game\Systems\UITextSystem.h" />

@@ -14,15 +14,17 @@ public:
 	static Vector2D GetMousePosition();
 	static Vector2DInt GetMouseScreenPosition();
 	static int GetMouseScrollDirection();
-	static bool GetPlayerSelected();
-	static void SetPlayerSelected(bool selected);
+	static bool GetPlayerUnitSelected();
+	static bool GetMouseMoved();
+	static void SetPlayerUnitSelected(bool selected);
 private:
 	static bool m_LeftMouseClicked;
 	static bool m_RightMouseClicked;
 	static bool m_LeftMouseReleased;
 	static bool m_RightMouseReleased;
 	static bool m_MouseScrollWheelChanged;
-	static bool m_PlayerSelected;
+	static bool m_PlayerUnitSelected;
+	static bool m_MouseMoved;
 	static Vector2D m_MousePosition;
 	static Vector2DInt m_MouseScreenPosition;
 	static int m_MouseScrollDirection;

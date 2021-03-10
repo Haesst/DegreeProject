@@ -8,7 +8,8 @@ bool InputHandler::m_RightMouseClicked = false;
 bool InputHandler::m_LeftMouseReleased = false;
 bool InputHandler::m_RightMouseReleased = false;
 bool InputHandler::m_MouseScrollWheelChanged = false;
-bool InputHandler::m_PlayerSelected = false;
+bool InputHandler::m_PlayerUnitSelected = false;
+bool InputHandler::m_MouseMoved = false;
 int InputHandler::m_MouseScrollDirection = 0;
 const float InputHandler::MAX_ZOOM = 1000.0f;
 const float InputHandler::MIN_ZOOM = 100.0f;
@@ -21,6 +22,7 @@ void InputHandler::HandleInputEvents()
 {
 	m_RightMouseReleased = false;
 	m_LeftMouseReleased = false;
+	m_MouseMoved = false;
 	sf::RenderWindow* window = Window::GetWindow();
 	sf::View view = window->getView();
 	sf::Event event;
@@ -163,6 +165,9 @@ void InputHandler::HandleInputEvents()
 			}
 			case sf::Event::MouseMoved:
 			{
+				m_MouseMoved = true;
+				m_MouseScreenPosition = Vector2DInt(event.mouseMove.x, event.mouseMove.y);
+				m_MousePosition = window->mapPixelToCoords(sf::Vector2i(m_MouseScreenPosition.x, m_MouseScreenPosition.y));
 				break;
 			}
 			case sf::Event::MouseEntered:
@@ -223,12 +228,17 @@ int InputHandler::GetMouseScrollDirection()
 	return m_MouseScrollDirection;
 }
 
-bool InputHandler::GetPlayerSelected()
+bool InputHandler::GetPlayerUnitSelected()
 {
-	return m_PlayerSelected;
+	return m_PlayerUnitSelected;
 }
 
-void InputHandler::SetPlayerSelected(bool selected)
+bool InputHandler::GetMouseMoved()
 {
-	m_PlayerSelected = selected;
+	return m_MouseMoved;
+}
+
+void InputHandler::SetPlayerUnitSelected(bool selected)
+{
+	m_PlayerUnitSelected = selected;
 }
