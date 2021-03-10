@@ -5,6 +5,7 @@ std::vector<unsigned int> MapInfo::m_RegionTax;
 std::vector<std::string> MapInfo::m_RegionNames;
 std::vector<std::string> MapInfo::m_OwnerNames;
 std::vector<std::vector<Vector2DInt> > MapInfo::m_RegionPositions;
+std::vector<int> m_RegionIds;
 unsigned int MapInfo::m_NumberOfIDs = 0;
 
 void MapInfo::Initialization(unsigned int numberOfIDs)
@@ -16,6 +17,7 @@ void MapInfo::Initialization(unsigned int numberOfIDs)
 		m_RegionNames.push_back("");
 		m_OwnerNames.push_back("");
 		m_RegionPositions.push_back(std::vector<Vector2DInt>());
+		m_RegionIds.push_back(index);
 	}
 }
 
@@ -73,6 +75,11 @@ std::vector<Vector2DInt> MapInfo::GetRegionPositions(unsigned int index)
 std::vector<std::vector<Vector2DInt> >MapInfo::GetRegions()
 {
 	return m_RegionPositions;
+}
+
+std::vector<int> MapInfo::GetRegionIds()
+{
+	return m_RegionIds;
 }
 
 void MapInfo::SetRegionPositions(std::vector<Vector2DInt> regionPositions, unsigned int index)

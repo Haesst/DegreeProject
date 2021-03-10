@@ -53,7 +53,12 @@ struct AISystem : System
 		//AI System update considerations
 		for (auto entity : m_Entities)
 		{
-			WarDecision(entity);
+			if (ExpansionDecision(entity) > .5f) //Add personality weight
+			{
+				WarDecision(entity);
+			}
+
+			m_TickAccu = 0.0f;
 		}
 	}
 

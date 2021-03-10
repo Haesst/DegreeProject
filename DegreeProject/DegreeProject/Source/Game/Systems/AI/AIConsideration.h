@@ -127,7 +127,7 @@ struct ExpansionConsideration : public Consideration
 	}
 
 
-	float Evaluate(EntityID context, EntityID target, int regionIndex)
+	float Evaluate(EntityID context, int regionIndex)
 	{
 		m_EntityManager = &EntityManager::Get();
 		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();

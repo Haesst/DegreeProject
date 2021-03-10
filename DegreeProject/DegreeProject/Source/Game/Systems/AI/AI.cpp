@@ -1,4 +1,5 @@
 #include "AI.h"
+#include "Game/MapInfo.h"
 
 float AISystem::WarDecision(EntityID ent)
 {
@@ -24,6 +25,8 @@ float AISystem::WarDecision(EntityID ent)
 
 float AISystem::ExpansionDecision(EntityID ent)
 {
+	std::vector<std::pair<float, int>> actionScorePerRegion;
+
 	CharacterComponent* characterComponents = m_EntityManager->GetComponentArray<CharacterComponent>();
 	WarmindComponent* warmindComponents = m_EntityManager->GetComponentArray<WarmindComponent>();
 
@@ -34,7 +37,32 @@ float AISystem::ExpansionDecision(EntityID ent)
 	float highestEvaluation = -1.f;
 
 	//Get characters in certain range,
-	//Iterate through them and return best evaluation.
+	std::vector<int> regionIndexes = MapInfo::GetRegionIds();
 
-	return 0.0f;
+	for (int i = 0; i < regionIndexes.size(); i++)
+	{
+		if (std::find(characterComponents[ent].m_OwnedRegionIDs.begin(), characterComponents[ent].m_OwnedRegionIDs.end(),
+			regionIndexes[i]) != characterComponents[ent].m_OwnedRegionIDs.end())
+		{
+			continue;
+		}
+
+		float eval = expansionConsideration.Evaluate(ent, regionIndexes[i]);
+		auto pair = std::make_pair(eval, i);
+		actionScorePerRegion.push_back(pair);
+	}
+
+	float highest = -1.0f;
+	int bestIndex = -1;
+
+	for (int i = 0; i < actionScorePerRegion.size(); i++)
+	{
+		if (actionScorePerRegion[i].first > highest)
+		{
+			warmindComponents[ent].m_WargoalRegionId = actionScorePerRegion[i].second;
+			bestIndex = i;
+		}
+	}
+
+	return actionScorePerRegion[bestIndex].first;
 }
