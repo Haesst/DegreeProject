@@ -38,6 +38,8 @@ struct PlayerUnitSystem : System
 		Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
 		PlayerUnit* playerUnits = m_EntityManager->GetComponentArray<PlayerUnit>();
 
+		InputHandler::SetPlayerUnitSelected(false);
+
 		ClickDrag();
 
 		for (auto entity : m_Entities)
@@ -48,6 +50,10 @@ struct PlayerUnitSystem : System
 			playerUnits[entity].m_Shape.setOutlineColor(playerUnits[entity].m_OutlineColor);
 			playerUnits[entity].m_Shape.setOutlineThickness(playerUnits[entity].m_OutlineThickness);
 			playerUnits[entity].m_Shape.setSize(sf::Vector2(playerUnits[entity].m_Size, playerUnits[entity].m_Size));
+			if (playerUnits[entity].m_Selected == true)
+			{
+				InputHandler::SetPlayerUnitSelected(true);
+			}
 		}
 	}
 
@@ -98,13 +104,11 @@ struct PlayerUnitSystem : System
 			if (transform->m_Position.NearlyEqual(m_MousePosition, m_ClickTolerance,  playerUnit->m_Shape.getLocalBounds().width * 0.5f, playerUnit->m_Shape.getLocalBounds().height * 0.5f))
 			{
 				playerUnit->m_Selected = true;
-				InputHandler::SetPlayerUnitSelected(true);
 				playerUnit->m_OutlineThickness = 1.0f;
 			}
 			else
 			{
 				playerUnit->m_Selected = false;
-				InputHandler::SetPlayerUnitSelected(false);
 				playerUnit->m_OutlineThickness = 0.0f;
 			}
 		}
@@ -113,13 +117,11 @@ struct PlayerUnitSystem : System
 			if (m_DragWindow.getGlobalBounds().contains(transform->m_Position.x + playerUnit->m_Size * 0.5f, transform->m_Position.y + playerUnit->m_Size * 0.5f))
 			{
 				playerUnit->m_Selected = true;
-				InputHandler::SetPlayerUnitSelected(true);
 				playerUnit->m_OutlineThickness = 1.0f;
 			}
 			else
 			{
 				playerUnit->m_Selected = false;
-				InputHandler::SetPlayerUnitSelected(false);
 				playerUnit->m_OutlineThickness = 0.0f;
 			}
 		}
