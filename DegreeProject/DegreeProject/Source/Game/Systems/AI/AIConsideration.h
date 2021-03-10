@@ -144,7 +144,7 @@ struct GoldConsideration : public Consideration
 
 				else
 				{
-					distanceWeight = 0.3f;
+					distanceWeight = 0.0f;
 					break;
 				}
 			}
