@@ -17,6 +17,7 @@ public:
 	static bool GetPlayerUnitSelected();
 	static bool GetMouseMoved();
 	static void SetPlayerUnitSelected(bool selected);
+	static float GetZoomSpeed();
 private:
 	static bool m_LeftMouseClicked;
 	static bool m_RightMouseClicked;

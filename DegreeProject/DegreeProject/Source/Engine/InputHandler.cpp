@@ -1,7 +1,5 @@
 #include "InputHandler.h"
-#include <iostream>
 #include "Window.h"
-#include "Time.h"
 
 bool InputHandler::m_LeftMouseClicked = false;
 bool InputHandler::m_RightMouseClicked = false;
@@ -13,8 +11,8 @@ bool InputHandler::m_MouseMoved = false;
 int InputHandler::m_MouseScrollDirection = 0;
 const float InputHandler::MAX_ZOOM = 1000.0f;
 const float InputHandler::MIN_ZOOM = 100.0f;
-const float InputHandler::MOVE_SPEED = 2500.0f;
-const float InputHandler::ZOOM_SPEED = 7.5f;
+const float InputHandler::MOVE_SPEED = 25.0f;
+const float InputHandler::ZOOM_SPEED = 0.1f;
 Vector2D InputHandler::m_MousePosition = Vector2D(0.0f, 0.0f);
 Vector2DInt InputHandler::m_MouseScreenPosition = Vector2DInt(0, 0);
 
@@ -41,7 +39,7 @@ void InputHandler::HandleInputEvents()
 				{
 					if (view.getCenter().y > sf::VideoMode::getDesktopMode().height * 0.1f)
 					{
-						view.move(0.0f, -MOVE_SPEED * Time::DeltaTime());
+						view.move(0.0f, -MOVE_SPEED);
 						window->setView(view);
 					}
 				}
@@ -49,7 +47,7 @@ void InputHandler::HandleInputEvents()
 				{
 					if (view.getCenter().x > sf::VideoMode::getDesktopMode().width * 0.1f)
 					{
-						view.move(-MOVE_SPEED * Time::DeltaTime(), 0.0f);
+						view.move(-MOVE_SPEED, 0.0f);
 						window->setView(view);
 					}
 				}
@@ -57,7 +55,7 @@ void InputHandler::HandleInputEvents()
 				{
 					if (view.getCenter().y < sf::VideoMode::getDesktopMode().height * 0.9f)
 					{
-						view.move(0.0f, MOVE_SPEED * Time::DeltaTime());
+						view.move(0.0f, MOVE_SPEED);
 						window->setView(view);
 					}
 				}
@@ -65,7 +63,7 @@ void InputHandler::HandleInputEvents()
 				{
 					if (view.getCenter().x < sf::VideoMode::getDesktopMode().width * 0.9f)
 					{
-						view.move(MOVE_SPEED * Time::DeltaTime(), 0.0f);
+						view.move(MOVE_SPEED, 0.0f);
 						window->setView(view);
 					}
 				}
@@ -157,7 +155,7 @@ void InputHandler::HandleInputEvents()
 					m_MouseScrollDirection = (int)event.mouseWheelScroll.delta;
 					if ((m_MouseScrollDirection == 1 && (view.getSize().x > MIN_ZOOM || view.getSize().y > MIN_ZOOM)) || (m_MouseScrollDirection == -1 && (view.getSize().x < MAX_ZOOM || view.getSize().y < MAX_ZOOM)))
 					{
-						view.zoom(1.0f - m_MouseScrollDirection * ZOOM_SPEED * Time::DeltaTime());
+						view.zoom(1.0f - m_MouseScrollDirection * ZOOM_SPEED);
 						window->setView(view);
 					}
 				}
@@ -241,4 +239,9 @@ bool InputHandler::GetMouseMoved()
 void InputHandler::SetPlayerUnitSelected(bool selected)
 {
 	m_PlayerUnitSelected = selected;
+}
+
+float InputHandler::GetZoomSpeed()
+{
+	return ZOOM_SPEED;
 }

@@ -42,7 +42,6 @@ private:
 	void InitHotReloading();
 	void InitAssets();
 	void InitSound();
-	void InitMap();
 
 	void InitSystems();
 	void AddEntitys();

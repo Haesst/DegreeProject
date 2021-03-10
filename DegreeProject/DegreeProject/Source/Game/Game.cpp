@@ -107,22 +107,6 @@ void Game::AddEntitys()
 	entityManager->AddComponent<Map>(map, m_AssetHandler->GetTextureAtPath("Assets/Graphics/TileSet.png"));
 	Map* mapComp = entityManager->GetComponentArray<Map>();
 
-	//// Create an entity
-	//EntityID dot1 = entityManager->AddNewEntity();
-	//// Add necessary components
-	//entityManager->AddComponent<MovingSprite>(dot1);
-	//entityManager->AddComponent<SpriteRenderer>(dot1, "Assets/Graphics/Charizard.png", 32, 32, m_AssetHandler);
-
-	//// Get transform of entity (or any other component)
-	//Transform* dot1Transform = &entityManager->GetComponent<Transform>(dot1);
-	//dot1Transform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.5f };
-
-	//// Create another entity
-	//EntityID dot2 = entityManager->AddNewEntity();
-	//entityManager->AddComponent<SpriteRenderer>(dot2, "Assets/Graphics/Test.jpg", 32, 32, m_AssetHandler);
-	//// Add necessary components
-	//entityManager->AddComponent<MovingSprite>(dot2);
-
 	//Create PlayerUnit0
 	EntityID playerUnit0 = entityManager->AddNewEntity();
 	entityManager->AddComponent<PlayerUnit>(playerUnit0);
@@ -269,13 +253,6 @@ void Game::AddEntitys()
 
 	//EntityID textUI16 = entityManager->AddNewEntity();
 	//entityManager->AddComponent<UIText>(textUI16, font, "Kingdom of Seventeen", std::vector<unsigned int> { 16 });
-
-	// Get transform and moving circle of entity
-	//Transform* dot2Transform = &entityManager->GetComponent<Transform>(dot2);
-	//MovingSprite* dot2Circle = &entityManager->GetComponent<MovingSprite>(dot2);
-	//dot2Transform->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.6f };
-	//dot2Circle->m_Direction = { 0.0f, 1.0f };
-	//dot2Circle->m_Color = sf::Color::Yellow;
 }
 
 void Game::InitAI()
