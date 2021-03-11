@@ -15,6 +15,7 @@ struct UIWindowSystem : System
 	sf::RenderWindow* m_Window = nullptr;
 	AssetHandler* m_AssetHandler= nullptr;
 	sf::RectangleShape m_ClickArea;
+	Transform* windowUIPortraitTransform = nullptr;
 
 	// Constructor, Runs when the system is initialized
 	// Do any kind of init here but remember to register
@@ -129,13 +130,16 @@ struct UIWindowSystem : System
 			if (UIWindow->m_Visible == true)
 			{
 				m_EntityManager->AddComponent<UISpriteRenderer>(UIWindow->GetID(), "Assets/Graphics/Unit.png", 64, 64, m_AssetHandler);
-				Transform* windowUIPortraitTransform = &m_EntityManager->GetComponent<Transform>(UIWindow->GetID());
-				windowUIPortraitTransform->m_Position = { UIWindow->m_SizeX * 0.1f, UIWindow->m_SizeY * 0.025f };
+				windowUIPortraitTransform = &m_EntityManager->GetComponent<Transform>(UIWindow->GetID());
 			}
 			else
 			{
 				m_EntityManager->RemoveComponent<UISpriteRenderer>(UIWindow->GetID());
 			}
+		}
+		if (UIWindow->m_Visible == true)
+		{
+			windowUIPortraitTransform->m_Position = Vector2D(m_Window->mapPixelToCoords(sf::Vector2i(UIWindow->m_SizeX * 0.1f, UIWindow->m_SizeY * 0.025f)));
 		}
 	}
 };
