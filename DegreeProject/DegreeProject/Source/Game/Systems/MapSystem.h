@@ -69,6 +69,7 @@ struct MapSystem : public System
 		{
 			for (auto& region : maps[entity].m_Regions)
 			{
+				g_LandShader.setUniform("u_Color", sf::Glsl::Vec4(region.m_HighlightColor));
 				Window::GetWindow()->draw(region.m_VertexArray, maps[entity].m_RenderStates);
 			}
 		}
