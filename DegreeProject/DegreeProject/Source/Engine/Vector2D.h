@@ -60,6 +60,12 @@ struct Vec2D
 		return (d != 0 ? Vec2D<T>(x / d, y / d) : Vec2D<T>());
 	}
 
+
+	inline bool operator<(const Vec2D<T>& v2) const
+	{
+		return x < v2.x && y < v2.y;
+	}
+
 	inline Vec2D<T>& Zero()
 	{
 		x = 0;
