@@ -23,6 +23,9 @@ struct MapSystem : public System
 
 		HotReloader::Get()->SubscribeToFileChange("Assets\\Data\\Regions.json", std::bind(&MapSystem::RegionsChanged, this, std::placeholders::_1, std::placeholders::_2));
 		HotReloader::Get()->SubscribeToFileChange("Assets\\Map\\RegionMap.txt", std::bind(&MapSystem::RegionsChanged, this, std::placeholders::_1, std::placeholders::_2));
+
+		HotReloader::Get()->SubscribeToFileChange("Assets\\Shaders\\LandShader.frag", std::bind(&MapSystem::ShadersChanged, this, std::placeholders::_1, std::placeholders::_2));
+		HotReloader::Get()->SubscribeToFileChange("Assets\\Shaders\\LandShader.vert", std::bind(&MapSystem::ShadersChanged, this, std::placeholders::_1, std::placeholders::_2));
 	}
 	
 	virtual void Start() override
@@ -95,69 +98,7 @@ struct MapSystem : public System
 			}*/
 			for (auto& region : maps[entity].m_Regions)
 			{
-				/*for (auto& square : region.m_MapSquares)
-				{
-					sf::Vector2 resolution = Window::GetWindow()->getSize();
-					maps[entity].m_LandSprite.setTexture(maps[entity].m_LandTexture);
-					maps[entity].m_LandSprite.setTextureRect({ 0, 0, 32, 32 });
-					maps[entity].m_LandSprite.setColor(region.m_HighlightColor);
-					float spriteWidth = maps[entity].m_LandSprite.getLocalBounds().width;
-					float spriteHeight = maps[entity].m_LandSprite.getLocalBounds().height;
-					maps[entity].m_LandSprite.setPosition(
-						resolution.x * 0.1f + (square.x + maps[entity].m_XOffset) * spriteWidth * maps[entity].m_MapScale,
-						(square.y + maps[entity].m_YOffset) * spriteHeight * maps[entity].m_MapScale);
-					Window::GetWindow()->draw(maps[entity].m_LandSprite);
-				}*/
-				
-				sf::VertexArray va;
-				va.setPrimitiveType(sf::Triangles);
-
-				float squareSize = 32.0f;
-				float halfSquare = squareSize * 0.5f;
-
-				float xOffset = 100.0f;
-				float yOffset = 100.0f;
-
-				for (auto& square : region.m_MapSquares)
-				{
-					sf::Vertex v1;
-					sf::Vertex v2;
-					sf::Vertex v3;
-					sf::Vertex v4;
-
-					v1.position = { (square.x * squareSize) - halfSquare + xOffset, (square.y * squareSize) - halfSquare + yOffset }; // Top left
-					v1.color = sf::Color::Green;
-					v2.position = { (square.x * squareSize) + halfSquare + xOffset, (square.y * squareSize) - halfSquare + yOffset }; // Top right
-					v2.color = sf::Color::Green;
-					v3.position = { (square.x * squareSize) + halfSquare + xOffset, (square.y * squareSize) + halfSquare + yOffset }; // Bottom right
-					v3.color = sf::Color::Green;
-					v4.position = { (square.x * squareSize) - halfSquare + xOffset, (square.y * squareSize) + halfSquare + yOffset }; // Bottom Left
-					v4.color = sf::Color::Green;
-
-					va.append(v1);
-					va.append(v2);
-					va.append(v3);
-					va.append(v1);
-					va.append(v3);
-					va.append(v4);
-				}
-
-				sf::Shader borderShader;
-				borderShader.loadFromFile("Assets/Shaders/BorderShader.frag", sf::Shader::Fragment);
-
-				sf::RenderStates borderStates;
-				borderStates.shader = &borderShader;
-
-				sf::Shader landVertShader;
-				//landVertShader.loadFromFile("Assets/Shaders/LandShader.vert", sf::Shader::Vertex);
-				//landVertShader.loadFromFile("Assets/Shaders/LandShader.frag", sf::Shader::Fragment);
-				landVertShader.loadFromFile("Assets/Shaders/LandShader.vert", "Assets/Shaders/LandShader.frag");
-
-				sf::RenderStates landStates;
-				landStates.shader = &landVertShader;
-
-				Window::GetWindow()->draw(va, borderStates);
-				Window::GetWindow()->draw(va, landStates);
+				Window::GetWindow()->draw(region.m_VertexArray, maps[entity].m_RenderStates);
 			}
 		}
 	}
@@ -232,6 +173,23 @@ struct MapSystem : public System
 			//mtx->lock();
 			maps[entity].LoadAllRegions();
 			maps[entity].LoadMap();
+			maps[entity].CreateVertexArrays();
+			//mtx->unlock();
+		}
+	}
+
+	void ShadersChanged(std::string path, FileStatus fileStatus)
+	{
+		if (fileStatus != FileStatus::Modified)
+		{
+			return;
+		}
+
+		Map* maps = m_EntityManager->GetComponentArray<Map>();
+		for (auto& entity : m_Entities)
+		{
+			//mtx->lock();
+			maps[entity].LoadShadersAndCreateRenderStates();
 			//mtx->unlock();
 		}
 	}

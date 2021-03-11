@@ -20,9 +20,12 @@ public:
 	unsigned int m_RegionId = INT_MAX;
 	unsigned int m_RegionTax = 0;
 	std::string m_RegionName = "";
+	sf::VertexArray m_VertexArray;
 	MapRegion() {};
 	~MapRegion() { m_MapSquares.clear(); }
 };
+
+sf::Shader g_LandShader;
 
 struct Map : public Component
 {
@@ -30,18 +33,23 @@ struct Map : public Component
 	sf::Texture m_LandTexture;
 	sf::Sprite m_LandSprite;
 
-	int m_XOffset = -10;
-	int m_YOffset = 7;
+	int m_XOffset = 100;
+	int m_YOffset = 100;
 	float m_MapScale = 0.6f;
 
 	bool m_ChangeFlag = false;
 	bool m_UpdateMapInfo = false;
+
+	sf::RenderStates m_RenderStates;
+	float m_TileSize = 32;
+	float m_HalfTileSize;
 
 	Map()
 	{}
 
 	Map(sf::Texture landTexture)
 	{
+		m_HalfTileSize = m_TileSize * 0.5f;
 		Init();
 		m_LandTexture = landTexture;
 		m_LandSprite.setTexture(landTexture);
@@ -54,6 +62,8 @@ struct Map : public Component
 	{
 		LoadAllRegions();
 		LoadMap();
+		LoadShadersAndCreateRenderStates();
+		CreateVertexArrays();
 	}
 
 	sf::Color GetColor(std::string color)
@@ -153,6 +163,46 @@ struct Map : public Component
 			}
 		}
 		inData.close();
+	}
+
+	void CreateVertexArrays()
+	{
+		for (auto& region : m_Regions)
+		{
+			region.m_VertexArray.setPrimitiveType(sf::Triangles);
+
+			for (auto& square : region.m_MapSquares)
+			{
+				sf::Vertex v1;
+				sf::Vertex v2;
+				sf::Vertex v3;
+				sf::Vertex v4;
+
+				v1.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top left
+				v1.color = sf::Color::Green;
+				v2.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top right
+				v2.color = sf::Color::Green;
+				v3.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom right
+				v3.color = sf::Color::Green;
+				v4.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom Left
+				v4.color = sf::Color::Green;
+
+				region.m_VertexArray.append(v1);
+				region.m_VertexArray.append(v2);
+				region.m_VertexArray.append(v3);
+				region.m_VertexArray.append(v1);
+				region.m_VertexArray.append(v3);
+				region.m_VertexArray.append(v4);
+			}
+		}
+	}
+
+	void LoadShadersAndCreateRenderStates()
+	{
+		//sf::Shader landShader;
+		g_LandShader.loadFromFile("Assets/Shaders/LandShader.vert", "Assets/Shaders/LandShader.frag");
+
+		m_RenderStates.shader = &g_LandShader;
 	}
 
 	size_t GetRegionPosition(const char& c)

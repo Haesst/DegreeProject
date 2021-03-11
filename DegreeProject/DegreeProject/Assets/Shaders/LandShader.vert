@@ -9,7 +9,7 @@ void main()
     vec4 vertex = gl_Vertex;
 	vertex = vertex;
 	vec2 Scale = vec2(0.5,0.5);
-	vertex = vec4( vertex.x * Scale.x, vertex.y * Scale.y, 1, 1 );
+	//vertex = vec4( vertex.x * Scale.x, vertex.y * Scale.y, 1, 1 );
 	// mat4 mv = gl_ModelViewProjectionMatrix;
 	// mat4 sm = mat4.scale(mv, [2,2,2]);
 	// vertex.x = vertex.x * 0.8;
