@@ -69,7 +69,7 @@ struct MapSystem : public System
 		{
 			for (auto& region : maps[entity].m_Regions)
 			{
-				g_LandShader.setUniform("u_Color", sf::Glsl::Vec4(region.m_HighlightColor));
+				maps[entity].m_LandShader.setUniform("u_Color", sf::Glsl::Vec4(region.m_HighlightColor));
 				Window::GetWindow()->draw(region.m_VertexArray, maps[entity].m_RenderStates);
 			}
 		}
@@ -185,6 +185,7 @@ struct MapSystem : public System
 			maps[entity].m_Regions[regionIndex].m_RegionPositions[squareIndex] = Vector2DInt(spritePositionX, spritePositionY);
 			squareIndex++;
 		}
+		//MapInfo::SetMapRegions(maps[entity].m_Regions);
 		MapInfo::SetRegionPositions(maps[entity].m_Regions[regionIndex].m_RegionPositions, regionIndex);
 	}
 };

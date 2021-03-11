@@ -25,8 +25,6 @@ public:
 	~MapRegion() { m_MapSquares.clear(); }
 };
 
-sf::Shader g_LandShader;
-
 struct Map : public Component
 {
 	std::vector<MapRegion> m_Regions;
@@ -43,6 +41,8 @@ struct Map : public Component
 	sf::RenderStates m_RenderStates;
 	float m_TileSize = 32;
 	float m_HalfTileSize;
+
+	sf::Shader m_LandShader;
 
 	Map()
 	{}
@@ -199,10 +199,31 @@ struct Map : public Component
 
 	void LoadShadersAndCreateRenderStates()
 	{
-		//sf::Shader landShader;
-		g_LandShader.loadFromFile("Assets/Shaders/LandShader.vert", "Assets/Shaders/LandShader.frag");
+		m_LandShader.loadFromFile("Assets/Shaders/LandShader.vert", "Assets/Shaders/LandShader.frag");
 
-		m_RenderStates.shader = &g_LandShader;
+		m_RenderStates.shader = &m_LandShader;
+	}
+
+	Map& Map::operator =(const Map& other)
+	{
+		m_Regions = other.m_Regions;
+		m_LandTexture = other.m_LandTexture;
+		m_LandSprite = other.m_LandSprite;
+
+		m_XOffset = other.m_XOffset;
+		m_YOffset = other.m_YOffset;
+		m_MapScale = other.m_MapScale;
+
+		m_ChangeFlag = other.m_ChangeFlag;
+		m_UpdateMapInfo = other.m_UpdateMapInfo;
+
+		m_RenderStates = other.m_RenderStates;
+		m_TileSize = other.m_TileSize;
+		m_HalfTileSize = other.m_HalfTileSize;
+
+		LoadShadersAndCreateRenderStates();
+
+		return *this;
 	}
 
 	size_t GetRegionPosition(const char& c)
