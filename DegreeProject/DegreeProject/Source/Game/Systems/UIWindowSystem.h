@@ -14,7 +14,6 @@ struct UIWindowSystem : System
 	EntityManager* m_EntityManager = nullptr;
 	sf::RenderWindow* m_Window = nullptr;
 	AssetHandler* m_AssetHandler= nullptr;
-	sf::RectangleShape m_ClickArea;
 	Transform* windowUIPortraitTransform = nullptr;
 
 	// Constructor, Runs when the system is initialized
@@ -91,16 +90,14 @@ struct UIWindowSystem : System
 	{
 		if (InputHandler::GetRightMouseClicked() == true && InputHandler::GetPlayerUnitSelected() == false && !UIWindow->m_Visible)
 		{
-			Vector2D mousePosition = InputHandler::GetMousePosition();
-			m_ClickArea.setSize(sf::Vector2f(32.0f, 32.0f));
-			m_ClickArea.setPosition(mousePosition.x - m_ClickArea.getSize().x * 0.5f, mousePosition.y - m_ClickArea.getSize().x * 0.5f);
-			std::vector<std::vector<Vector2DInt> > regions = MapInfo::GetRegions();
+			Vector2DInt mousePosition = InputHandler::GetMouseMapPosition();
+			std::vector<MapRegion> regions = MapInfo::GetMapRegions();
 			unsigned int regionIndex = 0;
-			for each (std::vector<Vector2DInt> region in regions)
+			for each (MapRegion region in regions)
 			{
-				for each (Vector2DInt position in region)
+				for each (Vector2DInt position in region.m_MapSquares)
 				{
-					if (m_ClickArea.getGlobalBounds().contains((float)position.x, (float)position.y))
+					if (position == mousePosition)
 					{
 						UIWindow->m_RegionTax = MapInfo::GetRegionTax(regionIndex);
 						UIWindow->m_RegionName = MapInfo::GetRegionName(regionIndex);

@@ -14,7 +14,7 @@ void Pathfinding::Init(const std::vector<MapRegion>& map)
 			m_Map.insert(std::make_pair(key, newNode));
 		}
 	}
-	for (auto& mapPair : m_Map)
+	for (auto mapPair : m_Map)
 	{
 		CalculateNeighbours(mapPair.second);
 	}

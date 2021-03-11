@@ -7,6 +7,7 @@
 #include "ECS/Components/Transform.h"
 #include "Game/Components/PlayerUnit.h"
 #include "Engine/InputHandler.h"
+#include "Game/Pathfinding.h"
 
 struct PlayerUnitSystem : System
 {
@@ -17,6 +18,7 @@ struct PlayerUnitSystem : System
 	sf::RectangleShape m_DragWindow;
 	bool m_Draging = false;
 	Vector2D m_MousePosition;
+	std::list<Vector2DInt> m_Path;
 
 	// Constructor, Runs when the system is initialized
 	// Do any kind of init here but remember to register
@@ -27,6 +29,21 @@ struct PlayerUnitSystem : System
 		AddComponentSignature<PlayerUnit>();
 		m_EntityManager = &EntityManager::Get();
 		m_Window = Window::GetWindow();
+	}
+
+	virtual void Start() override
+	{
+		Pathfinding::Init(MapInfo::GetMapRegions());
+
+		Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
+		PlayerUnit* playerUnits = m_EntityManager->GetComponentArray<PlayerUnit>();
+
+		for (auto entity : m_Entities)
+		{
+			Vector2DInt startPosition = MapInfo::GetRegionPositions(0)[30];
+			transforms[entity].m_Position = Vector2D(startPosition.x, startPosition.y);
+			playerUnits[entity].m_Shape.setPosition(startPosition.x, startPosition.y);
+		}
 	}
 
 	// Update gets called every frame and loops through every entity that has the signature that
@@ -99,7 +116,7 @@ struct PlayerUnitSystem : System
 	{
 		if (InputHandler::GetLeftMouseClicked() == true && m_Draging == false)
 		{
-			if (transform->m_Position.NearlyEqual(m_MousePosition, m_ClickTolerance,  playerUnit->m_Shape.getLocalBounds().width * 0.5f, playerUnit->m_Shape.getLocalBounds().height * 0.5f))
+			if (transform->m_Position.NearlyEqual(m_MousePosition, m_ClickTolerance,  playerUnit->m_Size * 0.5f, playerUnit->m_Size * 0.5f))
 			{
 				playerUnit->m_Selected = true;
 				playerUnit->m_OutlineThickness = 1.0f;
@@ -129,16 +146,39 @@ struct PlayerUnitSystem : System
 	{
 		if (InputHandler::GetRightMouseClicked() == true && playerUnit->m_Selected == true)
 		{
-			playerUnit->m_Target = InputHandler::GetMousePosition();
-			Vector2D positionCenter = Vector2D(transform->m_Position.x + playerUnit->m_Shape.getLocalBounds().width * 0.5f, transform->m_Position.y + playerUnit->m_Shape.getLocalBounds().height * 0.5f);
-			playerUnit->m_Direction = playerUnit->m_Target - positionCenter;
-			playerUnit->m_Direction.Normalized();
+			m_Path = Pathfinding::FindPath(Vector2DInt(transform->m_Position.x, transform->m_Position.y), InputHandler::GetMouseMapPosition());
+			Vector2D firstPosition = Vector2D(m_Path.front().x, m_Path.front().y);
+			playerUnit->m_Target = firstPosition;
+			playerUnit->m_Direction = firstPosition.Normalized();
+			playerUnit->m_Moving = true;
+			//for each (Vector2DInt position in m_Path)
+			//{
+			//	LOG_INFO("{0}", position);
+			//}
 		}
-		if (!transform->m_Position.NearlyEqual(playerUnit->m_Target, m_MoveTolerance, playerUnit->m_Shape.getLocalBounds().width * 0.5f, playerUnit->m_Shape.getLocalBounds().height * 0.5f))
+		if (playerUnit->m_Moving == true)
 		{
-			Vector2D movement = playerUnit->m_Direction * playerUnit->m_Speed * Time::DeltaTime();
-			transform->Translate(movement);
-			playerUnit->m_Shape.setPosition(transform->m_Position.x, transform->m_Position.y);
+			if (!transform->m_Position.NearlyEqual(playerUnit->m_Target, m_MoveTolerance, playerUnit->m_Shape.getLocalBounds().width * 0.5f, playerUnit->m_Shape.getLocalBounds().height * 0.5f))
+			{
+				Vector2D movement = playerUnit->m_Direction * playerUnit->m_Speed * Time::DeltaTime();
+				transform->Translate(movement);
+				playerUnit->m_Shape.setPosition(transform->m_Position.x, transform->m_Position.y);
+			}
+			else
+			{
+				transform->m_Position = playerUnit->m_Target;
+				if (m_Path.size() != 0)
+				{
+					m_Path.pop_front();
+					Vector2D nextPosition = Vector2D(m_Path.front().x, m_Path.front().y);
+					playerUnit->m_Target = nextPosition;
+					playerUnit->m_Direction = nextPosition.Normalized();
+				}
+				else
+				{
+					playerUnit->m_Moving = false;
+				}
+			}
 		}
 	}
 };

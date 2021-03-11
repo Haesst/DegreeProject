@@ -1,5 +1,6 @@
 #include "InputHandler.h"
 #include "Window.h"
+#include <Engine/Log.h>
 
 bool InputHandler::m_LeftMouseClicked = false;
 bool InputHandler::m_RightMouseClicked = false;
@@ -14,7 +15,7 @@ const float InputHandler::MIN_ZOOM = 100.0f;
 const float InputHandler::MOVE_SPEED = 25.0f;
 const float InputHandler::ZOOM_SPEED = 0.1f;
 Vector2D InputHandler::m_MousePosition = Vector2D(0.0f, 0.0f);
-Vector2DInt InputHandler::m_MouseScreenPosition = Vector2DInt(0, 0);
+Vector2DInt InputHandler::m_MouseMapPosition = Vector2DInt(0, 0);
 
 void InputHandler::HandleInputEvents()
 {
@@ -104,14 +105,16 @@ void InputHandler::HandleInputEvents()
 				if (event.key.code == sf::Mouse::Left)
 				{
 					m_LeftMouseClicked = true;
-					m_MouseScreenPosition = Vector2DInt(event.mouseButton.x, event.mouseButton.y);
-					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(m_MouseScreenPosition.x, m_MouseScreenPosition.y));
+					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+					m_MouseMapPosition = Vector2DInt((m_MousePosition.x - 100 + 16) / 32, (m_MousePosition.y - 100 + 16) / 32);
+					//LOG_INFO("{0}", m_MouseMapPosition);
 				}
 				if (event.key.code == sf::Mouse::Right)
 				{
 					m_RightMouseClicked = true;
-					m_MouseScreenPosition = Vector2DInt(event.mouseButton.x, event.mouseButton.y);
-					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(m_MouseScreenPosition.x, m_MouseScreenPosition.y));
+					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+					m_MouseMapPosition = Vector2DInt((m_MousePosition.x - 100 + 16) / 32, (m_MousePosition.y - 100 + 16) / 32);
+					//LOG_INFO("{0}", m_MouseMapPosition);
 				}
 				if (event.key.code == sf::Mouse::Middle)
 				{
@@ -164,8 +167,8 @@ void InputHandler::HandleInputEvents()
 			case sf::Event::MouseMoved:
 			{
 				m_MouseMoved = true;
-				m_MouseScreenPosition = Vector2DInt(event.mouseMove.x, event.mouseMove.y);
-				m_MousePosition = window->mapPixelToCoords(sf::Vector2i(m_MouseScreenPosition.x, m_MouseScreenPosition.y));
+				m_MouseMapPosition = Vector2DInt(event.mouseMove.x, event.mouseMove.y);
+				m_MousePosition = window->mapPixelToCoords(sf::Vector2i(m_MouseMapPosition.x, m_MouseMapPosition.y));
 				break;
 			}
 			case sf::Event::MouseEntered:
@@ -216,9 +219,9 @@ Vector2D InputHandler::GetMousePosition()
 	return m_MousePosition;
 }
 
-Vector2DInt InputHandler::GetMouseScreenPosition()
+Vector2DInt InputHandler::GetMouseMapPosition()
 {
-	return m_MouseScreenPosition;
+	return m_MouseMapPosition;
 }
 
 int InputHandler::GetMouseScrollDirection()

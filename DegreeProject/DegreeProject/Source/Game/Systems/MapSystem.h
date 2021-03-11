@@ -41,8 +41,6 @@ struct MapSystem : public System
 				regionIndex++;
 			}
 		}
-
-		Pathfinding::Init(MapInfo::GetMapRegions());
 	}
 
 	virtual void Update() override
@@ -174,12 +172,6 @@ struct MapSystem : public System
 		MapInfo::SetRegionTax(maps[entity].m_Regions[regionIndex].m_RegionTax, regionIndex);
 		MapInfo::SetOwnerName(std::to_string(maps[entity].m_Regions[regionIndex].m_RegionId), regionIndex);
 		unsigned int squareIndex = 0;
-		//float size = region.m_VertexArray.getVertexCount();
-		//for (unsigned int vertexIndex = 0; vertexIndex < size; vertexIndex + 6)
-		//{
-		//	maps[entity].m_Regions[regionIndex].m_RegionPositions[squareIndex] = Vector2DInt(region.m_VertexArray[vertexIndex].position.x, region.m_VertexArray[vertexIndex].position.x);
-		//	squareIndex++;
-		//}
 		for (auto& square : region.m_MapSquares)
 		{
 			float spritePositionX = (square.x * maps[entity].m_TileSize) - maps[entity].m_HalfTileSize + maps[entity].m_XOffset;
@@ -187,7 +179,7 @@ struct MapSystem : public System
 			maps[entity].m_Regions[regionIndex].m_RegionPositions[squareIndex] = Vector2DInt(spritePositionX, spritePositionY);
 			squareIndex++;
 		}
-		//MapInfo::SetMapRegions(maps[entity].m_Regions);
+		MapInfo::SetMapRegions(maps[entity].m_Regions);
 		MapInfo::SetRegionPositions(maps[entity].m_Regions[regionIndex].m_RegionPositions, regionIndex);
 	}
 };

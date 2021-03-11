@@ -15,6 +15,7 @@ struct PlayerUnit : public Component
 	float m_Size = 32.0f;
 	float m_OutlineThickness = 0.0f;
 	bool m_Selected = false;
+	bool m_Moving = false;
 
 	Vector2D m_Direction = Vector2D(0.0f, 0.0f);
 	Vector2D m_Target = Vector2D(1920.0f, 1080.0f);
