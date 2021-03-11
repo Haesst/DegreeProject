@@ -7,7 +7,7 @@
 #include "Engine/Window.h"
 
 #include "ECS/Components/Transform.h"
-#include "Game/Components/MovingSprite.h";
+#include "Game/Components/MovingSprite.h"
 
 struct ECSExampleSystem : System
 {
@@ -24,7 +24,7 @@ struct ECSExampleSystem : System
 	}
 
 	// Update gets called every frame and loops through every entity that has the signature that
-	// the system has registred and do the necessary update
+	// the system has registered and do the necessary update
 	virtual void Update() override
 	{
 		Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
@@ -38,7 +38,7 @@ struct ECSExampleSystem : System
 		}
 	}
 
-	// Render get's called during the engines render call. This is used to draw stuff.
+	// Render gets called during the engines render call. This is used to draw stuff.
 	// Both Render() and Update() can be omitted.
 	virtual void Render() override
 	{}
