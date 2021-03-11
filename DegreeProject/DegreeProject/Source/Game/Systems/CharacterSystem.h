@@ -7,7 +7,7 @@
 #include "Engine/Window.h"
 
 #include "ECS/Components/Transform.h"
-#include "Game/Components/CharacterComponent.h";
+#include "Game/Components/CharacterComponent.h"
 
 struct CharacterSystem : System
 {
@@ -59,7 +59,7 @@ struct CharacterSystem : System
 		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 		auto& regions = characters[losingEntity].m_OwnedRegionIDs;
 
-		for (int i = 0; i < regions.size(); i++)
+		for (unsigned int i = 0; i < regions.size(); i++)
 		{
 			if (regions[i] == regionId)
 			{

@@ -5,8 +5,8 @@
 #include "Engine/Time.h"
 #include "Engine/Window.h"
 #include "ECS/Components/Transform.h"
-#include "Game/Components/UIWindow.h";
-#include "Game/Components/UISpriteRenderer.h";
+#include "Game/Components/UIWindow.h"
+#include "Game/Components/UISpriteRenderer.h"
 #include "Engine/InputHandler.h"
 
 struct UIWindowSystem : System
@@ -53,19 +53,19 @@ struct UIWindowSystem : System
 			UIWindows[entity].m_OwnerNameText.setCharacterSize(UIWindows[entity].m_CharacterSize);
 			UIWindows[entity].m_OwnerNameText.setStyle(UIWindows[entity].m_Style);
 			UIWindows[entity].m_OwnerNameText.setString("OwnerId: " + UIWindows[entity].m_OwnerName);
-			UIWindows[entity].m_OwnerNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(UIWindows[entity].m_SizeX * 0.1f, UIWindows[entity].m_SizeY * 0.1f)));
+			UIWindows[entity].m_OwnerNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.1f))));
 			UIWindows[entity].m_OwnerNameText.setFillColor(sf::Color::Red);
 			UIWindows[entity].m_RegionNameText.setFont(UIWindows[entity].m_Font);
 			UIWindows[entity].m_RegionNameText.setCharacterSize(UIWindows[entity].m_CharacterSize);
 			UIWindows[entity].m_RegionNameText.setStyle(UIWindows[entity].m_Style);
 			UIWindows[entity].m_RegionNameText.setString("Region: " + UIWindows[entity].m_RegionName);
-			UIWindows[entity].m_RegionNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(UIWindows[entity].m_SizeX * 0.1f, UIWindows[entity].m_SizeY * 0.2f)));
+			UIWindows[entity].m_RegionNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.2f))));
 			UIWindows[entity].m_RegionNameText.setFillColor(sf::Color::Red);
 			UIWindows[entity].m_TaxText.setFont(UIWindows[entity].m_Font);
 			UIWindows[entity].m_TaxText.setCharacterSize(UIWindows[entity].m_CharacterSize);
 			UIWindows[entity].m_TaxText.setStyle(UIWindows[entity].m_Style);
 			UIWindows[entity].m_TaxText.setString("Tax: " + std::to_string(UIWindows[entity].m_RegionTax));
-			UIWindows[entity].m_TaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(UIWindows[entity].m_SizeX * 0.1f, UIWindows[entity].m_SizeY * 0.3f)));
+			UIWindows[entity].m_TaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.3f))));
 			UIWindows[entity].m_TaxText.setFillColor(sf::Color::Red);
 		}
 	}
@@ -99,7 +99,7 @@ struct UIWindowSystem : System
 			{
 				for each (Vector2DInt position in region)
 				{
-					if (m_ClickArea.getGlobalBounds().contains(position.x, position.y))
+					if (m_ClickArea.getGlobalBounds().contains((float)position.x, (float)position.y))
 					{
 						UIWindow->m_RegionTax = MapInfo::GetRegionTax(regionIndex);
 						UIWindow->m_RegionName = MapInfo::GetRegionName(regionIndex);

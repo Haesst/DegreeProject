@@ -5,7 +5,7 @@
 #include "Engine/Time.h"
 #include "Engine/Window.h"
 #include "ECS/Components/Transform.h"
-#include "Game/Components/UIText.h";
+#include "Game/Components/UIText.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 
@@ -111,9 +111,9 @@ struct UITextSystem : System
 			regionIndex++;
 		}
 		Vector2DInt diagonal = rightMostPosition - leftMostPosition;
-		UIText->m_CharacterSize = diagonal.x * 0.1f;
+		UIText->m_CharacterSize = (unsigned int)(diagonal.x * 0.1f);
 		UIText->m_PositionX = diagonal.x * 0.5f + leftMostPosition.x - UIText->m_CharacterSize * 3;
 		UIText->m_PositionY = diagonal.y * 0.5f + leftMostPosition.y - UIText->m_CharacterSize;
-		UIText->m_Rotation = std::atan2f(diagonal.y, diagonal.x) * 180.0f / M_PI;
+		UIText->m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
 	}
 };

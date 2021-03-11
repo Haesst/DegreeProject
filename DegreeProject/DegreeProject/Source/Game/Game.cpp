@@ -21,7 +21,6 @@
 
 Game::~Game()
 {
-	delete m_MapDrawer;
 	delete m_AssetHandler;
 }
 
@@ -39,7 +38,8 @@ void Game::Init()
 void Game::Run()
 {
 	sf::RenderWindow* internalWindow = m_Window->GetWindow();
-	sf::View view(sf::Vector2f(m_Resolution.x * 0.5f, m_Resolution.y * 0.5f), sf::Vector2f(m_Resolution.x, m_Resolution.y));
+	sf::Vector2f floatResolution = sf::Vector2f((float)m_Resolution.x, (float)m_Resolution.y);
+	sf::View view(floatResolution * 0.5f, floatResolution);
 	internalWindow->setView(view);
 
 	EntityManager::Get().Start();
@@ -107,14 +107,14 @@ void Game::AddEntitys()
 	entityManager->AddComponent<Map>(map, m_AssetHandler->GetTextureAtPath("Assets/Graphics/TileSet.png"));
 	Map* mapComp = entityManager->GetComponentArray<Map>();
 
-	//Create PlayerUnit0
+	//Create PlayerUnit 0
 	EntityID playerUnit0 = entityManager->AddNewEntity();
 	entityManager->AddComponent<PlayerUnit>(playerUnit0);
 	Transform* playerUnitTransform0 = &entityManager->GetComponent<Transform>(playerUnit0);
 	playerUnitTransform0->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.5f };
 	entityManager->AddComponent<SpriteRenderer>(playerUnit0, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
 
-	//Create PlayerUnit1
+	//Create PlayerUnit 1
 	EntityID playerUnit1 = entityManager->AddNewEntity();
 	entityManager->AddComponent<PlayerUnit>(playerUnit1);
 	Transform* playerUnitTransform1 = &entityManager->GetComponent<Transform>(playerUnit1);
@@ -125,51 +125,91 @@ void Game::AddEntitys()
 	EntityID char0 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id0{ 0, 1, 2, 3, 4 };
 	entityManager->AddComponent<CharacterComponent>(char0, Title::King, "Kingdom of Milano", "Erik", id0, 100, 5, false, sf::Color::Red, 0);
-
 	CharacterComponent* characterComponent0 = &entityManager->GetComponent<CharacterComponent>(char0);
-	entityManager->AddComponent<SpriteRenderer>(char0, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
-	Transform* characterTransform0 = &entityManager->GetComponent<Transform>(char0);
-	characterTransform0->m_Position = { m_Window->GetWindow()->getSize().x * 0.3f, m_Window->GetWindow()->getSize().y * 0.2f };
+
+	//Create Character Castle 0
+	EntityID charCastle0 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charCastle0, "Assets/Graphics/Castle.png", 32, 32, m_AssetHandler);
+	Transform* characterCastleTransform0 = &entityManager->GetComponent<Transform>(charCastle0);
+	characterCastleTransform0->m_Position = { m_Window->GetWindow()->getSize().x * 0.6f, m_Window->GetWindow()->getSize().y * 0.25f };
+
+	//Create Character Unit 0
+	EntityID charUnit0 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charUnit0, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterUnitTransform0 = &entityManager->GetComponent<Transform>(charUnit0);
+	characterUnitTransform0->m_Position = { m_Window->GetWindow()->getSize().x * 0.65f, m_Window->GetWindow()->getSize().y * 0.25f };
 
 	//Create Character 1
 	EntityID char1 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id1{ 5, 6, 7, 8, 9 };
 	entityManager->AddComponent<CharacterComponent>(char1, Title::King, "Roman Republic", "Robin", id1, 100, 10, false, sf::Color::Green, 0);
-
 	CharacterComponent* characterComponent1 = &entityManager->GetComponent<CharacterComponent>(char1);
-	entityManager->AddComponent<SpriteRenderer>(char1, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
-	Transform* characterTransform1 = &entityManager->GetComponent<Transform>(char1);
-	characterTransform1->m_Position = { m_Window->GetWindow()->getSize().x * 0.4f, m_Window->GetWindow()->getSize().y * 0.3f };
+
+	//Create Character Castle 1
+	EntityID charCastle1 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charCastle1, "Assets/Graphics/Castle.png", 32, 32, m_AssetHandler);
+	Transform* characterCastleTransform1 = &entityManager->GetComponent<Transform>(charCastle1);
+	characterCastleTransform1->m_Position = { m_Window->GetWindow()->getSize().x * 0.7f, m_Window->GetWindow()->getSize().y * 0.4f };
+	
+	//Create Character Unit 1
+	EntityID charUnit1 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charUnit1, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterUnitTransform1 = &entityManager->GetComponent<Transform>(charUnit1);
+	characterUnitTransform1->m_Position = { m_Window->GetWindow()->getSize().x * 0.65f, m_Window->GetWindow()->getSize().y * 0.35f };
 
 	//Create Character 2
 	EntityID char2 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id2{ 12, 13, 14, 15, 16 };
 	entityManager->AddComponent<CharacterComponent>(char2, Title::King, "Sicilian Mobsters", "Fredrik", id2, 100, 10, false, sf::Color::Color(165, 42, 42), 0);
-
 	CharacterComponent* characterComponent2 = &entityManager->GetComponent<CharacterComponent>(char2);
-	entityManager->AddComponent<SpriteRenderer>(char2, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
-	Transform* characterTransform2 = &entityManager->GetComponent<Transform>(char2);
-	characterTransform2->m_Position = { m_Window->GetWindow()->getSize().x * 0.725f, m_Window->GetWindow()->getSize().y * 0.5f };
+
+	//Create Character Castle 2
+	EntityID charCastle2 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charCastle2, "Assets/Graphics/Castle.png", 32, 32, m_AssetHandler);
+	Transform* characterCastleTransform2 = &entityManager->GetComponent<Transform>(charCastle2);
+	characterCastleTransform2->m_Position = { m_Window->GetWindow()->getSize().x * 1.1f, m_Window->GetWindow()->getSize().y * 1.0f };
+
+	//Create Character Unit 2
+	EntityID charUnit2 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charUnit2, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterUnitTransform2 = &entityManager->GetComponent<Transform>(charUnit2);
+	characterUnitTransform2->m_Position = { m_Window->GetWindow()->getSize().x * 1.2f, m_Window->GetWindow()->getSize().y * 0.7f };
 
 	//Create Character 3
 	EntityID char3 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id3{ 10 };
 	entityManager->AddComponent<CharacterComponent>(char3, Title::Baron, "Roman Puppet", "Robin", id3, 100, 10, false, sf::Color::Yellow, 0);
-
 	CharacterComponent* characterComponent3 = &entityManager->GetComponent<CharacterComponent>(char3);
-	entityManager->AddComponent<SpriteRenderer>(char3, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
-	Transform* characterTransform3 = &entityManager->GetComponent<Transform>(char3);
-	characterTransform3->m_Position = { m_Window->GetWindow()->getSize().x * 0.5f, m_Window->GetWindow()->getSize().y * 0.45f };
+
+	//Create Character Castle 3
+	EntityID charCastle3 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charCastle3, "Assets/Graphics/Castle.png", 32, 32, m_AssetHandler);
+	Transform* characterCastleTransform3 = &entityManager->GetComponent<Transform>(charCastle3);
+	characterCastleTransform3->m_Position = { m_Window->GetWindow()->getSize().x * 0.9f, m_Window->GetWindow()->getSize().y * 0.625f };
+	
+	//Create Character Unit 3
+	EntityID charUnit3 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charUnit3, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterUnitTransform3 = &entityManager->GetComponent<Transform>(charUnit3);
+	characterUnitTransform3->m_Position = { m_Window->GetWindow()->getSize().x * 0.95f, m_Window->GetWindow()->getSize().y * 0.6f };
 
 	//Create Character 4
 	EntityID char4 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id4{ 11 };
 	entityManager->AddComponent<CharacterComponent>(char4, Title::Baron, "Sicilian Vassal", "Fredrik", id4, 100, 10, false, sf::Color::Color(128, 128, 128), 0);
-
 	CharacterComponent* characterComponent4 = &entityManager->GetComponent<CharacterComponent>(char4);
-	entityManager->AddComponent<SpriteRenderer>(char4, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
-	Transform* characterTransform4 = &entityManager->GetComponent<Transform>(char4);
-	characterTransform4->m_Position = { m_Window->GetWindow()->getSize().x * 0.625f, m_Window->GetWindow()->getSize().y * 0.45f };
+
+	//Create Character Castle 4
+	EntityID charCastle4 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charCastle4, "Assets/Graphics/Castle.png", 32, 32, m_AssetHandler);
+	Transform* characterCastleTransform4 = &entityManager->GetComponent<Transform>(charCastle4);
+	characterCastleTransform4->m_Position = { m_Window->GetWindow()->getSize().x * 1.1f, m_Window->GetWindow()->getSize().y * 0.6f };
+
+	//Create Character Unit 4
+	EntityID charUnit4 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charUnit4, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterUnitTransform4 = &entityManager->GetComponent<Transform>(charUnit4);
+	characterUnitTransform4->m_Position = { m_Window->GetWindow()->getSize().x * 1.0f, m_Window->GetWindow()->getSize().y * 0.6f };
 
 	entityManager->AddComponent<WarmindComponent>(char1, 1, char0);
 	entityManager->AddComponent<WarmindComponent>(char0, 4, char1);
