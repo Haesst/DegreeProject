@@ -41,6 +41,8 @@ struct MapSystem : public System
 				regionIndex++;
 			}
 		}
+
+		Pathfinding::Init(MapInfo::GetMapRegions());
 	}
 
 	virtual void Update() override

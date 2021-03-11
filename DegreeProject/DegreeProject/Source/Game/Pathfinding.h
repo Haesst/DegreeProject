@@ -9,6 +9,14 @@ struct Node
 	std::vector<Node> m_Slowdowns = std::vector<Node>();
 	std::vector<Node> m_Obstacles = std::vector<Node>();
 
+	float m_GCost = FLT_MAX;
+	float m_HCost = FLT_MAX;
+	float m_FCost = FLT_MAX;
+
+	Node* m_Parent;
+
+	bool m_Visited = false;
+
 	Vector2DInt m_Position;
 
 	Node()
@@ -53,12 +61,16 @@ struct Node
 
 class Pathfinding
 {
-	std::map<Vector2DInt, Node> m_Map = std::map<Vector2DInt, Node>();
+public:
+	static float CalculateHCost(const Node& a, const Node& b);
+	static float CalculateGCost(const Node& a, const Node& b);
+	static std::map<Vector2DInt, Node> m_Map;
 
-	void Init(const std::vector<MapRegion>& map);
+	static void Init(const std::vector<MapRegion>& map);
 
-	void CalculateNeighbours(Node& node);
+	static void CalculateNeighbours(Node& node);
 
-	std::vector<Vector2DInt> FindPath(Vector2DInt start, Vector2DInt end);
+	static void ClearNodeData();
 
+	static std::list<Vector2DInt> FindPath(Vector2DInt start, Vector2DInt end);
 };
