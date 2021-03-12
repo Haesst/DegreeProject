@@ -5,7 +5,7 @@
 
 struct Node
 {
-	std::vector<Node> m_Neighbours = std::vector<Node>();
+	std::vector<Node*> m_Neighbours = std::vector<Node*>();
 
 	float m_GCost = FLT_MAX;
 	float m_HCost = FLT_MAX;
@@ -26,18 +26,27 @@ struct Node
 	{
 		m_Position = position;
 	}
+
+	bool operator== (const Node& other)
+	{
+		return other.m_Position.x == m_Position.x && other.m_Position.y == m_Position.y;
+	}
 };
 
 class Pathfinding
 {
 public:
+	~Pathfinding();
 	static float CalculateHCost(const Node& a, const Node& b);
 	static float CalculateGCost(const Node& a, const Node& b);
-	static std::map<Vector2DInt, Node> m_Map;
+
+	static std::vector<Node*> m_Map;
+	static bool IsInMap(const Vector2DInt& key);
+	static Node* GetNodeFromKey(const Vector2DInt& key);
 
 	static void Init(const std::vector<MapRegion>& map);
 
-	static void CalculateNeighbours(Node& node);
+	static void CalculateNeighbours(Node* node);
 
 	static void ClearNodeData();
 

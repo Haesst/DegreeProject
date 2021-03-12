@@ -1,7 +1,7 @@
 #include "Game/Pathfinding.h"
 #include <list>
 
-std::map<Vector2DInt, Node> Pathfinding::m_Map;
+std::vector<Node*> Pathfinding::m_Map;
 
 void Pathfinding::Init(const std::vector<MapRegion>& map)
 {
@@ -9,14 +9,21 @@ void Pathfinding::Init(const std::vector<MapRegion>& map)
 	{
 		for (const auto& square : region.m_MapSquares)
 		{
-			Vector2DInt key = Vector2DInt(square.x, square.y);
-			Node newNode(key);
-			m_Map.insert(std::make_pair(key, newNode));
+			Vector2DInt pos = { square.x, square.y };
+			m_Map.push_back(new Node{ pos });
 		}
 	}
-	for (auto mapPair : m_Map)
+	for (auto* node : m_Map)
 	{
-		CalculateNeighbours(mapPair.second);
+		CalculateNeighbours(node);
+	}
+}
+
+Pathfinding::~Pathfinding()
+{
+	for (auto* node : m_Map)
+	{
+		delete node;
 	}
 }
 
@@ -30,36 +37,67 @@ float Pathfinding::CalculateGCost(const Node& a, const Node& b)
 	return 0.0f;
 }
 
-void Pathfinding::CalculateNeighbours(Node& node)
+void Pathfinding::CalculateNeighbours(Node* node)
 {
-	for (int x = -1; x < 2; x++)
+	std::vector<Vector2DInt> neighbourPos = {
+		{-1, -1},
+		{0, -1},
+		{1, -1},
+		{-1, 0},
+		{1, 0},
+		{-1, 1},
+		{0, 1},
+		{1, 1}
+	};
+
+	for (auto& n : neighbourPos)
 	{
-		for (int y = -1; y < 2; y++)
+		Vector2DInt nPos = node->m_Position + n;
+
+		Node* neigbourNode = GetNodeFromKey(nPos);
+
+		if (neigbourNode != nullptr)
 		{
-			if (x == 0 && y == 0)
-			{
-				continue;
-			}
-			Vector2DInt neighbourPosition = node.m_Position + Vector2DInt(x, y);
-			if (m_Map.find(neighbourPosition) != m_Map.end())
-			{
-				node.m_Neighbours.push_back(m_Map[neighbourPosition]);
-			}
+			node->m_Neighbours.push_back(neigbourNode);
 		}
 	}
 }
 
+bool Pathfinding::IsInMap(const Vector2DInt& key)
+{
+	for (auto* n : m_Map)
+	{
+		if (n->m_Position == key)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+Node* Pathfinding::GetNodeFromKey(const Vector2DInt& key)
+{
+	for (auto* n : m_Map)
+	{
+		if (n->m_Position == key)
+		{
+			return n;
+		}
+	}
+
+	return nullptr;
+}
+
 void Pathfinding::ClearNodeData()
 {
-	for (auto& pair : m_Map)
+	for (auto* node : m_Map)
 	{
-		Node& node = pair.second;
-
-		node.m_FCost = FLT_MAX;
-		node.m_GCost = FLT_MAX;
-		node.m_FCost = FLT_MAX;
-		node.m_Visited = false;
-		node.m_Parent = nullptr;
+		node->m_FCost = FLT_MAX;
+		node->m_GCost = FLT_MAX;
+		node->m_FCost = FLT_MAX;
+		node->m_Visited = false;
+		node->m_Parent = nullptr;
 	}
 }
 
@@ -69,36 +107,59 @@ std::list<Vector2DInt> Pathfinding::FindPath(Vector2DInt start, Vector2DInt end)
 	//h = current node -> goal
 	//g = Sum of f and h
 
-	std::list<Node> openList;
-	std::list<Vector2DInt> closedList;
-	openList.push_back(start);
+	Node* startNode = GetNodeFromKey(start);
+	Node* endNode = GetNodeFromKey(end);
 
+	if (startNode == nullptr)
+	{
+		LOG_WARN("Startnode is a nullptr");
+		return std::list<Vector2DInt>();
+	}
+	if (endNode == nullptr)
+	{
+		LOG_WARN("Endnode is a nullptr");
+		return std::list<Vector2DInt>();
+	}
+
+	std::list<Node*> openList;
+	openList.push_back(startNode);
+	startNode->m_Visited = false;
 
 	while (!openList.empty())
 	{
-		openList.sort([](const Node& lhs, const Node& rhs) { return lhs.m_GCost < rhs.m_GCost; });
-		Node node = openList.front();
-		openList.pop_front();
-		node.m_Visited = true;
-
-		for (auto& neighbour : node.m_Neighbours)
+		while (!openList.empty() && openList.front()->m_Visited)
 		{
-			if (!neighbour.m_Visited)
+			openList.pop_front();
+		}
+
+		if (openList.empty())
+		{
+			break;
+		}
+
+		openList.sort([](const Node* lhs, const Node* rhs) { return lhs->m_GCost < rhs->m_GCost; });
+		Node* node = openList.front();
+
+		node->m_Visited = true;
+
+		for (auto& neighbour : node->m_Neighbours)
+		{
+			if (!neighbour->m_Visited)
 			{
-				if (neighbour.m_Position == end)
+				if (neighbour->m_Position == end)
 				{
-					closedList.push_back(node.m_Position);
-					return closedList;
+					endNode->m_Parent = node;
+					break;
 				}
 
-				float possibleLowerCost = node.m_FCost + CalculateHCost(node, neighbour);
+				float possibleLowerCost = node->m_FCost + CalculateHCost(*node, *neighbour);
 
-				if (possibleLowerCost < neighbour.m_FCost)
+				if (possibleLowerCost < neighbour->m_FCost)
 				{
-					neighbour.m_Parent = &node;
-					neighbour.m_FCost = possibleLowerCost;
-					neighbour.m_HCost = CalculateHCost(node, m_Map[end]);
-					neighbour.m_GCost = neighbour.m_FCost + neighbour.m_HCost;
+					neighbour->m_Parent = node;
+					neighbour->m_FCost = possibleLowerCost;
+					neighbour->m_HCost = CalculateHCost(*node, *endNode);
+					neighbour->m_GCost = neighbour->m_FCost + neighbour->m_HCost;
 				}
 
 				openList.push_back(neighbour);
@@ -108,11 +169,14 @@ std::list<Vector2DInt> Pathfinding::FindPath(Vector2DInt start, Vector2DInt end)
 
 	std::list<Vector2DInt> finalPath;
 
-	Node* currentNode = &m_Map[end];
+	Node* currentNode = endNode;
 
 	while (currentNode != nullptr)
 	{
-		finalPath.push_back(currentNode->m_Position);
+		if (currentNode->m_Position != start)
+		{
+			finalPath.push_back(currentNode->m_Position);
+		}
 		currentNode = currentNode->m_Parent;
 	}
 

@@ -40,7 +40,7 @@ struct PlayerUnitSystem : System
 
 		for (auto entity : m_Entities)
 		{
-			Vector2DInt startPosition = MapInfo::GetRegionPositions(0)[30];
+			Vector2DInt startPosition = MapInfo::GetRegionPositions(0)[0];
 			transforms[entity].m_Position = Vector2D(startPosition.x, startPosition.y);
 			playerUnits[entity].m_Shape.setPosition(startPosition.x, startPosition.y);
 		}
@@ -144,9 +144,11 @@ struct PlayerUnitSystem : System
 
 	void MovePlayer(Transform* transform, PlayerUnit* playerUnit)
 	{
-		if (InputHandler::GetRightMouseClicked() == true && playerUnit->m_Selected == true)
+		if (InputHandler::GetRightMouseReleased() == true && playerUnit->m_Selected == true)
 		{
-			m_Path = Pathfinding::FindPath(Vector2DInt(transform->m_Position.x, transform->m_Position.y), InputHandler::GetMouseMapPosition());
+			int x = (transform->m_Position.x - 100 + 16) / 32;
+			int y = (transform->m_Position.y - 100 + 16) / 32;
+			m_Path = Pathfinding::FindPath(Vector2DInt(x, y), InputHandler::GetMouseMapPosition());
 			Vector2D firstPosition = Vector2D(m_Path.front().x, m_Path.front().y);
 			playerUnit->m_Target = firstPosition;
 			playerUnit->m_Direction = firstPosition.Normalized();
