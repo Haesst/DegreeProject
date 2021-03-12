@@ -16,6 +16,8 @@ struct PlayerUnitSystem : System
 	float m_ClickTolerance = 16.0f;
 	sf::RenderWindow* m_Window;
 	sf::RectangleShape m_DragWindow;
+	sf::RectangleShape m_StartPosition;
+	sf::RectangleShape m_EndPosition;
 	bool m_Draging = false;
 	Vector2D m_MousePosition;
 	std::list<Vector2DInt> m_Path;
@@ -79,10 +81,15 @@ struct PlayerUnitSystem : System
 		for (auto entity : m_Entities)
 		{
 			m_Window->draw(playerUnits[entity].m_Shape);
-			//if (m_Draging)
-			//{
+			if (m_Draging)
+			{
 				m_Window->draw(m_DragWindow);
-			//}
+			}
+			else
+			{
+				m_Window->draw(m_StartPosition);
+				m_Window->draw(m_EndPosition);
+			}
 		}
 	}
 
@@ -146,10 +153,6 @@ struct PlayerUnitSystem : System
 	{
 		if (InputHandler::GetRightMouseReleased() == true && playerUnit->m_Selected == true)
 		{
-			m_DragWindow.setSize(sf::Vector2f(32.0f, 32.0f));
-			Vector2D mousePosition = InputHandler::GetMousePosition();
-			m_DragWindow.setPosition(mousePosition.x - m_ClickTolerance, mousePosition.y - m_ClickTolerance);
-			m_DragWindow.setFillColor(sf::Color::White);
 			m_Path.clear();
 			int x = (transform->m_Position.x - 100 + 16) / 32;
 			int y = (transform->m_Position.y - 100 + 16) / 32;
@@ -163,11 +166,18 @@ struct PlayerUnitSystem : System
 				playerUnit->m_Moving = true;
 
 				m_Path.pop_front();
+
+				//Debug Start Rectangle
+				m_StartPosition.setSize(sf::Vector2f(32.0f, 32.0f));
+				m_StartPosition.setPosition(firstPosition.x * 32 + 100 - 16, firstPosition.y * 32 + 100 - 16);
+				m_StartPosition.setFillColor(sf::Color::Magenta);
+
+				//Debug End Rectangle
+				m_EndPosition.setSize(sf::Vector2f(32.0f, 32.0f));
+				Vector2D lastPosition = Vector2D(m_Path.back().x, m_Path.back().y);
+				m_EndPosition.setPosition(lastPosition.x * 32 + 100 - 16, lastPosition.y * 32 + 100 - 16);
+				m_EndPosition.setFillColor(sf::Color::Black);
 			}
-			//for each (Vector2DInt position in m_Path)
-			//{
-			//	LOG_INFO("{0}", position);
-			//}
 		}
 		if (playerUnit->m_Moving == true)
 		{
