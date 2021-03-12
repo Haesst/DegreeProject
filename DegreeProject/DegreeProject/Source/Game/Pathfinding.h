@@ -51,4 +51,8 @@ public:
 	static void ClearNodeData();
 
 	static std::list<Vector2DInt> FindPath(Vector2DInt start, Vector2DInt end);
+	static void FindThreadedPath(std::list<Node*> openList, Node* endNode);
+
+	static std::mutex m_PathMutex;
+	static std::thread m_PathThread;
 };

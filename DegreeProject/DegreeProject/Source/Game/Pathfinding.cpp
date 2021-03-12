@@ -2,6 +2,8 @@
 #include <list>
 
 std::vector<Node*> Pathfinding::m_Map;
+std::thread Pathfinding::m_PathThread;
+std::mutex Pathfinding::m_PathMutex;
 
 void Pathfinding::Init(const std::vector<MapRegion>& map)
 {
@@ -101,31 +103,8 @@ void Pathfinding::ClearNodeData()
 	}
 }
 
-std::list<Vector2DInt> Pathfinding::FindPath(Vector2DInt start, Vector2DInt end)
+void Pathfinding::FindThreadedPath(std::list<Node*> openList, Node* endNode)
 {
-	//f = start -> current node
-	//h = current node -> goal
-	//g = Sum of f and h
-
-	Node* startNode = GetNodeFromKey(start);
-	Node* endNode = GetNodeFromKey(end);
-
-	if (startNode == nullptr)
-	{
-		LOG_WARN("Startnode is a nullptr");
-		return std::list<Vector2DInt>();
-	}
-	if (endNode == nullptr)
-	{
-		LOG_WARN("Endnode is a nullptr");
-		return std::list<Vector2DInt>();
-	}
-
-	std::list<Node*> openList;
-	openList.push_back(startNode);
-	startNode->m_Visited = false;
-	startNode->m_FCost = 0;
-
 	while (!openList.empty())
 	{
 		while (!openList.empty() && openList.front()->m_Visited)
@@ -161,7 +140,37 @@ std::list<Vector2DInt> Pathfinding::FindPath(Vector2DInt start, Vector2DInt end)
 			}
 		}
 	}
+}
 
+std::list<Vector2DInt> Pathfinding::FindPath(Vector2DInt start, Vector2DInt end)
+{
+	//f = start -> current node
+	//h = current node -> goal
+	//g = Sum of f and h
+
+	Node* startNode = GetNodeFromKey(start);
+	Node* endNode = GetNodeFromKey(end);
+
+	if (startNode == nullptr)
+	{
+		LOG_WARN("Startnode is a nullptr");
+		return std::list<Vector2DInt>();
+	}
+	if (endNode == nullptr)
+	{
+		LOG_WARN("Endnode is a nullptr");
+		return std::list<Vector2DInt>();
+	}
+
+
+
+	std::list<Node*> openList;
+	openList.push_back(startNode);
+	startNode->m_Visited = false;
+	startNode->m_FCost = 0;
+
+	m_PathThread = std::thread(&Pathfinding::FindThreadedPath, openList, endNode);
+	m_PathThread.join();
 	std::list<Vector2DInt> finalPath;
 
 	Node* currentNode = endNode;
