@@ -17,6 +17,7 @@ struct PlayerUnitSystem : System
 	sf::RenderWindow* m_Window;
 	sf::RectangleShape m_DragWindow;
 	sf::RectangleShape m_StartPosition;
+	sf::RectangleShape m_TargetPosition;
 	sf::RectangleShape m_EndPosition;
 	bool m_Draging = false;
 	Vector2D m_MousePosition;
@@ -43,8 +44,14 @@ struct PlayerUnitSystem : System
 		for (auto entity : m_Entities)
 		{
 			Vector2DInt startPosition = MapInfo::GetRegionPositions(0)[0];
-			transforms[entity].m_Position = Vector2D(startPosition.x, startPosition.y);
-			playerUnits[entity].m_Shape.setPosition(startPosition.x, startPosition.y);
+			transforms[entity].m_Position = Vector2D((float)startPosition.x, (float)startPosition.y);
+			playerUnits[entity].m_CurrentMapPosition = Vector2DInt((startPosition.x - 100 + 16) / 32, (startPosition.y - 100 + 16) / 32);
+			playerUnits[entity].m_Shape.setPosition((float)startPosition.x, (float)startPosition.y);
+
+			//Debug Start Rectangle
+			m_StartPosition.setSize(sf::Vector2f(32.0f, 32.0f));
+			m_StartPosition.setPosition((float)playerUnits[entity].m_CurrentMapPosition.x * 32 + 100 - 16, (float)playerUnits[entity].m_CurrentMapPosition.y * 32 + 100 - 16);
+			m_StartPosition.setFillColor(sf::Color::Magenta);
 		}
 	}
 
@@ -87,8 +94,9 @@ struct PlayerUnitSystem : System
 			}
 			else
 			{
-				m_Window->draw(m_StartPosition);
 				m_Window->draw(m_EndPosition);
+				m_Window->draw(m_TargetPosition);
+				m_Window->draw(m_StartPosition);
 			}
 		}
 	}
@@ -154,13 +162,13 @@ struct PlayerUnitSystem : System
 		if (InputHandler::GetRightMouseReleased() == true && playerUnit->m_Selected == true)
 		{
 			m_Path.clear();
-			int x = (transform->m_Position.x - 100 + 16) / 32;
-			int y = (transform->m_Position.y - 100 + 16) / 32;
-			Vector2D startPosition(x, y);
+			int x = (int)(transform->m_Position.x - 100 + 16) / 32;
+			int y = (int)(transform->m_Position.y - 100 + 16) / 32;
+			Vector2D startPosition((float)x, (float)y);
 			m_Path = Pathfinding::FindPath(Vector2DInt(x, y), InputHandler::GetMouseMapPosition());
 			if (m_Path.size() > 0)
 			{
-				Vector2D firstPosition = Vector2D(m_Path.front().x, m_Path.front().y);
+				Vector2D firstPosition = Vector2D((float)m_Path.front().x, (float)m_Path.front().y);
 				playerUnit->m_Target = firstPosition;
 				playerUnit->m_Direction = (firstPosition - startPosition).Normalized();
 				playerUnit->m_Moving = true;
@@ -174,17 +182,24 @@ struct PlayerUnitSystem : System
 
 				//Debug End Rectangle
 				m_EndPosition.setSize(sf::Vector2f(32.0f, 32.0f));
-				Vector2D lastPosition = Vector2D(m_Path.back().x, m_Path.back().y);
+				Vector2D lastPosition = Vector2D((float)m_Path.back().x, (float)m_Path.back().y);
 				m_EndPosition.setPosition(lastPosition.x * 32 + 100 - 16, lastPosition.y * 32 + 100 - 16);
 				m_EndPosition.setFillColor(sf::Color::Black);
 			}
 		}
 		if (playerUnit->m_Moving == true)
 		{
-			int x = (transform->m_Position.x - 100 + 16) / 32;
-			int y = (transform->m_Position.y - 100 + 16) / 32;
+			playerUnit->m_CurrentMapPosition = Vector2DInt((int)(transform->m_Position.x - 100 + 16) / 32, (int)(transform->m_Position.y - 100 + 16) / 32);
+			int x = (int)(transform->m_Position.x - 100 + 16) / 32;
+			int y = (int)(transform->m_Position.y - 100 + 16) / 32;
 			Vector2DInt targetPos = { (int)playerUnit->m_Target.x, (int)playerUnit->m_Target.y };
 			Vector2DInt currentPos = { x,y };
+
+			//Debug Target Rectangle
+			m_TargetPosition.setSize(sf::Vector2f(32.0f, 32.0f));
+			m_TargetPosition.setPosition((float)targetPos.x * 32 + 100 - 16, (float)targetPos.y * 32 + 100 - 16);
+			m_TargetPosition.setFillColor(sf::Color::White);
+
 			if (targetPos != currentPos)
 			{
 				Vector2D movement = playerUnit->m_Direction * playerUnit->m_Speed * Time::DeltaTime();
@@ -193,11 +208,10 @@ struct PlayerUnitSystem : System
 			}
 			else
 			{
-				//transform->m_Position = playerUnit->m_Target;
 				if (m_Path.size() != 0)
 				{
-					Vector2D nextPosition = Vector2D(m_Path.front().x, m_Path.front().y);
-					Vector2D startPosition(x, y);
+					Vector2D nextPosition = Vector2D((float)m_Path.front().x, (float)m_Path.front().y);
+					Vector2D startPosition((float)x, (float)y);
 					playerUnit->m_Target = nextPosition;
 					playerUnit->m_Direction = (nextPosition - startPosition).Normalized();
 					m_Path.pop_front();
@@ -205,6 +219,11 @@ struct PlayerUnitSystem : System
 				else
 				{
 					playerUnit->m_Moving = false;
+					
+					//Debug Start Rectangle
+					m_StartPosition.setSize(sf::Vector2f(32.0f, 32.0f));
+					m_StartPosition.setPosition((float)playerUnit->m_CurrentMapPosition.x * 32 + 100 - 16, (float)playerUnit->m_CurrentMapPosition.y * 32 + 100 - 16);
+					m_StartPosition.setFillColor(sf::Color::Magenta);
 				}
 			}
 		}
