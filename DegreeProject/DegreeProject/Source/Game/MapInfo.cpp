@@ -1,13 +1,11 @@
 #include "MapInfo.h"
-#include "Engine/Window.h"
 
-std::vector<unsigned int> MapInfo::m_RegionTax;
-std::vector<std::string> MapInfo::m_RegionNames;
-std::vector<std::string> MapInfo::m_OwnerNames;
-std::vector<std::vector<Vector2DInt> > MapInfo::m_RegionPositions;
-std::vector<MapRegion> MapInfo::m_MapRegions;
-std::vector<int> m_RegionIds;
-unsigned int MapInfo::m_NumberOfIDs = 0;
+std::vector<unsigned int> m_RegionTax;
+std::vector<std::string> m_RegionNames;
+std::vector<std::string> m_OwnerNames;
+std::vector<MapRegion> m_MapRegions;
+std::vector<int> m_RegionIDs;
+unsigned int m_NumberOfIDs = 0;
 
 void MapInfo::Initialization(unsigned int numberOfIDs)
 {
@@ -17,8 +15,7 @@ void MapInfo::Initialization(unsigned int numberOfIDs)
 		m_RegionTax.push_back(0);
 		m_RegionNames.push_back("");
 		m_OwnerNames.push_back("");
-		m_RegionPositions.push_back(std::vector<Vector2DInt>());
-		m_RegionIds.push_back(index);
+		m_RegionIDs.push_back(index);
 	}
 }
 
@@ -31,11 +28,6 @@ unsigned int MapInfo::GetRegionTax(unsigned int index)
 	return m_RegionTax[index];
 }
 
-void MapInfo::SetRegionTax(unsigned int tax, unsigned int index)
-{
-	m_RegionTax[index] = tax;
-}
-
 std::string MapInfo::GetRegionName(unsigned int index)
 {
 	if (index >= m_NumberOfIDs)
@@ -43,11 +35,6 @@ std::string MapInfo::GetRegionName(unsigned int index)
 		return "";
 	}
 	return m_RegionNames[index];
-}
-
-void MapInfo::SetRegionName(std::string regionName, unsigned int index)
-{
-	m_RegionNames[index] = regionName;
 }
 
 std::string MapInfo::GetOwnerName(unsigned int index)
@@ -59,9 +46,14 @@ std::string MapInfo::GetOwnerName(unsigned int index)
 	return m_OwnerNames[index];
 }
 
-void MapInfo::SetOwnerName(std::string ownerName, unsigned int index)
+std::vector<int> MapInfo::GetRegionIDs()
 {
-	m_OwnerNames[index] = ownerName;
+	return m_RegionIDs;
+}
+
+std::vector<MapRegion> MapInfo::GetMapRegions()
+{
+	return m_MapRegions;
 }
 
 std::vector<Vector2DInt> MapInfo::GetRegionPositions(unsigned int index)
@@ -70,40 +62,15 @@ std::vector<Vector2DInt> MapInfo::GetRegionPositions(unsigned int index)
 	{
 		return std::vector<Vector2DInt>();
 	}
-	return m_RegionPositions[index];
-}
-
-std::vector<std::vector<Vector2DInt> >MapInfo::GetRegions()
-{
-	return m_RegionPositions;
-}
-
-std::vector<MapRegion> MapInfo::GetMapRegions()
-{
-	return m_MapRegions;
-}
-
-void MapInfo::SetMapRegions(std::vector<MapRegion> regions)
-{
-	m_MapRegions = regions;
-}
-
-std::vector<int> MapInfo::GetRegionIds()
-{
-	return m_RegionIds;
-}
-
-void MapInfo::SetRegionPositions(std::vector<Vector2DInt> regionPositions, unsigned int index)
-{
-	m_RegionPositions[index] = regionPositions;
+	return m_MapRegions[index].m_MapSquares;
 }
 
 unsigned int MapInfo::GetRegionIndex(Vector2DInt position)
 {
 	unsigned int index = 0;
-	for each (std::vector<Vector2DInt> region in m_RegionPositions)
+	for each (MapRegion region in m_MapRegions)
 	{
-		for each (Vector2DInt regionPosition in region)
+		for each (Vector2DInt regionPosition in region.m_MapSquares)
 		{
 			if (regionPosition == position)
 			{
@@ -113,4 +80,43 @@ unsigned int MapInfo::GetRegionIndex(Vector2DInt position)
 		index++;
 	}
 	return 0;
+}
+
+void MapInfo::SetRegionTax(unsigned int tax, unsigned int index)
+{
+	if (index < m_NumberOfIDs)
+	{
+		m_RegionTax[index] = tax;
+	}
+}
+
+void MapInfo::SetRegionName(std::string regionName, unsigned int index)
+{
+	if (index < m_NumberOfIDs)
+	{
+		m_RegionNames[index] = regionName;
+	}
+}
+
+void MapInfo::SetOwnerName(std::string ownerName, unsigned int index)
+{
+	if (index < m_NumberOfIDs)
+	{
+		m_OwnerNames[index] = ownerName;
+	}
+}
+
+void MapInfo::SetMapRegions(std::vector<MapRegion> regions)
+{
+	m_MapRegions = regions;
+}
+
+Vector2DInt MapInfo::ConvertToMap(Vector2D position)
+{
+	return Vector2DInt((position.x - 100 + 16) / 32, (position.y - 100 + 16) / 32);
+}
+
+Vector2D MapInfo::ConvertToScreen(Vector2DInt position)
+{
+	return Vector2D(position.x * 32 + 100 - 16, position.y * 32 + 100 - 16);
 }

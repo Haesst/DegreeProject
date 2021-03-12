@@ -1,21 +1,23 @@
 #include "InputHandler.h"
+#include <SFML/Graphics.hpp>
 #include "Window.h"
 #include <Engine/Log.h>
+#include "Game/MapInfo.h"
 
-bool InputHandler::m_LeftMouseClicked = false;
-bool InputHandler::m_RightMouseClicked = false;
-bool InputHandler::m_LeftMouseReleased = false;
-bool InputHandler::m_RightMouseReleased = false;
-bool InputHandler::m_MouseScrollWheelChanged = false;
-bool InputHandler::m_PlayerUnitSelected = false;
-bool InputHandler::m_MouseMoved = false;
-int InputHandler::m_MouseScrollDirection = 0;
-const float InputHandler::MAX_ZOOM = 1000.0f;
-const float InputHandler::MIN_ZOOM = 100.0f;
-const float InputHandler::MOVE_SPEED = 25.0f;
-const float InputHandler::ZOOM_SPEED = 0.1f;
-Vector2D InputHandler::m_MousePosition = Vector2D(0.0f, 0.0f);
-Vector2DInt InputHandler::m_MouseMapPosition = Vector2DInt(0, 0);
+bool m_LeftMouseClicked = false;
+bool m_RightMouseClicked = false;
+bool m_LeftMouseReleased = false;
+bool m_RightMouseReleased = false;
+bool m_MouseScrollWheelChanged = false;
+bool m_PlayerUnitSelected = false;
+bool m_MouseMoved = false;
+int m_MouseScrollDirection = 0;
+const float MAX_ZOOM = 1000.0f;
+const float MIN_ZOOM = 100.0f;
+const float MOVE_SPEED = 25.0f;
+const float ZOOM_SPEED = 0.1f;
+Vector2D m_MousePosition = Vector2D(0.0f, 0.0f);
+Vector2DInt m_MouseMapPosition = Vector2DInt(0, 0);
 
 void InputHandler::HandleInputEvents()
 {
@@ -106,15 +108,13 @@ void InputHandler::HandleInputEvents()
 				{
 					m_LeftMouseClicked = true;
 					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-					m_MouseMapPosition = Vector2DInt((m_MousePosition.x - 100 + 16) / 32, (m_MousePosition.y - 100 + 16) / 32);
-					//LOG_INFO("{0}", m_MouseMapPosition);
+					m_MouseMapPosition = MapInfo::ConvertToMap(m_MousePosition);
 				}
 				if (event.key.code == sf::Mouse::Right)
 				{
 					m_RightMouseClicked = true;
 					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-					m_MouseMapPosition = Vector2DInt((m_MousePosition.x - 100 + 16) / 32, (m_MousePosition.y - 100 + 16) / 32);
-					//LOG_INFO("{0}", m_MouseMapPosition);
+					m_MouseMapPosition = MapInfo::ConvertToMap(m_MousePosition);
 				}
 				if (event.key.code == sf::Mouse::Middle)
 				{
@@ -134,14 +134,14 @@ void InputHandler::HandleInputEvents()
 					m_LeftMouseClicked = false;
 					m_LeftMouseReleased = true;
 					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-					m_MouseMapPosition = Vector2DInt((m_MousePosition.x - 100 + 16) / 32, (m_MousePosition.y - 100 + 16) / 32);
+					m_MouseMapPosition = MapInfo::ConvertToMap(m_MousePosition);
 				}
 				if (event.key.code == sf::Mouse::Right)
 				{
 					m_RightMouseClicked = false;
 					m_RightMouseReleased = true;
 					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-					m_MouseMapPosition = Vector2DInt((m_MousePosition.x - 100 + 16) / 32, (m_MousePosition.y - 100 + 16) / 32);
+					m_MouseMapPosition = MapInfo::ConvertToMap(m_MousePosition);
 				}
 				if (event.key.code == sf::Mouse::Middle)
 				{

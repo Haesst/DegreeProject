@@ -14,7 +14,6 @@ struct MapRegion
 {
 public:
 	std::vector<Vector2DInt> m_MapSquares = {};
-	std::vector<Vector2DInt> m_RegionPositions = {};
 	sf::Color m_HighlightColor = sf::Color::White;
 	char m_MapChar = '1';
 	unsigned int m_RegionId = INT_MAX;
@@ -137,7 +136,6 @@ struct Map : public Component
 		for (auto region : m_Regions)
 		{
 			region.m_MapSquares.clear();
-			region.m_RegionPositions.clear();
 		}
 
 		if (inData.is_open())
@@ -154,7 +152,6 @@ struct Map : public Component
 					if (regionPosition >= 0)
 					{
 						m_Regions[regionPosition].m_MapSquares.push_back({ x, y });
-						m_Regions[regionPosition].m_RegionPositions.push_back({ x, y });
 					}
 
 					x++;

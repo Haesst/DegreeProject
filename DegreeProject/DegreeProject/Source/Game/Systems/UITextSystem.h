@@ -83,19 +83,17 @@ struct UITextSystem : System
 
 	void AdjustText(UIText* UIText)
 	{
-		std::vector<Vector2DInt> firstRegion = MapInfo::GetRegionPositions(UIText->m_OwnedRegions.front());
-		std::vector<Vector2DInt> lastRegion = MapInfo::GetRegionPositions(UIText->m_OwnedRegions.back());
-		Vector2DInt leftMostPosition = firstRegion.front();
-		Vector2DInt rightMostPosition = lastRegion.back();
-		std::vector<std::vector<Vector2DInt> > regions = MapInfo::GetRegions();
+		std::vector<MapRegion> regions = MapInfo::GetMapRegions();
+		Vector2DInt leftMostPosition = {100, 0};
+		Vector2DInt rightMostPosition = {0, 0};
 		unsigned int regionIndex = 0;
-		for each (std::vector<Vector2DInt> region in regions)
+		for each (MapRegion region in regions)
 		{
 			for each (unsigned int index in UIText->m_OwnedRegions)
 			{
 				if (index == regionIndex)
 				{
-					for each (Vector2DInt position in region)
+					for each (Vector2DInt position in region.m_MapSquares)
 					{
 						if (position.x <= leftMostPosition.x)
 						{
@@ -110,10 +108,11 @@ struct UITextSystem : System
 			}
 			regionIndex++;
 		}
-		Vector2DInt diagonal = rightMostPosition - leftMostPosition;
+		Vector2D leftMostPositionScreen = MapInfo::ConvertToScreen(leftMostPosition);
+		Vector2D diagonal = MapInfo::ConvertToScreen(rightMostPosition) - leftMostPositionScreen;
 		UIText->m_CharacterSize = (unsigned int)(diagonal.x * 0.1f);
-		UIText->m_PositionX = diagonal.x * 0.5f + leftMostPosition.x - UIText->m_CharacterSize * 3;
-		UIText->m_PositionY = diagonal.y * 0.5f + leftMostPosition.y - UIText->m_CharacterSize;
+		UIText->m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - UIText->m_CharacterSize * 3;
+		UIText->m_PositionY = diagonal.y * 0.5f + leftMostPositionScreen.y - UIText->m_CharacterSize;
 		UIText->m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
 	}
 };

@@ -43,14 +43,15 @@ struct PlayerUnitSystem : System
 
 		for (auto entity : m_Entities)
 		{
-			Vector2DInt startPosition = MapInfo::GetRegionPositions(0)[0];
-			transforms[entity].m_Position = Vector2D((float)startPosition.x, (float)startPosition.y);
-			playerUnits[entity].m_CurrentMapPosition = Vector2DInt((startPosition.x - 100 + 16) / 32, (startPosition.y - 100 + 16) / 32);
-			playerUnits[entity].m_Shape.setPosition((float)startPosition.x, (float)startPosition.y);
+			Vector2DInt startPositionMap = MapInfo::GetRegionPositions(entity)[entity];
+			Vector2D startPositionScreen = MapInfo::ConvertToScreen(startPositionMap);
+			transforms[entity].m_Position = startPositionScreen;
+			playerUnits[entity].m_CurrentMapPosition = startPositionMap;
+			playerUnits[entity].m_Shape.setPosition(startPositionScreen.x, startPositionScreen.y);
 
 			//Debug Start Rectangle
 			m_StartPosition.setSize(sf::Vector2f(32.0f, 32.0f));
-			m_StartPosition.setPosition((float)playerUnits[entity].m_CurrentMapPosition.x * 32 + 100 - 16, (float)playerUnits[entity].m_CurrentMapPosition.y * 32 + 100 - 16);
+			m_StartPosition.setPosition(startPositionScreen.x, startPositionScreen.y);
 			m_StartPosition.setFillColor(sf::Color::Magenta);
 		}
 	}

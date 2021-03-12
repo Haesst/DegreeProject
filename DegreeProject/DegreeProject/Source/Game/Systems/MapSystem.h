@@ -37,7 +37,7 @@ struct MapSystem : public System
 			unsigned int regionIndex = 0;
 			for (auto& region : maps[entity].m_Regions)
 			{
-				UpdateMapInfo(maps, entity, regionIndex, region, resolution);
+				UpdateMapInfo(maps, entity, regionIndex);
 				regionIndex++;
 			}
 		}
@@ -55,7 +55,7 @@ struct MapSystem : public System
 				for (auto& region : maps[entity].m_Regions)
 				{
 					maps[entity].m_UpdateMapInfo = false;
-					UpdateMapInfo(maps, entity, regionIndex, region, resolution);
+					UpdateMapInfo(maps, entity, regionIndex);
 					regionIndex++;
 				}
 			}
@@ -166,20 +166,11 @@ struct MapSystem : public System
 		}
 	}
 	
-	void UpdateMapInfo(Map* maps, sf::Uint32 entity, unsigned int regionIndex, MapRegion region, sf::Vector2<unsigned int> resolution)
+	void UpdateMapInfo(Map* maps, sf::Uint32 entity, unsigned int regionIndex)
 	{
 		MapInfo::SetRegionName(maps[entity].m_Regions[regionIndex].m_RegionName, regionIndex);
 		MapInfo::SetRegionTax(maps[entity].m_Regions[regionIndex].m_RegionTax, regionIndex);
 		MapInfo::SetOwnerName(std::to_string(maps[entity].m_Regions[regionIndex].m_RegionId), regionIndex);
-		unsigned int squareIndex = 0;
-		for (auto& square : region.m_MapSquares)
-		{
-			float spritePositionX = (square.x * maps[entity].m_TileSize) - maps[entity].m_HalfTileSize + maps[entity].m_XOffset;
-			float spritePositionY = (square.y * maps[entity].m_TileSize) - maps[entity].m_HalfTileSize + maps[entity].m_YOffset;
-			maps[entity].m_Regions[regionIndex].m_RegionPositions[squareIndex] = Vector2DInt(spritePositionX, spritePositionY);
-			squareIndex++;
-		}
 		MapInfo::SetMapRegions(maps[entity].m_Regions);
-		MapInfo::SetRegionPositions(maps[entity].m_Regions[regionIndex].m_RegionPositions, regionIndex);
 	}
 };
