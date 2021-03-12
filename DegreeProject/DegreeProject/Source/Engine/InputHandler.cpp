@@ -133,11 +133,15 @@ void InputHandler::HandleInputEvents()
 				{
 					m_LeftMouseClicked = false;
 					m_LeftMouseReleased = true;
+					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+					m_MouseMapPosition = Vector2DInt((m_MousePosition.x - 100 + 16) / 32, (m_MousePosition.y - 100 + 16) / 32);
 				}
 				if (event.key.code == sf::Mouse::Right)
 				{
 					m_RightMouseClicked = false;
 					m_RightMouseReleased = true;
+					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
+					m_MouseMapPosition = Vector2DInt((m_MousePosition.x - 100 + 16) / 32, (m_MousePosition.y - 100 + 16) / 32);
 				}
 				if (event.key.code == sf::Mouse::Middle)
 				{

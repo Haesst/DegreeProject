@@ -79,10 +79,10 @@ struct PlayerUnitSystem : System
 		for (auto entity : m_Entities)
 		{
 			m_Window->draw(playerUnits[entity].m_Shape);
-			if (m_Draging)
-			{
+			//if (m_Draging)
+			//{
 				m_Window->draw(m_DragWindow);
-			}
+			//}
 		}
 	}
 
@@ -146,6 +146,10 @@ struct PlayerUnitSystem : System
 	{
 		if (InputHandler::GetRightMouseReleased() == true && playerUnit->m_Selected == true)
 		{
+			m_DragWindow.setSize(sf::Vector2f(32.0f, 32.0f));
+			Vector2D mousePosition = InputHandler::GetMousePosition();
+			m_DragWindow.setPosition(mousePosition.x - m_ClickTolerance, mousePosition.y - m_ClickTolerance);
+			m_DragWindow.setFillColor(sf::Color::White);
 			m_Path.clear();
 			int x = (transform->m_Position.x - 100 + 16) / 32;
 			int y = (transform->m_Position.y - 100 + 16) / 32;
