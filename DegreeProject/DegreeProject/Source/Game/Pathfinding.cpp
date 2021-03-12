@@ -147,12 +147,6 @@ std::list<Vector2DInt> Pathfinding::FindPath(Vector2DInt start, Vector2DInt end)
 		{
 			if (!neighbour->m_Visited)
 			{
-				if (neighbour->m_Position == end)
-				{
-					endNode->m_Parent = node;
-					break;
-				}
-
 				float possibleLowerCost = node->m_FCost + CalculateHCost(*node, *neighbour);
 
 				if (possibleLowerCost < neighbour->m_FCost)
