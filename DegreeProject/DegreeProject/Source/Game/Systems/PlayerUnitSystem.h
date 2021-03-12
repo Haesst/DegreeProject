@@ -146,13 +146,20 @@ struct PlayerUnitSystem : System
 	{
 		if (InputHandler::GetRightMouseReleased() == true && playerUnit->m_Selected == true)
 		{
+			m_Path.clear();
 			int x = (transform->m_Position.x - 100 + 16) / 32;
 			int y = (transform->m_Position.y - 100 + 16) / 32;
+			Vector2D startPosition(x, y);
 			m_Path = Pathfinding::FindPath(Vector2DInt(x, y), InputHandler::GetMouseMapPosition());
-			Vector2D firstPosition = Vector2D(m_Path.front().x, m_Path.front().y);
-			playerUnit->m_Target = firstPosition;
-			playerUnit->m_Direction = firstPosition.Normalized();
-			playerUnit->m_Moving = true;
+			if (m_Path.size() > 0)
+			{
+				Vector2D firstPosition = Vector2D(m_Path.front().x, m_Path.front().y);
+				playerUnit->m_Target = firstPosition;
+				playerUnit->m_Direction = (firstPosition - startPosition).Normalized();
+				playerUnit->m_Moving = true;
+
+				m_Path.pop_front();
+			}
 			//for each (Vector2DInt position in m_Path)
 			//{
 			//	LOG_INFO("{0}", position);
@@ -160,7 +167,11 @@ struct PlayerUnitSystem : System
 		}
 		if (playerUnit->m_Moving == true)
 		{
-			if (!transform->m_Position.NearlyEqual(playerUnit->m_Target, m_MoveTolerance, playerUnit->m_Shape.getLocalBounds().width * 0.5f, playerUnit->m_Shape.getLocalBounds().height * 0.5f))
+			int x = (transform->m_Position.x - 100 + 16) / 32;
+			int y = (transform->m_Position.y - 100 + 16) / 32;
+			Vector2DInt targetPos = { (int)playerUnit->m_Target.x, (int)playerUnit->m_Target.y };
+			Vector2DInt currentPos = { x,y };
+			if (targetPos != currentPos)
 			{
 				Vector2D movement = playerUnit->m_Direction * playerUnit->m_Speed * Time::DeltaTime();
 				transform->Translate(movement);
@@ -168,13 +179,14 @@ struct PlayerUnitSystem : System
 			}
 			else
 			{
-				transform->m_Position = playerUnit->m_Target;
+				//transform->m_Position = playerUnit->m_Target;
 				if (m_Path.size() != 0)
 				{
-					m_Path.pop_front();
 					Vector2D nextPosition = Vector2D(m_Path.front().x, m_Path.front().y);
+					Vector2D startPosition(x, y);
 					playerUnit->m_Target = nextPosition;
-					playerUnit->m_Direction = nextPosition.Normalized();
+					playerUnit->m_Direction = (nextPosition - startPosition).Normalized();
+					m_Path.pop_front();
 				}
 				else
 				{

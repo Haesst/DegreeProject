@@ -124,6 +124,7 @@ std::list<Vector2DInt> Pathfinding::FindPath(Vector2DInt start, Vector2DInt end)
 	std::list<Node*> openList;
 	openList.push_back(startNode);
 	startNode->m_Visited = false;
+	startNode->m_FCost = 0;
 
 	while (!openList.empty())
 	{
