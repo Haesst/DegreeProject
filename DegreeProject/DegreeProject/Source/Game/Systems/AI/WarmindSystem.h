@@ -31,10 +31,10 @@ struct WarmindSystem : System
 	{
 		m_TickAccu++;
 
-		if (!m_Active)
-		{
-			return;
-		}
+		//if (!m_Active)
+		//{
+		//	return;
+		//}
 
 
 		for (auto entity : m_Entities)
