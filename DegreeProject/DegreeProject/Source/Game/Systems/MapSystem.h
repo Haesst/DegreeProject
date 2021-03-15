@@ -104,11 +104,11 @@ struct MapSystem : public System
 		}
 	}
 	
-	void UpdateMapInfo(Map* maps, sf::Uint32 entity, unsigned int regionIndex)
+	void UpdateMapInfo(Map* maps, sf::Uint32 entity, size_t regionIndex)
 	{
-		MapInfo::SetRegionName(maps[entity].m_Regions[regionIndex].m_RegionName, regionIndex);
-		MapInfo::SetRegionTax(maps[entity].m_Regions[regionIndex].m_RegionTax, regionIndex);
-		MapInfo::SetOwnerName(std::to_string(maps[entity].m_Regions[regionIndex].m_RegionId), regionIndex);
+		MapInfo::SetRegionName(maps[entity].m_Regions[regionIndex].m_RegionName, (unsigned int)regionIndex);
+		MapInfo::SetRegionTax(maps[entity].m_Regions[regionIndex].m_RegionTax, (unsigned int)regionIndex);
+		MapInfo::SetOwnerName(std::to_string(maps[entity].m_Regions[regionIndex].m_RegionId), (unsigned int)regionIndex);
 		MapInfo::SetMapRegions(maps[entity].m_Regions);
 	}
 };

@@ -24,6 +24,8 @@ public:
 	~MapRegion() { m_MapSquares.clear(); }
 };
 
+#pragma warning(push)
+#pragma warning(disable: 26812)
 struct Map : public Component
 {
 	std::vector<MapRegion> m_Regions;
@@ -168,10 +170,7 @@ struct Map : public Component
 	{
 		for (auto& region : m_Regions)
 		{
-#pragma warning(push)
-#pragma warning(disable: 26812)
 			region.m_VertexArray.setPrimitiveType(sf::Triangles);
-#pragma warning(pop)
 
 			for (auto& square : region.m_MapSquares)
 			{
@@ -241,3 +240,4 @@ struct Map : public Component
 		return -1;
 	}
 };
+#pragma warning(pop)

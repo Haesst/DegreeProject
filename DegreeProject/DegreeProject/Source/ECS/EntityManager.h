@@ -73,7 +73,7 @@ private:
 	{
 		for (const auto componentType : systemSignature)
 		{
-			if (GetEntitySignature(entity)->count(componentType) == 0)
+			if (GetEntitySignature(entity)->count(componentType) == (size_t)0)
 			{
 				return false;
 			}
@@ -242,7 +242,7 @@ public:
 	{
 		const ComponentTypeID componentType = ComponentType<T>();
 
-		if (m_ComponentArrays.count(componentType) == 0)
+		if (m_ComponentArrays.count(componentType) == (size_t)0)
 		{
 			AddComponentList<T>();
 		}
@@ -267,7 +267,7 @@ public:
 	void RegisterSystem()
 	{
 		const SystemTypeID systemType = SystemType<T>();
-		assert(m_RegisteredSystems.count(systemType) == 0 && "System already registered");
+		assert(m_RegisteredSystems.count(systemType) == (size_t)0 && "System already registered");
 		auto system = std::make_shared<T>();
 
 		// Add entity to new system
