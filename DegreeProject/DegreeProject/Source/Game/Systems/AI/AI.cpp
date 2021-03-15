@@ -34,8 +34,6 @@ float AISystem::ExpansionDecision(EntityID ent)
 
 	expansionConsideration.SetContext(ent);
 
-	float highestEvaluation = -1.f;
-
 	//Get characters in certain range,
 	std::vector<int> regionIndexes = MapInfo::GetRegionIDs();
 

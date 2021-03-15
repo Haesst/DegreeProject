@@ -44,12 +44,6 @@ struct AISystem : System
 	{
 		m_TickAccu += Time::DeltaTime();
 
-		//Every tick (Light updates)
-		for (auto& entity : m_Entities)
-		{
-
-		}
-
 		if (m_TickAccu <= m_AIUpdateTickRate)
 		{
 			return;
