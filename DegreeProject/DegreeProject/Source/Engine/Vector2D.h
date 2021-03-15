@@ -10,7 +10,7 @@ struct Vec2D
 	T y = 0;
 
 	Vec2D()
-		: x(x), y(y)
+		: x(0), y(0)
 	{}
 
 	Vec2D(T x, T y)
