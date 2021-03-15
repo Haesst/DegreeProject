@@ -303,8 +303,8 @@ void Game::InitAI()
 	// Register system
 	entityManager->RegisterSystem<AISystem>();
 	// Get system
-	AISystem* sys = (AISystem*)entityManager->GetSystem<AISystem>().get();
+	AISystem sys = *(AISystem*)entityManager->GetSystem<AISystem>().get();
 
 	// Init system with manager component
-	sys->Init(m_AIManager);
+	sys.Init(m_AIManager);
 }
