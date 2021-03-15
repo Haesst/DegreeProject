@@ -38,7 +38,7 @@ struct GameDate
 		{
 			m_Day = 1;
 			++month;
-			if (month >= m_MonthsInYear)
+			if (month >= (size_t)m_MonthsInYear)
 			{
 				month = 0;
 				++year;
