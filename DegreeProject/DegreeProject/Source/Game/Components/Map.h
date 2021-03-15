@@ -44,7 +44,9 @@ struct Map : public Component
 	sf::Shader m_LandShader;
 
 	Map()
-	{}
+	{
+		m_HalfTileSize = m_TileSize * 0.5f;
+	}
 
 	Map(sf::Texture landTexture)
 	{

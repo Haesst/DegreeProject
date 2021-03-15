@@ -6,12 +6,12 @@
 #include <SFML/Audio.hpp>
 
 #include "Engine/Vector2D.h"
+#include "Game/AI/AIManager.h"
 #include <mutex>
 
 class Window;
 class AssetHandler;
 class HotReloader;
-class AIManager;
 
 enum class FileStatus;
 
