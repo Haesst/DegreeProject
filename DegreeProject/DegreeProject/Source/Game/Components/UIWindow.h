@@ -8,7 +8,7 @@ struct UIWindow : public Component
 	sf::RectangleShape m_Shape;
 	sf::Color m_FillColor = sf::Color::Cyan;
 	sf::Color m_OutlineColor = sf::Color::Red;
-	float m_SizeX = 480.0f;
+	float m_SizeX = 600.0f;
 	float m_SizeY = 1060.0f;
 	bool m_Visible = false;
 	sf::Text m_OwnerNameText;

@@ -107,7 +107,6 @@ struct MapSystem : public System
 	{
 		MapInfo::SetRegionName(maps[entity].m_Regions[regionIndex].m_RegionName, (unsigned int)regionIndex);
 		MapInfo::SetRegionTax(maps[entity].m_Regions[regionIndex].m_RegionTax, (unsigned int)regionIndex);
-		MapInfo::SetOwnerName(std::to_string(maps[entity].m_Regions[regionIndex].m_RegionId), (unsigned int)regionIndex);
 		MapInfo::SetRegionCapital(maps[entity].m_Regions[regionIndex].m_RegionCapital, (unsigned int)regionIndex);
 		MapInfo::SetMapRegions(maps[entity].m_Regions);
 	}

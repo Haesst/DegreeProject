@@ -21,6 +21,7 @@ struct UIText : public Component
 	float m_Rotation = 0.0f;
 	std::vector<unsigned int> m_OwnedRegions;
 	bool m_AdjustText = false;
+	bool m_Conquered = false;
 
 	UIText(){}
 

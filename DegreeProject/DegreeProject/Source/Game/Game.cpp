@@ -91,6 +91,7 @@ void Game::InitSystems()
 {
 	EntityManager* entityManager = &EntityManager::Get();
 	entityManager->RegisterSystem<MapSystem>();
+	entityManager->RegisterSystem<CharacterSystem>();
 	entityManager->RegisterSystem<UITextSystem>();
 	entityManager->RegisterSystem<ECSExampleSystem>();
 	entityManager->RegisterSystem<PlayerUnitSystem>();
@@ -103,12 +104,12 @@ void Game::AddEntitys()
 {
 	EntityManager* entityManager = &EntityManager::Get();
 
-	//Create map
+	//Create Map ID(00)
 	EntityID map = entityManager->AddNewEntity();
 	entityManager->AddComponent<Map>(map, m_AssetHandler->GetTextureAtPath("Assets/Graphics/TileSet.png"));
 	Map* mapComp = entityManager->GetComponentArray<Map>();
 
-	//Create Region Capital Castles
+	//Create Region Capital Castles ID(01-17)
 	const char* castlePath = "Assets/Graphics/Castle.png";
 	for (unsigned int regionIndex = 0; regionIndex < m_NumberOfRegions; regionIndex++)
 	{
@@ -118,7 +119,7 @@ void Game::AddEntitys()
 		castleTransform->m_Position = MapInfo::ConvertToScreen(mapComp->m_Regions[regionIndex].m_RegionCapital);
 	}
 
-	//Create PlayerUnit 0
+	//Create PlayerUnit 0 ID(18)
 	EntityID playerUnit0 = entityManager->AddNewEntity();
 	entityManager->AddComponent<PlayerUnit>(playerUnit0);
 	entityManager->AddComponent<SpriteRenderer>(playerUnit0, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
@@ -128,61 +129,61 @@ void Game::AddEntitys()
 	//entityManager->AddComponent<PlayerUnit>(playerUnit1);
 	//entityManager->AddComponent<SpriteRenderer>(playerUnit1, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
 
-	//Create Character 0
+	//Create Character 0 ID(19)
 	EntityID char0 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id0{ 0, 1, 2, 3, 4 };
 	entityManager->AddComponent<CharacterComponent>(char0, Title::King, "Kingdom of Milano", "Erik", id0, 100, 5, false, sf::Color::Red, 0);
 	CharacterComponent* characterComponent0 = &entityManager->GetComponent<CharacterComponent>(char0);
 
-	//Create Character Unit 0
-	EntityID charUnit0 = entityManager->AddNewEntity();
-	entityManager->AddComponent<SpriteRenderer>(charUnit0, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
-	Transform* characterUnitTransform0 = &entityManager->GetComponent<Transform>(charUnit0);
-	characterUnitTransform0->m_Position = { m_Window->GetWindow()->getSize().x * 0.65f, m_Window->GetWindow()->getSize().y * 0.25f };
-
-	//Create Character 1
+	//Create Character 1 ID(20)
 	EntityID char1 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id1{ 5, 6, 7, 8, 9 };
 	entityManager->AddComponent<CharacterComponent>(char1, Title::King, "Roman Republic", "Robin", id1, 100, 10, false, sf::Color::Green, 0);
 	CharacterComponent* characterComponent1 = &entityManager->GetComponent<CharacterComponent>(char1);
-	
-	//Create Character Unit 1
-	EntityID charUnit1 = entityManager->AddNewEntity();
-	entityManager->AddComponent<SpriteRenderer>(charUnit1, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
-	Transform* characterUnitTransform1 = &entityManager->GetComponent<Transform>(charUnit1);
-	characterUnitTransform1->m_Position = { m_Window->GetWindow()->getSize().x * 0.65f, m_Window->GetWindow()->getSize().y * 0.35f };
 
-	//Create Character 2
+	//Create Character 2 ID(21)
 	EntityID char2 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id2{ 12, 13, 14, 15, 16 };
 	entityManager->AddComponent<CharacterComponent>(char2, Title::King, "Sicilian Mobsters", "Fredrik", id2, 100, 10, false, sf::Color::Color(165, 42, 42), 0);
 	CharacterComponent* characterComponent2 = &entityManager->GetComponent<CharacterComponent>(char2);
 
-	//Create Character Unit 2
-	EntityID charUnit2 = entityManager->AddNewEntity();
-	entityManager->AddComponent<SpriteRenderer>(charUnit2, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
-	Transform* characterUnitTransform2 = &entityManager->GetComponent<Transform>(charUnit2);
-	characterUnitTransform2->m_Position = { m_Window->GetWindow()->getSize().x * 1.2f, m_Window->GetWindow()->getSize().y * 0.7f };
-
-	//Create Character 3
+	//Create Character 3 ID(22)
 	EntityID char3 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id3{ 10 };
 	entityManager->AddComponent<CharacterComponent>(char3, Title::Baron, "Roman Puppet", "Robin", id3, 100, 10, false, sf::Color::Yellow, 0);
 	CharacterComponent* characterComponent3 = &entityManager->GetComponent<CharacterComponent>(char3);
-	
-	//Create Character Unit 3
-	EntityID charUnit3 = entityManager->AddNewEntity();
-	entityManager->AddComponent<SpriteRenderer>(charUnit3, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
-	Transform* characterUnitTransform3 = &entityManager->GetComponent<Transform>(charUnit3);
-	characterUnitTransform3->m_Position = { m_Window->GetWindow()->getSize().x * 0.95f, m_Window->GetWindow()->getSize().y * 0.6f };
 
-	//Create Character 4
+	//Create Character 4 ID(23)
 	EntityID char4 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id4{ 11 };
 	entityManager->AddComponent<CharacterComponent>(char4, Title::Baron, "Sicilian Vassal", "Fredrik", id4, 100, 10, false, sf::Color::Color(128, 128, 128), 0);
 	CharacterComponent* characterComponent4 = &entityManager->GetComponent<CharacterComponent>(char4);
 
-	//Create Character Unit 4
+	//Create Character Unit 0 ID(24)
+	EntityID charUnit0 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charUnit0, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterUnitTransform0 = &entityManager->GetComponent<Transform>(charUnit0);
+	characterUnitTransform0->m_Position = { m_Window->GetWindow()->getSize().x * 0.65f, m_Window->GetWindow()->getSize().y * 0.25f };
+	
+	//Create Character Unit 1 ID(25)
+	EntityID charUnit1 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charUnit1, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterUnitTransform1 = &entityManager->GetComponent<Transform>(charUnit1);
+	characterUnitTransform1->m_Position = { m_Window->GetWindow()->getSize().x * 0.65f, m_Window->GetWindow()->getSize().y * 0.35f };
+
+	//Create Character Unit 2 ID(26)
+	EntityID charUnit2 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charUnit2, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterUnitTransform2 = &entityManager->GetComponent<Transform>(charUnit2);
+	characterUnitTransform2->m_Position = { m_Window->GetWindow()->getSize().x * 1.2f, m_Window->GetWindow()->getSize().y * 0.7f };
+	
+	//Create Character Unit 3 ID(27)
+	EntityID charUnit3 = entityManager->AddNewEntity();
+	entityManager->AddComponent<SpriteRenderer>(charUnit3, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	Transform* characterUnitTransform3 = &entityManager->GetComponent<Transform>(charUnit3);
+	characterUnitTransform3->m_Position = { m_Window->GetWindow()->getSize().x * 0.95f, m_Window->GetWindow()->getSize().y * 0.6f };
+
+	//Create Character Unit 4 ID(28)
 	EntityID charUnit4 = entityManager->AddNewEntity();
 	entityManager->AddComponent<SpriteRenderer>(charUnit4, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
 	Transform* characterUnitTransform4 = &entityManager->GetComponent<Transform>(charUnit4);
@@ -215,11 +216,11 @@ void Game::AddEntitys()
 
 	sf::Font font = m_AssetHandler->LoadFontFromFile("Assets/Fonts/TestFont.ttf");
 
-	//Create UI window
+	//Create UI window ID(29)
 	EntityID windowUI = entityManager->AddNewEntity();
 	entityManager->AddComponent<UIWindow>(windowUI, font);
 
-	//Create UI texts
+	//Create UI texts ID(30-34)(46)
 	EntityID textUI0 = entityManager->AddNewEntity();
 	entityManager->AddComponent<UIText>(textUI0, font, characterComponent0->m_KingdomName, characterComponent0->m_OwnedRegionIDs);
 

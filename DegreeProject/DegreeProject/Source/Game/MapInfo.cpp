@@ -48,6 +48,20 @@ std::string MapInfo::GetOwnerName(unsigned int index)
 	return m_OwnerNames[index];
 }
 
+unsigned int MapInfo::GetIndexOfCapital(Vector2DInt regionCapital)
+{
+	unsigned int index = 0;
+	for each (Vector2DInt region in m_RegionCapitals)
+	{
+		if (region == regionCapital)
+		{
+			return index;
+		}
+	}
+	index++;
+	return 0;
+}
+
 Vector2DInt MapInfo::GetRegionCapital(unsigned int index)
 {
 	if (index >= m_NumberOfIDs)
@@ -74,6 +88,11 @@ std::vector<Vector2DInt> MapInfo::GetRegionPositions(unsigned int index)
 		return std::vector<Vector2DInt>();
 	}
 	return m_MapRegions[index].m_MapSquares;
+}
+
+std::vector<Vector2DInt> MapInfo::GetRegionCapitals()
+{
+	return m_RegionCapitals;
 }
 
 unsigned int MapInfo::GetRegionIndex(Vector2DInt position)

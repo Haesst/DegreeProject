@@ -23,19 +23,41 @@ struct CharacterSystem : System
 		m_EntityManager = &EntityManager::Get();
 	}
 
+	virtual void Start() override
+	{
+		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+
+		for (auto entity : m_Entities)
+		{
+			for (unsigned int ownedID : characters[entity].m_OwnedRegionIDs)
+			{
+				MapInfo::SetOwnerName(characters[entity].m_KingdomName, ownedID);
+			}
+		}
+	}
+
 	// Update gets called every frame and loops through every entity that has the signature that
 	// the system has registered and do the necessary update
 	virtual void Update() override
 	{
 		//Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
-		//CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 
-		//for (auto entity : m_Entities)
-		//{
-		//	// characters[entity].m_CurrentGold += TAX_INCOME;
-		//	// characters[entity].m_CurrentArmySize += ARMY_RECRUITED;
-		//	// characters[entity].m_OwnedRegionIDs.push_back(REGIONS_CONQUERED);
-		//}
+		for (auto entity : m_Entities)
+		{
+			if (characters[entity].m_UpdateOwnership == true)
+			{
+				characters[entity].m_UpdateOwnership = false;
+				for (unsigned int ownedID : characters[entity].m_OwnedRegionIDs)
+				{
+					MapInfo::SetOwnerName(characters[entity].m_KingdomName, ownedID);
+				}
+			}
+
+			// characters[entity].m_CurrentGold += TAX_INCOME;
+			// characters[entity].m_CurrentArmySize += ARMY_RECRUITED;
+			// characters[entity].m_OwnedRegionIDs.push_back(REGIONS_CONQUERED);
+		}
 	}
 
 	virtual void Render() override

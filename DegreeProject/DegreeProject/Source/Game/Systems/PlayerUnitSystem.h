@@ -8,6 +8,7 @@
 #include "Game/Components/PlayerUnit.h"
 #include "Engine/InputHandler.h"
 #include "Game/Pathfinding.h"
+#include "Game/Components/UIText.h"
 
 struct PlayerUnitSystem : System
 {
@@ -47,6 +48,7 @@ struct PlayerUnitSystem : System
 			Vector2D startPositionScreen = MapInfo::ConvertToScreen(startPositionMap);
 			transforms[entity].m_Position = startPositionScreen;
 			playerUnits[entity].m_CurrentMapPosition = startPositionMap;
+			playerUnits[entity].m_RecentlyConquered = startPositionMap;
 			playerUnits[entity].m_Shape.setPosition(startPositionScreen.x, startPositionScreen.y);
 
 			//Debug Start Rectangle
@@ -71,6 +73,7 @@ struct PlayerUnitSystem : System
 		{
 			SelectPlayer(&transforms[entity], &playerUnits[entity]);
 			MovePlayer(&transforms[entity], &playerUnits[entity]);
+			ConquerRegion(&playerUnits[entity]);
 			playerUnits[entity].m_Shape.setFillColor(playerUnits[entity].m_FillColor);
 			playerUnits[entity].m_Shape.setOutlineColor(playerUnits[entity].m_OutlineColor);
 			playerUnits[entity].m_Shape.setOutlineThickness(playerUnits[entity].m_OutlineThickness);
@@ -226,6 +229,52 @@ struct PlayerUnitSystem : System
 					m_StartPosition.setPosition((float)playerUnit->m_CurrentMapPosition.x * 32 + 100 - 16, (float)playerUnit->m_CurrentMapPosition.y * 32 + 100 - 16);
 					m_StartPosition.setFillColor(sf::Color::Magenta);
 				}
+			}
+		}
+	}
+
+	void ConquerRegion(PlayerUnit* playerUnit)
+	{
+		if (!playerUnit->m_Moving && playerUnit->m_CurrentMapPosition != playerUnit->m_RecentlyConquered)
+		{
+			std::vector<Vector2DInt> regionCapitals = MapInfo::GetRegionCapitals();
+			CharacterComponent* characterComponents = m_EntityManager->GetComponentArray<CharacterComponent>();
+			Map* mapComponents = m_EntityManager->GetComponentArray<Map>();
+			UIText* textComponents = m_EntityManager->GetComponentArray<UIText>();
+			unsigned int capitalIndex = 0;
+			for each (Vector2DInt capitalPosition in regionCapitals)
+			{
+				if (playerUnit->m_CurrentMapPosition == capitalPosition)
+				{
+					unsigned int opponentIndex;
+					for (opponentIndex = 19; opponentIndex < 24; opponentIndex++)
+					{
+						if (opponentIndex == playerUnit->m_Owner)
+						{
+							continue;
+						}
+						auto iterator = std::find(characterComponents[opponentIndex].m_OwnedRegionIDs.begin(), characterComponents[opponentIndex].m_OwnedRegionIDs.end(), capitalIndex);
+						if (iterator != characterComponents[opponentIndex].m_OwnedRegionIDs.end() && opponentIndex != playerUnit->m_Owner)
+						{
+							break;
+						}
+					}
+					//LOG_INFO("{0} conquering region {1} from {2}", characterComponents[playerUnit->m_Owner].m_KingdomName, capitalIndex, characterComponents[opponentIndex].m_KingdomName);
+					playerUnit->m_RecentlyConquered = capitalPosition;
+					characterComponents[playerUnit->m_Owner].m_OwnedRegionIDs.push_back(capitalIndex);
+					characterComponents[playerUnit->m_Owner].m_UpdateOwnership = true;
+					mapComponents[0].SetRegionColor(capitalIndex, characterComponents[playerUnit->m_Owner].m_RegionColor);
+					textComponents[11 + playerUnit->m_Owner].m_OwnedRegions.push_back(capitalIndex);
+					textComponents[11 + playerUnit->m_Owner].m_AdjustText = true;
+					if (characterComponents[opponentIndex].m_OwnedRegionIDs.size() > 0 && textComponents[opponentIndex + 11].m_OwnedRegions.size() > 0)
+					{
+						characterComponents[opponentIndex].m_OwnedRegionIDs.erase(std::remove(characterComponents[opponentIndex].m_OwnedRegionIDs.begin(), characterComponents[opponentIndex].m_OwnedRegionIDs.end(), capitalIndex), characterComponents[opponentIndex].m_OwnedRegionIDs.end());
+						textComponents[opponentIndex + 11].m_OwnedRegions.erase(std::remove(textComponents[opponentIndex + 11].m_OwnedRegions.begin(), textComponents[opponentIndex + 11].m_OwnedRegions.end(), capitalIndex), textComponents[opponentIndex + 11].m_OwnedRegions.end());
+						textComponents[opponentIndex + 11].m_AdjustText = true;
+					}
+					break;
+				}
+				capitalIndex++;
 			}
 		}
 	}

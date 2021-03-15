@@ -24,6 +24,7 @@ struct CharacterComponent : public Component
 	sf::Color m_RegionColor = sf::Color::Black;
 	bool m_AtWar = false;
 	int m_PersonalityIndex = 0;
+	bool m_UpdateOwnership = false;
 
 	CharacterComponent() {};
 

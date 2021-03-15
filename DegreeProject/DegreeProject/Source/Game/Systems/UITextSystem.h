@@ -77,42 +77,52 @@ struct UITextSystem : System
 
 		for (auto entity : m_Entities)
 		{
-			m_Window->draw(UITexts[entity].m_CountryNameText);
+			if (!UITexts[entity].m_Conquered)
+			{
+				m_Window->draw(UITexts[entity].m_CountryNameText);
+			}
 		}
 	}
 
 	void AdjustText(UIText* UIText)
 	{
-		std::vector<MapRegion> regions = MapInfo::GetMapRegions();
-		Vector2DInt leftMostPosition = {100, 0};
-		Vector2DInt rightMostPosition = {0, 0};
-		unsigned int regionIndex = 0;
-		for each (MapRegion region in regions)
+		if (UIText->m_OwnedRegions.size() > 0)
 		{
-			for each (unsigned int index in UIText->m_OwnedRegions)
+			std::vector<MapRegion> regions = MapInfo::GetMapRegions();
+			Vector2DInt leftMostPosition = {100, 0};
+			Vector2DInt rightMostPosition = {0, 0};
+			unsigned int regionIndex = 0;
+			for each (MapRegion region in regions)
 			{
-				if (index == regionIndex)
+				for each (unsigned int index in UIText->m_OwnedRegions)
 				{
-					for each (Vector2DInt position in region.m_MapSquares)
+					if (index == regionIndex)
 					{
-						if (position.x <= leftMostPosition.x)
+						for each (Vector2DInt position in region.m_MapSquares)
 						{
-							leftMostPosition = position;
-						}
-						if (position.x >= rightMostPosition.x)
-						{
-							rightMostPosition = position;
+							if (position.x <= leftMostPosition.x)
+							{
+								leftMostPosition = position;
+							}
+							if (position.x >= rightMostPosition.x)
+							{
+								rightMostPosition = position;
+							}
 						}
 					}
 				}
+				regionIndex++;
 			}
-			regionIndex++;
+			Vector2D leftMostPositionScreen = MapInfo::ConvertToScreen(leftMostPosition);
+			Vector2D diagonal = MapInfo::ConvertToScreen(rightMostPosition) - leftMostPositionScreen;
+			UIText->m_CharacterSize = (unsigned int)(diagonal.x * 0.1f);
+			UIText->m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - UIText->m_CharacterSize * 3;
+			UIText->m_PositionY = diagonal.y * 0.5f + leftMostPositionScreen.y - UIText->m_CharacterSize;
+			UIText->m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
 		}
-		Vector2D leftMostPositionScreen = MapInfo::ConvertToScreen(leftMostPosition);
-		Vector2D diagonal = MapInfo::ConvertToScreen(rightMostPosition) - leftMostPositionScreen;
-		UIText->m_CharacterSize = (unsigned int)(diagonal.x * 0.1f);
-		UIText->m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - UIText->m_CharacterSize * 3;
-		UIText->m_PositionY = diagonal.y * 0.5f + leftMostPositionScreen.y - UIText->m_CharacterSize;
-		UIText->m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
+		else
+		{
+			UIText->m_Conquered = true;
+		}
 	}
 };
