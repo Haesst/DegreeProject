@@ -45,7 +45,7 @@ struct AISystem : System
 		m_TickAccu += Time::DeltaTime();
 
 		//Every tick (Light updates)
-		for (auto entity : m_Entities)
+		for (auto& entity : m_Entities)
 		{
 
 		}

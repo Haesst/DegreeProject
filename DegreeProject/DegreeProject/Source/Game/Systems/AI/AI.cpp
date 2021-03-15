@@ -39,7 +39,7 @@ float AISystem::ExpansionDecision(EntityID ent)
 	//Get characters in certain range,
 	std::vector<int> regionIndexes = MapInfo::GetRegionIDs();
 
-	for (int i = 0; i < regionIndexes.size(); i++)
+	for (unsigned int i = 0; i < regionIndexes.size(); i++)
 	{
 		if (std::find(characterComponents[ent].m_OwnedRegionIDs.begin(), characterComponents[ent].m_OwnedRegionIDs.end(),
 			regionIndexes[i]) != characterComponents[ent].m_OwnedRegionIDs.end())
@@ -55,7 +55,7 @@ float AISystem::ExpansionDecision(EntityID ent)
 	float highest = -1.0f;
 	int bestIndex = -1;
 
-	for (int i = 0; i < actionScorePerRegion.size(); i++)
+	for (unsigned int i = 0; i < actionScorePerRegion.size(); i++)
 	{
 		if (actionScorePerRegion[i].first > highest)
 		{

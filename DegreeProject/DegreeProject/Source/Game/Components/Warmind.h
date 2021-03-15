@@ -13,7 +13,6 @@ struct WarmindComponent : Component
 
 	WarmindComponent()
 	{
-
 	};
 
 	WarmindComponent(int warGoalRegionId,  EntityID opponent)
