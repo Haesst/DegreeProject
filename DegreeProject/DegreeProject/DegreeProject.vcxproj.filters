@@ -63,9 +63,6 @@
     <ClInclude Include="Source\Engine\Log.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\TileMap.h">
-      <Filter>Engine</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\Time.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -112,9 +109,6 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\HotReloader.h">
-      <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\MapDrawer.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\MapInfo.h">
@@ -176,9 +170,6 @@
     <ClCompile Include="Source\Engine\Log.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\TileMap.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\Time.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
@@ -189,9 +180,6 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\HotReloader.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
-    <ClCompile Include="Source\Game\MapDrawer.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\MapInfo.cpp">
