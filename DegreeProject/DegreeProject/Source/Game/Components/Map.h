@@ -14,6 +14,7 @@ struct MapRegion
 {
 public:
 	std::vector<Vector2DInt> m_MapSquares = {};
+	Vector2DInt m_RegionCapital = Vector2DInt();
 	sf::Color m_HighlightColor = sf::Color::White;
 	char m_MapChar = '1';
 	unsigned int m_RegionId = INT_MAX;
@@ -121,6 +122,8 @@ struct Map : public Component
 			region.m_RegionId = element["id"].get<unsigned int>();
 			region.m_RegionTax = element["tax"].get<unsigned int>();
 			region.m_RegionName = element["name"].get<std::string>();
+			region.m_RegionCapital.x = element["capitalx"].get<unsigned int>();
+			region.m_RegionCapital.y = element["capitaly"].get<unsigned int>();
 
 			if (mapCharString.size() > 0)
 			{

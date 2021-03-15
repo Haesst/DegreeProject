@@ -43,7 +43,7 @@ struct PlayerUnitSystem : System
 
 		for (auto entity : m_Entities)
 		{
-			Vector2DInt startPositionMap = MapInfo::GetRegionPositions(entity)[entity];
+			Vector2DInt startPositionMap = MapInfo::GetRegionPositions(0)[0];
 			Vector2D startPositionScreen = MapInfo::ConvertToScreen(startPositionMap);
 			transforms[entity].m_Position = startPositionScreen;
 			playerUnits[entity].m_CurrentMapPosition = startPositionMap;

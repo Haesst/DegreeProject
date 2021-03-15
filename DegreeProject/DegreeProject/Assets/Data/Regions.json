@@ -4,118 +4,152 @@
 	"id": 1,
 	"mapchar": "1",
 	"color": "Red",
-	"tax": 5
+	"tax": 5,
+	"capitalx" : 20,
+	"capitaly" : 8
 	},
 	{
 	"name": "Lombardy",
 	"id": 2,
 	"mapchar": "2",
 	"color": "Yellow",
-	"tax": 7
+	"tax": 7,
+	"capitalx" : 29,
+	"capitaly" : 6
 	},
 	{
 	"name": "Trentino",
 	"id": 3,
 	"mapchar": "3",
 	"color": "Purple",
-	"tax": 3
+	"tax": 3,
+	"capitalx" : 37,
+	"capitaly" : 4
 	},
 	{
 	"name": "Veneto",
 	"id": 4,
 	"mapchar": "4",
 	"color": "Cyan",
-	"tax": 7
+	"tax": 7,
+	"capitalx" : 47,
+	"capitaly" : 7
 	},
 	{
 	"name": "Friuli",
 	"id": 5,
 	"mapchar": "5",
 	"color": "Blue",
-	"tax": 3
+	"tax": 3,
+	"capitalx" : 51,
+	"capitaly" : 4
 	},
 	{
 	"name": "Liguria",
 	"id": 6,
 	"mapchar": "6",
 	"color": "Brown",
-	"tax": 2
+	"tax": 2,
+	"capitalx" : 28,
+	"capitaly" : 9
 	},
 	{
 	"name": "Emilia Romagna",
 	"id": 7,
 	"mapchar": "7",
 	"color": "Red",
-	"tax": 6
+	"tax": 6,
+	"capitalx" : 41,
+	"capitaly" : 10
 	},
 	{
 	"name": "Toscany",
 	"id": 8,
 	"mapchar": "8",
 	"color": "Yellow",
-	"tax": 5
+	"tax": 5,
+	"capitalx" : 42,
+	"capitaly" : 14
 	},
 	{
 	"name": "Marches",
 	"id": 9,
 	"mapchar": "9",
 	"color": "Cyan",
-	"tax": 4
+	"tax": 4,
+	"capitalx" : 56,
+	"capitaly" : 15
 	},
 	{
 	"name": "Umbria",
 	"id": 10,
 	"mapchar": "U",
 	"color": "Blue",
-	"tax": 2
+	"tax": 2,
+	"capitalx" : 52,
+	"capitaly" : 16
 	},
 	{
 	"name": "Latium",
 	"id": 11,
 	"mapchar": "L",
 	"color": "Brown",
-	"tax": 8
+	"tax": 8,
+	"capitalx" : 55,
+	"capitaly" : 19
 	},
 	{
 	"name": "Abruzzo",
 	"id": 12,
 	"mapchar": "A",
 	"color": "Yellow",
-	"tax": 4
+	"tax": 4,
+	"capitalx" : 66,
+	"capitaly" : 19
 	},
 	{
 	"name": "Campania",
 	"id": 13,
 	"mapchar": "C",
 	"color": "Red",
-	"tax": 4
+	"tax": 4,
+	"capitalx" : 70,
+	"capitaly" : 22
 	},
 	{
 	"name": "Apulia",
 	"id": 14,
 	"mapchar": "P",
 	"color": "Purple",
-	"tax": 5
+	"tax": 5,
+	"capitalx" : 78,
+	"capitaly" : 21
 	},
 	{
 	"name": "Basilicata",
 	"id": 15,
 	"mapchar": "B",
 	"color": "Blue",
-	"tax": 3
+	"tax": 3,
+	"capitalx" : 76,
+	"capitaly" : 23
 	},
 	{
 	"name": "Calabria",
 	"id": 16,
 	"mapchar": "R",
 	"color": "Brown",
-	"tax": 4
+	"tax": 4,
+	"capitalx" : 79,
+	"capitaly" : 27
 	},
 	{
 	"name": "Sicily",
 	"id": 17,
 	"mapchar": "S",
 	"color": "Yellow",
-	"tax": 5
+	"tax": 5,
+	"capitalx" : 66,
+	"capitaly" : 33
 	}
 ]

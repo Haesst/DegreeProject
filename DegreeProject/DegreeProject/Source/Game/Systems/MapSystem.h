@@ -31,7 +31,6 @@ struct MapSystem : public System
 	virtual void Start() override
 	{
 		Map* maps = m_EntityManager->GetComponentArray<Map>();
-		sf::Vector2 resolution = Window::GetWindow()->getSize();
 		for (auto& entity : m_Entities)
 		{
 			for (size_t i = 0; i < maps[entity].m_Regions.size(); ++i)
@@ -44,11 +43,11 @@ struct MapSystem : public System
 	virtual void Update() override
 	{
 		Map* maps = m_EntityManager->GetComponentArray<Map>();
-		sf::Vector2 resolution = Window::GetWindow()->getSize();
 		for (auto& entity : m_Entities)
 		{
 			if (maps[entity].m_UpdateMapInfo == true)
 			{
+				maps[entity].m_UpdateMapInfo = false;
 				for (size_t i = 0; i < maps[entity].m_Regions.size(); ++i)
 				{
 					UpdateMapInfo(maps, entity, i);
@@ -109,6 +108,7 @@ struct MapSystem : public System
 		MapInfo::SetRegionName(maps[entity].m_Regions[regionIndex].m_RegionName, (unsigned int)regionIndex);
 		MapInfo::SetRegionTax(maps[entity].m_Regions[regionIndex].m_RegionTax, (unsigned int)regionIndex);
 		MapInfo::SetOwnerName(std::to_string(maps[entity].m_Regions[regionIndex].m_RegionId), (unsigned int)regionIndex);
+		MapInfo::SetRegionCapital(maps[entity].m_Regions[regionIndex].m_RegionCapital, (unsigned int)regionIndex);
 		MapInfo::SetMapRegions(maps[entity].m_Regions);
 	}
 };
