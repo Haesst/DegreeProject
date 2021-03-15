@@ -227,7 +227,7 @@ struct Map : public Component
 
 	int GetRegionPosition(const char& c)
 	{
-		for (int i = 0; i < m_Regions.size(); ++i)
+		for (size_t i = 0; i < m_Regions.size(); ++i)
 		{
 			if (m_Regions[i].m_MapChar == c)
 			{
