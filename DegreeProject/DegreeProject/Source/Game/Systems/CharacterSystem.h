@@ -27,25 +27,25 @@ struct CharacterSystem : System
 	// the system has registered and do the necessary update
 	virtual void Update() override
 	{
-		Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
-		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+		//Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
+		//CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 
-		for (auto entity : m_Entities)
-		{
-			// characters[entity].m_CurrentGold += TAX_INCOME;
-			// characters[entity].m_CurrentArmySize += ARMY_RECRUITED;
-			// characters[entity].m_OwnedRegionIDs.push_back(REGIONS_CONQUERED);
-		}
+		//for (auto entity : m_Entities)
+		//{
+		//	// characters[entity].m_CurrentGold += TAX_INCOME;
+		//	// characters[entity].m_CurrentArmySize += ARMY_RECRUITED;
+		//	// characters[entity].m_OwnedRegionIDs.push_back(REGIONS_CONQUERED);
+		//}
 	}
 
 	virtual void Render() override
 	{
-		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+		//CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 
-		for (auto entity : m_Entities)
-		{
-			
-		}
+		//for (auto entity : m_Entities)
+		//{
+		//	
+		//}
 	}
 
 	void ConquerRegion(int regionId, int conqueringEntity)
@@ -61,7 +61,7 @@ struct CharacterSystem : System
 
 		for (unsigned int i = 0; i < regions.size(); i++)
 		{
-			if (regions[i] == regionId)
+			if (regions[i] == (unsigned int)regionId)
 			{
 				regions.erase(regions.begin() + i);
 				return;
