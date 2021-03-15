@@ -9,16 +9,15 @@
 
 struct UISpriteRenderer : public Component
 {
-	Transform* m_Transform;
+	Transform* m_Transform = nullptr;
 
 	sf::Sprite m_Sprite;
 	sf::Texture m_Texture;
 
-	int m_Width;
-	int m_Height;
+	int m_Width = 0;
+	int m_Height = 0;
 
-	UISpriteRenderer()
-	{}
+	UISpriteRenderer(){}
 
 	UISpriteRenderer(const char* path, int width, int height, AssetHandler* assetHandler)
 		: m_Width(width), m_Height(height)
