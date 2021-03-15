@@ -303,8 +303,11 @@ void Game::InitAI()
 	// Register system
 	entityManager->RegisterSystem<AISystem>();
 	// Get system
-	AISystem sys = *(AISystem*)entityManager->GetSystem<AISystem>().get();
+#pragma warning(push)
+#pragma warning(disable: 26815)
+	AISystem* sys = (AISystem*)entityManager->GetSystem<AISystem>().get();
+#pragma warning(pop)
 
 	// Init system with manager component
-	sys.Init(m_AIManager);
+	sys->Init(m_AIManager);
 }
