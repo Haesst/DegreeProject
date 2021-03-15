@@ -16,6 +16,8 @@ using json = nlohmann::json;
 
 struct AISystem : System
 {
+	std::vector<std::pair<EntityID, WarmindComponent>> m_EntityToWarminds;
+
 	EntityManager* m_EntityManager = nullptr;
 	AIManager* m_AIManager = nullptr;
 
@@ -30,6 +32,7 @@ struct AISystem : System
 	{
 		AddComponentSignature<CharacterComponent>();
 		AddComponentSignature<WarmindComponent>();
+
 		m_EntityManager = &EntityManager::Get();
 		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
@@ -38,6 +41,12 @@ struct AISystem : System
 	void Init(AIManager* manager)
 	{
 		m_AIManager = manager;
+
+		for (auto entity : m_Entities)
+		{
+			auto hello = std::make_pair(entity, m_Warminds[entity]);
+			m_EntityToWarminds.push_back(hello);
+		}
 	}
 
 	virtual void Update() override
@@ -65,6 +74,7 @@ struct AISystem : System
 	}
 
 	float WarDecision(EntityID ent);
+
 	float ExpansionDecision(EntityID ent);
 
 	void DeclareWar(EntityID instigator, EntityID target, int warGoalRegion);
