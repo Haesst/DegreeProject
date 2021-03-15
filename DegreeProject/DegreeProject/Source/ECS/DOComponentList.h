@@ -7,7 +7,7 @@ class IComponentList
 public:
 	IComponentList() = default;
 	~IComponentList() = default;
-	virtual void Erase(const EntityID entity) {}
+	virtual void Erase(const EntityID) {}
 };
 
 template<typename T>
@@ -35,7 +35,7 @@ public:
 		return m_Components[entity];
 	}
 
-	void Erase(const EntityID entity) override final
+	void Erase(const EntityID) override final
 	{
 		// Not necessary?
 	}
