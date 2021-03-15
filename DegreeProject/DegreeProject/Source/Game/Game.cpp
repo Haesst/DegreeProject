@@ -54,6 +54,7 @@ void Game::Run()
 
 		// Update
 		EntityManager::Get().Update();
+		m_GameDate.Update();
 
 		// Render
 		EntityManager::Get().Render();

@@ -8,6 +8,7 @@
 #include "Engine/Vector2D.h"
 #include "Game/AI/AIManager.h"
 #include <mutex>
+#include <Game/GameDate.h>
 
 class Window;
 class AssetHandler;
@@ -29,6 +30,7 @@ private:
 	std::vector<sf::RectangleShape> m_Map;
 	sf::SoundBuffer m_SoundBuffer;
 	sf::Sound m_Sound;
+	GameDate m_GameDate;
 
 public:
 	~Game();
