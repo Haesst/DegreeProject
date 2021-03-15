@@ -1,7 +1,7 @@
 #pragma once
-#include "ECS/Component.h"
+#include "ECS\Component.h"
 #include "Game\Components\CharacterComponent.h"
-#include <Game/Components/Unit.h>
+#include <Game\Components\Unit.h>
 
 struct WarmindComponent : Component
 {
