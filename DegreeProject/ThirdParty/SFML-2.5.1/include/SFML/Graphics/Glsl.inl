@@ -141,12 +141,15 @@ struct Vector4
     /// \param color Color instance. Is normalized to [0, 1]
     ///              for floats, and left as-is for ints.
     ///
-    ////////////////////////////////////////////////////////////
+	////////////////////////////////////////////////////////////
+#pragma warning(push)
+#pragma warning(disable: 26495)
     Vector4(const Color& color)
     // uninitialized
     {
         copyVector(color, *this);
     }
+#pragma warning(pop)
 
     T x; ///< 1st component (X) of the 4D vector
     T y; ///< 2nd component (Y) of the 4D vector
