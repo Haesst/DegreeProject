@@ -34,11 +34,9 @@ struct MapSystem : public System
 		sf::Vector2 resolution = Window::GetWindow()->getSize();
 		for (auto& entity : m_Entities)
 		{
-			unsigned int regionIndex = 0;
-			for (auto& region : maps[entity].m_Regions)
+			for (int i = 0; i < maps[entity].m_Regions.size(); ++i)
 			{
-				UpdateMapInfo(maps, entity, regionIndex);
-				regionIndex++;
+				UpdateMapInfo(maps, entity, i);
 			}
 		}
 	}
@@ -51,12 +49,9 @@ struct MapSystem : public System
 		{
 			if (maps[entity].m_UpdateMapInfo == true)
 			{
-				unsigned int regionIndex = 0;
-				for (auto& region : maps[entity].m_Regions)
+				for (int i = 0; i < maps[entity].m_Regions.size(); ++i)
 				{
-					maps[entity].m_UpdateMapInfo = false;
-					UpdateMapInfo(maps, entity, regionIndex);
-					regionIndex++;
+					UpdateMapInfo(maps, entity, i);
 				}
 			}
 		}
@@ -73,63 +68,6 @@ struct MapSystem : public System
 				Window::GetWindow()->draw(region.m_VertexArray, maps[entity].m_RenderStates);
 			}
 		}
-	}
-
-	bool IsBorderTile(const std::vector<Vector2DInt>& tiles, const Vector2DInt currentTile)
-	{
-		// Figure out if the tile only borders same tile as this region or not
-
-		sf::Vector2f upLeft(currentTile.x - 1.0f, currentTile.y + 1.0f);
-		sf::Vector2f up(currentTile.x, currentTile.y + 1.0f);
-		sf::Vector2f upRight(currentTile.x + 1.0f, currentTile.y + 1.0f);
-		sf::Vector2f left(currentTile.x - 1.0f, currentTile.y);
-		sf::Vector2f right(currentTile.x + 1.0f, currentTile.y);
-		sf::Vector2f downRight(currentTile.x + 1.0f, currentTile.y - 1.0f);
-		sf::Vector2f down(currentTile.x, currentTile.y -1.0f);
-		sf::Vector2f downLeft(currentTile.x -1.0f, currentTile.y -1.0f);
-
-		for (auto& t : tiles)
-		{
-			float currentX = (float)t.x;
-			float currentY = (float)t.y;
-
-			if (upLeft.x == currentX && upLeft.y == currentY)
-			{
-				return true;
-			}
-
-			if (up.x == currentX && up.y == currentY)
-			{
-				return true;
-			}
-
-			if (upRight.x == currentX && upRight.y == currentY)
-			{
-				return true;
-			}
-
-			if (right.x == currentX && right.y == currentY)
-			{
-				return true;
-			}
-
-			if (downRight.x == currentX && downRight.y == currentY)
-			{
-				return true;
-			}
-
-			if (down.x == currentX && down.y == currentY)
-			{
-				return true;
-			}
-
-			if (downLeft.x == currentX && downLeft.y == currentY)
-			{
-				return true;
-			}
-		}
-
-		return false;
 	}
 
 	void RegionsChanged(std::string path, FileStatus fileStatus)

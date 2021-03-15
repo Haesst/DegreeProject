@@ -118,5 +118,5 @@ Vector2DInt MapInfo::ConvertToMap(Vector2D position)
 
 Vector2D MapInfo::ConvertToScreen(Vector2DInt position)
 {
-	return Vector2D(position.x * 32 + 100 - 16, position.y * 32 + 100 - 16);
+	return Vector2D((float)position.x * 32 + 100 - 16, (float)position.y * 32 + 100 - 16);
 }

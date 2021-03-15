@@ -49,7 +49,7 @@ struct UITextSystem : System
 	// the system has registered and do the necessary update
 	virtual void Update() override
 	{
-		Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
+		// Transform* transforms = m_EntityManager->GetComponentArray<Transform>(); // Uncommented because it's unused
 		UIText* UITexts = m_EntityManager->GetComponentArray<UIText>();
 
 		for (auto entity : m_Entities)

@@ -37,7 +37,7 @@ struct UIWindowSystem : System
 	// the system has registered and do the necessary update
 	virtual void Update() override
 	{
-		Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
+		// Transform* transforms = m_EntityManager->GetComponentArray<Transform>(); // Uncommented because it's unused!
 		UIWindow* UIWindows = m_EntityManager->GetComponentArray<UIWindow>();
 
 		for (auto entity : m_Entities)
@@ -136,7 +136,8 @@ struct UIWindowSystem : System
 		}
 		if (UIWindow->m_Visible == true)
 		{
-			windowUIPortraitTransform->m_Position = Vector2D(m_Window->mapPixelToCoords(sf::Vector2i(UIWindow->m_SizeX * 0.1f, UIWindow->m_SizeY * 0.025f)));
+			sf::Vector2f v = m_Window->mapPixelToCoords(sf::Vector2i(UIWindow->m_SizeX * 0.1f, UIWindow->m_SizeY * 0.025f));
+			windowUIPortraitTransform->m_Position = Vector2D(v.x, v.y);
 		}
 	}
 };

@@ -25,7 +25,7 @@ void HotReloader::OnFileChange(std::string path, FileStatus fileStatus)
 
 	if (m_Actions.find(path) != m_Actions.end())
 	{
-		for (int i = 0; i < m_Actions[path].size(); ++i)
+		for (size_t i = 0; i < m_Actions[path].size(); ++i)
 		{
 			m_Actions[path][i](path, fileStatus);
 		}

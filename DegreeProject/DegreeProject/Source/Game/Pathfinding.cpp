@@ -31,7 +31,7 @@ Pathfinding::~Pathfinding()
 
 float Pathfinding::CalculateHCost(const Node& a, const Node& b)
 {
-	return std::abs(a.m_Position.x - b.m_Position.x) + std::abs(a.m_Position.y - b.m_Position.y);
+	return (float)std::abs(a.m_Position.x - b.m_Position.x) + std::abs(a.m_Position.y - b.m_Position.y);
 }
 
 float Pathfinding::CalculateGCost(const Node& a, const Node& b)
