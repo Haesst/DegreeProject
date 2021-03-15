@@ -136,7 +136,7 @@ struct UIWindowSystem : System
 		}
 		if (UIWindow->m_Visible == true)
 		{
-			sf::Vector2f windowPortraitPosition = m_Window->mapPixelToCoords(sf::Vector2i((int)UIWindow->m_SizeX * 0.1f, (int)UIWindow->m_SizeY * 0.025f));
+			sf::Vector2f windowPortraitPosition = m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindow->m_SizeX * 0.1f), (int)(UIWindow->m_SizeY * 0.025f)));
 			windowUIPortraitTransform->m_Position = Vector2D(windowPortraitPosition.x, windowPortraitPosition.y);
 		}
 	}

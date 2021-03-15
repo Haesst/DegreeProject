@@ -38,7 +38,6 @@ class Pathfinding
 public:
 	~Pathfinding();
 	static float CalculateHCost(const Node& a, const Node& b);
-	static float CalculateGCost(const Node& a, const Node& b);
 
 	static std::vector<Node*> m_Map;
 	static bool IsInMap(const Vector2DInt& key);
