@@ -1,7 +1,10 @@
 #pragma once
 
+#pragma warning(push)
+#pragma warning(disable: 26451 26812 26495)
 #include "spdlog/spdlog.h"
 #include "spdlog/fmt/ostr.h"
+#pragma warning(pop)
 
 class Log
 {
