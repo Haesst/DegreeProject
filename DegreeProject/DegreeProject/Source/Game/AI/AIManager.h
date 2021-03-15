@@ -38,16 +38,17 @@ struct AIManager
 		json j;
 		file >> j;
 
-		std::lock_guard<std::mutex> lock{ m_PersonalityMtx };
+		m_PersonalityMtx.lock();
 		m_Personalities.clear();
 
 		for (auto& element : j)
 		{
-			const char* personalityName = element["debugName"].get<std::string>().c_str();
+			std::string personalityName = element["debugName"].get<std::string>();
 			float declareWarModifier = element["declareWarMod"].get<float>();
 
-			m_Personalities.push_back({ personalityName, declareWarModifier });
+			m_Personalities.push_back({ personalityName.c_str(), declareWarModifier });
 		}
+		m_PersonalityMtx.unlock();
 	}
 
 	void OnFileChange(std::string path, FileStatus status)
