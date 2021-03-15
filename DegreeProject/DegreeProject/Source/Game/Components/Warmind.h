@@ -13,6 +13,7 @@ struct WarmindComponent : Component
 
 	WarmindComponent()
 	{
+		m_Opponent = (size_t)INT_MAX;
 	};
 
 	WarmindComponent(int warGoalRegionId,  EntityID opponent)
