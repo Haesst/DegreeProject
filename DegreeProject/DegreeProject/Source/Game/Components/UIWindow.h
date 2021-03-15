@@ -19,7 +19,10 @@ struct UIWindow : public Component
 	std::string m_RegionName = "";
 	std::string m_OwnerName = "";
 	int m_CharacterSize = 50;
+#pragma warning(push)
+#pragma warning(disable: 26812)
 	sf::Text::Style m_Style = sf::Text::Regular;
+#pragma warning(pop)
 	bool m_Open = false;
 
 	UIWindow(){}

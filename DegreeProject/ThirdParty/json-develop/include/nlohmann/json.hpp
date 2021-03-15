@@ -6121,7 +6121,9 @@ class lexer : public lexer_base<BasicJsonType>
 
     @note In case of errors, variable error_message contains a textual
           description.
-    */
+	*/
+#pragma warning(push)
+#pragma warning(disable: 26819)
     token_type scan_string()
     {
         // reset token_buffer (ignore opening quote)
@@ -6707,11 +6709,14 @@ class lexer : public lexer_base<BasicJsonType>
             }
         }
     }
+#pragma warning(push)
 
     /*!
      * @brief scan a comment
      * @return whether comment could be scanned successfully
-     */
+	 */
+#pragma warning(push)
+#pragma warning(disable: 26819)
     bool scan_comment()
     {
         switch (get())
@@ -6777,7 +6782,8 @@ class lexer : public lexer_base<BasicJsonType>
                 return false;
             }
         }
-    }
+	}
+#pragma warning(push)
 
     JSON_HEDLEY_NON_NULL(2)
     static void strtof(float& f, const char* str, char** endptr) noexcept

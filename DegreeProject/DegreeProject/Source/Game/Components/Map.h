@@ -1,15 +1,9 @@
 #pragma once
 
 #include <vector>
-#pragma warning(push)
-#pragma warning(disable: 26812)
 #include <SFML/Graphics.hpp>
-#pragma warning(pop)
-#pragma warning(push)
-#pragma warning(disable: 26819 6387)
 #include <fstream>
 #include <json.hpp>
-#pragma warning(pop)
 using json = nlohmann::json;
 
 #include "ECS/Component.h"
@@ -170,13 +164,14 @@ struct Map : public Component
 		inData.close();
 	}
 
-#pragma warning(push)
-#pragma warning(disable: 26812)
 	void CreateVertexArrays()
 	{
 		for (auto& region : m_Regions)
 		{
+#pragma warning(push)
+#pragma warning(disable: 26812)
 			region.m_VertexArray.setPrimitiveType(sf::Triangles);
+#pragma warning(pop)
 
 			for (auto& square : region.m_MapSquares)
 			{
@@ -203,7 +198,6 @@ struct Map : public Component
 			}
 		}
 	}
-#pragma warning(pop)
 
 	void LoadShadersAndCreateRenderStates()
 	{
