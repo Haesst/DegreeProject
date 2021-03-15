@@ -34,7 +34,7 @@ struct MapSystem : public System
 		sf::Vector2 resolution = Window::GetWindow()->getSize();
 		for (auto& entity : m_Entities)
 		{
-			for (int i = 0; i < maps[entity].m_Regions.size(); ++i)
+			for (size_t i = 0; i < maps[entity].m_Regions.size(); ++i)
 			{
 				UpdateMapInfo(maps, entity, i);
 			}
@@ -49,7 +49,7 @@ struct MapSystem : public System
 		{
 			if (maps[entity].m_UpdateMapInfo == true)
 			{
-				for (int i = 0; i < maps[entity].m_Regions.size(); ++i)
+				for (size_t i = 0; i < maps[entity].m_Regions.size(); ++i)
 				{
 					UpdateMapInfo(maps, entity, i);
 				}

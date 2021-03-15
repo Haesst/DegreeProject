@@ -113,7 +113,7 @@ void MapInfo::SetMapRegions(std::vector<MapRegion> regions)
 
 Vector2DInt MapInfo::ConvertToMap(Vector2D position)
 {
-	return Vector2DInt((position.x - 100 + 16) / 32, (position.y - 100 + 16) / 32);
+	return Vector2DInt((int)(position.x - 100 + 16) / 32, (int)(position.y - 100 + 16) / 32);
 }
 
 Vector2D MapInfo::ConvertToScreen(Vector2DInt position)
