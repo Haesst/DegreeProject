@@ -35,7 +35,7 @@ float AISystem::ExpansionDecision(EntityID ent)
 	expansionConsideration.SetContext(ent);
 
 	//Get characters in certain range,
-	std::vector<int> regionIndexes = MapInfo::GetRegionIDs();
+	std::vector<int> regionIndexes = Map::GetRegionIDs();
 
 	for (size_t i = 0; i < regionIndexes.size(); i++)
 	{
@@ -73,7 +73,7 @@ float AISystem::ExpansionDecision(EntityID ent)
 
 void AISystem::DeclareWar(EntityID instigator, EntityID target, int warGoalRegion)
 {
-	LOG_INFO("{0} Declared war with {1} for {2}", m_Characters[instigator].m_Name, m_Characters[target].m_Name, MapInfo::GetRegionName(warGoalRegion));
+	LOG_INFO("{0} Declared war with {1} for {2}", m_Characters[instigator].m_Name, m_Characters[target].m_Name, Map::m_Data.m_Regions[warGoalRegion].m_RegionName);
 
 	m_Characters[instigator].m_AtWar = true;
 	m_Warminds[instigator].m_Defending = false;

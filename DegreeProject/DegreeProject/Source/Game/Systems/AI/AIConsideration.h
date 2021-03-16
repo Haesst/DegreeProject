@@ -1,7 +1,8 @@
 #pragma once
 #include "Game/Components/CharacterComponent.h"
 #include <algorithm>
-#include "Game/MapInfo.h"
+#include "Game/Map/Map.h"
+
 struct Consideration
 {
 	EntityID m_Context;
@@ -158,12 +159,12 @@ struct ExpansionConsideration : public Consideration
 		}
 
 		//Consider potential gold gain
-		int wantedRegionTax = MapInfo::GetRegionTax(regionIndex);
+		int wantedRegionTax = Map::m_Data.m_Regions[regionIndex].m_RegionTax;
 
 		std::vector<int> regionTax;
 		for (int region : characters[context].m_OwnedRegionIDs)
 		{
-			regionTax.push_back(MapInfo::GetRegionTax(region));
+			regionTax.push_back(Map::m_Data.m_Regions[regionIndex].m_RegionTax);
 		}
 
 		float avgTax = 1.0f * std::accumulate(regionTax.begin(), regionTax.end(), 0LL) / regionTax.size();

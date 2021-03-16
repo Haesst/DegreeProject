@@ -44,7 +44,8 @@ struct PlayerUnitSystem : System
 
 		for (auto entity : m_Entities)
 		{
-			Vector2DInt startPositionMap = MapInfo::GetRegionPositions(0)[0];
+			//Vector2DInt startPositionMap = MapInfo::GetRegionPositions(0)[0];
+			Vector2DInt startPositionMap = Map::m_Data.m_Regions[0].m_MapSquares[0];
 			Vector2D startPositionScreen = Map::ConvertToScreen(startPositionMap);
 			transforms[entity].m_Position = startPositionScreen;
 			playerUnits[entity].m_CurrentMapPosition = startPositionMap;
@@ -237,7 +238,7 @@ struct PlayerUnitSystem : System
 	{
 		if (!playerUnit->m_Moving && playerUnit->m_CurrentMapPosition != playerUnit->m_RecentlyConquered)
 		{
-			std::vector<Vector2DInt> regionCapitals = MapInfo::GetRegionCapitals();
+			std::vector<Vector2DInt> regionCapitals = Map::GetRegionCapitals();
 			CharacterComponent* characterComponents = m_EntityManager->GetComponentArray<CharacterComponent>();
 			OldMap* mapComponents = m_EntityManager->GetComponentArray<OldMap>();
 			UIText* textComponents = m_EntityManager->GetComponentArray<UIText>();

@@ -220,3 +220,27 @@ Vector2DInt Map::GetRegionCapitalLocation(unsigned int regionId)
 
 	return m_Data.m_Regions[regionArrayLocation].m_RegionCapital;
 }
+
+std::vector<Vector2DInt> Map::GetRegionCapitals()
+{
+	std::vector<Vector2DInt> capitalLocations;
+
+	for (const MapRegion& region : m_Data.m_Regions)
+	{
+		capitalLocations.push_back(region.m_RegionCapital);
+	}
+
+	return capitalLocations;
+}
+
+std::vector<int> Map::GetRegionIDs()
+{
+	std::vector<int> regionIds;
+
+	for (const MapRegion& region : m_Data.m_Regions)
+	{
+		regionIds.push_back(region.m_RegionId);
+	}
+
+	return regionIds;
+}

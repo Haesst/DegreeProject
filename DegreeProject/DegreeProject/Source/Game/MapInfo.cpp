@@ -26,23 +26,23 @@ void MapInfo::Initialization(unsigned int numberOfIDs)
 	}
 }
 
-unsigned int MapInfo::GetRegionTax(unsigned int index)
-{
-	if (index >= m_NumberOfIDs)
-	{
-		return 0;
-	}
-	return m_RegionTax[index];
-}
+//unsigned int MapInfo::GetRegionTax(unsigned int index)
+//{
+//	if (index >= m_NumberOfIDs)
+//	{
+//		return 0;
+//	}
+//	return m_RegionTax[index];
+//}
 
-std::string MapInfo::GetRegionName(unsigned int index)
-{
-	if (index >= m_NumberOfIDs)
-	{
-		return "";
-	}
-	return m_RegionNames[index];
-}
+//std::string MapInfo::GetRegionName(unsigned int index)
+//{
+//	if (index >= m_NumberOfIDs)
+//	{
+//		return "";
+//	}
+//	return m_RegionNames[index];
+//}
 
 std::string MapInfo::GetOwnerName(unsigned int index)
 {
@@ -53,19 +53,19 @@ std::string MapInfo::GetOwnerName(unsigned int index)
 	return m_OwnerNames[index];
 }
 
-unsigned int MapInfo::GetIndexOfCapital(Vector2DInt regionCapital)
-{
-	unsigned int index = 0;
-	for each (Vector2DInt region in m_RegionCapitals)
-	{
-		if (region == regionCapital)
-		{
-			return index;
-		}
-	}
-	index++;
-	return 0;
-}
+//unsigned int MapInfo::GetIndexOfCapital(Vector2DInt regionCapital)
+//{
+//	unsigned int index = 0;
+//	for each (Vector2DInt region in m_RegionCapitals)
+//	{
+//		if (region == regionCapital)
+//		{
+//			return index;
+//		}
+//	}
+//	index++;
+//	return 0;
+//}
 
 //Vector2DInt MapInfo::GetRegionCapital(unsigned int index)
 //{
@@ -76,51 +76,51 @@ unsigned int MapInfo::GetIndexOfCapital(Vector2DInt regionCapital)
 //	return m_RegionCapitals[index];
 //}
 
-std::vector<int> MapInfo::GetRegionIDs()
-{
-	return m_RegionIDs;
-}
+//std::vector<int> MapInfo::GetRegionIDs()
+//{
+//	return m_RegionIDs;
+//}
 
-std::vector<unsigned int> MapInfo::GetCharacterIDs()
-{
-	return m_CharacterIDs;
-}
+//std::vector<unsigned int> MapInfo::GetCharacterIDs()
+//{
+//	return m_CharacterIDs;
+//}
 
-std::vector<MapRegion> MapInfo::GetMapRegions()
-{
-	return m_MapRegions;
-}
+//std::vector<MapRegion> MapInfo::GetMapRegions()
+//{
+//	return m_MapRegions;
+//}
 
-std::vector<Vector2DInt> MapInfo::GetRegionPositions(unsigned int index)
-{
-	if (index >= m_NumberOfIDs)
-	{
-		return std::vector<Vector2DInt>();
-	}
-	return m_MapRegions[index].m_MapSquares;
-}
+//std::vector<Vector2DInt> MapInfo::GetRegionPositions(unsigned int index)
+//{
+//	if (index >= m_NumberOfIDs)
+//	{
+//		return std::vector<Vector2DInt>();
+//	}
+//	return m_MapRegions[index].m_MapSquares;
+//}
+//
+//std::vector<Vector2DInt> MapInfo::GetRegionCapitals()
+//{
+//	return m_RegionCapitals;
+//}
 
-std::vector<Vector2DInt> MapInfo::GetRegionCapitals()
-{
-	return m_RegionCapitals;
-}
-
-unsigned int MapInfo::GetRegionIndex(Vector2DInt position)
-{
-	unsigned int index = 0;
-	for each (MapRegion region in m_MapRegions)
-	{
-		for each (Vector2DInt regionPosition in region.m_MapSquares)
-		{
-			if (regionPosition == position)
-			{
-				return index;
-			}
-		}
-		index++;
-	}
-	return 0;
-}
+//unsigned int MapInfo::GetRegionIndex(Vector2DInt position)
+//{
+//	unsigned int index = 0;
+//	for each (MapRegion region in m_MapRegions)
+//	{
+//		for each (Vector2DInt regionPosition in region.m_MapSquares)
+//		{
+//			if (regionPosition == position)
+//			{
+//				return index;
+//			}
+//		}
+//		index++;
+//	}
+//	return 0;
+//}
 
 void MapInfo::SetMapOffset(int mapOffsetX, int mapOffsetY)
 {

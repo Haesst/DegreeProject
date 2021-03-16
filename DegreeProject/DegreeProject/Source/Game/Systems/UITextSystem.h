@@ -88,11 +88,10 @@ struct UITextSystem : System
 	{
 		if (UIText->m_OwnedRegions.size() > 0)
 		{
-			std::vector<MapRegion> regions = MapInfo::GetMapRegions();
 			Vector2DInt leftMostPosition = {100, 0};
 			Vector2DInt rightMostPosition = {0, 0};
 			unsigned int regionIndex = 0;
-			for each (MapRegion region in regions)
+			for each (MapRegion region in Map::m_Data.m_Regions)
 			{
 				for each (unsigned int index in UIText->m_OwnedRegions)
 				{

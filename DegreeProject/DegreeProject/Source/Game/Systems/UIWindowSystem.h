@@ -91,7 +91,7 @@ struct UIWindowSystem : System
 		if (InputHandler::GetRightMouseClicked() == true && InputHandler::GetPlayerUnitSelected() == false && !UIWindow->m_Visible)
 		{
 			Vector2DInt mousePosition = InputHandler::GetMouseMapPosition();
-			std::vector<MapRegion> regions = MapInfo::GetMapRegions();
+			std::vector<MapRegion> regions = Map::m_Data.m_Regions;
 			unsigned int regionIndex = 0;
 			for each (MapRegion region in regions)
 			{
@@ -99,8 +99,8 @@ struct UIWindowSystem : System
 				{
 					if (position == mousePosition)
 					{
-						UIWindow->m_RegionTax = MapInfo::GetRegionTax(regionIndex);
-						UIWindow->m_RegionName = MapInfo::GetRegionName(regionIndex);
+						UIWindow->m_RegionTax = region.m_RegionTax;
+						UIWindow->m_RegionName = region.m_RegionName;
 						UIWindow->m_OwnerName = MapInfo::GetOwnerName(regionIndex);
 						UIWindow->m_Open = true;
 						break;

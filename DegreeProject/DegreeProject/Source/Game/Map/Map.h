@@ -90,5 +90,7 @@ struct Map
 	static Vector2DInt ConvertToMap(Vector2D position);
 	static Vector2D ConvertToScreen(Vector2DInt position);
 	static Vector2DInt GetRegionCapitalLocation(unsigned int regionId);
+	static std::vector<Vector2DInt> GetRegionCapitals();
+	static std::vector<int> GetRegionIDs();
 };
 #pragma warning(pop)
