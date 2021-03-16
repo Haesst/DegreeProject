@@ -197,5 +197,6 @@
       <Filter>Game\Systems\AI</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
+    <ClCompile Include="Source\Game\Map\Map.cpp" />
   </ItemGroup>
 </Project>

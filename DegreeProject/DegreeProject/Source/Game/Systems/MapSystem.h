@@ -108,16 +108,16 @@ struct MapSystem : public System
 		}
 	}
 	
-	void UpdateMapInfo(Map* maps, sf::Uint32 entity)
+	void UpdateMapInfo(OldMap* maps, sf::Uint32 entity)
 	{
-		MapInfo::SetMapOffset(maps[entity].m_XOffset, maps[entity].m_YOffset);
-		MapInfo::SetMapRegions(maps[entity].m_Regions);
+		//MapInfo::SetMapOffset(maps[entity].m_XOffset, maps[entity].m_YOffset);
+		//MapInfo::SetMapRegions(maps[entity].m_Regions);
 	}
 
-	void UpdateRegionMapInfo(Map* maps, sf::Uint32 entity, size_t regionIndex)
+	void UpdateRegionMapInfo(OldMap* maps, sf::Uint32 entity, size_t regionIndex)
 	{
-		MapInfo::SetRegionName(maps[entity].m_Regions[regionIndex].m_RegionName, (unsigned int)regionIndex);
-		MapInfo::SetRegionTax(maps[entity].m_Regions[regionIndex].m_RegionTax, (unsigned int)regionIndex);
-		MapInfo::SetRegionCapital(maps[entity].m_Regions[regionIndex].m_RegionCapital, (unsigned int)regionIndex);
+		//MapInfo::SetRegionName(maps[entity].m_Regions[regionIndex].m_RegionName, (unsigned int)regionIndex);
+		//MapInfo::SetRegionTax(maps[entity].m_Regions[regionIndex].m_RegionTax, (unsigned int)regionIndex);
+		//MapInfo::SetRegionCapital(maps[entity].m_Regions[regionIndex].m_RegionCapital, (unsigned int)regionIndex);
 	}
 };

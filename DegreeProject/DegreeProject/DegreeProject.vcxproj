@@ -155,6 +155,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\Game\Game.cpp" />
     <ClCompile Include="Source\Game\HotReloader.cpp" />
     <ClCompile Include="Source\Game\MapInfo.cpp" />
+    <ClCompile Include="Source\Game\Map\Map.cpp" />
     <ClCompile Include="Source\Game\Pathfinding.cpp" />
     <ClCompile Include="Source\Game\Systems\AI\AI.cpp" />
     <ClCompile Include="Source\StrategyGame.cpp" />

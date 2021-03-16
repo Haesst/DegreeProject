@@ -27,7 +27,7 @@ private:
 #define LOG_FATAL(...)   ::Log::GetClientLogger()->fatal(__VA_ARGS__)
 
 #ifdef ENABLE_ASSERTS
-#define ASSERT(x, ...) { if(!(x)) { ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();}}
+#define ASSERT(x, ...) { if(!(x)) { ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak(); }}
 #else
 #define ASSERT(x, ...)
 #endif
