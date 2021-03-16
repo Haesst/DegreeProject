@@ -9,24 +9,11 @@ using json = nlohmann::json;
 #include "Engine/Vector2D.h"
 #include "Engine/Log.h"
 #include "Engine/Window.h"
-#include "Game/MapInfo.h"
 #include "Engine/AssetHandler.h"
 
-struct MapRegion
-{
-public:
-	std::vector<Vector2DInt> m_MapSquares = {};
-	Vector2DInt m_RegionCapital = Vector2DInt();
-	sf::Color m_HighlightColor = sf::Color::White;
-	char m_MapChar = '1';
-	unsigned int m_RegionId = INT_MAX;
-	unsigned int m_RegionTax = 0;
-	std::string m_RegionName = "";
-	sf::VertexArray m_VertexArray;
-	MapRegion() {};
-	~MapRegion() { m_MapSquares.clear(); }
-};
+#include "Game/MapInfo.h"
 
+#include "MapRegion.h"
 
 #pragma warning(push)
 #pragma warning(disable: 26812)
@@ -36,8 +23,8 @@ struct Map
 	sf::Texture m_LandTexture;
 	sf::Sprite m_LandSprite;
 
-	int m_XOffset = 100;
-	int m_YOffset = 100;
+	int m_XOffset = -300;
+	int m_YOffset = -100;
 	float m_MapScale = 0.6f;
 
 	bool m_ChangeFlag = false;
@@ -87,6 +74,8 @@ struct Map
 
 	void UpdateMapInfo(size_t regionIndex)
 	{
+		MapInfo::SetMapOffset(m_XOffset, m_YOffset);
+		MapInfo::SetMapRegions(m_Regions);
 		MapInfo::SetRegionName(m_Regions[regionIndex].m_RegionName, (unsigned int)regionIndex);
 		MapInfo::SetRegionTax(m_Regions[regionIndex].m_RegionTax, (unsigned int)regionIndex);
 		MapInfo::SetRegionCapital(m_Regions[regionIndex].m_RegionCapital, (unsigned int)regionIndex);
@@ -145,7 +134,7 @@ struct Map
 		{
 			MapRegion region;
 
-			region.m_HighlightColor = GetColor(element["color"].get<std::string>());
+			// region.m_HighlightColor = GetColor(element["color"].get<std::string>());
 			std::string mapCharString = element["mapchar"].get<std::string>();
 			region.m_RegionId = element["id"].get<unsigned int>();
 			region.m_RegionTax = element["tax"].get<unsigned int>();
@@ -168,7 +157,7 @@ struct Map
 
 	void ClearRegionMapTiles()
 	{
-		for (auto region : m_Regions)
+		for (auto& region : m_Regions)
 		{
 			region.m_MapSquares.clear();
 		}
@@ -191,7 +180,7 @@ struct Map
 				int x = 0;
 				for (char character : tempString)
 				{
-					int regionPosition = GetRegionPosition(character);
+					int regionPosition = GetRegionPositionFromMapCharacter(character);
 
 					if (regionPosition >= 0)
 					{
@@ -252,7 +241,7 @@ struct Map
 		m_RenderStates.texture = &m_LandTexture;
 	}
 
-	int GetRegionPosition(const char& c)
+	int GetRegionPositionFromMapCharacter(const char& c)
 	{
 		for (size_t i = 0; i < m_Regions.size(); ++i)
 		{

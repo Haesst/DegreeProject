@@ -160,6 +160,7 @@
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Map\Map.h" />
+    <ClInclude Include="Source\Game\Map\MapRegion.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
