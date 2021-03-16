@@ -11,8 +11,6 @@ using json = nlohmann::json;
 #include "Engine/Window.h"
 #include "Engine/AssetHandler.h"
 
-#include "Game/MapInfo.h"
-
 #include "MapRegion.h"
 #include "MapData.h"
 
@@ -40,7 +38,6 @@ struct Map
 
 	static void Init();
 	static void SetLandTexture(sf::Texture tex);
-	static void UpdateMapInfo(size_t regionIndex);
 
 #pragma region Hot Reloading
 	static void SetupHotReloading();

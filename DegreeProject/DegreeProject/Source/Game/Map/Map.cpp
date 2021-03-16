@@ -18,12 +18,6 @@ void Map::Init()
 	LoadMap();
 	LoadShadersAndCreateRenderStates();
 	CreateVertexArrays();
-
-	for (size_t i = 0; i < m_Data.m_Regions.size(); ++i)
-	{
-		UpdateMapInfo(i);
-	}
-
 	SetupHotReloading();
 }
 #pragma endregion
@@ -72,15 +66,6 @@ void Map::ShadersChanged(std::string path, FileStatus fileStatus)
 #pragma endregion
 
 #pragma region Region & Map loading
-void Map::UpdateMapInfo(size_t regionIndex)
-{
-	MapInfo::SetMapOffset(m_Data.m_XOffset, m_Data.m_YOffset);
-	MapInfo::SetMapRegions(m_Data.m_Regions);
-	MapInfo::SetRegionName(m_Data.m_Regions[regionIndex].m_RegionName, (unsigned int)regionIndex);
-	MapInfo::SetRegionTax(m_Data.m_Regions[regionIndex].m_RegionTax, (unsigned int)regionIndex);
-	MapInfo::SetRegionCapital(m_Data.m_Regions[regionIndex].m_RegionCapital, (unsigned int)regionIndex);
-	MapInfo::SetMapRegions(m_Data.m_Regions);
-}
 
 std::ifstream Map::LoadFile(const char* path)
 {

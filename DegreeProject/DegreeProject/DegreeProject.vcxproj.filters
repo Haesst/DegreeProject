@@ -19,6 +19,9 @@
     <Filter Include="Game\Components">
       <UniqueIdentifier>{3441F2CD-A0CC-5F92-A9DD-E28615E8BB92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Map">
+      <UniqueIdentifier>{4C6B4732-3838-A23D-6151-90E54D7DD7CB}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Game\Systems">
       <UniqueIdentifier>{860EB599-7271-443E-1BF7-7CF4073910C1}</UniqueIdentifier>
     </Filter>
@@ -78,9 +81,6 @@
     <ClInclude Include="Source\Game\Components\CharacterComponent.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Components\Map.h">
-      <Filter>Game\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Components\MovingSprite.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
@@ -114,8 +114,14 @@
     <ClInclude Include="Source\Game\HotReloader.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\MapInfo.h">
-      <Filter>Game</Filter>
+    <ClInclude Include="Source\Game\Map\Map.h">
+      <Filter>Game\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Map\MapData.h">
+      <Filter>Game\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Map\MapRegion.h">
+      <Filter>Game\Map</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Mutex.h">
       <Filter>Game</Filter>
@@ -141,9 +147,6 @@
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Systems\MapSystem.h">
-      <Filter>Game\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Systems\PlayerUnitSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
@@ -159,9 +162,6 @@
     <ClInclude Include="Source\Game\Systems\UIWindowSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Map\Map.h" />
-    <ClInclude Include="Source\Game\Map\MapRegion.h" />
-    <ClInclude Include="Source\Game\Map\MapData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -188,8 +188,8 @@
     <ClCompile Include="Source\Game\HotReloader.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\MapInfo.cpp">
-      <Filter>Game</Filter>
+    <ClCompile Include="Source\Game\Map\Map.cpp">
+      <Filter>Game\Map</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\Pathfinding.cpp">
       <Filter>Game</Filter>
@@ -198,6 +198,5 @@
       <Filter>Game\Systems\AI</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Game\Map\Map.cpp" />
   </ItemGroup>
 </Project>

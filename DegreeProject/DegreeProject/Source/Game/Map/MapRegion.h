@@ -12,6 +12,7 @@ public:
 	Vector2DInt m_RegionCapital = Vector2DInt();
 	sf::Color m_HighlightColor = sf::Color::White;
 	std::string m_RegionName = "";
+	std::string m_OwnerName = "";
 	sf::VertexArray m_VertexArray;
 	MapRegion() {};
 	~MapRegion() { m_MapSquares.clear(); }

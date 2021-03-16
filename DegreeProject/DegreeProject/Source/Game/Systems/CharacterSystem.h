@@ -30,10 +30,9 @@ struct CharacterSystem : System
 		unsigned int characterIndex = 0;
 		for (auto entity : m_Entities)
 		{
-			MapInfo::SetCharacterID(entity, characterIndex);
 			for (unsigned int ownedID : characters[entity].m_OwnedRegionIDs)
 			{
-				MapInfo::SetOwnerName(characters[entity].m_KingdomName, ownedID);
+				Map::m_Data.m_Regions[ownedID].m_OwnerName = characters[entity].m_KingdomName;
 			}
 			characterIndex++;
 		}
@@ -51,11 +50,10 @@ struct CharacterSystem : System
 		{
 			if (characters[entity].m_UpdateOwnership == true)
 			{
-				MapInfo::SetCharacterID(entity, characterIndex);
 				characters[entity].m_UpdateOwnership = false;
 				for (unsigned int ownedID : characters[entity].m_OwnedRegionIDs)
 				{
-					MapInfo::SetOwnerName(characters[entity].m_KingdomName, ownedID);
+					Map::m_Data.m_Regions[ownedID].m_OwnerName = characters[entity].m_KingdomName;
 				}
 			}
 

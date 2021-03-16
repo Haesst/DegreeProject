@@ -33,11 +33,8 @@ struct UIWindowSystem : System
 		delete m_AssetHandler;
 	}
 
-	// Update gets called every frame and loops through every entity that has the signature that
-	// the system has registered and do the necessary update
-	virtual void Update() override
+	virtual void Start()
 	{
-		// Transform* transforms = m_EntityManager->GetComponentArray<Transform>(); // Uncommented because it's unused!
 		UIWindow* UIWindows = m_EntityManager->GetComponentArray<UIWindow>();
 
 		for (auto entity : m_Entities)
@@ -67,6 +64,45 @@ struct UIWindowSystem : System
 			UIWindows[entity].m_TaxText.setString("Tax: " + std::to_string(UIWindows[entity].m_RegionTax));
 			UIWindows[entity].m_TaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.3f))));
 			UIWindows[entity].m_TaxText.setFillColor(sf::Color::Red);
+		}
+	}
+
+	// Update gets called every frame and loops through every entity that has the signature that
+	// the system has registered and do the necessary update
+	virtual void Update() override
+	{
+		UIWindow* UIWindows = m_EntityManager->GetComponentArray<UIWindow>();
+
+		for (auto entity : m_Entities)
+		{
+			SetOptions(&UIWindows[entity]);
+			OpenWindow(&UIWindows[entity]);
+			if (UIWindows[entity].m_Visible)
+			{
+				UIWindows[entity].m_Shape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(10, 10)));
+				UIWindows[entity].m_Shape.setFillColor(UIWindows[entity].m_FillColor);
+				UIWindows[entity].m_Shape.setOutlineColor(UIWindows[entity].m_OutlineColor);
+				UIWindows[entity].m_Shape.setOutlineThickness(10.0f);
+				UIWindows[entity].m_Shape.setSize(sf::Vector2f(UIWindows[entity].m_SizeX, UIWindows[entity].m_SizeY));
+				UIWindows[entity].m_OwnerNameText.setFont(UIWindows[entity].m_Font);
+				UIWindows[entity].m_OwnerNameText.setCharacterSize(UIWindows[entity].m_CharacterSize);
+				UIWindows[entity].m_OwnerNameText.setStyle(UIWindows[entity].m_Style);
+				UIWindows[entity].m_OwnerNameText.setString("Owner: " + UIWindows[entity].m_OwnerName);
+				UIWindows[entity].m_OwnerNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.1f))));
+				UIWindows[entity].m_OwnerNameText.setFillColor(sf::Color::Red);
+				UIWindows[entity].m_RegionNameText.setFont(UIWindows[entity].m_Font);
+				UIWindows[entity].m_RegionNameText.setCharacterSize(UIWindows[entity].m_CharacterSize);
+				UIWindows[entity].m_RegionNameText.setStyle(UIWindows[entity].m_Style);
+				UIWindows[entity].m_RegionNameText.setString("Region: " + UIWindows[entity].m_RegionName);
+				UIWindows[entity].m_RegionNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.2f))));
+				UIWindows[entity].m_RegionNameText.setFillColor(sf::Color::Red);
+				UIWindows[entity].m_TaxText.setFont(UIWindows[entity].m_Font);
+				UIWindows[entity].m_TaxText.setCharacterSize(UIWindows[entity].m_CharacterSize);
+				UIWindows[entity].m_TaxText.setStyle(UIWindows[entity].m_Style);
+				UIWindows[entity].m_TaxText.setString("Tax: " + std::to_string(UIWindows[entity].m_RegionTax));
+				UIWindows[entity].m_TaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.3f))));
+				UIWindows[entity].m_TaxText.setFillColor(sf::Color::Red);
+			}
 		}
 	}
 
@@ -101,7 +137,7 @@ struct UIWindowSystem : System
 					{
 						UIWindow->m_RegionTax = region.m_RegionTax;
 						UIWindow->m_RegionName = region.m_RegionName;
-						UIWindow->m_OwnerName = MapInfo::GetOwnerName(regionIndex);
+						UIWindow->m_OwnerName = region.m_OwnerName;
 						UIWindow->m_Open = true;
 						break;
 					}

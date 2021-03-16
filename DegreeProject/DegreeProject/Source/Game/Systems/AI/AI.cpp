@@ -1,5 +1,4 @@
 #include "AI.h"
-#include "Game/MapInfo.h"
 
 float AISystem::WarDecision(EntityID ent)
 {

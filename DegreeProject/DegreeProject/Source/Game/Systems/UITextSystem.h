@@ -88,10 +88,11 @@ struct UITextSystem : System
 	{
 		if (UIText->m_OwnedRegions.size() > 0)
 		{
-			Vector2DInt leftMostPosition = {100, 0};
-			Vector2DInt rightMostPosition = {0, 0};
+			std::vector<MapRegion> regions = Map::m_Data.m_Regions;
+			Vector2DInt leftMostPosition = { 100, 0 };
+			Vector2DInt rightMostPosition = { 0, 0 };
 			unsigned int regionIndex = 0;
-			for each (MapRegion region in Map::m_Data.m_Regions)
+			for each (MapRegion region in regions)
 			{
 				for each (unsigned int index in UIText->m_OwnedRegions)
 				{
@@ -114,10 +115,19 @@ struct UITextSystem : System
 			}
 			Vector2D leftMostPositionScreen = Map::ConvertToScreen(leftMostPosition);
 			Vector2D diagonal = Map::ConvertToScreen(rightMostPosition) - leftMostPositionScreen;
+			float offsetY = 1.0f;
 			UIText->m_CharacterSize = (unsigned int)(diagonal.x * 0.1f);
-			UIText->m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - UIText->m_CharacterSize * 3;
-			UIText->m_PositionY = diagonal.y * 0.5f + leftMostPositionScreen.y - UIText->m_CharacterSize;
 			UIText->m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
+			if (UIText->m_Rotation < 0.0f)
+			{
+				offsetY = 0.25f;
+			}
+			else
+			{
+				offsetY = 1.5f;
+			}
+			UIText->m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - UIText->m_CharacterSize * 3;
+			UIText->m_PositionY = diagonal.y * 0.5f + leftMostPositionScreen.y - UIText->m_CharacterSize * offsetY;
 		}
 		else
 		{
