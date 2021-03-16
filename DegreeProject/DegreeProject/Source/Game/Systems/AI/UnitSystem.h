@@ -6,34 +6,46 @@
 struct UnitSystem : System
 {
 	EntityManager* m_EntityManager = nullptr;
-
+	UnitComponent* m_UnitComponents = nullptr;
 
 	UnitSystem()
 	{
 		AddComponentSignature<UnitComponent>();
 		m_EntityManager = &EntityManager::Get();
+		m_UnitComponents = m_EntityManager->GetComponentArray<UnitComponent>();
 
 		AssetHandler assetLoader;
 		sf::Texture tex = assetLoader.LoadImageFromFile("Assets/Graphics/Unit.png");
-		SetSprite(tex);
-	}
-
-	void SetSprite(sf::Texture& tex)
-	{
-		//UnitComponent* units = m_EntityManager->GetComponentArray<UnitComponent>();
-		//
-		//for (auto unit : units)
-		//{
-		//	unit->m_UnitSprite.setTexture(tex);
-		//}
 	}
 
 	virtual void Update() override 
 	{
+		for (EntityID ent : m_Entities)
+		{
+			UnitComponent& unit = m_UnitComponents[ent];
+			Transform& transform = m_EntityManager->GetComponent<Transform>(ent);
 
+			if (!m_UnitComponents[ent].m_CurrentPath.empty())
+			{
+				unit.m_CurrentPath.pop_front();
+
+				unit.m_CurrentMapPosition = Vector2DInt((int)(transform.m_Position.x - 100 + 16) / 32,
+					(int)(transform.m_Position.y - 100 + 16) / 32);
+
+				//int x = (int)(transform.m_Position.x - 100 + 16) / 32;
+				//int y = (int)(transform.m_Position.y - 100 + 16) / 32;
+			}
+		}
 	}
 
 	virtual void Render() override
 	{
+		for (auto entity : m_Entities)
+		{
+			if (m_UnitComponents[entity].m_Raised)
+			{
+				Window::GetWindow()->draw(m_UnitComponents[entity].m_UnitSprite);
+			}
+		}
 	}
 };
