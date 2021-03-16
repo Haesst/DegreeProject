@@ -65,7 +65,10 @@ struct AISystem : System
 			{
 				if (WarDecision(entity) > .1f)
 				{
-					DeclareWar(entity, m_Warminds[entity].m_Opponent, m_Warminds[entity].m_WargoalRegionId);
+					if (!m_Characters[entity].m_AtWar)
+					{
+						DeclareWar(entity, m_Warminds[entity].m_Opponent, m_Warminds[entity].m_WargoalRegionId);
+					}
 				}
 			}
 

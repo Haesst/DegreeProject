@@ -27,6 +27,7 @@ struct UnitSystem : System
 
 			if (!m_UnitComponents[ent].m_CurrentPath.empty())
 			{
+				transform.m_Position = Vector2D((float)unit.m_CurrentMapPosition.x, (float)unit.m_CurrentMapPosition.y);
 				unit.m_CurrentPath.pop_front();
 
 				unit.m_CurrentMapPosition = Vector2DInt((int)(transform.m_Position.x - 100 + 16) / 32,

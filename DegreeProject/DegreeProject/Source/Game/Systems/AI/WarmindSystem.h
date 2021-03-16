@@ -9,7 +9,6 @@ struct WarmindSystem : System
 {
 	EntityManager* m_EntityManager = nullptr;
 
-	bool m_Active = false;
 
 	WarmindComponent* m_Warminds = nullptr;
 	CharacterComponent* m_Characters = nullptr;
@@ -25,20 +24,30 @@ struct WarmindSystem : System
 
 		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
 		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+
+		for (EntityID ent : m_Entities)
+		{
+			for (auto& unit : m_Warminds[ent].m_Units)
+			{
+				//Init positions
+				int regionIndex = m_Characters[ent].m_OwnedRegionIDs[0];
+				Vector2DInt capitalPos = MapInfo::GetRegionCapital(regionIndex);
+				unit.m_CurrentMapPosition = capitalPos;
+			}
+		}
 	}
 
 	virtual void Update() override
 	{
 		m_TickAccu++;
 
-		if (!m_Active)
-		{
-			return;
-		}
-
-
 		for (auto entity : m_Entities)
 		{
+			if (!m_Warminds[entity].m_Active)
+			{
+				continue;
+			}
+
 			if (m_TickAccu <= m_AtWarTickRate)
 			{
 				if (m_Characters[entity].m_AtWar)
@@ -58,7 +67,6 @@ struct WarmindSystem : System
 			if (!m_Warminds[Id].m_Units[i].m_Raised)
 			{
 				m_Warminds[Id].m_Units[i].m_Raised = true;
-				//Set positions here
 			}
 		}
 	}

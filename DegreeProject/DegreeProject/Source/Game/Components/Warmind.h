@@ -10,6 +10,7 @@ struct WarmindComponent : Component
 	EntityID m_Opponent;
 
 	bool m_Defending = false;
+	bool m_Active = false;
 
 	std::vector<UnitComponent> m_Units;
 
