@@ -1,13 +1,15 @@
 #include "Map.h"
-
+#include "Game/HotReloader.h"
+#include "Engine/FileWatcher.h"
 
 const char* Map::m_RegionPath = "Assets/Data/Regions.json";
 const char* Map::m_MapPath = "Assets/Map/RegionMap.txt";
 const char* Map::m_FragmentShaderPath = "Assets/Shaders/LandShader.frag";
 const char* Map::m_VertexShaderPath = "Assets/Shaders/LandShader.vert";
 MapData Map::m_Data;
+std::mutex Map::m_RegionMutex;
 
-
+#pragma region Init
 void Map::Init()
 {
 	ClearRegions();
@@ -21,13 +23,55 @@ void Map::Init()
 	{
 		UpdateMapInfo(i);
 	}
+
+	SetupHotReloading();
 }
+#pragma endregion
 
 void Map::SetLandTexture(sf::Texture tex)
 {
 	m_Data.m_LandTexture = tex;
 }
 
+#pragma region HotReloading Setup
+
+void Map::SetupHotReloading()
+{
+	HotReloader::Get()->SubscribeToFileChange("Assets\\Data\\Regions.json", std::bind(&Map::RegionsChanged, std::placeholders::_1, std::placeholders::_2));
+	HotReloader::Get()->SubscribeToFileChange("Assets\\Map\\RegionMap.txt", std::bind(&Map::RegionsChanged, std::placeholders::_1, std::placeholders::_2));
+
+	HotReloader::Get()->SubscribeToFileChange("Assets\\Shaders\\LandShader.frag", std::bind(&Map::ShadersChanged, std::placeholders::_1, std::placeholders::_2));
+	HotReloader::Get()->SubscribeToFileChange("Assets\\Shaders\\LandShader.vert", std::bind(&Map::ShadersChanged, std::placeholders::_1, std::placeholders::_2));
+}
+
+void Map::RegionsChanged(std::string path, FileStatus fileStatus)
+{
+	if (fileStatus != FileStatus::Modified)
+	{
+		return;
+	}
+
+	LOG_INFO("Regions changed");
+
+	m_RegionMutex.lock();
+	UpdateRegions();
+	m_RegionMutex.unlock();
+}
+
+void Map::MapChanged(std::string path, FileStatus fileStatus)
+{}
+
+void Map::ShadersChanged(std::string path, FileStatus fileStatus)
+{
+	if (fileStatus != FileStatus::Modified)
+	{
+		return;
+	}
+}
+
+#pragma endregion
+
+#pragma region Region & Map loading
 void Map::UpdateMapInfo(size_t regionIndex)
 {
 	MapInfo::SetMapOffset(m_Data.m_XOffset, m_Data.m_YOffset);
@@ -105,6 +149,35 @@ void Map::LoadMap()
 	}
 	inData.close();
 }
+
+void Map::UpdateRegions()
+{
+	std::ifstream file = LoadFile(m_RegionPath);
+
+	json j;
+	file >> j;
+
+	for (auto& element : j)
+	{
+		int arrayLoc = GetRegionPositionFromRegionId(element["id"]);
+
+		if (arrayLoc >= 0)
+		{
+			std::string mapCharString = element["mapchar"].get<std::string>();
+
+			if (mapCharString.size() > 0)
+			{
+				m_Data.m_Regions[arrayLoc].m_MapChar = mapCharString[0];
+			}
+			m_Data.m_Regions[arrayLoc].m_RegionTax = element["tax"].get<unsigned int>();
+			m_Data.m_Regions[arrayLoc].m_RegionName = element["name"].get<std::string>();
+			m_Data.m_Regions[arrayLoc].m_RegionCapital.x = element["capitalx"].get<unsigned int>();
+			m_Data.m_Regions[arrayLoc].m_RegionCapital.y = element["capitaly"].get<unsigned int>();
+		}
+	}
+}
+
+#pragma endregion
 
 void Map::Render()
 {

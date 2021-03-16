@@ -129,6 +129,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\HotReloader.h" />
     <ClInclude Include="Source\Game\MapInfo.h" />
     <ClInclude Include="Source\Game\Map\Map.h" />
+    <ClInclude Include="Source\Game\Map\MapData.h" />
     <ClInclude Include="Source\Game\Map\MapRegion.h" />
     <ClInclude Include="Source\Game\Mutex.h" />
     <ClInclude Include="Source\Game\Pathfinding.h" />

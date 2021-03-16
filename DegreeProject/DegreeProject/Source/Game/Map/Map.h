@@ -14,28 +14,12 @@ using json = nlohmann::json;
 #include "Game/MapInfo.h"
 
 #include "MapRegion.h"
+#include "MapData.h"
+
+enum class FileStatus;
 
 #pragma warning(push)
 #pragma warning(disable: 26812)
-
-struct MapData
-{
-	std::vector<MapRegion> m_Regions;
-
-	sf::Texture m_LandTexture;
-	sf::RenderStates m_RenderStates;
-	sf::Shader m_Shader;
-
-	int m_XOffset = -300;
-	int m_YOffset = -100;
-	float m_TileSize = 32;
-	float m_HalfTileSize;
-
-	MapData()
-	{
-		m_HalfTileSize = m_TileSize * 0.5f;
-	}
-};
 
 struct Map
 {
@@ -45,6 +29,8 @@ struct Map
 	static const char* m_FragmentShaderPath;
 	static const char* m_VertexShaderPath;
 	static MapData m_Data;
+
+	static std::mutex m_RegionMutex;
 
 	Map()
 	{}
@@ -56,10 +42,18 @@ struct Map
 	static void SetLandTexture(sf::Texture tex);
 	static void UpdateMapInfo(size_t regionIndex);
 
+#pragma region Hot Reloading
+	static void SetupHotReloading();
+	static void RegionsChanged(std::string path, FileStatus fileStatus);
+	static void MapChanged(std::string path, FileStatus fileStatus);
+	static void ShadersChanged(std::string path, FileStatus fileStatus);
+#pragma endregion Hot Reloading
+
 #pragma region Map & Region Loading
 	static std::ifstream LoadFile(const char* path);
 	static void LoadAllRegions();
 	static void LoadMap();
+	static void UpdateRegions();
 #pragma endregion
 
 #pragma region Rendering
