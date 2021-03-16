@@ -34,7 +34,10 @@ struct SpriteRenderSystem : public System
 		SpriteRenderer* renderers = m_EntityManager->GetComponentArray<SpriteRenderer>();
 		for (auto& entity : m_Entities)
 		{
-			Window::GetWindow()->draw(renderers[entity].m_Sprite);
+			if (renderers[entity].m_ShouldRender)
+			{
+				Window::GetWindow()->draw(renderers[entity].m_Sprite);
+			}
 		}
 	}
 };

@@ -11,18 +11,18 @@ struct WarmindComponent : Component
 
 	bool m_Defending = false;
 	bool m_Active = false;
+	bool m_AtWar = false;
 
-	std::vector<UnitComponent> m_Units;
+	EntityID m_UnitEntity;
 
 	WarmindComponent()
 	{
 		m_Opponent = (size_t)INT_MAX;
 	};
 
-	WarmindComponent(int warGoalRegionId,  EntityID opponent, std::vector<UnitComponent> currentUnits = std::vector<UnitComponent>())
+	WarmindComponent(int warGoalRegionId,  EntityID opponent)
 	{
 		m_WargoalRegionId = warGoalRegionId;
 		m_Opponent = opponent;
-		m_Units = currentUnits;
 	};
 };

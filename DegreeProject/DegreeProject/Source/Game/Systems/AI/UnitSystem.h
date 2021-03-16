@@ -13,9 +13,11 @@ struct UnitSystem : System
 		AddComponentSignature<UnitComponent>();
 		m_EntityManager = &EntityManager::Get();
 		m_UnitComponents = m_EntityManager->GetComponentArray<UnitComponent>();
+	}
 
-		AssetHandler assetLoader;
-		sf::Texture tex = assetLoader.LoadImageFromFile("Assets/Graphics/Unit.png");
+	virtual void Start() override
+	{
+		
 	}
 
 	virtual void Update() override 
@@ -35,17 +37,6 @@ struct UnitSystem : System
 
 				//int x = (int)(transform.m_Position.x - 100 + 16) / 32;
 				//int y = (int)(transform.m_Position.y - 100 + 16) / 32;
-			}
-		}
-	}
-
-	virtual void Render() override
-	{
-		for (auto entity : m_Entities)
-		{
-			if (m_UnitComponents[entity].m_Raised)
-			{
-				Window::GetWindow()->draw(m_UnitComponents[entity].m_UnitSprite);
 			}
 		}
 	}
