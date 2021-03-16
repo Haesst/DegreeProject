@@ -6,7 +6,10 @@ std::vector<std::string> m_OwnerNames;
 std::vector<Vector2DInt> m_RegionCapitals;
 std::vector<MapRegion> m_MapRegions;
 std::vector<int> m_RegionIDs;
+std::vector<unsigned int> m_CharacterIDs;
 unsigned int m_NumberOfIDs = 0;
+int m_MapOffsetX = 0;
+int m_MapOffsetY = 0;
 
 void MapInfo::Initialization(unsigned int numberOfIDs)
 {
@@ -18,6 +21,7 @@ void MapInfo::Initialization(unsigned int numberOfIDs)
 		m_OwnerNames.push_back("");
 		m_RegionIDs.push_back(index);
 		m_RegionCapitals.push_back(Vector2DInt());
+		m_CharacterIDs.push_back(0);
 	}
 }
 
@@ -76,6 +80,11 @@ std::vector<int> MapInfo::GetRegionIDs()
 	return m_RegionIDs;
 }
 
+std::vector<unsigned int> MapInfo::GetCharacterIDs()
+{
+	return m_CharacterIDs;
+}
+
 std::vector<MapRegion> MapInfo::GetMapRegions()
 {
 	return m_MapRegions;
@@ -112,6 +121,12 @@ unsigned int MapInfo::GetRegionIndex(Vector2DInt position)
 	return 0;
 }
 
+void MapInfo::SetMapOffset(int mapOffsetX, int mapOffsetY)
+{
+	m_MapOffsetX = mapOffsetX;
+	m_MapOffsetY = mapOffsetY;
+}
+
 void MapInfo::SetRegionTax(unsigned int tax, unsigned int index)
 {
 	if (index < m_NumberOfIDs)
@@ -144,6 +159,11 @@ void MapInfo::SetOwnerName(std::string ownerName, unsigned int index)
 	}
 }
 
+void MapInfo::SetCharacterID(unsigned int entity, unsigned int characterIndex)
+{
+	m_CharacterIDs[characterIndex] = entity;
+}
+
 void MapInfo::SetMapRegions(std::vector<MapRegion> regions)
 {
 	m_MapRegions = regions;
@@ -151,10 +171,10 @@ void MapInfo::SetMapRegions(std::vector<MapRegion> regions)
 
 Vector2DInt MapInfo::ConvertToMap(Vector2D position)
 {
-	return Vector2DInt((int)(position.x - 100 + 16) / 32, (int)(position.y - 100 + 16) / 32);
+	return Vector2DInt((int)(position.x - m_MapOffsetX + 16) / 32, (int)(position.y - m_MapOffsetY + 16) / 32);
 }
 
 Vector2D MapInfo::ConvertToScreen(Vector2DInt position)
 {
-	return Vector2D((float)position.x * 32 + 100 - 16, (float)position.y * 32 + 100 - 16);
+	return Vector2D((float)position.x * 32 + m_MapOffsetX - 16, (float)position.y * 32 + m_MapOffsetY - 16);
 }

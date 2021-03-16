@@ -27,12 +27,15 @@ struct CharacterSystem : System
 	{
 		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 
+		unsigned int characterIndex = 0;
 		for (auto entity : m_Entities)
 		{
+			MapInfo::SetCharacterID(entity, characterIndex);
 			for (unsigned int ownedID : characters[entity].m_OwnedRegionIDs)
 			{
 				MapInfo::SetOwnerName(characters[entity].m_KingdomName, ownedID);
 			}
+			characterIndex++;
 		}
 	}
 
@@ -43,10 +46,12 @@ struct CharacterSystem : System
 		//Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
 		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 
+		unsigned int characterIndex = 0;
 		for (auto entity : m_Entities)
 		{
 			if (characters[entity].m_UpdateOwnership == true)
 			{
+				MapInfo::SetCharacterID(entity, characterIndex);
 				characters[entity].m_UpdateOwnership = false;
 				for (unsigned int ownedID : characters[entity].m_OwnedRegionIDs)
 				{
@@ -57,6 +62,7 @@ struct CharacterSystem : System
 			// characters[entity].m_CurrentGold += TAX_INCOME;
 			// characters[entity].m_CurrentArmySize += ARMY_RECRUITED;
 			// characters[entity].m_OwnedRegionIDs.push_back(REGIONS_CONQUERED);
+			characterIndex++;
 		}
 	}
 
