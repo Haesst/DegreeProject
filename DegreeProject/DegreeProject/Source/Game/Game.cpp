@@ -129,31 +129,31 @@ void Game::AddEntitys()
 	//Create Character 0 ID(18)
 	EntityID char0 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id0{ 0, 1, 2, 3, 4 };
-	entityManager->AddComponent<CharacterComponent>(char0, Title::King, "Kingdom of Milano", "Erik", id0, 100, 5, false, sf::Color::Red, 0);
+	entityManager->AddComponent<CharacterComponent>(char0, Title::King, "Kingdom of Milano", "Erik", id0, 100, 5, false, sf::Color(181, 54, 107), 0);
 	CharacterComponent* characterComponent0 = &entityManager->GetComponent<CharacterComponent>(char0);
 
 	//Create Character 1 ID(19)
 	EntityID char1 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id1{ 5, 6, 7, 8, 9 };
-	entityManager->AddComponent<CharacterComponent>(char1, Title::King, "Roman Republic", "Robin", id1, 100, 10, false, sf::Color::Green, 0);
+	entityManager->AddComponent<CharacterComponent>(char1, Title::Emperor, "Roman Republic", "Robin", id1, 100, 10, false, sf::Color(54, 181, 105), 0);
 	CharacterComponent* characterComponent1 = &entityManager->GetComponent<CharacterComponent>(char1);
 
 	//Create Character 2 ID(20)
 	EntityID char2 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id2{ 12, 13, 14, 15, 16 };
-	entityManager->AddComponent<CharacterComponent>(char2, Title::King, "Sicilian Mobsters", "Fredrik", id2, 100, 10, false, sf::Color::Color(165, 42, 42), 0);
+	entityManager->AddComponent<CharacterComponent>(char2, Title::Duke, "Sicilian Mobsters", "Fredrik", id2, 100, 10, false, sf::Color(165, 42, 42), 0);
 	CharacterComponent* characterComponent2 = &entityManager->GetComponent<CharacterComponent>(char2);
 
 	//Create Character 3 ID(21)
 	EntityID char3 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id3{ 10 };
-	entityManager->AddComponent<CharacterComponent>(char3, Title::Baron, "Roman Puppet", "Robin", id3, 100, 10, false, sf::Color::Yellow, 0);
+	entityManager->AddComponent<CharacterComponent>(char3, Title::Count, "Roman Puppet", "Rob", id3, 100, 10, false, sf::Color(149, 181, 54), 0);
 	CharacterComponent* characterComponent3 = &entityManager->GetComponent<CharacterComponent>(char3);
 
 	//Create Character 4 ID(22)
 	EntityID char4 = entityManager->AddNewEntity();
 	std::vector<unsigned int> id4{ 11 };
-	entityManager->AddComponent<CharacterComponent>(char4, Title::Baron, "Sicilian Vassal", "Fredrik", id4, 100, 10, false, sf::Color::Color(128, 128, 128), 0);
+	entityManager->AddComponent<CharacterComponent>(char4, Title::Baron, "Sicilian Vassal", "Fred", id4, 100, 10, false, sf::Color(34, 51, 67), 0);
 	CharacterComponent* characterComponent4 = &entityManager->GetComponent<CharacterComponent>(char4);
 
 	entityManager->AddComponent<WarmindComponent>(char1, 1, char0);

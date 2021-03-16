@@ -33,40 +33,6 @@ struct UIWindowSystem : System
 		delete m_AssetHandler;
 	}
 
-	virtual void Start()
-	{
-		UIWindow* UIWindows = m_EntityManager->GetComponentArray<UIWindow>();
-
-		for (auto entity : m_Entities)
-		{
-			SetOptions(&UIWindows[entity]);
-			OpenWindow(&UIWindows[entity]);
-			UIWindows[entity].m_Shape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(10, 10)));
-			UIWindows[entity].m_Shape.setFillColor(UIWindows[entity].m_FillColor);
-			UIWindows[entity].m_Shape.setOutlineColor(UIWindows[entity].m_OutlineColor);
-			UIWindows[entity].m_Shape.setOutlineThickness(10.0f);
-			UIWindows[entity].m_Shape.setSize(sf::Vector2f(UIWindows[entity].m_SizeX, UIWindows[entity].m_SizeY));
-			UIWindows[entity].m_OwnerNameText.setFont(UIWindows[entity].m_Font);
-			UIWindows[entity].m_OwnerNameText.setCharacterSize(UIWindows[entity].m_CharacterSize);
-			UIWindows[entity].m_OwnerNameText.setStyle(UIWindows[entity].m_Style);
-			UIWindows[entity].m_OwnerNameText.setString("Owner: " + UIWindows[entity].m_OwnerName);
-			UIWindows[entity].m_OwnerNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.1f))));
-			UIWindows[entity].m_OwnerNameText.setFillColor(sf::Color::Red);
-			UIWindows[entity].m_RegionNameText.setFont(UIWindows[entity].m_Font);
-			UIWindows[entity].m_RegionNameText.setCharacterSize(UIWindows[entity].m_CharacterSize);
-			UIWindows[entity].m_RegionNameText.setStyle(UIWindows[entity].m_Style);
-			UIWindows[entity].m_RegionNameText.setString("Region: " + UIWindows[entity].m_RegionName);
-			UIWindows[entity].m_RegionNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.2f))));
-			UIWindows[entity].m_RegionNameText.setFillColor(sf::Color::Red);
-			UIWindows[entity].m_TaxText.setFont(UIWindows[entity].m_Font);
-			UIWindows[entity].m_TaxText.setCharacterSize(UIWindows[entity].m_CharacterSize);
-			UIWindows[entity].m_TaxText.setStyle(UIWindows[entity].m_Style);
-			UIWindows[entity].m_TaxText.setString("Tax: " + std::to_string(UIWindows[entity].m_RegionTax));
-			UIWindows[entity].m_TaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.3f))));
-			UIWindows[entity].m_TaxText.setFillColor(sf::Color::Red);
-		}
-	}
-
 	// Update gets called every frame and loops through every entity that has the signature that
 	// the system has registered and do the necessary update
 	virtual void Update() override
@@ -81,27 +47,33 @@ struct UIWindowSystem : System
 			{
 				UIWindows[entity].m_Shape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(10, 10)));
 				UIWindows[entity].m_Shape.setFillColor(UIWindows[entity].m_FillColor);
-				UIWindows[entity].m_Shape.setOutlineColor(UIWindows[entity].m_OutlineColor);
+				UIWindows[entity].m_Shape.setOutlineColor(UIWindows[entity].m_OwnerColor);
 				UIWindows[entity].m_Shape.setOutlineThickness(10.0f);
 				UIWindows[entity].m_Shape.setSize(sf::Vector2f(UIWindows[entity].m_SizeX, UIWindows[entity].m_SizeY));
+				UIWindows[entity].m_OwnerCharacterText.setFont(UIWindows[entity].m_Font);
+				UIWindows[entity].m_OwnerCharacterText.setCharacterSize(UIWindows[entity].m_CharacterSize);
+				UIWindows[entity].m_OwnerCharacterText.setStyle(UIWindows[entity].m_Style);
+				UIWindows[entity].m_OwnerCharacterText.setString(UIWindows[entity].m_OwnerTitle + UIWindows[entity].m_OwnerCharacter);
+				UIWindows[entity].m_OwnerCharacterText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.34f), (int)(UIWindows[entity].m_SizeY * 0.025f))));
+				UIWindows[entity].m_OwnerCharacterText.setFillColor(UIWindows[entity].m_OwnerColor);
 				UIWindows[entity].m_OwnerNameText.setFont(UIWindows[entity].m_Font);
 				UIWindows[entity].m_OwnerNameText.setCharacterSize(UIWindows[entity].m_CharacterSize);
 				UIWindows[entity].m_OwnerNameText.setStyle(UIWindows[entity].m_Style);
 				UIWindows[entity].m_OwnerNameText.setString("Owner: " + UIWindows[entity].m_OwnerName);
 				UIWindows[entity].m_OwnerNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.1f))));
-				UIWindows[entity].m_OwnerNameText.setFillColor(sf::Color::Red);
+				UIWindows[entity].m_OwnerNameText.setFillColor(UIWindows[entity].m_OwnerColor);
 				UIWindows[entity].m_RegionNameText.setFont(UIWindows[entity].m_Font);
 				UIWindows[entity].m_RegionNameText.setCharacterSize(UIWindows[entity].m_CharacterSize);
 				UIWindows[entity].m_RegionNameText.setStyle(UIWindows[entity].m_Style);
 				UIWindows[entity].m_RegionNameText.setString("Region: " + UIWindows[entity].m_RegionName);
 				UIWindows[entity].m_RegionNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.2f))));
-				UIWindows[entity].m_RegionNameText.setFillColor(sf::Color::Red);
+				UIWindows[entity].m_RegionNameText.setFillColor(UIWindows[entity].m_OwnerColor);
 				UIWindows[entity].m_TaxText.setFont(UIWindows[entity].m_Font);
 				UIWindows[entity].m_TaxText.setCharacterSize(UIWindows[entity].m_CharacterSize);
 				UIWindows[entity].m_TaxText.setStyle(UIWindows[entity].m_Style);
 				UIWindows[entity].m_TaxText.setString("Tax: " + std::to_string(UIWindows[entity].m_RegionTax));
 				UIWindows[entity].m_TaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.3f))));
-				UIWindows[entity].m_TaxText.setFillColor(sf::Color::Red);
+				UIWindows[entity].m_TaxText.setFillColor(UIWindows[entity].m_OwnerColor);
 			}
 		}
 	}
@@ -118,6 +90,7 @@ struct UIWindowSystem : System
 				m_Window->draw(UIWindows[entity].m_OwnerNameText);
 				m_Window->draw(UIWindows[entity].m_RegionNameText);
 				m_Window->draw(UIWindows[entity].m_TaxText);
+				m_Window->draw(UIWindows[entity].m_OwnerCharacterText);
 			}
 		}
 	}
@@ -128,7 +101,6 @@ struct UIWindowSystem : System
 		{
 			Vector2DInt mousePosition = InputHandler::GetMouseMapPosition();
 			std::vector<MapRegion> regions = Map::m_Data.m_Regions;
-			unsigned int regionIndex = 0;
 			for each (MapRegion region in regions)
 			{
 				for each (Vector2DInt position in region.m_MapSquares)
@@ -138,6 +110,10 @@ struct UIWindowSystem : System
 						UIWindow->m_RegionTax = region.m_RegionTax;
 						UIWindow->m_RegionName = region.m_RegionName;
 						UIWindow->m_OwnerName = region.m_OwnerName;
+						UIWindow->m_OwnerCharacter = region.m_OwnerCharacter;
+						unsigned int titleIndex = region.m_OwnerTitle;
+						UIWindow->m_OwnerTitle = UIWindow->titles[titleIndex];
+						UIWindow->m_OwnerColor = region.m_OwnerColor;
 						UIWindow->m_Open = true;
 						break;
 					}
@@ -150,7 +126,6 @@ struct UIWindowSystem : System
 				{
 					break;
 				}
-				regionIndex++;
 			}
 		}
 	}

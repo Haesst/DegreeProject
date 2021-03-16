@@ -13,6 +13,9 @@ public:
 	sf::Color m_HighlightColor = sf::Color::White;
 	std::string m_RegionName = "";
 	std::string m_OwnerName = "";
+	std::string m_OwnerCharacter = "";
+	unsigned int m_OwnerTitle = 0;
+	sf::Color m_OwnerColor = sf::Color::Transparent;
 	sf::VertexArray m_VertexArray;
 	MapRegion() {};
 	~MapRegion() { m_MapSquares.clear(); }

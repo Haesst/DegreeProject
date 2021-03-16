@@ -27,14 +27,15 @@ struct CharacterSystem : System
 	{
 		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 
-		unsigned int characterIndex = 0;
 		for (auto entity : m_Entities)
 		{
 			for (unsigned int ownedID : characters[entity].m_OwnedRegionIDs)
 			{
 				Map::m_Data.m_Regions[ownedID].m_OwnerName = characters[entity].m_KingdomName;
+				Map::m_Data.m_Regions[ownedID].m_OwnerCharacter = characters[entity].m_Name;
+				Map::m_Data.m_Regions[ownedID].m_OwnerColor = characters[entity].m_RegionColor;
+				Map::m_Data.m_Regions[ownedID].m_OwnerTitle = (unsigned int)characters[entity].m_CharacterTitle;
 			}
-			characterIndex++;
 		}
 	}
 
@@ -45,7 +46,6 @@ struct CharacterSystem : System
 		//Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
 		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 
-		unsigned int characterIndex = 0;
 		for (auto entity : m_Entities)
 		{
 			if (characters[entity].m_UpdateOwnership == true)
@@ -54,24 +54,16 @@ struct CharacterSystem : System
 				for (unsigned int ownedID : characters[entity].m_OwnedRegionIDs)
 				{
 					Map::m_Data.m_Regions[ownedID].m_OwnerName = characters[entity].m_KingdomName;
+					Map::m_Data.m_Regions[ownedID].m_OwnerCharacter = characters[entity].m_Name;
+					Map::m_Data.m_Regions[ownedID].m_OwnerColor = characters[entity].m_RegionColor;
+					Map::m_Data.m_Regions[ownedID].m_OwnerTitle = (unsigned int)characters[entity].m_CharacterTitle;
 				}
 			}
-
-			// characters[entity].m_CurrentGold += TAX_INCOME;
-			// characters[entity].m_CurrentArmySize += ARMY_RECRUITED;
-			// characters[entity].m_OwnedRegionIDs.push_back(REGIONS_CONQUERED);
-			characterIndex++;
 		}
 	}
 
 	virtual void Render() override
 	{
-		//CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-
-		//for (auto entity : m_Entities)
-		//{
-		//	
-		//}
 	}
 
 	void ConquerRegion(int regionId, int conqueringEntity)
