@@ -2,7 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include "Window.h"
 #include <Engine/Log.h>
-#include "Game/MapInfo.h"
+#include "Game/Map/Map.h"
 
 bool m_LeftMouseClicked = false;
 bool m_RightMouseClicked = false;
@@ -108,13 +108,13 @@ void InputHandler::HandleInputEvents()
 				{
 					m_LeftMouseClicked = true;
 					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-					m_MouseMapPosition = MapInfo::ConvertToMap(m_MousePosition);
+					m_MouseMapPosition = Map::ConvertToMap(m_MousePosition);
 				}
 				if (event.key.code == sf::Mouse::Right)
 				{
 					m_RightMouseClicked = true;
 					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-					m_MouseMapPosition = MapInfo::ConvertToMap(m_MousePosition);
+					m_MouseMapPosition = Map::ConvertToMap(m_MousePosition);
 				}
 				if (event.key.code == sf::Mouse::Middle)
 				{
@@ -134,14 +134,14 @@ void InputHandler::HandleInputEvents()
 					m_LeftMouseClicked = false;
 					m_LeftMouseReleased = true;
 					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-					m_MouseMapPosition = MapInfo::ConvertToMap(m_MousePosition);
+					m_MouseMapPosition = Map::ConvertToMap(m_MousePosition);
 				}
 				if (event.key.code == sf::Mouse::Right)
 				{
 					m_RightMouseClicked = false;
 					m_RightMouseReleased = true;
 					m_MousePosition = window->mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y));
-					m_MouseMapPosition = MapInfo::ConvertToMap(m_MousePosition);
+					m_MouseMapPosition = Map::ConvertToMap(m_MousePosition);
 				}
 				if (event.key.code == sf::Mouse::Middle)
 				{

@@ -14,7 +14,7 @@ public:
 	static std::string GetRegionName(unsigned int index);
 	static std::string GetOwnerName(unsigned int index);
 	static unsigned int GetIndexOfCapital(Vector2DInt regionCapital);
-	static Vector2DInt GetRegionCapital(unsigned int index);
+	//static Vector2DInt GetRegionCapital(unsigned int index);
 	static std::vector<int> GetRegionIDs();
 	static std::vector<unsigned int> GetCharacterIDs();
 
@@ -31,6 +31,6 @@ public:
 	static void SetRegionCapital(Vector2DInt regionCapital, unsigned int index);
 	static void SetMapRegions(std::vector<MapRegion> regions);
 
-	static Vector2DInt ConvertToMap(Vector2D position);
-	static Vector2D ConvertToScreen(Vector2DInt position);
+	// static Vector2DInt ConvertToMap(Vector2D position);
+	// static Vector2D ConvertToScreen(Vector2DInt position);
 };

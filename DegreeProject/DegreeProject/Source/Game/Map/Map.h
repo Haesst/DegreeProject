@@ -86,8 +86,9 @@ struct Map
 	static int GetRegionPositionFromMapCharacter(const char& c);
 	static int GetRegionPositionFromRegionId(const unsigned int id);
 
+	// From mapinfo
 	static Vector2DInt ConvertToMap(Vector2D position);
-
 	static Vector2D ConvertToScreen(Vector2DInt position);
+	static Vector2DInt GetRegionCapitalLocation(unsigned int regionId);
 };
 #pragma warning(pop)

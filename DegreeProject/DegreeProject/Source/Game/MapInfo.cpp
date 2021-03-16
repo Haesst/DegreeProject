@@ -67,14 +67,14 @@ unsigned int MapInfo::GetIndexOfCapital(Vector2DInt regionCapital)
 	return 0;
 }
 
-Vector2DInt MapInfo::GetRegionCapital(unsigned int index)
-{
-	if (index >= m_NumberOfIDs)
-	{
-		return Vector2DInt();
-	}
-	return m_RegionCapitals[index];
-}
+//Vector2DInt MapInfo::GetRegionCapital(unsigned int index)
+//{
+//	if (index >= m_NumberOfIDs)
+//	{
+//		return Vector2DInt();
+//	}
+//	return m_RegionCapitals[index];
+//}
 
 std::vector<int> MapInfo::GetRegionIDs()
 {
@@ -170,12 +170,12 @@ void MapInfo::SetMapRegions(std::vector<MapRegion> regions)
 	m_MapRegions = regions;
 }
 
-Vector2DInt MapInfo::ConvertToMap(Vector2D position)
-{
-	return Vector2DInt((int)(position.x - m_MapOffsetX + 16) / 32, (int)(position.y - m_MapOffsetY + 16) / 32);
-}
-
-Vector2D MapInfo::ConvertToScreen(Vector2DInt position)
-{
-	return Vector2D((float)position.x * 32 + m_MapOffsetX - 16, (float)position.y * 32 + m_MapOffsetY - 16);
-}
+//Vector2DInt MapInfo::ConvertToMap(Vector2D position)
+//{
+//	return Vector2DInt((int)(position.x - m_MapOffsetX + 16) / 32, (int)(position.y - m_MapOffsetY + 16) / 32);
+//}
+//
+//Vector2D MapInfo::ConvertToScreen(Vector2DInt position)
+//{
+//	return Vector2D((float)position.x * 32 + m_MapOffsetX - 16, (float)position.y * 32 + m_MapOffsetY - 16);
+//}

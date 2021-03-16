@@ -211,3 +211,12 @@ Vector2D Map::ConvertToScreen(Vector2DInt position)
 {
 	return Vector2D((float)position.x * 32 + m_Data.m_XOffset - 16, (float)position.y * 32 + m_Data.m_YOffset - 16);
 }
+
+Vector2DInt Map::GetRegionCapitalLocation(unsigned int regionId)
+{
+	int regionArrayLocation = GetRegionPositionFromRegionId(regionId);
+
+	ASSERT(regionArrayLocation >= 0, "Region with id: {0} doesn't exist", regionId);
+
+	return m_Data.m_Regions[regionArrayLocation].m_RegionCapital;
+}

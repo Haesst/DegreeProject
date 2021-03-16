@@ -113,8 +113,8 @@ struct UITextSystem : System
 				}
 				regionIndex++;
 			}
-			Vector2D leftMostPositionScreen = MapInfo::ConvertToScreen(leftMostPosition);
-			Vector2D diagonal = MapInfo::ConvertToScreen(rightMostPosition) - leftMostPositionScreen;
+			Vector2D leftMostPositionScreen = Map::ConvertToScreen(leftMostPosition);
+			Vector2D diagonal = Map::ConvertToScreen(rightMostPosition) - leftMostPositionScreen;
 			UIText->m_CharacterSize = (unsigned int)(diagonal.x * 0.1f);
 			UIText->m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - UIText->m_CharacterSize * 3;
 			UIText->m_PositionY = diagonal.y * 0.5f + leftMostPositionScreen.y - UIText->m_CharacterSize;

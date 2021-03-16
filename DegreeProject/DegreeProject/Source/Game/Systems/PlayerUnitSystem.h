@@ -37,7 +37,7 @@ struct PlayerUnitSystem : System
 
 	virtual void Start() override
 	{
-		Pathfinding::Init(MapInfo::GetMapRegions());
+		Pathfinding::Init(Map::m_Data.m_Regions);
 
 		Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
 		PlayerUnit* playerUnits = m_EntityManager->GetComponentArray<PlayerUnit>();
@@ -45,7 +45,7 @@ struct PlayerUnitSystem : System
 		for (auto entity : m_Entities)
 		{
 			Vector2DInt startPositionMap = MapInfo::GetRegionPositions(0)[0];
-			Vector2D startPositionScreen = MapInfo::ConvertToScreen(startPositionMap);
+			Vector2D startPositionScreen = Map::ConvertToScreen(startPositionMap);
 			transforms[entity].m_Position = startPositionScreen;
 			playerUnits[entity].m_CurrentMapPosition = startPositionMap;
 			playerUnits[entity].m_RecentlyConquered = startPositionMap;
