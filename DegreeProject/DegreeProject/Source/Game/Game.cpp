@@ -17,6 +17,8 @@
 #include "Game/Systems/UIWindowSystem.h"
 #include "Game/Systems/UITextSystem.h"
 #include "Game/Systems/UISpriteRenderSystem.h"	
+#include "Game/Systems/AI/WarmindSystem.h"
+#include "Game/Systems/AI/UnitSystem.h"
 #include <Game/Systems/AI/AI.h>
 
 Game::~Game()
@@ -103,6 +105,8 @@ void Game::InitSystems()
 	entityManager->RegisterSystem<SpriteRenderSystem>();
 	entityManager->RegisterSystem<UIWindowSystem>();
 	entityManager->RegisterSystem<UISpriteRenderSystem>();
+	entityManager->RegisterSystem<WarmindSystem>();
+	entityManager->RegisterSystem<UnitSystem>();
 }
 
 void Game::AddEntitys()

@@ -4,7 +4,6 @@
 #include "ECS/System.h"
 #include "Game/Components/Warmind.h"
 #include "Game/Components/CharacterComponent.h"
-#include <Game\MapInfo.cpp>
 
 struct WarmindSystem : System
 {
@@ -92,9 +91,9 @@ struct WarmindSystem : System
 		{
 			if (!m_Warminds[Id].m_Defending)
 			{
-				std::vector<Vector2DInt> squares = MapInfo::GetRegionPositions(m_Warminds[Id].m_WargoalRegionId);
-				int randomIndex = rand() % squares.size();
-				unit.m_CurrentPath = Pathfinding::FindPath(unit.m_CurrentMapPosition, squares[randomIndex]);
+				//std::vector<Vector2DInt> squares = Map::GetRegionPositions(m_Warminds[Id].m_WargoalRegionId);
+				//int randomIndex = rand() % squares.size();
+				//unit.m_CurrentPath = Pathfinding::FindPath(unit.m_CurrentMapPosition, squares[randomIndex]);
 			}
 		}
 	}
