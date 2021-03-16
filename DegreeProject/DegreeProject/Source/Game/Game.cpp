@@ -105,7 +105,7 @@ void Game::AddEntitys()
 
 	//Create map
 	EntityID map = entityManager->AddNewEntity();
-	entityManager->AddComponent<Map>(map, m_AssetHandler->GetTextureAtPath("Assets/Graphics/TileSet.png"));
+	entityManager->AddComponent<Map>(map, m_AssetHandler->GetTextureAtPath("Assets/Graphics/Checkerboard.png"));
 	Map* mapComp = entityManager->GetComponentArray<Map>();
 
 	//Create Region Capital Castles

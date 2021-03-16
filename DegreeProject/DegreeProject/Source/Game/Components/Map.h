@@ -175,6 +175,11 @@ struct Map : public Component
 		{
 			region.m_VertexArray.setPrimitiveType(sf::Triangles);
 
+			// Calculate texture coord formula
+			// Get region x size (width * 32)
+			// Get region y size (height * 32)
+
+
 			for (auto& square : region.m_MapSquares)
 			{
 				sf::Vertex v1;
@@ -183,13 +188,14 @@ struct Map : public Component
 				sf::Vertex v4;
 
 				v1.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top left
-				v1.color = sf::Color::Green;
 				v2.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top right
-				v2.color = sf::Color::Green;
 				v3.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom right
-				v3.color = sf::Color::Green;
 				v4.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom Left
-				v4.color = sf::Color::Green;
+
+				v1.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) };
+				v2.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) };
+				v3.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) + m_TileSize };
+				v4.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) + m_TileSize };
 
 				region.m_VertexArray.append(v1);
 				region.m_VertexArray.append(v2);
@@ -206,6 +212,7 @@ struct Map : public Component
 		m_LandShader.loadFromFile("Assets/Shaders/LandShader.vert", "Assets/Shaders/LandShader.frag");
 
 		m_RenderStates.shader = &m_LandShader;
+		m_RenderStates.texture = &m_LandTexture;
 	}
 
 	Map& Map::operator =(const Map& other)
