@@ -54,10 +54,15 @@ void Game::Run()
 
 		// Update
 		EntityManager::Get().Update();
+		// Update map
 		m_GameDate.Update();
 
 		// Render
+		Window::GetWindow()->clear(sf::Color::Blue);
+		// Render map
+		m_Map.Render();
 		EntityManager::Get().Render();
+		Window::GetWindow()->display();
 	}
 
 	m_HotReloader->Close();
@@ -106,8 +111,11 @@ void Game::AddEntitys()
 
 	//Create Map ID(00)
 	EntityID map = entityManager->AddNewEntity();
-	entityManager->AddComponent<Map>(map, m_AssetHandler->GetTextureAtPath("Assets/Graphics/Checkerboard.png"));
-	Map* mapComp = entityManager->GetComponentArray<Map>();
+	// entityManager->AddComponent<Map>(map, m_AssetHandler->GetTextureAtPath("Assets/Graphics/Checkerboard.png"));
+	// Map* mapComp = entityManager->GetComponentArray<Map>();
+
+	m_Map.Init();
+	m_Map.SetLandTexture(m_AssetHandler->GetTextureAtPath("Assets/Graphics/Checkerboard.png"));
 
 	//Create Region Capital Castles ID(01-17)
 	const char* castlePath = "Assets/Graphics/Castle.png";
@@ -116,7 +124,7 @@ void Game::AddEntitys()
 		EntityID castle = entityManager->AddNewEntity();
 		entityManager->AddComponent<SpriteRenderer>(castle, castlePath, 32, 32, m_AssetHandler);
 		Transform* castleTransform = &entityManager->GetComponent<Transform>(castle);
-		castleTransform->m_Position = MapInfo::ConvertToScreen(mapComp->m_Regions[regionIndex].m_RegionCapital);
+		castleTransform->m_Position = MapInfo::ConvertToScreen(m_Map.m_Regions[regionIndex].m_RegionCapital);
 	}
 
 	//Create PlayerUnit 0 ID(18)
@@ -195,23 +203,23 @@ void Game::AddEntitys()
 	CharacterComponent* characters = entityManager->GetComponentArray<CharacterComponent>();
 	for (auto region : characters[char0].m_OwnedRegionIDs)
 	{
-		mapComp[map].SetRegionColor(region, characters[char0].m_RegionColor);
+		m_Map.SetRegionColor(region, characters[char0].m_RegionColor);
 	}
 	for (auto region : characters[char1].m_OwnedRegionIDs)
 	{
-		mapComp[map].SetRegionColor(region, characters[char1].m_RegionColor);
+		m_Map.SetRegionColor(region, characters[char1].m_RegionColor);
 	}
 	for (auto region : characters[char2].m_OwnedRegionIDs)
 	{
-		mapComp[map].SetRegionColor(region, characters[char2].m_RegionColor);
+		m_Map.SetRegionColor(region, characters[char2].m_RegionColor);
 	}
 	for (auto region : characters[char3].m_OwnedRegionIDs)
 	{
-		mapComp[map].SetRegionColor(region, characters[char3].m_RegionColor);
+		m_Map.SetRegionColor(region, characters[char3].m_RegionColor);
 	}
 	for (auto region : characters[char4].m_OwnedRegionIDs)
 	{
-		mapComp[map].SetRegionColor(region, characters[char4].m_RegionColor);
+		m_Map.SetRegionColor(region, characters[char4].m_RegionColor);
 	}
 
 	sf::Font font = m_AssetHandler->LoadFontFromFile("Assets/Fonts/TestFont.ttf");

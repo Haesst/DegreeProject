@@ -1,4 +1,5 @@
 #include "MapInfo.h"
+#include "Game/Map/Map.h"
 
 std::vector<unsigned int> m_RegionTax;
 std::vector<std::string> m_RegionNames;

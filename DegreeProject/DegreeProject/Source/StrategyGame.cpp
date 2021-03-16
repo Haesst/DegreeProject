@@ -5,7 +5,7 @@ int main()
 {
 	// Init log
 	Log::Init();
-	LOG_CORE_INFO("Initialized Log");
+	LOG_INFO("Initialized Log");
 
 	// Create and run game
 	Game game;

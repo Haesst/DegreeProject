@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Engine/Vector2D.h"
-#include "Game/Components/Map.h"
+#include "Game/Map/Map.h"
 
 struct Node
 {

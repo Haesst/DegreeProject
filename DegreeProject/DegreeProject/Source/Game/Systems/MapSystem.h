@@ -14,11 +14,11 @@
 struct MapSystem : public System
 {
 	EntityManager* m_EntityManager = nullptr;
-	//std::mutex m_RegionMutex;
+	std::mutex m_RegionMutex;
 
 	MapSystem()
 	{
-		AddComponentSignature<Map>();
+		AddComponentSignature<OldMap>();
 		m_EntityManager = &EntityManager::Get();
 
 		HotReloader::Get()->SubscribeToFileChange("Assets\\Data\\Regions.json", std::bind(&MapSystem::RegionsChanged, this, std::placeholders::_1, std::placeholders::_2));
@@ -30,29 +30,29 @@ struct MapSystem : public System
 	
 	virtual void Start() override
 	{
-		Map* maps = m_EntityManager->GetComponentArray<Map>();
+		OldMap* maps = m_EntityManager->GetComponentArray<OldMap>();
 		for (auto& entity : m_Entities)
 		{
-			UpdateMapInfo(maps, entity);
+			//UpdateMapInfo(maps, entity);
 			for (size_t i = 0; i < maps[entity].m_Regions.size(); ++i)
 			{
-				UpdateRegionMapInfo(maps, entity, i);
+				//UpdateMapInfo(maps, entity, i);
 			}
 		}
 	}
 
 	virtual void Update() override
 	{
-		Map* maps = m_EntityManager->GetComponentArray<Map>();
+		OldMap* maps = m_EntityManager->GetComponentArray<OldMap>();
 		for (auto& entity : m_Entities)
 		{
 			if (maps[entity].m_UpdateMapInfo == true)
 			{
-				UpdateMapInfo(maps, entity);
+				//UpdateMapInfo(maps, entity);
 				maps[entity].m_UpdateMapInfo = false;
 				for (size_t i = 0; i < maps[entity].m_Regions.size(); ++i)
 				{
-					UpdateRegionMapInfo(maps, entity, i);
+					//UpdateMapInfo(maps, entity, i);
 				}
 			}
 		}
@@ -60,7 +60,7 @@ struct MapSystem : public System
 
 	virtual void Render() override
 	{
-		Map* maps = m_EntityManager->GetComponentArray<Map>();
+		OldMap* maps = m_EntityManager->GetComponentArray<OldMap>();
 		for (auto& entity : m_Entities)
 		{
 			for (auto& region : maps[entity].m_Regions)
@@ -79,14 +79,16 @@ struct MapSystem : public System
 			return;
 		}
 
-		Map* maps = m_EntityManager->GetComponentArray<Map>();
+		OldMap* maps = m_EntityManager->GetComponentArray<OldMap>();
 		for (auto& entity : m_Entities)
 		{
-			//mtx->lock();
+			m_RegionMutex.lock();
+			maps[entity].ClearRegions();
 			maps[entity].LoadAllRegions();
+			maps[entity].ClearRegionMapTiles();
 			maps[entity].LoadMap();
 			maps[entity].CreateVertexArrays();
-			//mtx->unlock();
+			m_RegionMutex.unlock();
 		}
 	}
 
@@ -97,7 +99,7 @@ struct MapSystem : public System
 			return;
 		}
 
-		Map* maps = m_EntityManager->GetComponentArray<Map>();
+		OldMap* maps = m_EntityManager->GetComponentArray<OldMap>();
 		for (auto& entity : m_Entities)
 		{
 			//mtx->lock();

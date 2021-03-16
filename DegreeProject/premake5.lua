@@ -25,6 +25,7 @@ project "DegreeProject"
 	kind "ConsoleApp"
 	language "C++"
 	cppdialect "C++17"
+	warnings "Extra"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "%{prj.name}")
@@ -37,7 +38,8 @@ project "DegreeProject"
 
 	defines
 	{
-		"SFML_DYNAMIC"
+		"SFML_DYNAMIC",
+		"ENABLE_ASSERTS",
 	}
 
 	includedirs

@@ -239,7 +239,7 @@ struct PlayerUnitSystem : System
 		{
 			std::vector<Vector2DInt> regionCapitals = MapInfo::GetRegionCapitals();
 			CharacterComponent* characterComponents = m_EntityManager->GetComponentArray<CharacterComponent>();
-			Map* mapComponents = m_EntityManager->GetComponentArray<Map>();
+			OldMap* mapComponents = m_EntityManager->GetComponentArray<OldMap>();
 			UIText* textComponents = m_EntityManager->GetComponentArray<UIText>();
 			unsigned int capitalIndex = 0;
 			for each (Vector2DInt capitalPosition in regionCapitals)

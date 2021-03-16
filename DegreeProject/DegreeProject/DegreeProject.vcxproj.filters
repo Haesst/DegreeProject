@@ -108,6 +108,9 @@
     <ClInclude Include="Source\Game\Game.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\GameDate.h">
+      <Filter>Game</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\HotReloader.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -156,7 +159,7 @@
     <ClInclude Include="Source\Game\Systems\UIWindowSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\GameDate.h" />
+    <ClInclude Include="Source\Game\Map\Map.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">

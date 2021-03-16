@@ -6,11 +6,13 @@
 #include <json.hpp>
 using json = nlohmann::json;
 
-#include "ECS/Component.h"
 #include "Engine/Vector2D.h"
 #include "Engine/Log.h"
+#include "Engine/Window.h"
+#include "Game/MapInfo.h"
+#include "Engine/AssetHandler.h"
 
-struct OldMapRegion
+struct MapRegion
 {
 public:
 	std::vector<Vector2DInt> m_MapSquares = {};
@@ -21,15 +23,16 @@ public:
 	unsigned int m_RegionTax = 0;
 	std::string m_RegionName = "";
 	sf::VertexArray m_VertexArray;
-	OldMapRegion() {};
-	~OldMapRegion() { m_MapSquares.clear(); }
+	MapRegion() {};
+	~MapRegion() { m_MapSquares.clear(); }
 };
+
 
 #pragma warning(push)
 #pragma warning(disable: 26812)
-struct OldMap : public Component
+struct Map
 {
-	std::vector<OldMapRegion> m_Regions;
+	std::vector<MapRegion> m_Regions;
 	sf::Texture m_LandTexture;
 	sf::Sprite m_LandSprite;
 
@@ -46,12 +49,12 @@ struct OldMap : public Component
 
 	sf::Shader m_LandShader;
 
-	OldMap()
+	Map()
 	{
 		m_HalfTileSize = m_TileSize * 0.5f;
 	}
 
-	OldMap(sf::Texture landTexture)
+	Map(sf::Texture landTexture)
 	{
 		m_HalfTileSize = m_TileSize * 0.5f;
 		Init();
@@ -59,7 +62,7 @@ struct OldMap : public Component
 		m_LandSprite.setTexture(landTexture);
 	}
 
-	~OldMap()
+	~Map()
 	{}
 
 	void Init()
@@ -70,6 +73,24 @@ struct OldMap : public Component
 		LoadMap();
 		LoadShadersAndCreateRenderStates();
 		CreateVertexArrays();
+
+		for (size_t i = 0; i < m_Regions.size(); ++i)
+		{
+			UpdateMapInfo(i);
+		}
+	}
+
+	void SetLandTexture(sf::Texture tex)
+	{
+		m_LandTexture = tex;
+	}
+
+	void UpdateMapInfo(size_t regionIndex)
+	{
+		MapInfo::SetRegionName(m_Regions[regionIndex].m_RegionName, (unsigned int)regionIndex);
+		MapInfo::SetRegionTax(m_Regions[regionIndex].m_RegionTax, (unsigned int)regionIndex);
+		MapInfo::SetRegionCapital(m_Regions[regionIndex].m_RegionCapital, (unsigned int)regionIndex);
+		MapInfo::SetMapRegions(m_Regions);
 	}
 
 	sf::Color GetColor(std::string color)
@@ -96,9 +117,9 @@ struct OldMap : public Component
 		}
 		if (color == "Brown")
 		{
-			return sf::Color::Color(40,26,13);
+			return sf::Color::Color(40, 26, 13);
 		}
-		
+
 		return sf::Color::White;
 	}
 
@@ -122,7 +143,7 @@ struct OldMap : public Component
 
 		for (auto& element : j)
 		{
-			OldMapRegion region;
+			MapRegion region;
 
 			region.m_HighlightColor = GetColor(element["color"].get<std::string>());
 			std::string mapCharString = element["mapchar"].get<std::string>();
@@ -231,28 +252,6 @@ struct OldMap : public Component
 		m_RenderStates.texture = &m_LandTexture;
 	}
 
-	OldMap& OldMap::operator =(const OldMap& other)
-	{
-		m_Regions = other.m_Regions;
-		m_LandTexture = other.m_LandTexture;
-		m_LandSprite = other.m_LandSprite;
-
-		m_XOffset = other.m_XOffset;
-		m_YOffset = other.m_YOffset;
-		m_MapScale = other.m_MapScale;
-
-		m_ChangeFlag = other.m_ChangeFlag;
-		m_UpdateMapInfo = other.m_UpdateMapInfo;
-
-		m_RenderStates = other.m_RenderStates;
-		m_TileSize = other.m_TileSize;
-		m_HalfTileSize = other.m_HalfTileSize;
-
-		LoadShadersAndCreateRenderStates();
-
-		return *this;
-	}
-
 	int GetRegionPosition(const char& c)
 	{
 		for (size_t i = 0; i < m_Regions.size(); ++i)
@@ -265,5 +264,17 @@ struct OldMap : public Component
 
 		return -1;
 	}
+
+#pragma region Rendering
+	void Render()
+	{
+		for (auto& region : m_Regions)
+		{
+			m_LandShader.setUniform("u_Color", sf::Glsl::Vec4(region.m_HighlightColor));
+			m_LandShader.setUniform("u_Texture", m_LandTexture);
+			Window::GetWindow()->draw(region.m_VertexArray, m_RenderStates);
+		}
+	}
+#pragma endregion Rendering
 };
 #pragma warning(pop)

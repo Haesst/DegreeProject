@@ -1,8 +1,9 @@
 #pragma once
 #include <vector>
 #include <string>
-#include "Game/Components/Map.h"
 #include "Engine/Vector2D.h"
+
+struct MapRegion;
 
 class MapInfo
 {
