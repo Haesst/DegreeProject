@@ -30,7 +30,7 @@ struct WarmindSystem : System
 		for (EntityID ent : m_Entities)
 		{
 			//Init positions
-			int regionIndex = m_Characters[ent].m_OwnedRegionIDs[0];
+			int regionIndex = m_Characters[ent].m_OwnedRegionIDs[1];
 			Vector2DInt capitalPos = Map::GetRegionCapitalLocation(regionIndex);
 			Vector2D pos = Map::ConvertToScreen(capitalPos);
 			Vector2DInt intpos(pos.x, pos.y);
@@ -39,6 +39,9 @@ struct WarmindSystem : System
 			m_EntityManager->AddComponent<UnitComponent>(m_Warminds[ent].m_UnitEntity, 1, intpos);
 			AssetHandler handler;
 			m_EntityManager->AddComponent<SpriteRenderer>(m_Warminds[ent].m_UnitEntity, "Assets/Graphics/soldier unit.png", 32, 32, &handler);
+			auto warmindComp = m_EntityManager->GetComponent<WarmindComponent>(ent);
+			SpriteRenderer& renderer = m_EntityManager->GetComponent<SpriteRenderer>(warmindComp.m_UnitEntity);
+			renderer.m_ShouldRender = false;
 		}
 	}
 
@@ -100,7 +103,7 @@ struct WarmindSystem : System
 
 	void RaiseUnits(UnitComponent& unit, SpriteRenderer& renderer)
 	{
-		unit.m_Raised = true;
-		renderer.m_ShouldRender = true;
+		//unit.m_Raised = true;
+		//renderer.m_ShouldRender = true;
 	}
 };
