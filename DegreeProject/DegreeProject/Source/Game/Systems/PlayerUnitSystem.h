@@ -169,19 +169,20 @@ struct PlayerUnitSystem : System
 			Vector2DInt startPositionMap = Map::ConvertToMap(transform->m_Position);
 			Vector2D startPositionFloat = Vector2D((float)startPositionMap.x, (float)startPositionMap.y);
 			m_Path = Pathfinding::FindPath(startPositionMap, InputHandler::GetMouseMapPosition());
+
 			if (m_Path.size() > 0)
 			{
 				Vector2DInt firstPositionMap = m_Path.front();
 				Vector2D firstPositionFloat = Vector2D((float)firstPositionMap.x, (float)firstPositionMap.y);
-				playerUnit->m_Target = firstPositionFloat;
-				playerUnit->m_Direction = (firstPositionFloat - startPositionFloat).Normalized();
+				playerUnit->m_Target = Map::ConvertToScreen(firstPositionMap);
+				playerUnit->m_Direction = (playerUnit->m_Target - transform->m_Position).Normalized();
 				playerUnit->m_Moving = true;
 
 				m_Path.pop_front();
 
 				//Debug Start Rectangle
 				m_StartPosition.setSize(sf::Vector2f(32.0f, 32.0f));
-				Vector2D rectanglePosition = Map::ConvertToScreen(firstPositionMap);
+				Vector2D rectanglePosition = Map::ConvertToScreen(playerUnit->m_CurrentMapPosition);
 				m_StartPosition.setPosition(rectanglePosition.x, rectanglePosition.y);
 				m_StartPosition.setFillColor(sf::Color::Magenta);
 
@@ -194,16 +195,7 @@ struct PlayerUnitSystem : System
 		}
 		if (playerUnit->m_Moving == true)
 		{
-			playerUnit->m_CurrentMapPosition = Map::ConvertToMap(transform->m_Position);
-			Vector2DInt targetPositionMap = { (int)playerUnit->m_Target.x, (int)playerUnit->m_Target.y };
-
-			//Debug Target Rectangle
-			m_TargetPosition.setSize(sf::Vector2f(32.0f, 32.0f));
-			Vector2D rectanglePosition = Map::ConvertToScreen(targetPositionMap);
-			m_TargetPosition.setPosition(rectanglePosition.x, rectanglePosition.y);
-			m_TargetPosition.setFillColor(sf::Color::White);
-
-			if (targetPositionMap != playerUnit->m_CurrentMapPosition)
+			if (!transform->m_Position.NearlyEqual(playerUnit->m_Target, 0.2f))
 			{
 				Vector2D movement = playerUnit->m_Direction * playerUnit->m_Speed * Time::DeltaTime();
 				transform->Translate(movement);
@@ -211,23 +203,28 @@ struct PlayerUnitSystem : System
 			}
 			else
 			{
-				if (m_Path.size() != 0)
+				transform->m_Position = playerUnit->m_Target;
+				playerUnit->m_CurrentMapPosition = Map::ConvertToMap(transform->m_Position);
+
+				if (m_Path.size() > 0)
 				{
-					Vector2D nextPosition = Vector2D((float)m_Path.front().x, (float)m_Path.front().y);
-					Vector2D startPosition((float)playerUnit->m_CurrentMapPosition.x, (float)playerUnit->m_CurrentMapPosition.y);
+					Vector2D nextPosition = Map::ConvertToScreen(m_Path.front());
 					playerUnit->m_Target = nextPosition;
-					playerUnit->m_Direction = (nextPosition - startPosition).Normalized();
+					playerUnit->m_Direction = (nextPosition - transform->m_Position).Normalized();
+
+					m_TargetPosition.setSize({ 32.0f, 32.0f });
+					m_TargetPosition.setPosition(nextPosition.x, nextPosition.y);
+					m_TargetPosition.setFillColor(sf::Color::White);
+
 					m_Path.pop_front();
 				}
 				else
 				{
 					playerUnit->m_Moving = false;
 
-					//Debug Start Rectangle
-					m_StartPosition.setSize(sf::Vector2f(32.0f, 32.0f));
-					rectanglePosition = Map::ConvertToScreen(playerUnit->m_CurrentMapPosition);
-					m_StartPosition.setPosition((float)rectanglePosition.x, (float)rectanglePosition.y);
-					m_StartPosition.setFillColor(sf::Color::Magenta);
+					m_TargetPosition.setFillColor(sf::Color::Transparent);
+					m_StartPosition.setFillColor(sf::Color::Transparent);
+					m_EndPosition.setFillColor(sf::Color::Transparent);
 				}
 			}
 		}
