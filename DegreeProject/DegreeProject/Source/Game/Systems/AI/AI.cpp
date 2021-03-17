@@ -76,11 +76,13 @@ void AISystem::DeclareWar(EntityID instigator, EntityID target, int warGoalRegio
 
 	m_Characters[instigator].m_AtWar = true;
 	m_Warminds[instigator].m_Defending = false;
-	m_Warminds[instigator].m_Active = false;
+	m_Warminds[instigator].m_Active = true;
+	m_Warminds[instigator].m_RecentlyAtWar = true;
 
 	m_Characters[target].m_AtWar = true;
 	m_Warminds[target].m_Opponent = instigator;
 	m_Warminds[target].m_Defending = true;
 	m_Warminds[target].m_WargoalRegionId = warGoalRegion;
-	m_Warminds[target].m_Active = warGoalRegion;
+	m_Warminds[target].m_Active = true;
+	m_Warminds[target].m_RecentlyAtWar = true;
 }

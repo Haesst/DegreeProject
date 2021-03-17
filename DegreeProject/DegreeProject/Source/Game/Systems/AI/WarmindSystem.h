@@ -20,6 +20,7 @@ struct WarmindSystem : System
 		AddComponentSignature<WarmindComponent>();
 		AddComponentSignature<CharacterComponent>();
 		m_EntityManager = &EntityManager::Get();
+
 		m_Units = m_EntityManager->GetComponentArray<UnitComponent>();
 		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
 		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
@@ -29,14 +30,8 @@ struct WarmindSystem : System
 	{
 		for (EntityID ent : m_Entities)
 		{
-			//Init positions
-			int regionIndex = m_Characters[ent].m_OwnedRegionIDs[1];
-			Vector2DInt capitalPos = Map::GetRegionCapitalLocation(regionIndex);
-			Vector2D pos = Map::ConvertToScreen(capitalPos);
-			Vector2DInt intpos(pos.x, pos.y);
-
 			m_Warminds[ent].m_UnitEntity = m_EntityManager->AddNewEntity();
-			m_EntityManager->AddComponent<UnitComponent>(m_Warminds[ent].m_UnitEntity, 1, intpos);
+			m_EntityManager->AddComponent<UnitComponent>(m_Warminds[ent].m_UnitEntity, 1);
 			AssetHandler handler;
 			m_EntityManager->AddComponent<SpriteRenderer>(m_Warminds[ent].m_UnitEntity, "Assets/Graphics/soldier unit.png", 32, 32, &handler);
 			auto warmindComp = m_EntityManager->GetComponent<WarmindComponent>(ent);
@@ -47,8 +42,6 @@ struct WarmindSystem : System
 
 	virtual void Update() override
 	{
-		m_TickAccu++;
-
 		for (auto entity : m_Entities)
 		{
 			if (!m_Warminds[entity].m_Active)
@@ -56,17 +49,12 @@ struct WarmindSystem : System
 				continue;
 			}
 
-			if (m_TickAccu >= m_AtWarTickRate)
-			{
-				if (!m_Warminds[entity].m_AtWar)
-				{
-					if (m_Characters[entity].m_AtWar)
-					{
-						OnWarStarted(entity);
-					}
-				}
+			LOG_INFO("{0}", m_Characters[entity].m_Name);
 
-				m_TickAccu = 0.0f;
+			if (m_Warminds[entity].m_RecentlyAtWar)
+			{
+				OnWarStarted(entity);
+				m_Warminds[entity].m_RecentlyAtWar = false;
 			}
 		}
 	}
@@ -74,13 +62,17 @@ struct WarmindSystem : System
 	void OnWarStarted(EntityID Id)
 	{
 		auto warmindComp = m_EntityManager->GetComponent<WarmindComponent>(Id);
-
 		UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(warmindComp.m_UnitEntity);
 		SpriteRenderer& renderer = m_EntityManager->GetComponent<SpriteRenderer>(warmindComp.m_UnitEntity);
 
 		if (!unit.m_Raised)
 		{
-			RaiseUnits(unit, renderer);
+			int regionIndex = m_Characters[Id].m_OwnedRegionIDs[1];
+			Vector2DInt capitalPos = Map::GetRegionCapitalLocation(regionIndex);
+			Vector2D pos = Map::ConvertToScreen(capitalPos);
+			LOG_INFO("{0} Is raising units", m_Characters[Id].m_Name);
+
+			RaiseUnits(m_Warminds[Id].m_UnitEntity, unit, renderer, pos);
 		}
 	}
 
@@ -101,9 +93,12 @@ struct WarmindSystem : System
 		}
 	}
 
-	void RaiseUnits(UnitComponent& unit, SpriteRenderer& renderer)
+	void RaiseUnits(EntityID ent, UnitComponent& unit, SpriteRenderer& renderer, const Vector2D& position)
 	{
-		//unit.m_Raised = true;
-		//renderer.m_ShouldRender = true;
+		auto& transform = m_EntityManager->GetComponent<Transform>(ent);
+		transform.m_Position = position;
+		renderer.m_Sprite.setPosition(position.x, position.y);
+		unit.m_Raised = true;
+		renderer.m_ShouldRender = true;
 	}
 };

@@ -12,6 +12,7 @@ struct WarmindComponent : Component
 	bool m_Defending = false;
 	bool m_Active = false;
 	bool m_AtWar = false;
+	bool m_RecentlyAtWar = false; //Flag for starting war
 
 	EntityID m_UnitEntity;
 
