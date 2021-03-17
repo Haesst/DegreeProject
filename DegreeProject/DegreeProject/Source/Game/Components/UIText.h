@@ -19,8 +19,7 @@ struct UIText : public Component
 	sf::Text::Style m_Style = sf::Text::Regular;
 #pragma warning(pop)
 	float m_Rotation = 0.0f;
-	std::vector<unsigned int> m_OwnedRegions;
-	bool m_AdjustText = false;
+	std::vector<unsigned int> m_OwnedRegionIDs;
 	bool m_Conquered = false;
 
 	UIText(){}
@@ -29,6 +28,6 @@ struct UIText : public Component
 	{
 		m_Font = font;
 		m_CountryName = countryName;
-		m_OwnedRegions = ownedRegions;
+		m_OwnedRegionIDs = ownedRegions;
 	}
 };

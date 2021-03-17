@@ -15,10 +15,6 @@ struct UITextSystem : System
 	EntityManager* m_EntityManager = nullptr;
 	sf::RenderWindow* m_Window;
 
-	// Constructor, Runs when the system is initialized
-	// Do any kind of init here but remember to register
-	// the systems component signature. IE: add every component
-	// that the system needs or should look for
 	UITextSystem()
 	{
 		AddComponentSignature<UIText>();
@@ -33,42 +29,17 @@ struct UITextSystem : System
 		for (auto entity : m_Entities)
 		{
 			AdjustText(&UITexts[entity]);
-			UITexts[entity].m_CountryNameText.setFont(UITexts[entity].m_Font);
-			UITexts[entity].m_CountryNameText.setCharacterSize(UITexts[entity].m_CharacterSize);
-			UITexts[entity].m_CountryNameText.setStyle(UITexts[entity].m_Style);
-			UITexts[entity].m_CountryNameText.setString(UITexts[entity].m_CountryName);
-			UITexts[entity].m_CountryNameText.setPosition(UITexts[entity].m_PositionX, UITexts[entity].m_PositionY);
-			UITexts[entity].m_CountryNameText.setFillColor(UITexts[entity].m_FillColor);
-			UITexts[entity].m_CountryNameText.setOutlineColor(UITexts[entity].m_OutlineColor);
-			UITexts[entity].m_CountryNameText.setOutlineThickness(UITexts[entity].m_OutlineThickness);
-			UITexts[entity].m_CountryNameText.setRotation(UITexts[entity].m_Rotation);
 		}
 	}
 
-	// Update gets called every frame and loops through every entity that has the signature that
-	// the system has registered and do the necessary update
 	virtual void Update() override
 	{
-		// Transform* transforms = m_EntityManager->GetComponentArray<Transform>(); // Uncommented because it's unused
-		UIText* UITexts = m_EntityManager->GetComponentArray<UIText>();
+		//UIText* UITexts = m_EntityManager->GetComponentArray<UIText>();
 
-		for (auto entity : m_Entities)
-		{
-			if (UITexts[entity].m_AdjustText == true)
-			{
-				UITexts[entity].m_AdjustText = false;
-				AdjustText(&UITexts[entity]);
-				UITexts[entity].m_CountryNameText.setFont(UITexts[entity].m_Font);
-				UITexts[entity].m_CountryNameText.setCharacterSize(UITexts[entity].m_CharacterSize);
-				UITexts[entity].m_CountryNameText.setStyle(UITexts[entity].m_Style);
-				UITexts[entity].m_CountryNameText.setString(UITexts[entity].m_CountryName);
-				UITexts[entity].m_CountryNameText.setPosition(UITexts[entity].m_PositionX, UITexts[entity].m_PositionY);
-				UITexts[entity].m_CountryNameText.setFillColor(UITexts[entity].m_FillColor);
-				UITexts[entity].m_CountryNameText.setOutlineColor(UITexts[entity].m_OutlineColor);
-				UITexts[entity].m_CountryNameText.setOutlineThickness(UITexts[entity].m_OutlineThickness);
-				UITexts[entity].m_CountryNameText.setRotation(UITexts[entity].m_Rotation);
-			}
-		}
+		//for (auto entity : m_Entities)
+		//{
+
+		//}
 	}
 
 	virtual void Render() override
@@ -86,7 +57,7 @@ struct UITextSystem : System
 
 	void AdjustText(UIText* UIText)
 	{
-		if (UIText->m_OwnedRegions.size() > 0)
+		if (UIText->m_OwnedRegionIDs.size() > 0)
 		{
 			std::vector<MapRegion> regions = Map::m_Data.m_Regions;
 			Vector2DInt leftMostPosition = { 100, 0 };
@@ -94,7 +65,7 @@ struct UITextSystem : System
 			unsigned int regionIndex = 0;
 			for each (MapRegion region in regions)
 			{
-				for each (unsigned int regionId in UIText->m_OwnedRegions)
+				for each (unsigned int regionId in UIText->m_OwnedRegionIDs)
 				{
 					if (regionId == regions[regionIndex].m_RegionId)
 					{
@@ -128,10 +99,33 @@ struct UITextSystem : System
 			}
 			UIText->m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - UIText->m_CharacterSize * 3;
 			UIText->m_PositionY = diagonal.y * 0.5f + leftMostPositionScreen.y - UIText->m_CharacterSize * offsetY;
+			UIText->m_CountryNameText.setFont(UIText->m_Font);
+			UIText->m_CountryNameText.setCharacterSize(UIText->m_CharacterSize);
+			UIText->m_CountryNameText.setStyle(UIText->m_Style);
+			UIText->m_CountryNameText.setString(UIText->m_CountryName);
+			UIText->m_CountryNameText.setPosition(UIText->m_PositionX, UIText->m_PositionY);
+			UIText->m_CountryNameText.setFillColor(UIText->m_FillColor);
+			UIText->m_CountryNameText.setOutlineColor(UIText->m_OutlineColor);
+			UIText->m_CountryNameText.setOutlineThickness(UIText->m_OutlineThickness);
+			UIText->m_CountryNameText.setRotation(UIText->m_Rotation);
 		}
 		else
 		{
 			UIText->m_Conquered = true;
 		}
+	}
+
+	void ConquerRegion(unsigned int regionID, unsigned conqueringEntity)
+	{
+		UIText& text = m_EntityManager->GetComponent<UIText>(conqueringEntity + 1);
+		text.m_OwnedRegionIDs.push_back(regionID);
+		AdjustText(&text);
+	}
+
+	void LoseRegion(unsigned regionIndex, unsigned int losingEntity)
+	{
+		UIText& text = m_EntityManager->GetComponent<UIText>(losingEntity + 1);
+		text.m_OwnedRegionIDs.erase(text.m_OwnedRegionIDs.begin() + regionIndex);
+		AdjustText(&text);
 	}
 };

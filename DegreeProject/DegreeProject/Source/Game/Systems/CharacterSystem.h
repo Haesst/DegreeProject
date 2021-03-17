@@ -2,12 +2,11 @@
 
 #include "ECS/EntityManager.h"
 #include "ECS/System.h"
-
 #include "Engine/Time.h"
 #include "Engine/Window.h"
-
 #include "ECS/Components/Transform.h"
 #include "Game/Components/CharacterComponent.h"
+#include "Game/Systems/UITextSystem.h"
 
 struct CharacterSystem : System
 {
@@ -41,43 +40,45 @@ struct CharacterSystem : System
 	virtual void Update() override
 	{
 		//Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
-		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+		//CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 
-		for (auto entity : m_Entities)
-		{
-			if (characters[entity].m_UpdateOwnership == true)
-			{
-				characters[entity].m_UpdateOwnership = false;
-				for (unsigned int ownedID : characters[entity].m_OwnedRegionIDs)
-				{
-					Map::GetRegionById(ownedID).m_OwnerID = entity;
-				}
-			}
-		}
+		//for (auto entity : m_Entities)
+		//{
+
+		//}
 	}
 
 	virtual void Render() override
 	{
 	}
 
-	void ConquerRegion(int regionId, int conqueringEntity)
+	void ConquerRegion(unsigned int regionID, unsigned int conqueringEntity)
 	{
-		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-		characters[conqueringEntity].m_OwnedRegionIDs.push_back(regionId);
+		CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(conqueringEntity);
+		character.m_OwnedRegionIDs.push_back(regionID);
+
+		Map::SetRegionColor(regionID, character.m_RegionColor);
+		Map::GetRegionById(regionID).m_OwnerID = conqueringEntity;
+
+		UITextSystem* textUISystem = (UITextSystem*)m_EntityManager->GetSystem<UITextSystem>().get();
+		textUISystem->ConquerRegion(regionID, conqueringEntity);
 	}
 
-	void loseRegion(int regionId, int losingEntity)
+	void LoseRegion(unsigned int regionID, unsigned int losingEntity)
 	{
-		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-		auto& regions = characters[losingEntity].m_OwnedRegionIDs;
-
-		for (unsigned int i = 0; i < regions.size(); i++)
+		CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(losingEntity);
+		unsigned int regionIndex = 0;
+		for (unsigned int OwnedRegionID : character.m_OwnedRegionIDs)
 		{
-			if (regions[i] == (unsigned int)regionId)
+			if (OwnedRegionID == regionID)
 			{
-				regions.erase(regions.begin() + i);
-				return;
+				character.m_OwnedRegionIDs.erase(character.m_OwnedRegionIDs.begin() + regionIndex);
+				break;
 			}
-		} 
+			regionIndex++;
+		}
+
+		UITextSystem* textUISystem = (UITextSystem*)m_EntityManager->GetSystem<UITextSystem>().get();
+		textUISystem->LoseRegion(regionIndex, losingEntity);
 	}
 };

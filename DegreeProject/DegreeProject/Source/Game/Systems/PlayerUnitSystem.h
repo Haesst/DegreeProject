@@ -235,8 +235,6 @@ struct PlayerUnitSystem : System
 		if (!playerUnit->m_Moving && playerUnit->m_CurrentMapPosition != playerUnit->m_RecentlyConquered)
 		{	
 			std::vector<int> regionIDs = Map::GetRegionIDs();
-			CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-			UIText* textComponents = m_EntityManager->GetComponentArray<UIText>();
 			for each (int regionID in regionIDs)
 			{
 				Vector2DInt capitalPosition = Map::GetRegionCapitalLocation(regionID);
@@ -249,19 +247,10 @@ struct PlayerUnitSystem : System
 						continue;
 					}
 					playerUnit->m_RecentlyConquered = capitalPosition;
-					characters[playerUnit->m_Owner].m_OwnedRegionIDs.push_back(regionID);
-					characters[playerUnit->m_Owner].m_UpdateOwnership = true;
-					Map::SetRegionColor(regionID, characters[playerUnit->m_Owner].m_RegionColor);
-					textComponents[playerUnit->m_Owner + 1].m_OwnedRegions.push_back(regionID);
-					textComponents[playerUnit->m_Owner + 1].m_AdjustText = true;
-
-					if (characters[ownerID].m_OwnedRegionIDs.size() > 0 && textComponents[ownerID + 1].m_OwnedRegions.size() > 0)
-					{
-						characters[ownerID].m_OwnedRegionIDs.erase(std::remove(characters[ownerID].m_OwnedRegionIDs.begin(), characters[ownerID].m_OwnedRegionIDs.end(), regionID), characters[ownerID].m_OwnedRegionIDs.end());
-						textComponents[ownerID + 1].m_OwnedRegions.erase(std::remove(textComponents[ownerID + 1].m_OwnedRegions.begin(), textComponents[ownerID + 1].m_OwnedRegions.end(), regionID), textComponents[ownerID + 1].m_OwnedRegions.end());
-						textComponents[ownerID + 1].m_AdjustText = true;
-					}
-					break;
+					CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
+					characterSystem->ConquerRegion(regionID, playerUnit->m_Owner);
+					characterSystem->LoseRegion(regionID, ownerID);
+					return;
 				}
 			}
 		}

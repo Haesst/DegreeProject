@@ -28,7 +28,6 @@ struct UIWindow : public Component
 	sf::Text::Style m_Style = sf::Text::Regular;
 #pragma warning(pop)
 	bool m_Open = false;
-	bool m_UpdateInfo = false;
 
 	UIWindow(){}
 

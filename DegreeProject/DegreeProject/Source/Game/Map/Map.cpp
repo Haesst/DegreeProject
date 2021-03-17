@@ -260,7 +260,7 @@ int Map::GetRegionPositionFromRegionId(const unsigned int id)
 	return -1;
 }
 
-MapRegion& Map::GetRegionById(int regionId)
+MapRegion& Map::GetRegionById(unsigned int regionId)
 {
 	for (auto& region : m_Data.m_Regions)
 	{
