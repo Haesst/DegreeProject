@@ -18,8 +18,8 @@ struct UIWindow : public Component
 	sf::Font m_Font;
 	int m_RegionTax = 0;
 	std::string m_RegionName = "";
-	std::string m_OwnerName = "";
-	std::string m_OwnerCharacter = "";
+	std::string m_OwnerKingdomName = "";
+	std::string m_OwnerCharacterName = "";
 	std::string m_OwnerTitle = "";
 	std::vector<std::string> titles;
 	int m_CharacterSize = 50;

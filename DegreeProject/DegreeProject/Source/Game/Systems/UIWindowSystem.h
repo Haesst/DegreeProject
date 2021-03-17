@@ -53,13 +53,13 @@ struct UIWindowSystem : System
 				UIWindows[entity].m_OwnerCharacterText.setFont(UIWindows[entity].m_Font);
 				UIWindows[entity].m_OwnerCharacterText.setCharacterSize(UIWindows[entity].m_CharacterSize);
 				UIWindows[entity].m_OwnerCharacterText.setStyle(UIWindows[entity].m_Style);
-				UIWindows[entity].m_OwnerCharacterText.setString(UIWindows[entity].m_OwnerTitle + UIWindows[entity].m_OwnerCharacter);
+				UIWindows[entity].m_OwnerCharacterText.setString(UIWindows[entity].m_OwnerTitle + UIWindows[entity].m_OwnerCharacterName);
 				UIWindows[entity].m_OwnerCharacterText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.34f), (int)(UIWindows[entity].m_SizeY * 0.025f))));
 				UIWindows[entity].m_OwnerCharacterText.setFillColor(UIWindows[entity].m_OwnerColor);
 				UIWindows[entity].m_OwnerNameText.setFont(UIWindows[entity].m_Font);
 				UIWindows[entity].m_OwnerNameText.setCharacterSize(UIWindows[entity].m_CharacterSize);
 				UIWindows[entity].m_OwnerNameText.setStyle(UIWindows[entity].m_Style);
-				UIWindows[entity].m_OwnerNameText.setString("Owner: " + UIWindows[entity].m_OwnerName);
+				UIWindows[entity].m_OwnerNameText.setString("Owner: " + UIWindows[entity].m_OwnerKingdomName);
 				UIWindows[entity].m_OwnerNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.1f))));
 				UIWindows[entity].m_OwnerNameText.setFillColor(UIWindows[entity].m_OwnerColor);
 				UIWindows[entity].m_RegionNameText.setFont(UIWindows[entity].m_Font);
@@ -100,6 +100,7 @@ struct UIWindowSystem : System
 		if (InputHandler::GetRightMouseClicked() == true && InputHandler::GetPlayerUnitSelected() == false && !UIWindow->m_Visible)
 		{
 			Vector2DInt mousePosition = InputHandler::GetMouseMapPosition();
+			CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 			std::vector<MapRegion> regions = Map::m_Data.m_Regions;
 			for each (MapRegion region in regions)
 			{
@@ -109,11 +110,10 @@ struct UIWindowSystem : System
 					{
 						UIWindow->m_RegionTax = region.m_RegionTax;
 						UIWindow->m_RegionName = region.m_RegionName;
-						UIWindow->m_OwnerName = region.m_OwnerName;
-						UIWindow->m_OwnerCharacter = region.m_OwnerCharacter;
-						unsigned int titleIndex = region.m_OwnerTitle;
-						UIWindow->m_OwnerTitle = UIWindow->titles[titleIndex];
-						UIWindow->m_OwnerColor = region.m_OwnerColor;
+						UIWindow->m_OwnerKingdomName = characters[region.m_OwnerID].m_KingdomName;
+						UIWindow->m_OwnerCharacterName = characters[region.m_OwnerID].m_Name;
+						UIWindow->m_OwnerTitle = UIWindow->titles[(unsigned int)characters[region.m_OwnerID].m_CharacterTitle];
+						UIWindow->m_OwnerColor = characters[region.m_OwnerID].m_RegionColor;
 						UIWindow->m_Open = true;
 						break;
 					}

@@ -237,7 +237,7 @@ struct PlayerUnitSystem : System
 			std::vector<Vector2DInt> regionCapitals = Map::GetRegionCapitals();
 			CharacterComponent* characterComponents = m_EntityManager->GetComponentArray<CharacterComponent>();
 			UIText* textComponents = m_EntityManager->GetComponentArray<UIText>();
-			unsigned int capitalIndex = 0;
+			unsigned int capitalIndex = 1;
 			for each (Vector2DInt capitalPosition in regionCapitals)
 			{
 				if (playerUnit->m_CurrentMapPosition == capitalPosition)
@@ -255,18 +255,17 @@ struct PlayerUnitSystem : System
 							break;
 						}
 					}
-					//LOG_INFO("{0} conquering region {1} from {2}", characterComponents[playerUnit->m_Owner].m_KingdomName, capitalIndex, characterComponents[opponentIndex].m_KingdomName);
 					playerUnit->m_RecentlyConquered = capitalPosition;
 					characterComponents[playerUnit->m_Owner].m_OwnedRegionIDs.push_back(capitalIndex);
 					characterComponents[playerUnit->m_Owner].m_UpdateOwnership = true;
 					Map::SetRegionColor(capitalIndex, characterComponents[playerUnit->m_Owner].m_RegionColor);
-					textComponents[playerUnit->m_Owner + 17].m_OwnedRegions.push_back(capitalIndex);
-					textComponents[playerUnit->m_Owner + 17].m_AdjustText = true;
-					if (characterComponents[opponentIndex].m_OwnedRegionIDs.size() > 0 && textComponents[opponentIndex + 17].m_OwnedRegions.size() > 0)
+					textComponents[playerUnit->m_Owner + 1].m_OwnedRegions.push_back(capitalIndex);
+					textComponents[playerUnit->m_Owner + 1].m_AdjustText = true;
+					if (characterComponents[opponentIndex].m_OwnedRegionIDs.size() > 0 && textComponents[opponentIndex + 1].m_OwnedRegions.size() > 0)
 					{
 						characterComponents[opponentIndex].m_OwnedRegionIDs.erase(std::remove(characterComponents[opponentIndex].m_OwnedRegionIDs.begin(), characterComponents[opponentIndex].m_OwnedRegionIDs.end(), capitalIndex), characterComponents[opponentIndex].m_OwnedRegionIDs.end());
-						textComponents[opponentIndex + 17].m_OwnedRegions.erase(std::remove(textComponents[opponentIndex + 17].m_OwnedRegions.begin(), textComponents[opponentIndex + 17].m_OwnedRegions.end(), capitalIndex), textComponents[opponentIndex + 17].m_OwnedRegions.end());
-						textComponents[opponentIndex + 17].m_AdjustText = true;
+						textComponents[opponentIndex + 1].m_OwnedRegions.erase(std::remove(textComponents[opponentIndex + 1].m_OwnedRegions.begin(), textComponents[opponentIndex + 1].m_OwnedRegions.end(), capitalIndex), textComponents[opponentIndex + 1].m_OwnedRegions.end());
+						textComponents[opponentIndex + 1].m_AdjustText = true;
 					}
 					break;
 				}

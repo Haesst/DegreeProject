@@ -31,10 +31,7 @@ struct CharacterSystem : System
 		{
 			for (unsigned int ownedID : characters[entity].m_OwnedRegionIDs)
 			{
-				Map::m_Data.m_Regions[ownedID].m_OwnerName = characters[entity].m_KingdomName;
-				Map::m_Data.m_Regions[ownedID].m_OwnerCharacter = characters[entity].m_Name;
-				Map::m_Data.m_Regions[ownedID].m_OwnerColor = characters[entity].m_RegionColor;
-				Map::m_Data.m_Regions[ownedID].m_OwnerTitle = (unsigned int)characters[entity].m_CharacterTitle;
+				Map::GetRegionById(ownedID).m_OwnerID = entity;
 			}
 		}
 	}
@@ -53,10 +50,7 @@ struct CharacterSystem : System
 				characters[entity].m_UpdateOwnership = false;
 				for (unsigned int ownedID : characters[entity].m_OwnedRegionIDs)
 				{
-					Map::m_Data.m_Regions[ownedID].m_OwnerName = characters[entity].m_KingdomName;
-					Map::m_Data.m_Regions[ownedID].m_OwnerCharacter = characters[entity].m_Name;
-					Map::m_Data.m_Regions[ownedID].m_OwnerColor = characters[entity].m_RegionColor;
-					Map::m_Data.m_Regions[ownedID].m_OwnerTitle = (unsigned int)characters[entity].m_CharacterTitle;
+					Map::GetRegionById(ownedID).m_OwnerID = entity;
 				}
 			}
 		}
