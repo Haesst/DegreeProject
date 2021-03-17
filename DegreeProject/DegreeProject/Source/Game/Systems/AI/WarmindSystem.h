@@ -65,7 +65,15 @@ struct WarmindSystem : System
 
 		if (!unit.m_Raised)
 		{
-			int regionIndex = m_Characters[Id].m_OwnedRegionIDs[1];
+			LOG_INFO("{0} Wants to raise units", m_Characters[Id].m_Name);
+			LOG_INFO("{0} owns {1} regions", m_Characters[Id].m_Name, m_Characters[Id].m_OwnedRegionIDs.size());
+
+			for (int i : m_Characters[Id].m_OwnedRegionIDs)
+			{
+				LOG_INFO("{0}'s current region: {1}", m_Characters[Id].m_Name, i);
+			}
+
+			int regionIndex = m_Characters[Id].m_OwnedRegionIDs[0];
 			Vector2DInt capitalPos = Map::GetRegionCapitalLocation(regionIndex);
 			Vector2D pos = Map::ConvertToScreen(capitalPos);
 			LOG_INFO("{0} Is raising units", m_Characters[Id].m_Name) ;

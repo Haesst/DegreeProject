@@ -176,7 +176,7 @@ void Map::Render()
 
 void Map::SetRegionColor(int regionId, sf::Color color)
 {
-	m_Data.m_Regions[regionId].m_HighlightColor = color;
+	GetRegionById(regionId).m_HighlightColor = color;
 }
 
 void Map::ClearRegions()

@@ -94,9 +94,9 @@ struct UITextSystem : System
 			unsigned int regionIndex = 0;
 			for each (MapRegion region in regions)
 			{
-				for each (unsigned int index in UIText->m_OwnedRegions)
+				for each (unsigned int regionId in UIText->m_OwnedRegions)
 				{
-					if (index == regionIndex)
+					if (regionId == regions[regionIndex].m_RegionId)
 					{
 						for each (Vector2DInt position in region.m_MapSquares)
 						{

@@ -10,12 +10,15 @@
 #include <mutex>
 #include <Game/GameDate.h>
 #include "Game/Map/Map.h"
+#include "ECS/Types.h"
 
 class Window;
 class AssetHandler;
 class HotReloader;
+class EntityManager;
 
 enum class FileStatus;
+enum class Title;
 
 class Game
 {
@@ -32,6 +35,7 @@ private:
 	AIManager* m_AIManager = nullptr;
 	sf::SoundBuffer m_SoundBuffer;
 	sf::Sound m_Sound;
+	sf::Font m_UIFont;
 	GameDate m_GameDate;
 
 public:
@@ -48,4 +52,6 @@ private:
 	void InitSystems();
 	void AddEntitys();
 	void InitAI();
+
+	EntityID CreateCharacter(EntityManager& entityManager, std::vector<unsigned int>& ownedRegions, Title title, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color);
 };
