@@ -18,5 +18,5 @@ public:
 	sf::Color m_OwnerColor = sf::Color::Transparent;
 	sf::VertexArray m_VertexArray;
 	MapRegion() {};
-	~MapRegion() { m_MapSquares.clear(); }
+	~MapRegion() { /*m_MapSquares.clear();*/ }
 };

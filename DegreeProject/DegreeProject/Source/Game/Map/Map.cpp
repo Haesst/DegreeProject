@@ -260,6 +260,19 @@ int Map::GetRegionPositionFromRegionId(const unsigned int id)
 	return -1;
 }
 
+MapRegion& Map::GetRegionById(int regionId)
+{
+	for (auto& region : m_Data.m_Regions)
+	{
+		if (region.m_RegionId == regionId)
+		{
+			return region;
+		}
+	}
+
+	ASSERT(true, "No region with this id exists");
+}
+
 Vector2DInt Map::ConvertToMap(Vector2D position)
 {
 	return Vector2DInt((int)(position.x - m_Data.m_XOffset + 16) / 32, (int)(position.y - m_Data.m_YOffset + 16) / 32);

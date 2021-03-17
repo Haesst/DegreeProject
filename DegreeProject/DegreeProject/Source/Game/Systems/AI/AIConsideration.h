@@ -144,27 +144,27 @@ struct ExpansionConsideration : public Consideration
 
 		float distanceWeight = 0.0f;
 
-		for (int ownedRegion : characters[context].m_OwnedRegionIDs)
-		{
-			if (std::abs(ownedRegion - regionIndex) > 1)
-			{
-				distanceWeight = -0.5f;
-			}
-
-			else
-			{
-				distanceWeight = 0.0f;
-				break;
-			}
-		}
+		//for (int ownedRegion : characters[context].m_OwnedRegionIDs)
+		//{
+		//	if (std::abs(ownedRegion - regionIndex) > 1)
+		//	{
+		//		distanceWeight = -0.5f;
+		//	}
+		//
+		//	else
+		//	{
+		//		distanceWeight = 0.0f;
+		//		break;
+		//	}
+		//}
 
 		//Consider potential gold gain
-		int wantedRegionTax = Map::m_Data.m_Regions[regionIndex].m_RegionTax;
+		int wantedRegionTax = Map::GetRegionById(regionIndex).m_RegionTax; 
 
 		std::vector<int> regionTax;
 		for (int region : characters[context].m_OwnedRegionIDs)
 		{
-			regionTax.push_back(Map::m_Data.m_Regions[regionIndex].m_RegionTax);
+			regionTax.push_back(Map::GetRegionById(region).m_RegionTax);
 		}
 
 		float avgTax = 1.0f * std::accumulate(regionTax.begin(), regionTax.end(), 0LL) / regionTax.size();

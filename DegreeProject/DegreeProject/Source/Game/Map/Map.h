@@ -78,6 +78,7 @@ struct Map
 	static int GetRegionPositionFromRegionId(const unsigned int id);
 
 	// From mapinfo
+	static MapRegion& GetRegionById(int regionId);
 	static Vector2DInt ConvertToMap(Vector2D position);
 	static Vector2D ConvertToScreen(Vector2DInt position);
 	static Vector2DInt GetRegionCapitalLocation(unsigned int regionId);

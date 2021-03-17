@@ -36,6 +36,8 @@ float AISystem::ExpansionDecision(EntityID ent)
 	//Get characters in certain range,
 	std::vector<int> regionIndexes = Map::GetRegionIDs();
 
+	
+
 	for (size_t i = 0; i < regionIndexes.size(); i++)
 	{
 		if (std::find(characterComponents[ent].m_OwnedRegionIDs.begin(), characterComponents[ent].m_OwnedRegionIDs.end(),
@@ -45,7 +47,7 @@ float AISystem::ExpansionDecision(EntityID ent)
 		}
 
 		float eval = expansionConsideration.Evaluate(ent, regionIndexes[i]);
-		auto pair = std::make_pair(eval, i);
+		auto pair = std::make_pair(eval, regionIndexes[i]);
 		actionScorePerRegion.push_back(pair);
 	}
 
@@ -72,7 +74,7 @@ float AISystem::ExpansionDecision(EntityID ent)
 
 void AISystem::DeclareWar(EntityID instigator, EntityID target, int warGoalRegion)
 {
-	LOG_INFO("{0} Declared war with {1} for {2}", m_Characters[instigator].m_Name, m_Characters[target].m_Name, Map::m_Data.m_Regions[warGoalRegion].m_RegionName);
+	LOG_INFO("{0} Declared war with {1} for {2}", m_Characters[instigator].m_Name, m_Characters[target].m_Name, Map::GetRegionById(warGoalRegion).m_RegionName);
 
 	m_Characters[instigator].m_AtWar = true;
 	m_Warminds[instigator].m_Defending = false;
