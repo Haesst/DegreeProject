@@ -65,19 +65,9 @@ struct WarmindSystem : System
 
 		if (!unit.m_Raised)
 		{
-			LOG_INFO("{0} Wants to raise units", m_Characters[Id].m_Name);
-			LOG_INFO("{0} owns {1} regions", m_Characters[Id].m_Name, m_Characters[Id].m_OwnedRegionIDs.size());
-
-			for (int i : m_Characters[Id].m_OwnedRegionIDs)
-			{
-				LOG_INFO("{0}'s current region: {1}", m_Characters[Id].m_Name, i);
-			}
-
 			int regionIndex = m_Characters[Id].m_OwnedRegionIDs[0];
 			Vector2DInt capitalPos = Map::GetRegionCapitalLocation(regionIndex);
 			Vector2D pos = Map::ConvertToScreen(capitalPos);
-			LOG_INFO("{0} Is raising units", m_Characters[Id].m_Name) ;
-
 			RaiseUnits(m_Warminds[Id].m_UnitEntity, Id, unit, renderer, pos);
 		}
 	}
@@ -85,26 +75,21 @@ struct WarmindSystem : System
 	void GiveUnitOrders(EntityID unitID, EntityID warmindID, WarmindComponent& warmind, UnitComponent& unit)
 	{
 		//Todo: Set this on timer when more orders can be given.
-		LOG_INFO("ID: {0}", warmindID);
 		auto& character = m_EntityManager->GetComponent<CharacterComponent>(warmindID);
-		LOG_INFO("name of ID: {0}", m_Characters[warmindID].m_Name);
 
 		if (unit.m_Raised)
 		{
 			if (!m_Warminds[warmindID].m_Defending)
 			{
-				LOG_INFO("WargoalRegionID: {0}", m_Warminds[warmindID].m_WargoalRegionId);
 				Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
 				Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
-				unit.m_CurrentPath = Pathfinding::FindPath(startingPosition, Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId));
-				LOG_INFO("Current path size: {0}", unit.m_CurrentPath.size()); 
+				unit.SetPath(Pathfinding::FindPath(startingPosition, Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId)), Map::ConvertToScreen(startingPosition));
 			}
 		}
 	}
 
 	void RaiseUnits(EntityID unitEnt, EntityID warmindEnt, UnitComponent& unit, SpriteRenderer& renderer, const Vector2D& position)
 	{
-		LOG_INFO("RAISE UNITS ID: {0}", unitEnt);
 		auto& transform = m_EntityManager->GetComponent<Transform>(unitEnt);
 		transform.m_Position = position;
 		renderer.m_Sprite.setPosition(position.x, position.y);
