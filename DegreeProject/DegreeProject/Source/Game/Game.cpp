@@ -180,9 +180,22 @@ void Game::AddEntitys()
 	entityManager->AddComponent<WarmindComponent>(char1, 1, char0);
 	entityManager->AddComponent<WarmindComponent>(char0, 4, char1);
 
-	//Create UI window
+	//UI
+	EntityID topPortraitUI = entityManager->AddNewEntity();
+	entityManager->AddComponent<UISpriteRenderer>(topPortraitUI, "Assets/Graphics/Unit.png", 64, 64, m_AssetHandler);
+	Transform* topPortraitUITransform = &entityManager->GetComponent<Transform>(topPortraitUI);
+
+	EntityID bottomPortraitUI = entityManager->AddNewEntity();
+	entityManager->AddComponent<UISpriteRenderer>(bottomPortraitUI, "Assets/Graphics/Unit.png", 128, 128, m_AssetHandler);
+	Transform* bottomPortraitUITransform = &entityManager->GetComponent<Transform>(bottomPortraitUI);
+	bottomPortraitUITransform->m_Position = Vector2D(0.0f, m_Resolution.y - 128.0f);
+
 	EntityID windowUI = entityManager->AddNewEntity();
-	entityManager->AddComponent<UIWindow>(windowUI, m_UIFont);
+	entityManager->AddComponent<UIWindow>(windowUI, m_UIFont, topPortraitUI, bottomPortraitUI);
+
+	UIWindow* windowUIComponent = &entityManager->GetComponent<UIWindow>(windowUI);
+	topPortraitUITransform->m_Position = Vector2D(windowUIComponent->m_SizeX * 0.1f, windowUIComponent->m_SizeY * 0.025f);
+	entityManager->SetEntityActive(topPortraitUI, false);
 }
 
 void Game::InitAI()

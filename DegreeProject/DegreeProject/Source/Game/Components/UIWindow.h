@@ -28,12 +28,16 @@ struct UIWindow : public Component
 	sf::Text::Style m_Style = sf::Text::Regular;
 #pragma warning(pop)
 	bool m_Open = false;
+	unsigned int m_TopPortraitUI = 0;
+	unsigned int m_BottomPortraitUI = 0;
 
 	UIWindow(){}
 
-	UIWindow(sf::Font font)
+	UIWindow(sf::Font font, unsigned int topPortraitUI, unsigned int bottomPortraitUI)
 	{
 		m_Font = font;
+		m_TopPortraitUI = topPortraitUI;
+		m_BottomPortraitUI = bottomPortraitUI;
 		titles.push_back("Emperor ");
 		titles.push_back("King ");
 		titles.push_back("Duke ");

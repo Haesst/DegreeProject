@@ -23,7 +23,7 @@ struct UISpriteRenderSystem : public System
 
 		for (auto& entity : m_Entities)
 		{
-			renderers[entity].m_Sprite.setPosition(transforms[entity].m_Position.x, transforms[entity].m_Position.y);
+			renderers[entity].m_Sprite.setPosition(Window::GetWindow()->mapPixelToCoords(sf::Vector2i((int)transforms[entity].m_Position.x, (int)transforms[entity].m_Position.y)));
 			renderers[entity].m_Sprite.setTexture(renderers[entity].m_Texture);
 			renderers[entity].UpdateSize();
 		}

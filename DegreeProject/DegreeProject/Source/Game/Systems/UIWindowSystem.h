@@ -14,7 +14,6 @@ struct UIWindowSystem : System
 	EntityManager* m_EntityManager = nullptr;
 	sf::RenderWindow* m_Window = nullptr;
 	AssetHandler* m_AssetHandler= nullptr;
-	Transform* windowUIPortraitTransform = nullptr;
 
 	// Constructor, Runs when the system is initialized
 	// Do any kind of init here but remember to register
@@ -137,18 +136,16 @@ struct UIWindowSystem : System
 			UIWindow->m_Visible = !UIWindow->m_Visible;
 			if (UIWindow->m_Visible == true)
 			{
-				m_EntityManager->AddComponent<UISpriteRenderer>(UIWindow->GetID(), "Assets/Graphics/Unit.png", 64, 64, m_AssetHandler);
-				windowUIPortraitTransform = &m_EntityManager->GetComponent<Transform>(UIWindow->GetID());
+				m_EntityManager->SetEntityActive(UIWindow->m_BottomPortraitUI, false);
+				m_EntityManager->SetEntityActive(UIWindow->m_TopPortraitUI, true);
+
 			}
 			else
 			{
-				m_EntityManager->RemoveComponent<UISpriteRenderer>(UIWindow->GetID());
+				m_EntityManager->SetEntityActive(UIWindow->m_TopPortraitUI, false);
+				m_EntityManager->SetEntityActive(UIWindow->m_BottomPortraitUI, true);
+
 			}
-		}
-		if (UIWindow->m_Visible == true)
-		{
-			sf::Vector2f windowPortraitPosition = m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindow->m_SizeX * 0.1f), (int)(UIWindow->m_SizeY * 0.025f)));
-			windowUIPortraitTransform->m_Position = Vector2D(windowPortraitPosition.x, windowPortraitPosition.y);
 		}
 	}
 };

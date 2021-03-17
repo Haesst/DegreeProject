@@ -173,6 +173,7 @@ void InputHandler::HandleInputEvents()
 				m_MouseMoved = true;
 				m_MouseMapPosition = Vector2DInt(event.mouseMove.x, event.mouseMove.y);
 				m_MousePosition = window->mapPixelToCoords(sf::Vector2i(m_MouseMapPosition.x, m_MouseMapPosition.y));
+				m_MouseMapPosition = Map::ConvertToMap(m_MousePosition);
 				break;
 			}
 			case sf::Event::MouseEntered:
