@@ -243,7 +243,7 @@ struct PlayerUnitSystem : System
 				if (playerUnit->m_CurrentMapPosition == capitalPosition)
 				{
 					unsigned int opponentIndex;
-					for (opponentIndex = 18; opponentIndex < 23; opponentIndex++)
+					for (opponentIndex = 18; opponentIndex < 35; opponentIndex++)
 					{
 						if (opponentIndex == playerUnit->m_Owner)
 						{
@@ -260,13 +260,13 @@ struct PlayerUnitSystem : System
 					characterComponents[playerUnit->m_Owner].m_OwnedRegionIDs.push_back(capitalIndex);
 					characterComponents[playerUnit->m_Owner].m_UpdateOwnership = true;
 					Map::SetRegionColor(capitalIndex, characterComponents[playerUnit->m_Owner].m_RegionColor);
-					textComponents[playerUnit->m_Owner + 6].m_OwnedRegions.push_back(capitalIndex);
-					textComponents[playerUnit->m_Owner + 6].m_AdjustText = true;
-					if (characterComponents[opponentIndex].m_OwnedRegionIDs.size() > 0 && textComponents[opponentIndex + 6].m_OwnedRegions.size() > 0)
+					textComponents[playerUnit->m_Owner + 17].m_OwnedRegions.push_back(capitalIndex);
+					textComponents[playerUnit->m_Owner + 17].m_AdjustText = true;
+					if (characterComponents[opponentIndex].m_OwnedRegionIDs.size() > 0 && textComponents[opponentIndex + 17].m_OwnedRegions.size() > 0)
 					{
 						characterComponents[opponentIndex].m_OwnedRegionIDs.erase(std::remove(characterComponents[opponentIndex].m_OwnedRegionIDs.begin(), characterComponents[opponentIndex].m_OwnedRegionIDs.end(), capitalIndex), characterComponents[opponentIndex].m_OwnedRegionIDs.end());
-						textComponents[opponentIndex + 6].m_OwnedRegions.erase(std::remove(textComponents[opponentIndex + 6].m_OwnedRegions.begin(), textComponents[opponentIndex + 6].m_OwnedRegions.end(), capitalIndex), textComponents[opponentIndex + 6].m_OwnedRegions.end());
-						textComponents[opponentIndex + 6].m_AdjustText = true;
+						textComponents[opponentIndex + 17].m_OwnedRegions.erase(std::remove(textComponents[opponentIndex + 17].m_OwnedRegions.begin(), textComponents[opponentIndex + 17].m_OwnedRegions.end(), capitalIndex), textComponents[opponentIndex + 17].m_OwnedRegions.end());
+						textComponents[opponentIndex + 17].m_AdjustText = true;
 					}
 					break;
 				}

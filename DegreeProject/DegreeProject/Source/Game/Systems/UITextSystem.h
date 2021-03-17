@@ -100,7 +100,7 @@ struct UITextSystem : System
 					{
 						for each (Vector2DInt position in region.m_MapSquares)
 						{
-							if (position.x <= leftMostPosition.x)
+							if (position.x < leftMostPosition.x)
 							{
 								leftMostPosition = position;
 							}
@@ -120,9 +120,9 @@ struct UITextSystem : System
 			UIText->m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
 			if (UIText->m_Rotation < 0.0f)
 			{
-				offsetY = 0.25f;
+				offsetY = -0.5f;
 			}
-			else
+			else if (UIText->m_Rotation > 0.0f)
 			{
 				offsetY = 1.5f;
 			}
