@@ -72,16 +72,22 @@ struct WarmindSystem : System
 		}
 	}
 
-	void GiveUnitOrders(EntityID unitID, EntityID warmindID, WarmindComponent& warmind, UnitComponent& unit)
+	void GiveUnitOrders(EntityID warmindID, UnitComponent& unit)
 	{
 		//Todo: Set this on timer when more orders can be given.
-		auto& character = m_EntityManager->GetComponent<CharacterComponent>(warmindID);
 
 		if (unit.m_Raised)
 		{
+			Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
+
 			if (!m_Warminds[warmindID].m_Defending)
 			{
-				Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
+				Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
+				unit.SetPath(Pathfinding::FindPath(startingPosition, Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId)), Map::ConvertToScreen(startingPosition));
+			}
+
+			else
+			{
 				Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
 				unit.SetPath(Pathfinding::FindPath(startingPosition, Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId)), Map::ConvertToScreen(startingPosition));
 			}
@@ -95,6 +101,6 @@ struct WarmindSystem : System
 		renderer.m_Sprite.setPosition(position.x, position.y);
 		unit.m_Raised = true;
 		renderer.m_ShouldRender = true;
-		GiveUnitOrders(unitEnt, warmindEnt, m_Warminds[unitEnt], unit);
+		GiveUnitOrders(warmindEnt, unit);
 	}
 };
