@@ -233,43 +233,36 @@ struct PlayerUnitSystem : System
 	void ConquerRegion(PlayerUnit* playerUnit)
 	{
 		if (!playerUnit->m_Moving && playerUnit->m_CurrentMapPosition != playerUnit->m_RecentlyConquered)
-		{
-			std::vector<Vector2DInt> regionCapitals = Map::GetRegionCapitals();
-			CharacterComponent* characterComponents = m_EntityManager->GetComponentArray<CharacterComponent>();
+		{	
+			std::vector<int> regionIDs = Map::GetRegionIDs();
+			CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 			UIText* textComponents = m_EntityManager->GetComponentArray<UIText>();
-			unsigned int capitalIndex = 1;
-			for each (Vector2DInt capitalPosition in regionCapitals)
+			for each (int regionID in regionIDs)
 			{
+				Vector2DInt capitalPosition = Map::GetRegionCapitalLocation(regionID);
 				if (playerUnit->m_CurrentMapPosition == capitalPosition)
 				{
-					unsigned int opponentIndex;
-					for (opponentIndex = 18; opponentIndex < 35; opponentIndex++)
+					unsigned int ownerID = Map::GetRegionById(regionID).m_OwnerID;
+					if (ownerID == playerUnit->m_Owner)
 					{
-						if (opponentIndex == playerUnit->m_Owner)
-						{
-							continue;
-						}
-						auto iterator = std::find(characterComponents[opponentIndex].m_OwnedRegionIDs.begin(), characterComponents[opponentIndex].m_OwnedRegionIDs.end(), capitalIndex);
-						if (iterator != characterComponents[opponentIndex].m_OwnedRegionIDs.end() && opponentIndex != playerUnit->m_Owner)
-						{
-							break;
-						}
+						playerUnit->m_RecentlyConquered = capitalPosition;
+						continue;
 					}
 					playerUnit->m_RecentlyConquered = capitalPosition;
-					characterComponents[playerUnit->m_Owner].m_OwnedRegionIDs.push_back(capitalIndex);
-					characterComponents[playerUnit->m_Owner].m_UpdateOwnership = true;
-					Map::SetRegionColor(capitalIndex, characterComponents[playerUnit->m_Owner].m_RegionColor);
-					textComponents[playerUnit->m_Owner + 1].m_OwnedRegions.push_back(capitalIndex);
+					characters[playerUnit->m_Owner].m_OwnedRegionIDs.push_back(regionID);
+					characters[playerUnit->m_Owner].m_UpdateOwnership = true;
+					Map::SetRegionColor(regionID, characters[playerUnit->m_Owner].m_RegionColor);
+					textComponents[playerUnit->m_Owner + 1].m_OwnedRegions.push_back(regionID);
 					textComponents[playerUnit->m_Owner + 1].m_AdjustText = true;
-					if (characterComponents[opponentIndex].m_OwnedRegionIDs.size() > 0 && textComponents[opponentIndex + 1].m_OwnedRegions.size() > 0)
+
+					if (characters[ownerID].m_OwnedRegionIDs.size() > 0 && textComponents[ownerID + 1].m_OwnedRegions.size() > 0)
 					{
-						characterComponents[opponentIndex].m_OwnedRegionIDs.erase(std::remove(characterComponents[opponentIndex].m_OwnedRegionIDs.begin(), characterComponents[opponentIndex].m_OwnedRegionIDs.end(), capitalIndex), characterComponents[opponentIndex].m_OwnedRegionIDs.end());
-						textComponents[opponentIndex + 1].m_OwnedRegions.erase(std::remove(textComponents[opponentIndex + 1].m_OwnedRegions.begin(), textComponents[opponentIndex + 1].m_OwnedRegions.end(), capitalIndex), textComponents[opponentIndex + 1].m_OwnedRegions.end());
-						textComponents[opponentIndex + 1].m_AdjustText = true;
+						characters[ownerID].m_OwnedRegionIDs.erase(std::remove(characters[ownerID].m_OwnedRegionIDs.begin(), characters[ownerID].m_OwnedRegionIDs.end(), regionID), characters[ownerID].m_OwnedRegionIDs.end());
+						textComponents[ownerID + 1].m_OwnedRegions.erase(std::remove(textComponents[ownerID + 1].m_OwnedRegions.begin(), textComponents[ownerID + 1].m_OwnedRegions.end(), regionID), textComponents[ownerID + 1].m_OwnedRegions.end());
+						textComponents[ownerID + 1].m_AdjustText = true;
 					}
 					break;
 				}
-				capitalIndex++;
 			}
 		}
 	}
