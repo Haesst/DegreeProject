@@ -14,15 +14,17 @@ struct WarmindComponent : Component
 	bool m_AtWar = false;
 	bool m_RecentlyAtWar = false; //Flag for starting war
 
-	EntityID m_UnitEntity;
+	EntityID m_UnitEntity; 
 
 	WarmindComponent()
 	{
 		m_Opponent = (size_t)INT_MAX;
+		m_UnitEntity = (size_t)INT_MAX;
 	};
 
 	WarmindComponent(int warGoalRegionId,  EntityID opponent)
 	{
+		m_UnitEntity = (size_t)INT_MAX;
 		m_WargoalRegionId = warGoalRegionId;
 		m_Opponent = opponent;
 	};
