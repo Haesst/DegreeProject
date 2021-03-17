@@ -247,7 +247,10 @@ struct PlayerUnitSystem : System
 						continue;
 					}
 					playerUnit->m_RecentlyConquered = capitalPosition;
+#pragma warning(push)
+#pragma warning(disable: 26815)
 					CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
+#pragma warning(pop)
 					characterSystem->ConquerRegion(regionID, playerUnit->m_Owner);
 					characterSystem->LoseRegion(regionID, ownerID);
 					return;

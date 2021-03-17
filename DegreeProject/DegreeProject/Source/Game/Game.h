@@ -26,8 +26,7 @@ private:
 	char* m_GameTitle = "GRAND STRATEGY GAME 2.5!";
 	Vector2DInt m_Resolution = { 1920, 1080 };
 	unsigned int m_NumberOfRegions = 17;
-	unsigned int m_NumberOfCharacters = 0;
-	//Map m_Map;
+
 private:
 	Window* m_Window = nullptr;
 	AssetHandler* m_AssetHandler = nullptr;

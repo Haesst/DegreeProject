@@ -111,7 +111,6 @@ void Game::AddEntitys()
 	Map::Init();
 	Map::SetLandTexture(m_AssetHandler->GetTextureAtPath("Assets/Graphics/Checkerboard.png"));
 
-	//Create Region Capital Castles ID(00-16)
 	const char* castlePath = "Assets/Graphics/Castle.png";
 	for (unsigned int regionIndex = 0; regionIndex < m_NumberOfRegions; regionIndex++)
 	{
@@ -122,127 +121,66 @@ void Game::AddEntitys()
 	}
 
 	m_UIFont = m_AssetHandler->LoadFontFromFile("Assets/Fonts/TestFont.ttf");
-	//Create PlayerUnit ID(17)
+
+	std::vector<unsigned int> id0{ 1, 2, 3, 4, 5, 6, 7 };
+	EntityID char0 = CreateCharacter(*entityManager, id0, Title::King, "Kingdom of Milano", "Erik", 100, 5, false, sf::Color(181, 54, 107));
+
+	std::vector<unsigned int> id1{ 8, 9, 10, 11, 12 };
+	EntityID char1 = CreateCharacter(*entityManager, id1, Title::Emperor, "Roman Empire", "Robin", 100, 10, false, sf::Color(54, 181, 105));
+
+	std::vector<unsigned int> id2{ 13, 14, 15, 16, 17 };
+	EntityID char2 = CreateCharacter(*entityManager, id2, Title::King, "Kingdom of Sicilies", "Fredrik", 100, 10, true, sf::Color(200, 181, 105));
+
 	EntityID playerUnit = entityManager->AddNewEntity();
-	entityManager->AddComponent<PlayerUnit>(playerUnit);
+	entityManager->AddComponent<PlayerUnit>(playerUnit, char2);
 	entityManager->AddComponent<SpriteRenderer>(playerUnit, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
 
-	////Create Character 0
-	std::vector<unsigned int> id0{ 1,2,3,4,5,6,7,8 };
-	EntityID char0 = CreateCharacter(*entityManager, id0, Title::King, "Kingdom of Piedmonte", "Peter", 100, 5, false, sf::Color(181, 54, 107));
-
-	std::vector<unsigned int> id1{ 9,10,11,12,13,14,15,16 };
-	EntityID char1 = CreateCharacter(*entityManager, id1, Title::Duke, "Dukedom of Milano", "Martin", 100, 10, false, sf::Color(54, 181, 105));
-
-	std::vector<unsigned int> id2{ 17 };
-	CreateCharacter(*entityManager, id2, Title::King, "Kingdom of Sicily", "Enzo", 100, 10, false, sf::Color(200, 181, 105));
-
-// 	Create Character 2 ID(20)
-// 	EntityID char2 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
-// 	std::vector<unsigned int> id2{ 3 };
-// 	entityManager->AddComponent<CharacterComponent>(char2, Title::Count, "Northern Confederacy", "Tristan", id2, 100, 10, false, sf::Color(165, 42, 42), 0);
-// 
-// 	//Create Character 3 ID(21)
-// 	EntityID char3 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id3{ 4 };
-// 	entityManager->AddComponent<CharacterComponent>(char3, Title::Duke, "Republic of Veneto", "Viktor", id3, 100, 10, false, sf::Color(149, 181, 54), 0);
+// 	CreateCharacter(char3, Title::Duke, "Republic of Veneto", "Viktor", id3, 100, 10, false, sf::Color(149, 181, 54), 0);
 // 
-// 	//Create Character 4 ID(22)
-// 	EntityID char4 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id4{ 5 };
-// 	entityManager->AddComponent<CharacterComponent>(char4, Title::King, "Kingdom of Friuli", "Fred", id4, 100, 10, false, sf::Color(34, 51, 67), 0);
+// 	CreateCharacter(char4, Title::King, "Kingdom of Friuli", "Fred", id4, 100, 10, false, sf::Color(34, 51, 67), 0);
 // 
-// 	//Create Character 5 ID(23)
-// 	EntityID char5 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id5{ 6 };
-// 	entityManager->AddComponent<CharacterComponent>(char5, Title::Duke, "Republic of Genua", "Gustav", id5, 100, 5, false, sf::Color(60, 54, 107), 0);
+// 	CreateCharacter(char5, Title::Duke, "Republic of Genua", "Gustav", id5, 100, 5, false, sf::Color(60, 54, 107), 0);
 // 
-// 	//Create Character 6 ID(24)
-// 	EntityID char6 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id6{ 7 };
-// 	entityManager->AddComponent<CharacterComponent>(char6, Title::Count, "County of Romagna", "Emil", id6, 100, 10, false, sf::Color(54, 70, 105), 0);
+// 	CreateCharacter(char6, Title::Count, "County of Romagna", "Emil", id6, 100, 10, false, sf::Color(54, 70, 105), 0);
 // 
-// 	//Create Character 7 ID(25)
-// 	EntityID char7 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id7{ 8 };
-// 	entityManager->AddComponent<CharacterComponent>(char7, Title::Duke, "Republic of Firenze", "Fredrik", id7, 100, 10, false, sf::Color(88, 42, 42), 0);
+//  CreateCharacter(char7, Title::Duke, "Republic of Firenze", "Fredrik", id7, 100, 10, false, sf::Color(88, 42, 42), 0);
 // 
-// 	//Create Character 8 ID(26)
-// 	EntityID char8 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id8{ 9 };
-// 	entityManager->AddComponent<CharacterComponent>(char8, Title::Baron, "Barony of Urbino", "Urban", id8, 100, 10, false, sf::Color(149, 55, 54), 0);
+// 	CreateCharacter(char8, Title::Baron, "Barony of Urbino", "Urban", id8, 100, 10, false, sf::Color(149, 55, 54), 0);
 // 
-// 	//Create Character 4 ID(27)
-// 	EntityID char9 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id9{ 10 };
-// 	entityManager->AddComponent<CharacterComponent>(char9, Title::Baron, "Barony of Umbria", "Brian", id9, 100, 10, false, sf::Color(34, 51, 120), 0);
+// 	CreateCharacter(char9, Title::Baron, "Barony of Umbria", "Brian", id9, 100, 10, false, sf::Color(34, 51, 120), 0);
 // 
-// 	//Create Character 0 ID(28)
-// 	EntityID char10 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id10{ 11 };
-// 	entityManager->AddComponent<CharacterComponent>(char10, Title::Emperor, "Roman Empire", "Robin", id10, 100, 5, false, sf::Color(90, 54, 200), 0);
+// 	CreateCharacter(char10, Title::Emperor, "Roman Empire", "Robin", id10, 100, 5, false, sf::Color(90, 54, 200), 0);
 // 
-// 	//Create Character 1 ID(29)
-// 	EntityID char11 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id11{ 12 };
-// 	entityManager->AddComponent<CharacterComponent>(char11, Title::Count, "County of Abruzzo", "Albin", id11, 100, 10, false, sf::Color(54, 181, 50), 0);
+// 	CreateCharacter(char11, Title::Count, "County of Abruzzo", "Albin", id11, 100, 10, false, sf::Color(54, 181, 50), 0);
 // 
-// 	//Create Character 2 ID(30)
-// 	EntityID char12 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id12{ 13 };
-// 	entityManager->AddComponent<CharacterComponent>(char12, Title::Count, "County of Campania", "Camilla", id12, 100, 10, false, sf::Color(165, 100, 42), 0);
+// 	CreateCharacter(char12, Title::Count, "County of Campania", "Camilla", id12, 100, 10, false, sf::Color(165, 100, 42), 0);
 // 
-// 	//Create Character 3 ID(31)
-// 	EntityID char13 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id13{ 14 };
-// 	entityManager->AddComponent<CharacterComponent>(char13, Title::Count, "County of Bari", "Bart", id13, 100, 10, false, sf::Color(149, 181, 100), 0);
+// 	CreateCharacter(char13, Title::Count, "County of Bari", "Bart", id13, 100, 10, false, sf::Color(149, 181, 100), 0);
 // 
-// 	//Create Character 4 ID(32)
-// 	EntityID char14 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id14{ 15 };
-// 	entityManager->AddComponent<CharacterComponent>(char14, Title::Baron, "Barony of Basilicata", "Basil", id14, 100, 10, false, sf::Color(34, 100, 67), 0);
+// 	CreateCharacter(char14, Title::Baron, "Barony of Basilicata", "Basil", id14, 100, 10, false, sf::Color(34, 100, 67), 0);
 // 
-// 	//Create Character 0 ID(33)
-// 	EntityID char15 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id15{ 16 };
-// 	entityManager->AddComponent<CharacterComponent>(char15, Title::Count, "County of Calabria", "Karl", id15, 100, 5, false, sf::Color(181, 200, 107), 0);
+// 	CreateCharacter(char15, Title::Count, "County of Calabria", "Karl", id15, 100, 5, false, sf::Color(181, 200, 107), 0);
 // 
-// 	//Create Character 1 ID(34)
-// 	EntityID char16 = entityManager->AddNewEntity();
-// 	m_NumberOfCharacters++;
 // 	std::vector<unsigned int> id16{ 17 };
-// 	entityManager->AddComponent<CharacterComponent>(char16, Title::King, "Kingdom of Sicily", "Sissy", id16, 100, 10, false, sf::Color(200, 181, 105), 0);
+// 	CreateCharacter(char16, Title::King, "Kingdom of Sicily", "Sissy", id16, 100, 10, false, sf::Color(200, 181, 105), 0);
 
 	entityManager->AddComponent<WarmindComponent>(char1, 1, char0);
 	entityManager->AddComponent<WarmindComponent>(char0, 4, char1);
 
-	//CharacterComponent* characters = entityManager->GetComponentArray<CharacterComponent>();
-	//for (unsigned int characterIndex = 0; characterIndex < m_NumberOfCharacters; characterIndex++)
-	//{
-	//	for (auto region : characters[char0 + characterIndex].m_OwnedRegionIDs)
-	//	{
-	//		Map::SetRegionColor(region, characters[char0 + characterIndex].m_RegionColor);
-	//	}
-	//	//Create UI Texts ID(35-51)
-	//	EntityID textUI = entityManager->AddNewEntity();
-	//	entityManager->AddComponent<UIText>(textUI, font, characters[char0 + characterIndex].m_KingdomName, characters[char0 + characterIndex].m_OwnedRegionIDs);
-	//}
-
-	//Create UI window ID(52)
+	//Create UI window
 	EntityID windowUI = entityManager->AddNewEntity();
 	entityManager->AddComponent<UIWindow>(windowUI, m_UIFont);
 }

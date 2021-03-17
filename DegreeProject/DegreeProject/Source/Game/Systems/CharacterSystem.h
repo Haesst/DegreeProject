@@ -56,11 +56,12 @@ struct CharacterSystem : System
 	{
 		CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(conqueringEntity);
 		character.m_OwnedRegionIDs.push_back(regionID);
-
 		Map::SetRegionColor(regionID, character.m_RegionColor);
 		Map::GetRegionById(regionID).m_OwnerID = conqueringEntity;
-
+#pragma warning(push)
+#pragma warning(disable: 26815)
 		UITextSystem* textUISystem = (UITextSystem*)m_EntityManager->GetSystem<UITextSystem>().get();
+#pragma warning(pop)
 		textUISystem->ConquerRegion(regionID, conqueringEntity);
 	}
 
@@ -77,8 +78,10 @@ struct CharacterSystem : System
 			}
 			regionIndex++;
 		}
-
+#pragma warning(push)
+#pragma warning(disable: 26815)
 		UITextSystem* textUISystem = (UITextSystem*)m_EntityManager->GetSystem<UITextSystem>().get();
+#pragma warning(pop)
 		textUISystem->LoseRegion(regionIndex, losingEntity);
 	}
 };

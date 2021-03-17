@@ -22,4 +22,11 @@ struct PlayerUnit : public Component
 	Vector2D m_Direction = Vector2D(0.0f, 0.0f);
 	Vector2D m_Target = Vector2D(1920.0f, 1080.0f);
 	float m_Speed = 150.0f;
+
+	PlayerUnit(){}
+
+	PlayerUnit(unsigned int owner)
+	{
+		m_Owner = owner;
+	}
 };

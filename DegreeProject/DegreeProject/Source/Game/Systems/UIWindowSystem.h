@@ -59,7 +59,7 @@ struct UIWindowSystem : System
 				UIWindows[entity].m_OwnerNameText.setFont(UIWindows[entity].m_Font);
 				UIWindows[entity].m_OwnerNameText.setCharacterSize(UIWindows[entity].m_CharacterSize);
 				UIWindows[entity].m_OwnerNameText.setStyle(UIWindows[entity].m_Style);
-				UIWindows[entity].m_OwnerNameText.setString("Owner: " + UIWindows[entity].m_OwnerKingdomName);
+				UIWindows[entity].m_OwnerNameText.setString(UIWindows[entity].m_OwnerKingdomName);
 				UIWindows[entity].m_OwnerNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(UIWindows[entity].m_SizeX * 0.1f), (int)(UIWindows[entity].m_SizeY * 0.1f))));
 				UIWindows[entity].m_OwnerNameText.setFillColor(UIWindows[entity].m_OwnerColor);
 				UIWindows[entity].m_RegionNameText.setFont(UIWindows[entity].m_Font);
