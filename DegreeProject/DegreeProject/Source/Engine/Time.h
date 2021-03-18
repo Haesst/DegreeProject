@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 
+struct GameDate;
+
 class Time
 {
 private:
@@ -8,13 +10,13 @@ private:
 	static sf::Clock m_DeltaClock;
 
 public:
+	static GameDate m_GameDate;
+
+public:
 	static float DeltaTime()
 	{
 		return m_DeltaTime;
 	}
 
-	static void UpdateTime()
-	{
-		m_DeltaTime = m_DeltaClock.restart().asSeconds();
-	}
+	static void UpdateTime();
 };

@@ -143,6 +143,11 @@ std::list<Vector2DInt> Pathfinding::FindPath(Vector2DInt start, Vector2DInt end)
 	//h = current node -> goal
 	//g = Sum of f and h
 
+	if (start == end)
+	{
+		return std::list<Vector2DInt>();
+	}
+
 	Node* startNode = GetNodeFromKey(start);
 	Node* endNode = GetNodeFromKey(end);
 

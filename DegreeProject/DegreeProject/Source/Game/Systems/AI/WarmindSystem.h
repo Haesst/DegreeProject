@@ -31,7 +31,7 @@ struct WarmindSystem : System
 		for (EntityID ent : m_Entities)
 		{
 			m_Warminds[ent].m_UnitEntity = m_EntityManager->AddNewEntity();
-			m_EntityManager->AddComponent<UnitComponent>(m_Warminds[ent].m_UnitEntity, 1);
+			m_EntityManager->AddComponent<UnitComponent>(m_Warminds[ent].m_UnitEntity, 1, ent);
 			AssetHandler handler;
 			m_EntityManager->AddComponent<SpriteRenderer>(m_Warminds[ent].m_UnitEntity, "Assets/Graphics/soldier unit.png", 32, 32, &handler);
 			auto warmindComp = m_EntityManager->GetComponent<WarmindComponent>(ent);

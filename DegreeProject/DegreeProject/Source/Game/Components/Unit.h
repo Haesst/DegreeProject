@@ -3,6 +3,7 @@
 #include "Game/Components/CharacterComponent.h"
 #include <string>
 #include <Engine\AssetHandler.h>
+#include "Game/GameDate.h"
 
 struct UnitComponent : public Component
 {
@@ -12,7 +13,11 @@ struct UnitComponent : public Component
 	Vector2D m_Target;
 	Vector2D m_Direction;
 	bool m_Moving = false;
+	int m_SeizingRegionID = -1;
+	int m_DaysSeizing = 0;
+	Date m_LastSeizeDate = Date(0,0,0);
 	float m_Speed = 150.0f;
+	EntityID m_Owner = INT_MAX;
 
 	EntityManager* m_EntityManager;
 	Transform* transform;
@@ -23,13 +28,21 @@ struct UnitComponent : public Component
 		transform = &m_EntityManager->GetComponent<Transform>(m_EntityID);
 	}
 
-	UnitComponent(int representedForce)
+	UnitComponent(int representedForce, EntityID owner)
+		: UnitComponent()
 	{
 		m_RepresentedForce = representedForce;
+		m_Owner = owner;
 	}
 
 	void SetPath(std::list<Vector2DInt> path, const Vector2D& startingPosition)
 	{
+		if (m_SeizingRegionID >= 0)
+		{
+			m_SeizingRegionID = -1;
+			m_DaysSeizing = 0;
+		}
+
 		m_CurrentPath = path;
 		m_Moving = true;
 

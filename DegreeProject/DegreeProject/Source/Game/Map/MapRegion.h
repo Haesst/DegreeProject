@@ -13,6 +13,7 @@ public:
 	sf::Color m_HighlightColor = sf::Color::White;
 	std::string m_RegionName = "";
 	unsigned int m_OwnerID = 0;
+	unsigned int m_DaysToSeize = 60;
 	sf::VertexArray m_VertexArray;
 	MapRegion() {};
 	~MapRegion() { m_MapSquares.clear(); }

@@ -35,7 +35,6 @@ private:
 	sf::SoundBuffer m_SoundBuffer;
 	sf::Sound m_Sound;
 	sf::Font m_UIFont;
-	GameDate m_GameDate;
 
 public:
 	~Game();

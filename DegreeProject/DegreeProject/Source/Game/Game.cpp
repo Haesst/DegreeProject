@@ -53,7 +53,6 @@ void Game::Run()
 		// Update
 		EntityManager::Get().Update();
 		// Update map
-		m_GameDate.Update();
 
 		// Render
 		Window::GetWindow()->clear(sf::Color::Blue);
