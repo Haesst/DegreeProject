@@ -186,14 +186,14 @@ struct PlayerUnitSystem : System
 				else if (change.x > 0 && change.y > 0 || change.x < 0 && change.y < 0)
 				{
 					rotation = 45.0f;
-					rectangleSize.x *= 1.4f;
+					rectangleSize.x *= 1.45f;
 					screenPosition.x += playerUnit->m_Shape.getSize().x * 0.28125f;
 					screenPosition.y -= playerUnit->m_Shape.getSize().y * 0.28125f;
 				}
 				else if (change.x > 0 && change.y < 0 || change.x < 0 && change.y > 0)
 				{
 					rotation = -45.0f;
-					rectangleSize.x *= 1.4f;
+					rectangleSize.x *= 1.45f;
 					screenPosition.x += playerUnit->m_Shape.getSize().x * 0.28125f;
 					screenPosition.y += playerUnit->m_Shape.getSize().y * 0.28125f;
 				}
