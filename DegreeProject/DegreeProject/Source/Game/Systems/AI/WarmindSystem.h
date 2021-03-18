@@ -85,12 +85,6 @@ struct WarmindSystem : System
 				Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
 				unit.SetPath(Pathfinding::FindPath(startingPosition, Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId)), Map::ConvertToScreen(startingPosition));
 			}
-
-			else
-			{
-				Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
-				unit.SetPath(Pathfinding::FindPath(startingPosition, Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId)), Map::ConvertToScreen(startingPosition));
-			}
 		}
 	}
 
@@ -99,6 +93,12 @@ struct WarmindSystem : System
 		auto& transform = m_EntityManager->GetComponent<Transform>(unitEnt);
 		transform.m_Position = position;
 		renderer.m_Sprite.setPosition(position.x, position.y);
+
+		Vector2DInt pos(position.x, position.y);
+
+		Map::m_MapUnitData[pos].m_EntitiesInSquare.push_back(unitEnt);
+		unit.m_LastPosition = position;
+
 		unit.m_Raised = true;
 		renderer.m_ShouldRender = true;
 		GiveUnitOrders(warmindEnt, unit);

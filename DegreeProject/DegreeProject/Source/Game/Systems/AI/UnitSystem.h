@@ -50,16 +50,26 @@ struct UnitSystem : System
 			}
 			else
 			{
+				unit.m_LastPosition = unit.m_Target;
 				transform.m_Position = unit.m_Target;
+				Vector2DInt pos(unit.m_Target.x, unit.m_Target.y);
+				Map::m_MapUnitData[pos].m_EntitiesInSquare.push_back(unit.m_EntityID);
+
+				if (EnemyAtSquare(pos, m_Warminds[unit.m_EntityID].m_Opponent))
+				{
+					EnterCombat(unit.m_EntityID, m_Warminds[unit.m_EntityID].m_Opponent);
+				}
 
 				// Check for enemy at square and kill him
-
 				if (unit.m_CurrentPath.size() > 0)
 				{
 					Vector2D nextPosition = Map::ConvertToScreen(unit.m_CurrentPath.front());
 					unit.m_Target = nextPosition;
 					unit.m_Direction = (nextPosition - transform.m_Position).Normalized();
 
+					Vector2DInt pos(unit.m_LastPosition.x, unit.m_LastPosition.y);
+					Map::m_MapUnitData[pos].m_EntitiesInSquare.remove(unit.m_EntityID);
+					
 					unit.m_CurrentPath.pop_front();
 				}
 				else
@@ -130,14 +140,19 @@ struct UnitSystem : System
 		return;
 	}
 
-	bool EnemyAtSquare(Vector2D square, EntityID opponent)
-	{
-		if (m_UnitComponents[m_Warminds[opponent].m_UnitEntity].transform->m_Position.NearlyEqual(square, m_MoveTolerance))
+	bool EnemyAtSquare(Vector2DInt square, EntityID opponent)
+	{	
+		for (auto& ID : Map::m_MapUnitData[square].m_EntitiesInSquare)
 		{
-			return true;
-		}
+			//LOG_INFO("IDs in square: {0}", ID);
 
-		return false;
+			if (m_UnitComponents[ID].m_Owner == opponent)
+			{
+				return true;
+			}
+
+			return false;
+		}
 	}
 
 	void EnterCombat(EntityID unit, EntityID enemyUnit)

@@ -8,6 +8,7 @@ const char* Map::m_FragmentShaderPath = "Assets/Shaders/LandShader.frag";
 const char* Map::m_VertexShaderPath = "Assets/Shaders/LandShader.vert";
 MapData Map::m_Data;
 std::mutex Map::m_RegionMutex;
+std::map<Vector2DInt, SquareData> Map::m_MapUnitData;
 
 #pragma region Init
 void Map::Init()
@@ -125,6 +126,7 @@ void Map::LoadMap()
 				if (regionPosition >= 0)
 				{
 					m_Data.m_Regions[regionPosition].m_MapSquares.push_back({ x, y });
+					m_MapUnitData.insert(std::make_pair(Vector2DInt(x, y), SquareData()));
 				}
 
 				x++;

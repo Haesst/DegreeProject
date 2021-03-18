@@ -15,10 +15,12 @@ struct UnitComponent : public Component
 	bool m_Moving = false;
 	int m_SeizingRegionID = -1;
 	int m_DaysSeizing = 0;
+
+	Vector2D m_LastPosition;
+
 	Date m_LastSeizeDate = Date(0,0,0);
 	float m_Speed = 150.0f;
 	EntityID m_Owner = INT_MAX;
-
 	EntityManager* m_EntityManager;
 	Transform* transform;
 
