@@ -1,5 +1,6 @@
 #pragma once
 
+#include "ECS/Types.h"
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <fstream>
@@ -13,11 +14,32 @@ using json = nlohmann::json;
 
 #include "MapRegion.h"
 #include "MapData.h"
+#include <map>
+
+#include <list>
 
 enum class FileStatus;
 
 #pragma warning(push)
 #pragma warning(disable: 26812)
+
+struct SquareData
+{
+	std::list<EntityID> m_EntitiesInSquare;
+
+	void AddUnique(EntityID entityToAdd)
+	{
+		for (auto& entity : m_EntitiesInSquare)
+		{
+			if (entity == entityToAdd)
+			{
+				return;
+			}
+		}
+
+		m_EntitiesInSquare.push_back(entityToAdd);
+	}
+};
 
 struct Map
 {
@@ -29,6 +51,8 @@ struct Map
 	static MapData m_Data;
 
 	static std::mutex m_RegionMutex;
+
+	static std::map<Vector2DInt, SquareData> m_MapUnitData;
 
 	Map()
 	{}

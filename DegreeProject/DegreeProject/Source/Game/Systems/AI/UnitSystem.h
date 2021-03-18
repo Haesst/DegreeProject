@@ -7,7 +7,7 @@ struct UnitSystem : System
 {
 	EntityManager* m_EntityManager = nullptr;
 	UnitComponent* m_UnitComponents = nullptr;
-
+	CharacterComponent* m_Characters = nullptr;
 	WarmindComponent* m_Warminds = nullptr;
 
 	float m_MoveTolerance = 0.3f;
@@ -18,6 +18,7 @@ struct UnitSystem : System
 		m_EntityManager = &EntityManager::Get();
 		m_UnitComponents = m_EntityManager->GetComponentArray<UnitComponent>();
 		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
+		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 	}
 
 	virtual void Start() override
@@ -50,16 +51,26 @@ struct UnitSystem : System
 			}
 			else
 			{
+				unit.m_LastPosition = unit.m_Target;
 				transform.m_Position = unit.m_Target;
+				Vector2DInt pos(unit.m_Target.x, unit.m_Target.y);
+				Map::m_MapUnitData[pos].AddUnique(unit.m_EntityID);
+
+				if (EnemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
+				{
+					EnterCombat(unit.m_EntityID, m_Warminds[unit.m_EntityID].m_Opponent);
+				}
 
 				// Check for enemy at square and kill him
-
 				if (unit.m_CurrentPath.size() > 0)
 				{
 					Vector2D nextPosition = Map::ConvertToScreen(unit.m_CurrentPath.front());
 					unit.m_Target = nextPosition;
 					unit.m_Direction = (nextPosition - transform.m_Position).Normalized();
 
+					Vector2DInt pos(unit.m_LastPosition.x, unit.m_LastPosition.y);
+					Map::m_MapUnitData[pos].AddUnique(unit.m_EntityID);
+					
 					unit.m_CurrentPath.pop_front();
 				}
 				else
@@ -120,7 +131,6 @@ struct UnitSystem : System
 
 	void ConquerRegion(EntityID conqueringID, EntityID loosingEntity, size_t regionID)
 	{
-
 #pragma warning(push)
 #pragma warning(disable: 26815)
 		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
@@ -130,14 +140,19 @@ struct UnitSystem : System
 		return;
 	}
 
-	bool EnemyAtSquare(Vector2D square, EntityID opponent)
-	{
-		if (m_UnitComponents[m_Warminds[opponent].m_UnitEntity].transform->m_Position.NearlyEqual(square, m_MoveTolerance))
+	bool EnemyAtSquare(Vector2DInt square, EntityID opponent)
+	{	
+		for (auto& ID : Map::m_MapUnitData[square].m_EntitiesInSquare)
 		{
-			return true;
-		}
+			LOG_INFO("Size of square entities: {0}", Map::m_MapUnitData[square].m_EntitiesInSquare.size());
 
-		return false;
+			if (m_UnitComponents[ID].m_Owner == opponent)
+			{
+				return true;
+			}
+
+			return false;
+		}
 	}
 
 	void EnterCombat(EntityID unit, EntityID enemyUnit)

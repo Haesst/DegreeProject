@@ -18,8 +18,8 @@ struct PlayerUnitSystem : System
 	sf::RenderWindow* m_Window;
 	sf::RectangleShape m_DragWindow;
 	sf::RectangleShape m_StartPosition;
-	sf::RectangleShape m_TargetPosition;
 	sf::RectangleShape m_EndPosition;
+	std::vector<sf::RectangleShape> m_TargetPath;
 	bool m_Draging = false;
 	Vector2D m_MousePosition;
 	std::list<Vector2DInt> m_Path;
@@ -96,10 +96,13 @@ struct PlayerUnitSystem : System
 			{
 				m_Window->draw(m_DragWindow);
 			}
-			else
+			if(playerUnits[entity].m_Moving)
 			{
+				for each (sf::RectangleShape rectangle in m_TargetPath)
+				{
+					m_Window->draw(rectangle);
+				}
 				m_Window->draw(m_EndPosition);
-				m_Window->draw(m_TargetPosition);
 				m_Window->draw(m_StartPosition);
 			}
 		}
@@ -161,14 +164,60 @@ struct PlayerUnitSystem : System
 		}
 	}
 
+	void ShowPath(PlayerUnit* playerUnit)
+	{
+		unsigned int index = 0;
+		for each (Vector2DInt position in m_Path)
+		{
+			Vector2D screenPosition = Map::ConvertToScreen(position);
+			Vector2D rectangleSize = Vector2D(playerUnit->m_Shape.getSize().x, playerUnit->m_Shape.getSize().y * 0.25f);
+			float rotation = 0.0f;
+			if (m_TargetPath.size() > 0)
+			{
+				Vector2DInt oldPosition = Map::ConvertToMap(m_TargetPath[index - 1].getPosition());
+				Vector2DInt change = position - oldPosition;
+
+				if (abs(change.y) == 1 && change.x == 0)
+				{
+					rotation = 90.0f;
+					screenPosition.x += playerUnit->m_Shape.getSize().x * 0.625f;
+					screenPosition.y -= playerUnit->m_Shape.getSize().y * 0.375f;
+				}
+				else if (change.x > 0 && change.y > 0 || change.x < 0 && change.y < 0)
+				{
+					rotation = 45.0f;
+					rectangleSize.x *= 1.45f;
+					screenPosition.x += playerUnit->m_Shape.getSize().x * 0.28125f;
+					screenPosition.y -= playerUnit->m_Shape.getSize().y * 0.28125f;
+				}
+				else if (change.x > 0 && change.y < 0 || change.x < 0 && change.y > 0)
+				{
+					rotation = -45.0f;
+					rectangleSize.x *= 1.45f;
+					screenPosition.x += playerUnit->m_Shape.getSize().x * 0.28125f;
+					screenPosition.y += playerUnit->m_Shape.getSize().y * 0.28125f;
+				}
+			}
+			sf::RectangleShape rectangle = sf::RectangleShape(sf::Vector2f(rectangleSize.x, rectangleSize.y));
+			rectangle.setFillColor(sf::Color::White);
+			rectangle.setRotation(rotation);
+			rectangle.setPosition(screenPosition.x, screenPosition.y + playerUnit->m_Shape.getSize().y * 0.375f);
+			m_TargetPath.push_back(rectangle);
+			index++;
+		}
+	}
+
 	void MovePlayer(Transform* transform, PlayerUnit* playerUnit)
 	{
 		if (InputHandler::GetRightMouseReleased() == true && playerUnit->m_Selected == true)
 		{
 			m_Path.clear();
+			m_TargetPath.clear();
 			Vector2DInt startPositionMap = Map::ConvertToMap(transform->m_Position);
 			Vector2D startPositionFloat = Vector2D((float)startPositionMap.x, (float)startPositionMap.y);
 			m_Path = Pathfinding::FindPath(startPositionMap, InputHandler::GetMouseMapPosition());
+
+			ShowPath(playerUnit);
 
 			if (m_Path.size() > 0)
 			{
@@ -212,17 +261,15 @@ struct PlayerUnitSystem : System
 					playerUnit->m_Target = nextPosition;
 					playerUnit->m_Direction = (nextPosition - transform->m_Position).Normalized();
 
-					m_TargetPosition.setSize({ 32.0f, 32.0f });
-					m_TargetPosition.setPosition(nextPosition.x, nextPosition.y);
-					m_TargetPosition.setFillColor(sf::Color::White);
-
 					m_Path.pop_front();
+
+					m_TargetPath.erase(m_TargetPath.begin());
 				}
 				else
 				{
 					playerUnit->m_Moving = false;
 
-					m_TargetPosition.setFillColor(sf::Color::Transparent);
+					m_TargetPath.clear();
 					m_StartPosition.setFillColor(sf::Color::Transparent);
 					m_EndPosition.setFillColor(sf::Color::Transparent);
 				}
