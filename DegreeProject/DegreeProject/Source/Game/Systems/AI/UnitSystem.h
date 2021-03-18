@@ -86,7 +86,7 @@ struct UnitSystem : System
 
 			MapRegion region = Map::GetRegionById(unit.m_SeizingRegionID);
 
-			if (unit.m_DaysSeizing >= region.m_DaysToSeize)
+			if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
 			{
 				EntityID loosingEntity = region.m_OwnerID;
 				ConquerRegion(unit.m_Owner, loosingEntity, unit.m_SeizingRegionID);
