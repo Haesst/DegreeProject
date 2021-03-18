@@ -148,11 +148,11 @@ struct UnitSystem : System
 
 			if (m_UnitComponents[ID].m_Owner == opponent)
 			{
-				return true;
+ 				return true;
 			}
-
-			return false;
 		}
+
+		return false;
 	}
 
 	void EnterCombat(EntityID unit, EntityID enemyUnit)

@@ -3,6 +3,7 @@
 #include "ECS/EntityManager.h"
 #include "ECS/System.h"
 #include "Game/Components/Warmind.h"
+#include "WarmindConsiderations.h"
 #include "Game/Components/CharacterComponent.h"
 
 struct WarmindSystem : System
@@ -11,6 +12,7 @@ struct WarmindSystem : System
 	WarmindComponent* m_Warminds = nullptr;
 	CharacterComponent* m_Characters = nullptr;
 	UnitComponent* m_Units = nullptr;
+	SpriteRenderer* m_Renderers = nullptr;
 
 	float m_AtWarTickRate = 2.0f;
 	float m_TickAccu = 0.0f;
@@ -75,16 +77,22 @@ struct WarmindSystem : System
 	void GiveUnitOrders(EntityID warmindID, UnitComponent& unit)
 	{
 		//Todo: Set this on timer when more orders can be given.
-
 		if (unit.m_Raised)
 		{
-			Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
 
-			if (!m_Warminds[warmindID].m_Defending)
-			{
-				Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
-				unit.SetPath(Pathfinding::FindPath(startingPosition, Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId)), Map::ConvertToScreen(startingPosition));
-			}
+			EntityID opponentID = m_Warminds[warmindID].m_Opponent;
+			ConsiderOrders(m_Warminds[warmindID].m_UnitEntity, opponentID);
+
+			//Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
+			//
+			//if (!m_Warminds[warmindID].m_Defending)
+			//{
+			//	if (Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_OwnerID != warmindID)
+			//	{
+			//		Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
+			//		unit.SetPath(Pathfinding::FindPath(startingPosition, Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId)), Map::ConvertToScreen(startingPosition));
+			//	}
+			//}
 		}
 	}
 
@@ -102,5 +110,23 @@ struct WarmindSystem : System
 		unit.m_Raised = true;
 		renderer.m_ShouldRender = true;
 		GiveUnitOrders(warmindEnt, unit);
+	}
+
+	void KillUnit(EntityID ID)
+	{
+		m_Units[ID].m_RepresentedForce = 0;
+		m_Units[ID].m_Raised = false;
+		m_Renderers[ID].m_ShouldRender = false;
+	}
+
+	void ConsiderOrders(EntityID UnitID, EntityID opponentUnitID)
+	{
+		//SiegeCapitalConsideration siegeConsideration;
+		//float siegeEval = siegeConsideration.Evaluate(UnitID, opponentUnitID);
+		//
+		//if (siegeEval > .7)
+		//{
+		//
+		//}
 	}
 };
