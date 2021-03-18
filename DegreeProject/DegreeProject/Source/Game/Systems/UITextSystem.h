@@ -9,7 +9,8 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-
+#pragma warning(push)
+#pragma warning(disable: 26812)
 struct UITextSystem : System
 {
 	EntityManager* m_EntityManager = nullptr;
@@ -129,3 +130,5 @@ struct UITextSystem : System
 		AdjustText(&text);
 	}
 };
+
+#pragma warning(pop)
