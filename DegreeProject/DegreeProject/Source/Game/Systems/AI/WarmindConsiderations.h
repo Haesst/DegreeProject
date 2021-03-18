@@ -23,13 +23,15 @@ struct SiegeCapitalConsideration : public Consideration
 
 	float Evaluate(EntityID context, EntityID target)
 	{
-		//Judge distance to other army
-		Vector2D contextPosition = m_Transforms[context].m_Position;
-		Vector2D targetPosition = m_Transforms[target].m_Position;
+		////Judge distance to other army
+		//Vector2D contextPosition = m_Transforms[context].m_Position;
+		//Vector2D targetPosition = m_Transforms[target].m_Position;
+		//
+		//auto distance = (contextPosition - targetPosition).GetLength();
+		//distance = std::clamp(distance * 0.1f, 0.0f, 1.0f);
+		//
+		//return distance;
 
-		auto distance = (contextPosition - targetPosition).GetLength();
-		distance = std::clamp(distance * 0.1f, 0.0f, 1.0f);
-
-		return distance;
+		return .5f;
 	}
 };

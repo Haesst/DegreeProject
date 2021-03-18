@@ -39,5 +39,10 @@ struct CharacterComponent : public Component
 		m_RegionColor = regionColor;
 		m_PersonalityIndex = personalityIndex;
 	}
+
+	void MakePeace()
+	{
+		m_AtWar = false;
+	}
 };
 

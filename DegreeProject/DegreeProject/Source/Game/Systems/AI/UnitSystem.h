@@ -144,8 +144,6 @@ struct UnitSystem : System
 	{	
 		for (auto& ID : Map::m_MapUnitData[square].m_EntitiesInSquare)
 		{
-			LOG_INFO("Size of square entities: {0}", Map::m_MapUnitData[square].m_EntitiesInSquare.size());
-
 			if (m_UnitComponents[ID].m_Owner == opponent)
 			{
  				return true;
