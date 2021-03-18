@@ -178,7 +178,7 @@ public:
 
 	bool IsEntityActive(const EntityID entity)
 	{
-		return m_ActiveEntities[entity];
+		return !m_ActiveEntities[entity];
 	}
 
 	void SetEntityTag(const EntityID entity, const EntityTag tag)
