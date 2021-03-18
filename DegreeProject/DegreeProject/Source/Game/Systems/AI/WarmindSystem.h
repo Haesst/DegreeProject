@@ -96,7 +96,7 @@ struct WarmindSystem : System
 
 		Vector2DInt pos(position.x, position.y);
 
-		Map::m_MapUnitData[pos].m_EntitiesInSquare.push_back(unitEnt);
+		Map::m_MapUnitData[pos].AddUnique(unitEnt);
 		unit.m_LastPosition = position;
 
 		unit.m_Raised = true;

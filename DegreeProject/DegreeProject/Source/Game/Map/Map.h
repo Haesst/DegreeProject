@@ -26,6 +26,19 @@ enum class FileStatus;
 struct SquareData
 {
 	std::list<EntityID> m_EntitiesInSquare;
+
+	void AddUnique(EntityID entityToAdd)
+	{
+		for (auto& entity : m_EntitiesInSquare)
+		{
+			if (entity == entityToAdd)
+			{
+				return;
+			}
+		}
+
+		m_EntitiesInSquare.push_back(entityToAdd);
+	}
 };
 
 struct Map
