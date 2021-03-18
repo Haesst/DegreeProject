@@ -1,3 +1,6 @@
+#pragma warning(push)
+#pragma warning(disable: 26812)
+
 #include "Map.h"
 #include "Game/HotReloader.h"
 #include "Engine/FileWatcher.h"
@@ -53,7 +56,7 @@ void Map::RegionsChanged(std::string path, FileStatus fileStatus)
 	m_RegionMutex.unlock();
 }
 
-void Map::MapChanged(std::string path, FileStatus fileStatus)
+void Map::MapChanged(std::string, FileStatus)
 {}
 
 void Map::ShadersChanged(std::string path, FileStatus fileStatus)
@@ -273,6 +276,7 @@ MapRegion& Map::GetRegionById(unsigned int regionId)
 	}
 
 	ASSERT(true, "No region with this id exists");
+	return m_Data.m_Regions[0]; // To remove warning, unreachable code.
 }
 
 Vector2DInt Map::ConvertToMap(Vector2D position)
@@ -317,3 +321,4 @@ std::vector<int> Map::GetRegionIDs()
 
 	return regionIds;
 }
+#pragma warning(pop)
