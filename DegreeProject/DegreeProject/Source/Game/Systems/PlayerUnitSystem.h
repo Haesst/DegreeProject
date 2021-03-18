@@ -164,38 +164,68 @@ struct PlayerUnitSystem : System
 		}
 	}
 
-	void ShowPath(PlayerUnit* playerUnit)
+	void ShowPath(Transform* transform, PlayerUnit* playerUnit)
 	{
-		unsigned int index = 0;
+		std::vector<Vector2DInt> path;
 		for each (Vector2DInt position in m_Path)
 		{
+			path.push_back(position);
+		}
+		unsigned int index = 0;
+		for each (Vector2DInt position in path)
+		{
 			Vector2D screenPosition = Map::ConvertToScreen(position);
-			Vector2D rectangleSize = Vector2D(playerUnit->m_Shape.getSize().x, playerUnit->m_Shape.getSize().y * 0.25f);
+			Vector2D rectangleSize = Vector2D(playerUnit->m_Shape.getSize().x * 1.45f, playerUnit->m_Shape.getSize().y * 0.25f);
 			float rotation = 0.0f;
+			Vector2DInt oldPosition = Vector2DInt();
 			if (m_TargetPath.size() > 0)
 			{
-				Vector2DInt oldPosition = Map::ConvertToMap(m_TargetPath[index - 1].getPosition());
-				Vector2DInt change = position - oldPosition;
-
-				if (abs(change.y) == 1 && change.x == 0)
+				oldPosition = path[index - 1];
+			}
+			else
+			{
+				oldPosition = Map::ConvertToMap(transform->m_Position);
+			}
+			Vector2DInt change = position - oldPosition;
+			if (abs(change.y) == 1 && change.x == 0)
+			{
+				rotation = 90.0f;
+				screenPosition.x += playerUnit->m_Shape.getSize().x * 0.625f;
+				screenPosition.y -= playerUnit->m_Shape.getSize().y * 0.375f;
+				if (change.y < 0)
 				{
-					rotation = 90.0f;
-					screenPosition.x += playerUnit->m_Shape.getSize().x * 0.625f;
-					screenPosition.y -= playerUnit->m_Shape.getSize().y * 0.375f;
+					screenPosition.y += playerUnit->m_Shape.getSize().y * 0.5f;
 				}
-				else if (change.x > 0 && change.y > 0 || change.x < 0 && change.y < 0)
+				else
 				{
-					rotation = 45.0f;
-					rectangleSize.x *= 1.45f;
-					screenPosition.x += playerUnit->m_Shape.getSize().x * 0.28125f;
-					screenPosition.y -= playerUnit->m_Shape.getSize().y * 0.28125f;
+					screenPosition.y -= playerUnit->m_Shape.getSize().y * 0.5f;
 				}
-				else if (change.x > 0 && change.y < 0 || change.x < 0 && change.y > 0)
+			}
+			else if (change.x > 0 && change.y > 0 || change.x < 0 && change.y < 0)
+			{
+				rotation = 45.0f;
+				screenPosition.x += playerUnit->m_Shape.getSize().x * 0.28125f;
+				screenPosition.y -= playerUnit->m_Shape.getSize().y * 0.28125f;
+				if (change.x > 0 && change.y > 0)
 				{
-					rotation = -45.0f;
-					rectangleSize.x *= 1.45f;
-					screenPosition.x += playerUnit->m_Shape.getSize().x * 0.28125f;
-					screenPosition.y += playerUnit->m_Shape.getSize().y * 0.28125f;
+					screenPosition.x -= playerUnit->m_Shape.getSize().x;
+					screenPosition.y -= playerUnit->m_Shape.getSize().y;
+				}
+				if (change.x < 0 && change.y < 0)
+				{
+					screenPosition.x += playerUnit->m_Shape.getSize().x * 0.5f;
+					screenPosition.y += playerUnit->m_Shape.getSize().y * 0.5f;
+				}
+			}
+			else if (change.x > 0 && change.y < 0 || change.x < 0 && change.y > 0)
+			{
+				rotation = -45.0f;
+				screenPosition.x += playerUnit->m_Shape.getSize().x * 0.21875f;
+				screenPosition.y += playerUnit->m_Shape.getSize().y * 0.21875f;
+				if (change.x > 0 && change.y < 0)
+				{
+					screenPosition.x -= playerUnit->m_Shape.getSize().x;
+					screenPosition.y += playerUnit->m_Shape.getSize().y;
 				}
 			}
 			sf::RectangleShape rectangle = sf::RectangleShape(sf::Vector2f(rectangleSize.x, rectangleSize.y));
@@ -217,7 +247,7 @@ struct PlayerUnitSystem : System
 			Vector2D startPositionFloat = Vector2D((float)startPositionMap.x, (float)startPositionMap.y);
 			m_Path = Pathfinding::FindPath(startPositionMap, InputHandler::GetMouseMapPosition());
 
-			ShowPath(playerUnit);
+			ShowPath(transform, playerUnit);
 
 			if (m_Path.size() > 0)
 			{

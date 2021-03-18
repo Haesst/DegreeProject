@@ -138,13 +138,11 @@ struct UIWindowSystem : System
 			{
 				m_EntityManager->SetEntityActive(UIWindow->m_BottomPortraitUI, false);
 				m_EntityManager->SetEntityActive(UIWindow->m_TopPortraitUI, true);
-
 			}
 			else
 			{
 				m_EntityManager->SetEntityActive(UIWindow->m_TopPortraitUI, false);
 				m_EntityManager->SetEntityActive(UIWindow->m_BottomPortraitUI, true);
-
 			}
 		}
 	}
