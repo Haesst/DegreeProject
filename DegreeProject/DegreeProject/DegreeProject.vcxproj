@@ -98,6 +98,8 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Source\Game\Components\Player.h" />
+    <ClInclude Include="Source\Game\Systems\PlayerSystem.h" />
     <ClInclude Include="Source\ECS\Component.h" />
     <ClInclude Include="Source\ECS\ComponentList.h" />
     <ClInclude Include="Source\ECS\Components\Transform.h" />

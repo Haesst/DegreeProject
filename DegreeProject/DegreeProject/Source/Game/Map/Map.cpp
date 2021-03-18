@@ -129,7 +129,7 @@ void Map::LoadMap()
 				if (regionPosition >= 0)
 				{
 					m_Data.m_Regions[regionPosition].m_MapSquares.push_back({ x, y });
-					m_MapUnitData.insert(std::make_pair(Vector2DInt(x, y), SquareData()));
+					m_MapUnitData.insert(std::make_pair(Vector2DInt(x, y), SquareData(m_Data.m_Regions[regionPosition].m_RegionId)));
 				}
 
 				x++;
@@ -175,6 +175,7 @@ void Map::Render()
 	{
 		m_Data.m_Shader.setUniform("u_Color", sf::Glsl::Vec4(region.m_HighlightColor));
 		m_Data.m_Shader.setUniform("u_Texture", m_Data.m_LandTexture);
+		m_Data.m_Shader.setUniform("u_Highlighted", region.m_Highlighted);
 		Window::GetWindow()->draw(region.m_VertexArray, m_Data.m_RenderStates);
 	}
 }

@@ -16,6 +16,7 @@
 #include "Game/Systems/UISpriteRenderSystem.h"	
 #include "Game/Systems/AI/WarmindSystem.h"
 #include "Game/Systems/AI/UnitSystem.h"
+#include "Game/Systems/PlayerSystem.h"
 #include <Game/Systems/AI/AI.h>
 
 Game::~Game()
@@ -101,6 +102,7 @@ void Game::InitSystems()
 	entityManager->RegisterSystem<UISpriteRenderSystem>();
 	entityManager->RegisterSystem<WarmindSystem>();
 	entityManager->RegisterSystem<UnitSystem>();
+	entityManager->RegisterSystem<PlayerSystem>();
 }
 
 void Game::AddEntitys()
@@ -133,6 +135,7 @@ void Game::AddEntitys()
 	EntityID playerUnit = entityManager->AddNewEntity();
 	entityManager->AddComponent<PlayerUnit>(playerUnit, char2);
 	entityManager->AddComponent<SpriteRenderer>(playerUnit, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
+	entityManager->AddComponent<Player>(playerUnit);
 
 // 	std::vector<unsigned int> id3{ 4 };
 // 	CreateCharacter(char3, Title::Duke, "Republic of Veneto", "Viktor", id3, 100, 10, false, sf::Color(149, 181, 54), 0);

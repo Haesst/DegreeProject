@@ -26,6 +26,7 @@ enum class FileStatus;
 struct SquareData
 {
 	std::list<EntityID> m_EntitiesInSquare;
+	unsigned int m_RegionID;
 
 	void AddUnique(EntityID entityToAdd)
 	{
@@ -38,6 +39,15 @@ struct SquareData
 		}
 
 		m_EntitiesInSquare.push_back(entityToAdd);
+	}
+
+	SquareData(unsigned int regionID)
+		: m_RegionID(regionID)
+	{}
+
+	SquareData()
+	{
+		m_RegionID = 0; // apparantly need a default constructor, need to see where
 	}
 };
 

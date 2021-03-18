@@ -8,6 +8,7 @@ public:
 	char m_MapChar = '1';
 	unsigned int m_RegionId = INT_MAX;
 	unsigned int m_RegionTax = 0;
+	bool m_Highlighted = false;
 	std::vector<Vector2DInt> m_MapSquares = {};
 	Vector2DInt m_RegionCapital = Vector2DInt();
 	sf::Color m_HighlightColor = sf::Color::White;
