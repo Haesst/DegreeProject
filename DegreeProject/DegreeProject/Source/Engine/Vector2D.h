@@ -127,7 +127,7 @@ struct Vec2D
 
 	inline float GetLength()
 	{
-		return float length = sqrtf(x * x + y * y);
+		return sqrtf(x * x + y * y);
 	}
 
 	inline Vec2D Abs()

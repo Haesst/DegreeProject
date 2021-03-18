@@ -110,7 +110,7 @@ void Map::LoadAllRegions()
 
 void Map::LoadMap()
 {
-	ASSERT(m_Data.m_Regions[0].m_MapSquares.size() <= 0);
+	ASSERT(m_Data.m_Regions[0].m_MapSquares.size() <= 0, "Mapsquare is empty");
 
 	std::string tempString;
 	std::ifstream inData = LoadFile(m_MapPath);

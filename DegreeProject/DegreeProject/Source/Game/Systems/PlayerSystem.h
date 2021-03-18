@@ -33,7 +33,7 @@ struct PlayerSystem : System
 		{
 			EntityID regionID = Map::m_MapUnitData[mapPos].m_RegionID;
 
-			if (playerComp.m_HighlightedRegion != regionID)
+			if ((unsigned int)playerComp.m_HighlightedRegion != regionID)
 			{
 				Map::GetRegionById(playerComp.m_HighlightedRegion).m_Highlighted = false;
 
