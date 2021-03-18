@@ -4,12 +4,9 @@
 
 class System
 {
-protected:
-	friend class EntityManager;
+public:
 	EntitySignature m_Signature;
 	std::set<EntityID> m_Entities;
-
-public:
 	System() = default;
 	virtual ~System() = default;
 
