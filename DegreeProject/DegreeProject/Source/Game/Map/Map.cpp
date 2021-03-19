@@ -197,6 +197,32 @@ void Map::ClearRegions()
 	m_Data.m_Regions.clear();
 }
 
+SquareData& Map::GetMapSquareData(Vector2DInt key)
+{
+	for (auto& p : m_MapUnitData)
+	{
+		if (p.first == key)
+		{
+			return p.second;
+		}
+	}
+
+	return SquareData(0);
+}
+
+bool Map::MapSquareDataContainsKey(const Vector2DInt& key)
+{
+	for (auto& p : m_MapUnitData)
+	{
+		if (p.first == key)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void Map::ClearRegionMapTiles()
 {
 	for (auto& region : m_Data.m_Regions)
