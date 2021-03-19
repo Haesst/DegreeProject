@@ -56,6 +56,17 @@ struct WarmindSystem : System
 				OnWarStarted(entity);
 				m_Warminds[entity].m_RecentlyAtWar = false;
 			}
+
+			if (m_Units[m_Warminds[entity].m_UnitEntity].m_Raised)
+			{
+				m_Warminds[entity].m_OrderAccu += Time::DeltaTime();
+
+				if (m_Warminds[entity].m_OrderAccu >= m_Warminds[entity].m_OrderTimer)
+				{
+					m_Warminds[entity].m_OrderAccu = 0.0f;
+					//ConsiderOrders(entity, m_Units[m_Warminds[entity].m_UnitEntity], m_Warminds[entity].m_Opponent);
+				}
+			}
 		}
 	}
 
@@ -72,7 +83,6 @@ struct WarmindSystem : System
 			Vector2D pos = Map::ConvertToScreen(capitalPos);
 			RaiseUnits(m_Warminds[Id].m_UnitEntity, unit, renderer, pos);
 			LOG_INFO("Warmind belonging to {0} is considering new orders", m_Characters[Id].m_Name);
-			ConsiderOrders(Id, m_Units[m_Warminds[Id].m_UnitEntity], m_Warminds[Id].m_Opponent);
 		}
 	}
 
@@ -100,8 +110,19 @@ struct WarmindSystem : System
 			battlefieldPosition = Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares[randomSquareIndex];
 		}
 
+		Vector2D unitPosition;
 
-		Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
+		if (m_Units[m_Warminds[warmindID].m_UnitEntity].m_CurrentPath.size() > 0)
+		{
+			//Check if unit is on map and not in the water, will crash otherwise
+			unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position; //This will be changed later as it is a bit dangerous
+		}
+
+		else
+		{
+			unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
+		}
+
 		Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
 		unit.SetPath(Pathfinding::FindPath(startingPosition, battlefieldPosition), Map::ConvertToScreen(startingPosition));
 	}
