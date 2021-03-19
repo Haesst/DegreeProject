@@ -4,12 +4,12 @@
 #include <Game\Components\Unit.h>
 #include <ECS\Components\Transform.h>
 
+WarmindComponent* m_Warminds = nullptr;
+UnitComponent* m_Units = nullptr;
+Transform* m_Transforms = nullptr;
+
 struct SiegeCapitalConsideration : public Consideration
 {
-	WarmindComponent* m_Warminds = nullptr;
-	UnitComponent* m_Units = nullptr;
-	Transform* m_Transforms = nullptr;
-
 	SiegeCapitalConsideration() : Consideration()
 	{
 	}
@@ -21,17 +21,42 @@ struct SiegeCapitalConsideration : public Consideration
 		m_Context = context;
 	}
 
-	float Evaluate(EntityID, EntityID) // Removed unreferenced parameters mvh Robin
+	float Evaluate(EntityID context, EntityID target)
 	{
-		////Judge distance to other army
-		//Vector2D contextPosition = m_Transforms[context].m_Position;
-		//Vector2D targetPosition = m_Transforms[target].m_Position;
-		//
-		//auto distance = (contextPosition - targetPosition).GetLength();
-		//distance = std::clamp(distance * 0.1f, 0.0f, 1.0f);
-		//
-		//return distance;
+		//Judge distance to other army
+		Vector2D contextPosition = m_Units[m_Warminds[context].m_UnitEntity].m_Target;
+		Vector2D targetPosition = m_Units[m_Warminds[target].m_UnitEntity].m_Target;
 
-		return .5f;
+		float distance = (contextPosition - targetPosition).GetLength();
+		distance = std::clamp(distance * 0.1f, 0.0f, 1.0f);
+
+		return distance;
+	}
+};
+
+struct FightEnemyArmyConsideration : public Consideration
+{
+	FightEnemyArmyConsideration() : Consideration()
+	{
+
+	}
+
+	FightEnemyArmyConsideration(EntityID context) { m_Context = context; }
+
+	void SetContext(EntityID context) override
+	{
+		m_Context = context;
+	}
+
+	float Evaluate(EntityID context, EntityID target) override
+	{
+		Vector2D contextPosition = m_Units[m_Warminds[context].m_UnitEntity].m_Target;
+		Vector2D targetPosition = m_Units[m_Warminds[target].m_UnitEntity].m_Target;
+
+		//y = a ^ x
+		float distance = (contextPosition - targetPosition).GetLength();
+		distance = std::clamp(distance * 0.1f, 0.0f, 1.0f);
+
+		return std::clamp(std::pow(distance, distance), 0.0f, 1.0f);
 	}
 };

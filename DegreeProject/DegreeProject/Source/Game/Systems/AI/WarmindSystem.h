@@ -130,14 +130,14 @@ struct WarmindSystem : System
 		m_Renderers[ID].m_ShouldRender = false;
 	}
 
-	void ConsiderOrders(EntityID, EntityID) // Removed unreferenced parameters mvh Robin
+	void ConsiderOrders(EntityID warmind, EntityID targetWarmind) // Removed unreferenced parameters mvh Robin
 	{
-		//SiegeCapitalConsideration siegeConsideration;
-		//float siegeEval = siegeConsideration.Evaluate(UnitID, opponentUnitID);
-		//
-		//if (siegeEval > .7)
-		//{
-		//
-		//}
+		SiegeCapitalConsideration siegeConsideration;
+		float siegeEval = siegeConsideration.Evaluate(warmind, targetWarmind);
+		
+		if (siegeEval > .7)
+		{
+			
+		}
 	}
 };
