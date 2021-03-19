@@ -6,6 +6,14 @@
 template <typename T>
 struct Vec2D
 {
+	struct VectorCompare
+	{
+		bool operator() (const Vec2D<T>& lhs, const Vec2D<T>& rhs) const
+		{
+			return lhs.GetLength() < rhs.GetLength();
+		}
+	};
+
 	T x = 0;
 	T y = 0;
 
@@ -58,12 +66,6 @@ struct Vec2D
 	inline Vec2D<T>& operator/(const T d) const
 	{
 		return (d != 0 ? Vec2D<T>(x / d, y / d) : Vec2D<T>());
-	}
-
-
-	inline bool operator<(const Vec2D<T>& v2) const
-	{
-		return x < v2.x && y < v2.y;
 	}
 
 	inline Vec2D<T>& Zero()
@@ -125,17 +127,17 @@ struct Vec2D
 		return *this;
 	}
 
-	inline float GetLength()
+	inline float GetLength() const
 	{
-		return sqrtf(x * x + y * y);
+		return sqrtf((float)x * (float)x + (float)y * (float)y);
 	}
 
-	inline Vec2D Abs()
+	inline Vec2D Abs() const
 	{
 		return Vec2D(abs(x), abs(y));
 	}
 
-	inline bool operator==(const Vec2D<T>& v2)
+	inline bool operator==(const Vec2D<T>& v2) const
 	{
 		if (x == v2.x && y == v2.y)
 		{
@@ -147,7 +149,7 @@ struct Vec2D
 		}
 	}
 
-	inline bool operator!=(const Vec2D<T>& v2)
+	inline bool operator!=(const Vec2D<T>& v2) const
 	{
 		if (x != v2.x || y != v2.y)
 		{
@@ -157,6 +159,27 @@ struct Vec2D
 		{
 			return false;
 		}
+	}
+
+
+	inline bool operator<(const Vec2D<T>& v2) const
+	{
+		return x < v2.x && y < v2.y;
+	}
+
+	inline bool operator>(const Vec2D<T>& v2) const
+	{
+		return x > v2.x && y > v2.y;
+	}
+
+	inline bool operator<=(const Vec2D<T>& v2) const
+	{
+		return x <= v2.x && y <= v2.y;
+	}
+
+	inline bool operator >=(const Vec2D<T>& v2) const
+	{
+		return x >= v2.x && y >= v2.y;
 	}
 
 	inline bool NearlyEqual(const Vec2D<T>& v2, float tolerance = 0.0f, float centerOffsetX = 0.0f, float centerOffsetY = 0.0f)

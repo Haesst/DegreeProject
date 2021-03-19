@@ -61,8 +61,9 @@ struct Map
 	static MapData m_Data;
 
 	static std::mutex m_RegionMutex;
+	static std::mutex m_ShaderMutex;
 
-	static std::map<Vector2DInt, SquareData> m_MapUnitData;
+	static std::map<Vector2DInt, SquareData, Vector2DInt::VectorCompare> m_MapUnitData;
 
 	Map()
 	{}

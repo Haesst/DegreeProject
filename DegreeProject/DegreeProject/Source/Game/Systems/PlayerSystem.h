@@ -26,12 +26,11 @@ struct PlayerSystem : System
 
 	void HoverOverRegion(Player& playerComp)
 	{
-		Vector2D currentMousePosition = InputHandler::GetMousePosition();
-		Vector2DInt mapPos = Map::ConvertToMap(currentMousePosition);
+		Vector2DInt currentMousePosition = InputHandler::GetMouseMapPosition();
 
-		if (Map::m_MapUnitData.find(mapPos) != Map::m_MapUnitData.end())
+		if (Map::m_MapUnitData.find(currentMousePosition) != Map::m_MapUnitData.end())
 		{
-			EntityID regionID = Map::m_MapUnitData[mapPos].m_RegionID;
+			EntityID regionID = Map::m_MapUnitData[currentMousePosition].m_RegionID;
 
 			if ((unsigned int)playerComp.m_HighlightedRegion != regionID)
 			{
