@@ -53,7 +53,7 @@ struct UnitSystem : System
 			{
 				unit.m_LastPosition = unit.m_Target;
 				transform.m_Position = unit.m_Target;
-				Vector2DInt pos(unit.m_Target.x, unit.m_Target.y);
+				Vector2DInt pos((int)unit.m_Target.x, (int)unit.m_Target.y);
 				Map::m_MapUnitData[pos].AddUnique(unit.m_EntityID);
 
 				if (EnemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
@@ -68,8 +68,8 @@ struct UnitSystem : System
 					unit.m_Target = nextPosition;
 					unit.m_Direction = (nextPosition - transform.m_Position).Normalized();
 
-					Vector2DInt pos(unit.m_LastPosition.x, unit.m_LastPosition.y);
-					Map::m_MapUnitData[pos].AddUnique(unit.m_EntityID);
+					Vector2DInt mapPos((int)unit.m_LastPosition.x, (int)unit.m_LastPosition.y);
+					Map::m_MapUnitData[mapPos].AddUnique(unit.m_EntityID);
 					
 					unit.m_CurrentPath.pop_front();
 				}

@@ -21,7 +21,7 @@ struct SiegeCapitalConsideration : public Consideration
 		m_Context = context;
 	}
 
-	float Evaluate(EntityID context, EntityID target)
+	float Evaluate(EntityID, EntityID) // Removed unreferenced parameters mvh Robin
 	{
 		////Judge distance to other army
 		//Vector2D contextPosition = m_Transforms[context].m_Position;

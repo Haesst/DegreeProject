@@ -84,7 +84,7 @@ struct WarmindSystem : System
 		//Todo: Set this on timer when more orders can be given.
 		if (unit.m_Raised)
 		{
-			EntityID opponentID = m_Warminds[warmindID].m_Opponent;
+			// EntityID opponentID = m_Warminds[warmindID].m_Opponent;
 			//ConsiderOrders(m_Warminds[warmindID].m_UnitEntity, opponentID);
 
 			Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
@@ -113,7 +113,7 @@ struct WarmindSystem : System
 		transform.m_Position = position;
 		renderer.m_Sprite.setPosition(position.x, position.y);
 
-		Vector2DInt pos(position.x, position.y);
+		Vector2DInt pos((int)position.x, (int)position.y);
 
 		Map::m_MapUnitData[pos].AddUnique(unitEnt);
 		unit.m_LastPosition = position;
@@ -130,7 +130,7 @@ struct WarmindSystem : System
 		m_Renderers[ID].m_ShouldRender = false;
 	}
 
-	void ConsiderOrders(EntityID UnitID, EntityID opponentUnitID)
+	void ConsiderOrders(EntityID, EntityID) // Removed unreferenced parameters mvh Robin
 	{
 		//SiegeCapitalConsideration siegeConsideration;
 		//float siegeEval = siegeConsideration.Evaluate(UnitID, opponentUnitID);
