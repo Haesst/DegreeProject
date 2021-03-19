@@ -4,9 +4,11 @@
 #include <Game\Components\Unit.h>
 #include <ECS\Components\Transform.h>
 
-WarmindComponent* m_Warminds = nullptr;
-UnitComponent* m_Units = nullptr;
-Transform* m_Transforms = nullptr;
+EntityManager* m_EntityManager = &EntityManager::Get();
+
+WarmindComponent* m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
+UnitComponent* m_Units = m_EntityManager->GetComponentArray<UnitComponent>();
+Transform* m_Transforms = m_EntityManager->GetComponentArray<Transform>();
 
 struct SiegeCapitalConsideration : public Consideration
 {
@@ -24,7 +26,7 @@ struct SiegeCapitalConsideration : public Consideration
 	float Evaluate(EntityID context, EntityID target)
 	{
 		//Judge distance to other army
-		Vector2D contextPosition = m_Units[m_Warminds[context].m_UnitEntity].m_Target;
+		Vector2D contextPosition = m_Units[m_Warminds[context].m_UnitEntity].m_Target; 
 		Vector2D targetPosition = m_Units[m_Warminds[target].m_UnitEntity].m_Target;
 
 		float distance = (contextPosition - targetPosition).GetLength();

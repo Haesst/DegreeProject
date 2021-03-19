@@ -14,6 +14,9 @@ struct WarmindComponent : Component
 	bool m_AtWar = false;
 	bool m_RecentlyAtWar = false; //Flag for starting war
 
+	float m_OrderAccu = 0.0f;
+	float m_OrderTimer = 10.0f;  //timer which the AI will evaluate new orders
+
 	EntityID m_UnitEntity; 
 
 	WarmindComponent()

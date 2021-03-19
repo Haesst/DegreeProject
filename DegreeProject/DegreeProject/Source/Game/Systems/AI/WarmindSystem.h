@@ -56,11 +56,6 @@ struct WarmindSystem : System
 				OnWarStarted(entity);
 				m_Warminds[entity].m_RecentlyAtWar = false;
 			}
-
-			if (m_Units[m_Warminds[entity].m_UnitEntity].m_Raised)
-			{
-				
-			}
 		}
 	}
 
@@ -75,39 +70,31 @@ struct WarmindSystem : System
 			int regionIndex = m_Characters[Id].m_OwnedRegionIDs[0];
 			Vector2DInt capitalPos = Map::GetRegionCapitalLocation(regionIndex);
 			Vector2D pos = Map::ConvertToScreen(capitalPos);
-			RaiseUnits(m_Warminds[Id].m_UnitEntity, Id, unit, renderer, pos);
+			RaiseUnits(m_Warminds[Id].m_UnitEntity, unit, renderer, pos);
+			LOG_INFO("Warmind belonging to {0} is considering new orders", m_Characters[Id].m_Name);
+			ConsiderOrders(Id, m_Units[m_Warminds[Id].m_UnitEntity], m_Warminds[Id].m_Opponent);
 		}
 	}
 
-	void GiveUnitOrders(EntityID warmindID, UnitComponent& unit)
+	void OrderSiegeCapital(EntityID warmindID, UnitComponent& unit)
 	{
-		//Todo: Set this on timer when more orders can be given.
-		if (unit.m_Raised)
-		{
-			// EntityID opponentID = m_Warminds[warmindID].m_Opponent;
-			//ConsiderOrders(m_Warminds[warmindID].m_UnitEntity, opponentID);
+		Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
+		Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
 
-			Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
-
-			if (!m_Warminds[warmindID].m_Defending)
-			{
-				if (Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_OwnerID != warmindID)
-				{
-					Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
-					unit.SetPath(Pathfinding::FindPath(startingPosition, Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId)), Map::ConvertToScreen(startingPosition));
-				}
-
-				else
-				{
-					m_Characters[warmindID].MakePeace();
-					m_Characters[m_Warminds[warmindID].m_Opponent].MakePeace();
-					m_Units[m_Warminds[warmindID].m_UnitEntity].m_Raised = false;
-				}
-			}
-		}
+		unit.SetPath(Pathfinding::FindPath(startingPosition, Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId)), Map::ConvertToScreen(startingPosition));
 	}
 
-	void RaiseUnits(EntityID unitEnt, EntityID warmindEnt, UnitComponent& unit, SpriteRenderer& renderer, const Vector2D& position)
+	void OrderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
+	{
+		UnitComponent& enemyUnit = m_Units[m_Warminds[warmindID].m_Opponent];
+		Vector2D enemyPos = enemyUnit.transform->m_Position;
+
+		Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
+		Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
+		unit.SetPath(Pathfinding::FindPath(startingPosition, Map::ConvertToMap(enemyPos)), Map::ConvertToScreen(startingPosition));
+	}
+
+	void RaiseUnits(EntityID unitEnt, UnitComponent& unit, SpriteRenderer& renderer, const Vector2D& position)
 	{
 		auto& transform = m_EntityManager->GetComponent<Transform>(unitEnt);
 		transform.m_Position = position;
@@ -120,7 +107,6 @@ struct WarmindSystem : System
 
 		unit.m_Raised = true;
 		renderer.m_ShouldRender = true;
-		GiveUnitOrders(warmindEnt, unit);
 	}
 
 	void KillUnit(EntityID ID)
@@ -130,14 +116,23 @@ struct WarmindSystem : System
 		m_Renderers[ID].m_ShouldRender = false;
 	}
 
-	void ConsiderOrders(EntityID warmind, EntityID targetWarmind) // Removed unreferenced parameters mvh Robin
+	void ConsiderOrders(EntityID warmind, UnitComponent& unit, EntityID targetWarmind)
 	{
 		SiegeCapitalConsideration siegeConsideration;
 		float siegeEval = siegeConsideration.Evaluate(warmind, targetWarmind);
-		
-		if (siegeEval > .7)
+		FightEnemyArmyConsideration fightConsideration;
+		float fightEval = fightConsideration.Evaluate(warmind, targetWarmind);
+
+		if (siegeEval >= fightEval)
 		{
-			
+			LOG_INFO("Warmind belonging to {0} decided to siege the enemy capital", m_Characters[warmind].m_Name);
+			OrderSiegeCapital(warmind, m_Units[m_Warminds[warmind].m_UnitEntity]);
+		}
+
+		else
+		{
+			LOG_INFO("Warmind belonging to {0} decided to fight the enemy army", m_Characters[warmind].m_Name);
+			OrderFightEnemyArmy(warmind, unit);
 		}
 	}
 };
