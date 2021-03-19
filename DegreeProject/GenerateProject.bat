@@ -1,2 +1,2 @@
-call ThirdParty\Premake\premake5.exe vs2019
+call %~dp0ThirdParty\Premake\premake5.exe --file=%~dp0premake5.lua vs2019
 PAUSE
