@@ -100,6 +100,9 @@ struct Map
 	{
 	}
 
+	SquareData& GetMapSquareData(const Vector2DInt key);
+	bool MapSquareDataContainsKey(const Vector2DInt& key);
+
 	static void ClearRegionMapTiles();
 
 #pragma region Render Data Creation
