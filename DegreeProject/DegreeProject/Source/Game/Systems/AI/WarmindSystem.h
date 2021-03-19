@@ -64,7 +64,7 @@ struct WarmindSystem : System
 				if (m_Warminds[entity].m_OrderAccu >= m_Warminds[entity].m_OrderTimer)
 				{
 					m_Warminds[entity].m_OrderAccu = 0.0f;
-					ConsiderOrders(entity, m_Units[m_Warminds[entity].m_UnitEntity], m_Warminds[entity].m_Opponent);
+					//ConsiderOrders(entity, m_Units[m_Warminds[entity].m_UnitEntity], m_Warminds[entity].m_Opponent);
 				}
 			}
 		}
@@ -125,7 +125,6 @@ struct WarmindSystem : System
 
 		Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
 		unit.SetPath(Pathfinding::FindPath(startingPosition, battlefieldPosition), Map::ConvertToScreen(startingPosition));
-
 	}
 
 	void RaiseUnits(EntityID unitEnt, UnitComponent& unit, SpriteRenderer& renderer, const Vector2D& position)
