@@ -87,11 +87,23 @@ struct WarmindSystem : System
 	void OrderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
 	{
 		UnitComponent& enemyUnit = m_Units[m_Warminds[warmindID].m_Opponent];
-		Vector2D enemyPos = enemyUnit.transform->m_Position;
+		Vector2DInt battlefieldPosition;
+
+		if (enemyUnit.m_CurrentPath.size() > 0)
+		{
+			 battlefieldPosition = enemyUnit.m_CurrentPath.back();
+		}
+
+		else
+		{
+			int randomSquareIndex = rand() % Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares.size() + 1;
+			battlefieldPosition = Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares[randomSquareIndex];
+		}
+
 
 		Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
 		Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
-		unit.SetPath(Pathfinding::FindPath(startingPosition, Map::ConvertToMap(enemyPos)), Map::ConvertToScreen(startingPosition));
+		unit.SetPath(Pathfinding::FindPath(startingPosition, battlefieldPosition), Map::ConvertToScreen(startingPosition));
 	}
 
 	void RaiseUnits(EntityID unitEnt, UnitComponent& unit, SpriteRenderer& renderer, const Vector2D& position)
@@ -122,10 +134,14 @@ struct WarmindSystem : System
 		float siegeEval = siegeConsideration.Evaluate(warmind, targetWarmind);
 		FightEnemyArmyConsideration fightConsideration;
 		float fightEval = fightConsideration.Evaluate(warmind, targetWarmind);
-
+		
 		if (siegeEval >= fightEval)
 		{
-			LOG_INFO("Warmind belonging to {0} decided to siege the enemy capital", m_Characters[warmind].m_Name);
+			if (!m_Warminds[warmind].m_Defending)
+			{
+				LOG_INFO("Warmind belonging to {0} decided to siege the enemy capital", m_Characters[warmind].m_Name);
+			}
+
 			OrderSiegeCapital(warmind, m_Units[m_Warminds[warmind].m_UnitEntity]);
 		}
 

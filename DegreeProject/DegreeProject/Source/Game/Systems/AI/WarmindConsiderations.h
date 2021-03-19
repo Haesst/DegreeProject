@@ -4,14 +4,15 @@
 #include <Game\Components\Unit.h>
 #include <ECS\Components\Transform.h>
 
-EntityManager* m_EntityManager = &EntityManager::Get();
-
-WarmindComponent* m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
-UnitComponent* m_Units = m_EntityManager->GetComponentArray<UnitComponent>();
-Transform* m_Transforms = m_EntityManager->GetComponentArray<Transform>();
 
 struct SiegeCapitalConsideration : public Consideration
 {
+	EntityManager* m_EntityManager = &EntityManager::Get();
+
+	WarmindComponent* m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
+	UnitComponent* m_Units = m_EntityManager->GetComponentArray<UnitComponent>();
+	Transform* m_Transforms = m_EntityManager->GetComponentArray<Transform>();
+
 	SiegeCapitalConsideration() : Consideration()
 	{
 	}
@@ -26,8 +27,8 @@ struct SiegeCapitalConsideration : public Consideration
 	float Evaluate(EntityID context, EntityID target)
 	{
 		//Judge distance to other army
-		Vector2D contextPosition = m_Units[m_Warminds[context].m_UnitEntity].m_Target; 
-		Vector2D targetPosition = m_Units[m_Warminds[target].m_UnitEntity].m_Target;
+		Vector2D contextPosition = m_Units[m_Warminds[context].m_UnitEntity].transform->m_Position; 
+		Vector2D targetPosition = m_Units[m_Warminds[target].m_UnitEntity].transform->m_Position;
 
 		float distance = (contextPosition - targetPosition).GetLength();
 		distance = std::clamp(distance * 0.1f, 0.0f, 1.0f);
@@ -38,9 +39,18 @@ struct SiegeCapitalConsideration : public Consideration
 
 struct FightEnemyArmyConsideration : public Consideration
 {
+	EntityManager* m_EntityManager = nullptr;
+
+	WarmindComponent* m_Warminds = nullptr;
+	UnitComponent* m_Units = nullptr;
+	Transform* m_Transforms = nullptr;
+
 	FightEnemyArmyConsideration() : Consideration()
 	{
-
+		m_EntityManager = &EntityManager::Get();
+		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
+		m_Units = m_EntityManager->GetComponentArray<UnitComponent>();
+		m_Transforms = m_EntityManager->GetComponentArray<Transform>();
 	}
 
 	FightEnemyArmyConsideration(EntityID context) { m_Context = context; }
@@ -52,10 +62,9 @@ struct FightEnemyArmyConsideration : public Consideration
 
 	float Evaluate(EntityID context, EntityID target) override
 	{
-		Vector2D contextPosition = m_Units[m_Warminds[context].m_UnitEntity].m_Target;
-		Vector2D targetPosition = m_Units[m_Warminds[target].m_UnitEntity].m_Target;
+		Vector2D contextPosition = m_Transforms[m_Warminds[context].m_UnitEntity].m_Position;
+		Vector2D targetPosition = m_Transforms[m_Warminds[target].m_UnitEntity].m_Position;
 
-		//y = a ^ x
 		float distance = (contextPosition - targetPosition).GetLength();
 		distance = std::clamp(distance * 0.1f, 0.0f, 1.0f);
 
