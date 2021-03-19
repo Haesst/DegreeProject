@@ -214,7 +214,7 @@ bool Map::MapSquareDataContainsKey(const Vector2DInt& key)
 {
 	for (auto& p : m_MapUnitData)
 	{
-		if (p.first == key)
+		if (p.first.x == key.x && p.first.y == key.y)
 		{
 			return true;
 		}
