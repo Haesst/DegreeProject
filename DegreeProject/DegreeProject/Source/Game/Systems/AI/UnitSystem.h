@@ -2,6 +2,7 @@
 #include "ECS/System.h"
 #include <Game\Components\Unit.h>
 #include <Engine\AssetHandler.h>
+#include "Game\Components\Player.h"
 
 struct UnitSystem : System
 {
@@ -11,7 +12,8 @@ struct UnitSystem : System
 	WarmindComponent* m_Warminds = nullptr;
 	SpriteRenderer* m_Renderers = nullptr;
 
-	std::vector<sf::RectangleShape> m_TargetPath;
+	std::list<sf::RectangleShape> m_TargetPath;
+	sf::RectangleShape m_EndPosition;
 
 	float m_MoveTolerance = 0.3f;
 
@@ -65,22 +67,22 @@ struct UnitSystem : System
 		{
 			UnitComponent& unit = m_UnitComponents[entity];
 			Window::GetWindow()->draw(unit.m_HighlightShape);
-			if (unit.m_Moving && unit.m_PlayerSelected)
-			{
-				for each (sf::RectangleShape rectangle in m_TargetPath)
-				{
-					Window::GetWindow()->draw(rectangle);
-				}
-			}
+
 			if (unit.m_Raised)
 			{
-				sf::RectangleShape shape;
-				shape.setSize(sf::Vector2f(32.0f, 32.0f));
-				shape.setFillColor(sf::Color::Red);
+				if (unit.m_Moving && unit.m_PlayerSelected)
+				{
+					for each (sf::RectangleShape rectangle in m_TargetPath)
+					{
+						Window::GetWindow()->draw(rectangle);
+					}
+				}
 
+				m_EndPosition.setSize(sf::Vector2f(32.0f, 32.0f));
+				m_EndPosition.setFillColor(sf::Color::Red);
 				Vector2D pos = Map::ConvertToScreen(unit.m_CurrentPath.back());
-				shape.setPosition(pos.x, pos.y);
-				Window::GetWindow()->draw(shape);
+				m_EndPosition.setPosition(pos.x, pos.y);
+				Window::GetWindow()->draw(m_EndPosition);
 			}
 		}
 	}
@@ -119,6 +121,10 @@ struct UnitSystem : System
 					Map::m_MapUnitData[mapPos].AddUnique(unit.m_EntityID);
 					
 					unit.m_CurrentPath.pop_front();
+					if (m_TargetPath.size() > 0 && unit.m_PlayerControlled)
+					{
+						m_TargetPath.pop_front();
+					}
 				}
 				else
 				{
@@ -221,6 +227,7 @@ struct UnitSystem : System
 
 	void ShowPath(Transform& transform, UnitComponent& unit)
 	{
+		m_TargetPath.clear();
 		std::vector<Vector2DInt> path;
 		for each (Vector2DInt position in unit.m_CurrentPath)
 		{

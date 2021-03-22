@@ -40,7 +40,9 @@ struct PlayerSystem : System
 #pragma warning(disable: 26815)
 			CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
 #pragma warning(pop)
-			characterSystem->RaiseUnit(playerComponents[entity].m_OwnedCharacter, unitID, unit, renderer, capitalPosition);
+			characterSystem->RaiseUnit(playerComponents[entity].m_OwnedCharacter, true, unit, renderer, capitalPosition);
+			CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(playerComponents[entity].m_OwnedCharacter);
+			character.m_AtWar = true;
 		}
 	}
 
@@ -103,6 +105,11 @@ struct PlayerSystem : System
 				}
 
 				unit.SetPath(path, Map::ConvertToScreen(startingPosition));
+#pragma warning(push)
+#pragma warning(disable: 26815)
+				UnitSystem* unitSystem = (UnitSystem*)m_EntityManager->GetSystem<UnitSystem>().get();
+#pragma warning(pop)
+				unitSystem->ShowPath(transform, unit);
 			}
 			else
 			{

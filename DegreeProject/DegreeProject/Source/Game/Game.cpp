@@ -96,10 +96,11 @@ void Game::InitSystems()
 	EntityManager* entityManager = &EntityManager::Get();
 	entityManager->RegisterSystem<CharacterSystem>();
 	entityManager->RegisterSystem<UITextSystem>();
-	entityManager->RegisterSystem<SpriteRenderSystem>();
-	entityManager->RegisterSystem<WarmindSystem>();
-	entityManager->RegisterSystem<PlayerSystem>();
 	entityManager->RegisterSystem<UnitSystem>();
+	entityManager->RegisterSystem<WarmindSystem>();
+	entityManager->RegisterSystem<SpriteRenderSystem>();
+	entityManager->RegisterSystem<PlayerSystem>();
+
 	entityManager->RegisterSystem<UIWindowSystem>();
 	entityManager->RegisterSystem<UISpriteRenderSystem>();
 }

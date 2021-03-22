@@ -56,15 +56,16 @@ struct CharacterSystem : System
 	{
 	}
 
-	void RaiseUnit(EntityID ownerID, EntityID unitID, UnitComponent& unit, SpriteRenderer& renderer, const Vector2DInt& mapPosition)
+	void RaiseUnit(EntityID ownerID, bool playerControlled, UnitComponent& unit, SpriteRenderer& renderer, const Vector2DInt& mapPosition)
 	{
-		Transform& unitTransform = m_EntityManager->GetComponent<Transform>(unitID);
+		Transform& unitTransform = m_EntityManager->GetComponent<Transform>(unit.GetID());
 		unit.m_Owner = ownerID;
+		unit.m_PlayerControlled = playerControlled;
 		Vector2D screenPosition = Map::ConvertToScreen(mapPosition);
-		//unit.m_HighlightShape.setPosition(screenPosition.x, screenPosition.y);
+		unit.m_HighlightShape.setPosition(screenPosition.x, screenPosition.y);
 		unitTransform.m_Position = screenPosition;
 		renderer.m_Sprite.setPosition(screenPosition.x, screenPosition.y);
-		Map::m_MapUnitData[mapPosition].AddUnique(unitID);
+		Map::m_MapUnitData[mapPosition].AddUnique(unit.GetID());
 		unit.m_LastPosition = screenPosition;
 		unit.m_Raised = true;
 		renderer.m_ShouldRender = true;

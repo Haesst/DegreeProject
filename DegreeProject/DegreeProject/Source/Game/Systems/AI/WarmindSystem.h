@@ -87,7 +87,7 @@ struct WarmindSystem : System
 #pragma warning(disable: 26815)
 			CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
 #pragma warning(pop)
-			characterSystem->RaiseUnit(Id, m_Warminds[Id].m_UnitEntity, unit, renderer, capitalPos);
+			characterSystem->RaiseUnit(Id, false, unit, renderer, capitalPos);
 			LOG_INFO("Warmind belonging to {0} is considering new orders", m_Characters[Id].m_Name);
 		}
 	}

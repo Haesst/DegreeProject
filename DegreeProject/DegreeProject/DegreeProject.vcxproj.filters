@@ -84,9 +84,6 @@
     <ClInclude Include="Source\Game\Components\MovingSprite.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Components\PlayerUnit.h">
-      <Filter>Game\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Components\SpriteRenderer.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
@@ -142,9 +139,6 @@
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h">
-      <Filter>Game\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Systems\PlayerUnitSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h">

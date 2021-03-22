@@ -125,7 +125,7 @@ struct UIWindowSystem : System
 
 	void OpenWindow(UIWindow& UIWindow)
 	{
-		if (InputHandler::GetRightMouseReleased() == true && InputHandler::GetPlayerUnitSelected() == false && UIWindow.m_Open == true)
+		if (InputHandler::GetRightMouseClicked() == true && InputHandler::GetPlayerUnitSelected() == false && UIWindow.m_Open == true)
 		{
 			UIWindow.m_Visible = !UIWindow.m_Visible;
 			if (UIWindow.m_Visible == true)
