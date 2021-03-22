@@ -102,34 +102,40 @@ struct WarmindSystem : System
 
 	void OrderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
 	{
-		//UnitComponent* enemyUnit = &m_Units[m_Warminds[warmindID].m_Opponent];
-		//
-		//if (enemyUnit == nullptr || enemyUnit->m_Raised == false)
-		//{
-		//	return;
-		//}
-		//
-		//Vector2D battlefieldPosition;
-		//Vector2DInt battlefieldIntPosition;
-		//
-		//if (enemyUnit->m_CurrentPath.size() > 0)
-		//{
-		//	// battlefieldPosition = enemyUnit.m_CurrentPath.back();
-		//	 battlefieldPosition = enemyUnit->m_Target;
-		//	 battlefieldIntPosition = Vector2DInt((int)battlefieldPosition.x, (int)battlefieldPosition.y);
-		//}
-		//
-		//else
-		//{
-		//	int randomSquareIndex = rand() % Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares.size() + 1;
-		//	battlefieldIntPosition = Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares[randomSquareIndex];
-		//}
-		//
-		//Vector2D unitPosition;
-		//unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
-		//
-		//Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
-		//unit.SetPath(Pathfinding::FindPath(startingPosition, battlefieldIntPosition), Map::ConvertToScreen(startingPosition));
+		auto& enemyWarmind = m_Warminds[m_Warminds[warmindID].m_Opponent];
+		auto& enemyUnit = m_Units[enemyWarmind.m_UnitEntity];
+		EntityID enemyID = enemyWarmind.GetID();
+
+		if (!enemyUnit.m_Raised)
+		{
+			return;
+		}
+
+		Vector2DInt battlefieldIntPosition;
+
+		if (enemyUnit.m_CurrentPath.size() > 0 && !m_Warminds[warmindID].m_Defending)
+		{
+			LOG_INFO("{0} is chasing the enemy army", m_Characters[warmindID].m_Name);
+			battlefieldIntPosition = enemyUnit.m_CurrentPath.back();
+		}
+
+		else
+		{
+			LOG_INFO("{0} is using a random square", m_Characters[warmindID].m_Name);
+			int randomSquareIndex = rand() % Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares.size() + 1;
+			battlefieldIntPosition = Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares[2];
+		}
+
+		Vector2DInt startingPosition = Map::ConvertToMap(m_Transforms[unit.GetID()].m_Position);
+		LOG_INFO("Starting position: {0}", startingPosition);
+
+		std::list<Vector2DInt> path = Pathfinding::FindPath(startingPosition, battlefieldIntPosition);
+
+		if (path.size() > 0)
+		{
+			unit.SetPath(path, Map::ConvertToScreen(startingPosition));
+		}
+			
 	}
 
 	void RaiseUnits(EntityID unitEnt, UnitComponent& unit, SpriteRenderer& renderer, const Vector2D& position)

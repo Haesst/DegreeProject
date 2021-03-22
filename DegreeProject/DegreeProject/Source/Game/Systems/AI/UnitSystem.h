@@ -9,6 +9,7 @@ struct UnitSystem : System
 	UnitComponent* m_UnitComponents = nullptr;
 	CharacterComponent* m_Characters = nullptr;
 	WarmindComponent* m_Warminds = nullptr;
+	SpriteRenderer* m_Renderers = nullptr;
 
 	std::vector<sf::RectangleShape> m_TargetPath;
 
@@ -21,6 +22,7 @@ struct UnitSystem : System
 		m_UnitComponents = m_EntityManager->GetComponentArray<UnitComponent>();
 		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
 		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+		m_Renderers = m_EntityManager->GetComponentArray<SpriteRenderer>();
 	}
 
 	virtual void Start() override
@@ -98,7 +100,9 @@ struct UnitSystem : System
 
 				if (EnemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
 				{
-					EnterCombat(unit.m_EntityID, m_Warminds[unit.m_EntityID].m_Opponent);
+					EntityID enemyID = m_Warminds[unit.m_Owner].m_Opponent;
+					UnitComponent& enemyUnit = m_UnitComponents[m_Warminds[enemyID].m_UnitEntity];
+					EnterCombat(unit.m_EntityID, enemyUnit.GetID());
 				}
 
 				// Check for enemy at square and kill him
@@ -208,6 +212,7 @@ struct UnitSystem : System
 		{
 			m_UnitComponents[unit].m_RepresentedForce = 0;
 			m_UnitComponents[unit].m_Raised = false;
+			m_Renderers[unit].m_ShouldRender = false;
 		}
 	}
 
