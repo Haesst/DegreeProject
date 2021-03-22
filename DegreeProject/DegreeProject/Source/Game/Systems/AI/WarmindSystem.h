@@ -5,6 +5,7 @@
 #include "Game/Components/Warmind.h"
 #include "WarmindConsiderations.h"
 #include "Game/Components/CharacterComponent.h"
+#include "Game/Pathfinding.h"
 
 struct WarmindSystem : System
 {
@@ -33,7 +34,7 @@ struct WarmindSystem : System
 		for (EntityID ent : m_Entities)
 		{
 			m_Warminds[ent].m_UnitEntity = m_EntityManager->AddNewEntity();
-			m_EntityManager->AddComponent<UnitComponent>(m_Warminds[ent].m_UnitEntity, 1, ent);
+			m_EntityManager->AddComponent<UnitComponent>(m_Warminds[ent].m_UnitEntity, m_Characters[ent].m_MaxArmySize, ent);
 			AssetHandler handler;
 			m_EntityManager->AddComponent<SpriteRenderer>(m_Warminds[ent].m_UnitEntity, "Assets/Graphics/soldier unit.png", 32, 32, &handler);
 			auto warmindComp = m_EntityManager->GetComponent<WarmindComponent>(ent);
@@ -80,8 +81,12 @@ struct WarmindSystem : System
 		{
 			int regionIndex = m_Characters[Id].m_OwnedRegionIDs[0];
 			Vector2DInt capitalPos = Map::GetRegionCapitalLocation(regionIndex);
-			Vector2D pos = Map::ConvertToScreen(capitalPos);
-			RaiseUnits(m_Warminds[Id].m_UnitEntity, unit, renderer, pos);
+			LOG_INFO("WarmindUnitID: {0}", m_Warminds[Id].m_UnitEntity);
+#pragma warning(push)
+#pragma warning(disable: 26815)
+			CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
+#pragma warning(pop)
+			characterSystem->RaiseUnit(Id, m_Warminds[Id].m_UnitEntity, unit, renderer, capitalPos);
 			LOG_INFO("Warmind belonging to {0} is considering new orders", m_Characters[Id].m_Name);
 		}
 	}

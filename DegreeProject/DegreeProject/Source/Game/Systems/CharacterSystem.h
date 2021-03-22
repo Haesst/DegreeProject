@@ -6,6 +6,8 @@
 #include "Engine/Window.h"
 #include "ECS/Components/Transform.h"
 #include "Game/Components/CharacterComponent.h"
+#include "Game/Components/Unit.h"
+#include "Game/Components/SpriteRenderer.h"
 #include "Game/Systems/UITextSystem.h"
 
 struct CharacterSystem : System
@@ -52,6 +54,22 @@ struct CharacterSystem : System
 
 	virtual void Render() override
 	{
+	}
+
+	void RaiseUnit(EntityID ownerID, EntityID unitID, UnitComponent& unit, SpriteRenderer& renderer, const Vector2DInt& mapPosition)
+	{
+		Transform& unitTransform = m_EntityManager->GetComponent<Transform>(unitID);
+		LOG_INFO("Unit.GetID: {0}", unitID);
+		unit.m_Owner = ownerID;
+		Vector2D screenPosition = Map::ConvertToScreen(mapPosition);
+		unit.m_HighlightShape.setPosition(screenPosition.x, screenPosition.y);
+		unitTransform.m_Position = screenPosition;
+		renderer.m_Sprite.setPosition(screenPosition.x, screenPosition.y);
+		Vector2DInt screenPositionInt = Vector2DInt((int)screenPosition.x, (int)screenPosition.y);
+		Map::m_MapUnitData[screenPositionInt].AddUnique(unitID);
+		unit.m_LastPosition = screenPosition;
+		unit.m_Raised = true;
+		renderer.m_ShouldRender = true;
 	}
 
 	void ConquerRegion(unsigned int regionID, unsigned int conqueringEntity)

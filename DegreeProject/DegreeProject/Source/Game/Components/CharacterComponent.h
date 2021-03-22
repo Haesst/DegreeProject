@@ -22,7 +22,8 @@ struct CharacterComponent : public Component
 	const char* m_Name = "";
 	std::vector<unsigned int> m_OwnedRegionIDs;
 	int m_CurrentGold = 0;
-	int m_CurrentArmySize = 0;
+	int m_RaisedArmySize = 0;
+	unsigned int m_MaxArmySize = 0;
 	bool m_IsPlayerControlled = false;
 	sf::Color m_RegionColor = sf::Color::Black;
 	bool m_AtWar = false;
@@ -37,7 +38,7 @@ struct CharacterComponent : public Component
 		m_Name = characterName;
 		m_OwnedRegionIDs = regionIDs;
 		m_CurrentGold = gold;
-		m_CurrentArmySize = armySize;
+		m_MaxArmySize = armySize;
 		m_IsPlayerControlled = isPlayerControlled;
 		m_RegionColor = regionColor;
 		m_PersonalityIndex = personalityIndex;
@@ -53,7 +54,7 @@ struct CharacterComponent : public Component
 		m_AtWar = false;
 	}
 
-	void OnMonthChange(Date date)
+	void OnMonthChange(Date)
 	{
 		int incomingGold = 0;
 
@@ -63,6 +64,8 @@ struct CharacterComponent : public Component
 
 			incomingGold += region.m_RegionTax;
 		}
+
+		incomingGold -= m_RaisedArmySize;
 
 		m_CurrentGold += incomingGold;
 	}

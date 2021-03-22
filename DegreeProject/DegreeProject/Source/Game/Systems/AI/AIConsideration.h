@@ -50,9 +50,9 @@ struct ArmySizeConsideration : public Consideration
 		auto contextCharComp = m_EntityManager->GetComponent<CharacterComponent>(context);
 		auto targetCharComp = m_EntityManager->GetComponent<CharacterComponent>(target);
 
-		float armySizeDiff = (float)contextCharComp.m_CurrentArmySize - targetCharComp.m_CurrentArmySize;
+		float armySizeDiff = (float)contextCharComp.m_MaxArmySize - targetCharComp.m_MaxArmySize;
 
-		float percentDiff = (float)targetCharComp.m_CurrentArmySize / contextCharComp.m_CurrentArmySize;
+		float percentDiff = (float)targetCharComp.m_MaxArmySize / contextCharComp.m_MaxArmySize;
 
 		if (armySizeDiff > 0)
 		{
