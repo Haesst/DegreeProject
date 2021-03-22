@@ -1,5 +1,8 @@
 #pragma once
 #include <vector>
+#include "Game/GameDate.h"
+#include "Game/Map/Map.h"
+#include "Engine/Log.h"
 #include "ECS/Component.h"
 
 enum class Title
@@ -40,9 +43,28 @@ struct CharacterComponent : public Component
 		m_PersonalityIndex = personalityIndex;
 	}
 
+	void Start()
+	{
+		Time::m_GameDate.SubscribeToMonthChange(std::bind(&CharacterComponent::OnMonthChange, this, std::placeholders::_1));
+	}
+
 	void MakePeace()
 	{
 		m_AtWar = false;
+	}
+
+	void OnMonthChange(Date date)
+	{
+		int incomingGold = 0;
+
+		for (auto& regionId : m_OwnedRegionIDs)
+		{
+			MapRegion region = Map::GetRegionById(regionId);
+
+			incomingGold += region.m_RegionTax;
+		}
+
+		m_CurrentGold += incomingGold;
 	}
 };
 

@@ -32,6 +32,8 @@ struct CharacterSystem : System
 			{
 				Map::GetRegionById(ownedID).m_OwnerID = entity;
 			}
+
+			characters[entity].Start();
 		}
 	}
 

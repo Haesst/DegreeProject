@@ -54,6 +54,8 @@ struct GameDate
 	float timeBeforeAddingDay = 0.3f;
 	float addDayTimer = 0.3f;
 
+	std::vector<std::function<void(Date)>> m_MonthChangeSubscribers;
+
 	void Update()
 	{
 		addDayTimer -= Time::DeltaTime();
@@ -78,11 +80,21 @@ struct GameDate
 				m_Date.m_Month = 0;
 				++m_Date.m_Year;
 			}
+
+			for (auto& action : m_MonthChangeSubscribers)
+			{
+				action(m_Date);
+			}
 		}
 	}
 
 	std::string GetDateString()
 	{
 		return std::to_string(m_Date.m_Day) + " " + m_MonthName[m_Date.m_Month] + " " + std::to_string(m_Date.m_Year);
+	}
+
+	void SubscribeToMonthChange(std::function<void(Date)> action)
+	{
+		m_MonthChangeSubscribers.push_back(action);
 	}
 };
