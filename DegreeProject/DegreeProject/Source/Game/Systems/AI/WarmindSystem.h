@@ -161,6 +161,8 @@ struct WarmindSystem : System
 
 	void ConsiderOrders(EntityID warmind, UnitComponent& unit, EntityID targetWarmind)
 	{
+		m_Units[m_Warminds[warmind].m_UnitEntity].m_Moving = false;
+
 		SiegeCapitalConsideration siegeConsideration;
 		float siegeEval = siegeConsideration.Evaluate(warmind, targetWarmind);
 		FightEnemyArmyConsideration fightConsideration;
