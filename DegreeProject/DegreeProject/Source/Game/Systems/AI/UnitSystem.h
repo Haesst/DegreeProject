@@ -30,10 +30,12 @@ struct UnitSystem : System
 		for (EntityID entity : m_Entities)
 		{
 			UnitComponent& unit = m_UnitComponents[entity];
+			Transform& transform = m_EntityManager->GetComponent<Transform>(entity);
 			unit.m_HighlightShape.setFillColor(unit.m_FillColor);
 			unit.m_HighlightShape.setOutlineColor(unit.m_OutlineColor);
 			unit.m_HighlightShape.setOutlineThickness(unit.m_OutlineThickness);
 			unit.m_HighlightShape.setSize(unit.m_HighlightShapeSize);
+			unit.m_HighlightShape.setPosition(transform.m_Position.x, transform.m_Position.y);
 		}
 	}
 
@@ -52,6 +54,7 @@ struct UnitSystem : System
 				unit.m_HighlightShape.setOutlineColor(unit.m_OutlineColor);
 				unit.m_HighlightShape.setOutlineThickness(unit.m_OutlineThickness);
 				unit.m_HighlightShape.setSize(unit.m_HighlightShapeSize);
+				unit.m_HighlightShape.setPosition(transform.m_Position.x, transform.m_Position.y);
 			}
 		}
 	}
