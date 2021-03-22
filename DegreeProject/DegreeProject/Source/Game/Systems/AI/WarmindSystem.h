@@ -104,7 +104,6 @@ struct WarmindSystem : System
 	{
 		auto& enemyWarmind = m_Warminds[m_Warminds[warmindID].m_Opponent];
 		auto& enemyUnit = m_Units[enemyWarmind.m_UnitEntity];
-		EntityID enemyID = enemyWarmind.GetID();
 
 		if (!enemyUnit.m_Raised)
 		{
@@ -122,7 +121,7 @@ struct WarmindSystem : System
 		else
 		{
 			LOG_INFO("{0} is using a random square", m_Characters[warmindID].m_Name);
-			int randomSquareIndex = rand() % Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares.size() + 1;
+			//int randomSquareIndex = rand() % Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares.size() + 1;
 			battlefieldIntPosition = Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares[2];
 		}
 
