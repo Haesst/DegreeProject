@@ -5,6 +5,7 @@
 #include "ECS/EntityManager.h"
 #include "Game/Systems/CharacterSystem.h"
 #include "Game/HotReloader.h"
+#include "Game/GameData.h"
 #include "Game/AI/AIManager.h"
 #include "Game/Components/MovingSprite.h"
 #include "Game/Components/SpriteRenderer.h"
@@ -81,6 +82,7 @@ void Game::InitAssets()
 {
 	m_AssetHandler = new AssetHandler();
 	InitSound();
+	GameData::Initialize();
 }
 
 void Game::InitSound()
@@ -136,48 +138,6 @@ void Game::AddEntitys()
 	entityManager->AddComponent<PlayerUnit>(playerUnit, char2);
 	entityManager->AddComponent<SpriteRenderer>(playerUnit, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
 	entityManager->AddComponent<Player>(playerUnit);
-
-// 	std::vector<unsigned int> id3{ 4 };
-// 	CreateCharacter(char3, Title::Duke, "Republic of Veneto", "Viktor", id3, 100, 10, false, sf::Color(149, 181, 54), 0);
-// 
-// 	std::vector<unsigned int> id4{ 5 };
-// 	CreateCharacter(char4, Title::King, "Kingdom of Friuli", "Fred", id4, 100, 10, false, sf::Color(34, 51, 67), 0);
-// 
-// 	std::vector<unsigned int> id5{ 6 };
-// 	CreateCharacter(char5, Title::Duke, "Republic of Genua", "Gustav", id5, 100, 5, false, sf::Color(60, 54, 107), 0);
-// 
-// 	std::vector<unsigned int> id6{ 7 };
-// 	CreateCharacter(char6, Title::Count, "County of Romagna", "Emil", id6, 100, 10, false, sf::Color(54, 70, 105), 0);
-// 
-// 	std::vector<unsigned int> id7{ 8 };
-//  CreateCharacter(char7, Title::Duke, "Republic of Firenze", "Fredrik", id7, 100, 10, false, sf::Color(88, 42, 42), 0);
-// 
-// 	std::vector<unsigned int> id8{ 9 };
-// 	CreateCharacter(char8, Title::Baron, "Barony of Urbino", "Urban", id8, 100, 10, false, sf::Color(149, 55, 54), 0);
-// 
-// 	std::vector<unsigned int> id9{ 10 };
-// 	CreateCharacter(char9, Title::Baron, "Barony of Umbria", "Brian", id9, 100, 10, false, sf::Color(34, 51, 120), 0);
-// 
-// 	std::vector<unsigned int> id10{ 11 };
-// 	CreateCharacter(char10, Title::Emperor, "Roman Empire", "Robin", id10, 100, 5, false, sf::Color(90, 54, 200), 0);
-// 
-// 	std::vector<unsigned int> id11{ 12 };
-// 	CreateCharacter(char11, Title::Count, "County of Abruzzo", "Albin", id11, 100, 10, false, sf::Color(54, 181, 50), 0);
-// 
-// 	std::vector<unsigned int> id12{ 13 };
-// 	CreateCharacter(char12, Title::Count, "County of Campania", "Camilla", id12, 100, 10, false, sf::Color(165, 100, 42), 0);
-// 
-// 	std::vector<unsigned int> id13{ 14 };
-// 	CreateCharacter(char13, Title::Count, "County of Bari", "Bart", id13, 100, 10, false, sf::Color(149, 181, 100), 0);
-// 
-// 	std::vector<unsigned int> id14{ 15 };
-// 	CreateCharacter(char14, Title::Baron, "Barony of Basilicata", "Basil", id14, 100, 10, false, sf::Color(34, 100, 67), 0);
-// 
-// 	std::vector<unsigned int> id15{ 16 };
-// 	CreateCharacter(char15, Title::Count, "County of Calabria", "Karl", id15, 100, 5, false, sf::Color(181, 200, 107), 0);
-// 
-// 	std::vector<unsigned int> id16{ 17 };
-// 	CreateCharacter(char16, Title::King, "Kingdom of Sicily", "Sissy", id16, 100, 10, false, sf::Color(200, 181, 105), 0);
 
 	entityManager->AddComponent<WarmindComponent>(char1, 1, char0);
 	entityManager->AddComponent<WarmindComponent>(char0, 4, char1);

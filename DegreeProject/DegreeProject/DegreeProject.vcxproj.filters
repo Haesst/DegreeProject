@@ -123,9 +123,6 @@
     <ClInclude Include="Source\Game\Map\MapRegion.h">
       <Filter>Game\Map</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Mutex.h">
-      <Filter>Game</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Pathfinding.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -168,6 +165,8 @@
     <ClInclude Include="Source\Game\Systems\PlayerSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Systems\AI\WarmindConsiderations.h" />
+    <ClInclude Include="Source\Game\GameData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -204,5 +203,6 @@
       <Filter>Game\Systems\AI</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
+    <ClCompile Include="Source\Game\GameData.cpp" />
   </ItemGroup>
 </Project>

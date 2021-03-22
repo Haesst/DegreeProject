@@ -1,5 +1,6 @@
 [
     {
+        "id": 1,
         "name": "Fort",
         "cost": 50,
         "regionStrength": 25,
@@ -7,6 +8,7 @@
         "regionArmy": 20
     },
     {
+        "id": 2,
         "name": "Barracks",
         "cost": 15,
         "regionStrength": 0,
@@ -14,6 +16,7 @@
         "regionArmy": 100
     },
     {
+        "id": 3,
         "name": "Market",
         "cost": 30,
         "regionStrength": 0,
@@ -21,6 +24,7 @@
         "regionArmy": 0
     },
     {
+        "id": 4,
         "name": "Walls",
         "cost": 25,
         "regionStrength": 40,
