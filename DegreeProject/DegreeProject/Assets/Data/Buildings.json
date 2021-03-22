@@ -1,0 +1,30 @@
+[
+    {
+        "name": "Fort",
+        "cost": 50,
+        "regionStrength": 25,
+        "regionIncome": -1,
+        "regionArmy": 20
+    },
+    {
+        "name": "Barracks",
+        "cost": 15,
+        "regionStrength": 0,
+        "regionIncome": -1,
+        "regionArmy": 100
+    },
+    {
+        "name": "Market",
+        "cost": 30,
+        "regionStrength": 0,
+        "regionIncome": 5,
+        "regionArmy": 0
+    },
+    {
+        "name": "Walls",
+        "cost": 25,
+        "regionStrength": 40,
+        "regionIncome": 0,
+        "regionArmy": 0
+    }
+]
