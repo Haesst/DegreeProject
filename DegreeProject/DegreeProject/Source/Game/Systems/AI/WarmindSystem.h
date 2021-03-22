@@ -12,6 +12,7 @@ struct WarmindSystem : System
 	EntityManager* m_EntityManager = nullptr;
 	WarmindComponent* m_Warminds = nullptr;
 	CharacterComponent* m_Characters = nullptr;
+	Transform* m_Transforms = nullptr;
 	UnitComponent* m_Units = nullptr;
 	SpriteRenderer* m_Renderers = nullptr;
 
@@ -27,6 +28,7 @@ struct WarmindSystem : System
 		m_Units = m_EntityManager->GetComponentArray<UnitComponent>();
 		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
 		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+		m_Transforms = m_EntityManager->GetComponentArray<Transform>();
 	}
 
 	virtual void Start() override
@@ -65,7 +67,7 @@ struct WarmindSystem : System
 				if (m_Warminds[entity].m_OrderAccu >= m_Warminds[entity].m_OrderTimer)
 				{
 					m_Warminds[entity].m_OrderAccu = 0.0f;
-					//ConsiderOrders(entity, m_Units[m_Warminds[entity].m_UnitEntity], m_Warminds[entity].m_Opponent);
+					ConsiderOrders(entity, m_Units[m_Warminds[entity].m_UnitEntity], m_Warminds[entity].m_Opponent);
 				}
 			}
 		}
@@ -100,35 +102,34 @@ struct WarmindSystem : System
 
 	void OrderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
 	{
-		UnitComponent& enemyUnit = m_Units[m_Warminds[warmindID].m_Opponent];
-		Vector2DInt battlefieldPosition;
-
-		if (enemyUnit.m_CurrentPath.size() > 0)
-		{
-			 battlefieldPosition = enemyUnit.m_CurrentPath.back();
-		}
-
-		else
-		{
-			int randomSquareIndex = rand() % Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares.size() + 1;
-			battlefieldPosition = Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares[randomSquareIndex];
-		}
-
-		Vector2D unitPosition;
-
-		if (m_Units[m_Warminds[warmindID].m_UnitEntity].m_CurrentPath.size() > 0)
-		{
-			//Check if unit is on map and not in the water, will crash otherwise
-			unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position; //This will be changed later as it is a bit dangerous
-		}
-
-		else
-		{
-			unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
-		}
-
-		Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
-		unit.SetPath(Pathfinding::FindPath(startingPosition, battlefieldPosition), Map::ConvertToScreen(startingPosition));
+		//UnitComponent* enemyUnit = &m_Units[m_Warminds[warmindID].m_Opponent];
+		//
+		//if (enemyUnit == nullptr || enemyUnit->m_Raised == false)
+		//{
+		//	return;
+		//}
+		//
+		//Vector2D battlefieldPosition;
+		//Vector2DInt battlefieldIntPosition;
+		//
+		//if (enemyUnit->m_CurrentPath.size() > 0)
+		//{
+		//	// battlefieldPosition = enemyUnit.m_CurrentPath.back();
+		//	 battlefieldPosition = enemyUnit->m_Target;
+		//	 battlefieldIntPosition = Vector2DInt((int)battlefieldPosition.x, (int)battlefieldPosition.y);
+		//}
+		//
+		//else
+		//{
+		//	int randomSquareIndex = rand() % Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares.size() + 1;
+		//	battlefieldIntPosition = Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares[randomSquareIndex];
+		//}
+		//
+		//Vector2D unitPosition;
+		//unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
+		//
+		//Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
+		//unit.SetPath(Pathfinding::FindPath(startingPosition, battlefieldIntPosition), Map::ConvertToScreen(startingPosition));
 	}
 
 	void RaiseUnits(EntityID unitEnt, UnitComponent& unit, SpriteRenderer& renderer, const Vector2D& position)
@@ -160,7 +161,7 @@ struct WarmindSystem : System
 		FightEnemyArmyConsideration fightConsideration;
 		float fightEval = fightConsideration.Evaluate(warmind, targetWarmind);
 		
-		if (siegeEval >= fightEval)
+		if (siegeEval > fightEval)
 		{
 			if (!m_Warminds[warmind].m_Defending)
 			{
