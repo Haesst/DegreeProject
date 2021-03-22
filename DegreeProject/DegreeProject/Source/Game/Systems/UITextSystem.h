@@ -29,7 +29,7 @@ struct UITextSystem : System
 
 		for (auto entity : m_Entities)
 		{
-			AdjustText(&UITexts[entity]);
+			AdjustText(UITexts[entity]);
 		}
 	}
 
@@ -56,9 +56,9 @@ struct UITextSystem : System
 		}
 	}
 
-	void AdjustText(UIText* UIText)
+	void AdjustText(UIText& UIText)
 	{
-		if (UIText->m_OwnedRegionIDs.size() > 0)
+		if (UIText.m_OwnedRegionIDs.size() > 0)
 		{
 			std::vector<MapRegion> regions = Map::m_Data.m_Regions;
 			Vector2DInt leftMostPosition = { 100, 0 };
@@ -66,7 +66,7 @@ struct UITextSystem : System
 			unsigned int regionIndex = 0;
 			for each (MapRegion region in regions)
 			{
-				for each (unsigned int regionId in UIText->m_OwnedRegionIDs)
+				for each (unsigned int regionId in UIText.m_OwnedRegionIDs)
 				{
 					if (regionId == regions[regionIndex].m_RegionId)
 					{
@@ -88,31 +88,31 @@ struct UITextSystem : System
 			Vector2D leftMostPositionScreen = Map::ConvertToScreen(leftMostPosition);
 			Vector2D diagonal = Map::ConvertToScreen(rightMostPosition) - leftMostPositionScreen;
 			float offsetY = 1.0f;
-			UIText->m_CharacterSize = (unsigned int)(diagonal.x * 0.1f);
-			UIText->m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
-			if (UIText->m_Rotation < 0.0f)
+			UIText.m_CharacterSize = (unsigned int)(diagonal.x * 0.1f);
+			UIText.m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
+			if (UIText.m_Rotation < 0.0f)
 			{
 				offsetY = -0.5f;
 			}
-			else if (UIText->m_Rotation > 0.0f)
+			else if (UIText.m_Rotation > 0.0f)
 			{
 				offsetY = 1.5f;
 			}
-			UIText->m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - UIText->m_CharacterSize * 3;
-			UIText->m_PositionY = diagonal.y * 0.5f + leftMostPositionScreen.y - UIText->m_CharacterSize * offsetY;
-			UIText->m_CountryNameText.setFont(UIText->m_Font);
-			UIText->m_CountryNameText.setCharacterSize(UIText->m_CharacterSize);
-			UIText->m_CountryNameText.setStyle(UIText->m_Style);
-			UIText->m_CountryNameText.setString(UIText->m_CountryName);
-			UIText->m_CountryNameText.setPosition(UIText->m_PositionX, UIText->m_PositionY);
-			UIText->m_CountryNameText.setFillColor(UIText->m_FillColor);
-			UIText->m_CountryNameText.setOutlineColor(UIText->m_OutlineColor);
-			UIText->m_CountryNameText.setOutlineThickness(UIText->m_OutlineThickness);
-			UIText->m_CountryNameText.setRotation(UIText->m_Rotation);
+			UIText.m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - UIText.m_CharacterSize * 3;
+			UIText.m_PositionY = diagonal.y * 0.5f + leftMostPositionScreen.y - UIText.m_CharacterSize * offsetY;
+			UIText.m_CountryNameText.setFont(UIText.m_Font);
+			UIText.m_CountryNameText.setCharacterSize(UIText.m_CharacterSize);
+			UIText.m_CountryNameText.setStyle(UIText.m_Style);
+			UIText.m_CountryNameText.setString(UIText.m_CountryName);
+			UIText.m_CountryNameText.setPosition(UIText.m_PositionX, UIText.m_PositionY);
+			UIText.m_CountryNameText.setFillColor(UIText.m_FillColor);
+			UIText.m_CountryNameText.setOutlineColor(UIText.m_OutlineColor);
+			UIText.m_CountryNameText.setOutlineThickness(UIText.m_OutlineThickness);
+			UIText.m_CountryNameText.setRotation(UIText.m_Rotation);
 		}
 		else
 		{
-			UIText->m_Conquered = true;
+			UIText.m_Conquered = true;
 		}
 	}
 
@@ -120,14 +120,14 @@ struct UITextSystem : System
 	{
 		UIText& text = m_EntityManager->GetComponent<UIText>(conqueringEntity + 1);
 		text.m_OwnedRegionIDs.push_back(regionID);
-		AdjustText(&text);
+		AdjustText(text);
 	}
 
 	void LoseRegion(unsigned regionIndex, unsigned int losingEntity)
 	{
 		UIText& text = m_EntityManager->GetComponent<UIText>(losingEntity + 1);
 		text.m_OwnedRegionIDs.erase(text.m_OwnedRegionIDs.begin() + regionIndex);
-		AdjustText(&text);
+		AdjustText(text);
 	}
 };
 

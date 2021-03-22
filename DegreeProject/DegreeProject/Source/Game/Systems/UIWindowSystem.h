@@ -40,8 +40,8 @@ struct UIWindowSystem : System
 
 		for (auto entity : m_Entities)
 		{
-			SetOptions(&UIWindows[entity]);
-			OpenWindow(&UIWindows[entity]);
+			SetOptions(UIWindows[entity]);
+			OpenWindow(UIWindows[entity]);
 			if (UIWindows[entity].m_Visible)
 			{
 				UIWindows[entity].m_Shape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(10, 10)));
@@ -94,55 +94,49 @@ struct UIWindowSystem : System
 		}
 	}
 
-	void SetOptions(UIWindow* UIWindow)
+	void SetOptions(UIWindow& UIWindow)
 	{
-		if (InputHandler::GetRightMouseClicked() == true && InputHandler::GetPlayerUnitSelected() == false && !UIWindow->m_Visible)
+		if (InputHandler::GetRightMouseClicked() == true && InputHandler::GetPlayerUnitSelected() == false && !UIWindow.m_Visible)
 		{
 			Vector2DInt mousePosition = InputHandler::GetMouseMapPosition();
-			CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-			std::vector<MapRegion> regions = Map::m_Data.m_Regions;
-			for each (MapRegion region in regions)
+			if (Map::m_MapUnitData.find(mousePosition) != Map::m_MapUnitData.end())
 			{
-				for each (Vector2DInt position in region.m_MapSquares)
+				EntityID regionID = Map::m_MapUnitData[mousePosition].m_RegionID;
+				if (UIWindow.m_CurrentRegionID != regionID)
 				{
-					if (position == mousePosition)
-					{
-						UIWindow->m_RegionTax = region.m_RegionTax;
-						UIWindow->m_RegionName = region.m_RegionName;
-						UIWindow->m_OwnerKingdomName = characters[region.m_OwnerID].m_KingdomName;
-						UIWindow->m_OwnerCharacterName = characters[region.m_OwnerID].m_Name;
-						UIWindow->m_OwnerTitle = UIWindow->titles[(unsigned int)characters[region.m_OwnerID].m_CharacterTitle];
-						UIWindow->m_OwnerColor = characters[region.m_OwnerID].m_RegionColor;
-						UIWindow->m_Open = true;
-						break;
-					}
-					else
-					{
-						UIWindow->m_Open = false;
-					}
+					CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+					UIWindow.m_CurrentRegionID = regionID;
+					MapRegion& currentMapRegion = Map::GetRegionById(regionID);
+					UIWindow.m_RegionTax = currentMapRegion.m_RegionTax;
+					UIWindow.m_RegionName = currentMapRegion.m_RegionName;
+					UIWindow.m_OwnerKingdomName = characters[currentMapRegion.m_OwnerID].m_KingdomName;
+					UIWindow.m_OwnerCharacterName = characters[currentMapRegion.m_OwnerID].m_Name;
+					UIWindow.m_OwnerTitle = UIWindow.titles[(unsigned int)characters[currentMapRegion.m_OwnerID].m_CharacterTitle];
+					UIWindow.m_OwnerColor = characters[currentMapRegion.m_OwnerID].m_RegionColor;
 				}
-				if (UIWindow->m_Open == true)
-				{
-					break;
-				}
+				UIWindow.m_Open = true;
+			}
+			else
+			{
+				UIWindow.m_Open = false;
 			}
 		}
 	}
 
-	void OpenWindow(UIWindow* UIWindow)
+	void OpenWindow(UIWindow& UIWindow)
 	{
-		if (InputHandler::GetRightMouseReleased() == true && InputHandler::GetPlayerUnitSelected() == false && UIWindow->m_Open == true)
+		if (InputHandler::GetRightMouseReleased() == true && InputHandler::GetPlayerUnitSelected() == false && UIWindow.m_Open == true)
 		{
-			UIWindow->m_Visible = !UIWindow->m_Visible;
-			if (UIWindow->m_Visible == true)
+			UIWindow.m_Visible = !UIWindow.m_Visible;
+			if (UIWindow.m_Visible == true)
 			{
-				m_EntityManager->SetEntityActive(UIWindow->m_BottomPortraitUI, false);
-				m_EntityManager->SetEntityActive(UIWindow->m_TopPortraitUI, true);
+				m_EntityManager->SetEntityActive(UIWindow.m_BottomPortraitUI, false);
+				m_EntityManager->SetEntityActive(UIWindow.m_TopPortraitUI, true);
 			}
 			else
 			{
-				m_EntityManager->SetEntityActive(UIWindow->m_TopPortraitUI, false);
-				m_EntityManager->SetEntityActive(UIWindow->m_BottomPortraitUI, true);
+				m_EntityManager->SetEntityActive(UIWindow.m_TopPortraitUI, false);
+				m_EntityManager->SetEntityActive(UIWindow.m_BottomPortraitUI, true);
 			}
 		}
 	}

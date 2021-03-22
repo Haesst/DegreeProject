@@ -10,6 +10,8 @@ struct UnitSystem : System
 	CharacterComponent* m_Characters = nullptr;
 	WarmindComponent* m_Warminds = nullptr;
 
+	std::vector<sf::RectangleShape> m_TargetPath;
+
 	float m_MoveTolerance = 0.3f;
 
 	UnitSystem()
@@ -23,6 +25,14 @@ struct UnitSystem : System
 
 	virtual void Start() override
 	{
+		for (EntityID entity : m_Entities)
+		{
+			UnitComponent& unit = m_UnitComponents[entity];
+			unit.m_HighlightShape.setFillColor(unit.m_FillColor);
+			unit.m_HighlightShape.setOutlineColor(unit.m_OutlineColor);
+			unit.m_HighlightShape.setOutlineThickness(unit.m_OutlineThickness);
+			unit.m_HighlightShape.setSize(unit.m_HighlightShapeSize);
+		}
 	}
 
 	virtual void Update() override 
@@ -36,6 +46,36 @@ struct UnitSystem : System
 			{
 				MoveUnit(unit, transform);
 				SeizeRegion(unit);
+				unit.m_HighlightShape.setFillColor(unit.m_FillColor);
+				unit.m_HighlightShape.setOutlineColor(unit.m_OutlineColor);
+				unit.m_HighlightShape.setOutlineThickness(unit.m_OutlineThickness);
+				unit.m_HighlightShape.setSize(unit.m_HighlightShapeSize);
+			}
+		}
+	}
+
+	virtual void Render() override
+	{
+		for (EntityID entity : m_Entities)
+		{
+			UnitComponent& unit = m_UnitComponents[entity];
+			Window::GetWindow()->draw(unit.m_HighlightShape);
+			if (unit.m_Moving && unit.m_PlayerSelected)
+			{
+				for each (sf::RectangleShape rectangle in m_TargetPath)
+				{
+					Window::GetWindow()->draw(rectangle);
+				}
+			}
+			if (unit.m_Raised)
+			{
+				sf::RectangleShape shape;
+				shape.setSize(sf::Vector2f(32.0f, 32.0f));
+				shape.setFillColor(sf::Color::Red);
+
+				Vector2D pos = Map::ConvertToScreen(unit.m_CurrentPath.back());
+				shape.setPosition(pos.x, pos.y);
+				Window::GetWindow()->draw(shape);
 			}
 		}
 	}
@@ -53,7 +93,7 @@ struct UnitSystem : System
 			{
 				unit.m_LastPosition = unit.m_Target;
 				transform.m_Position = unit.m_Target;
-				Vector2DInt pos((int)unit.m_Target.x, (int)unit.m_Target.y);
+				Vector2DInt pos = Map::ConvertToMap(unit.m_Target);
 				Map::m_MapUnitData[pos].AddUnique(unit.m_EntityID);
 
 				if (EnemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
@@ -68,7 +108,7 @@ struct UnitSystem : System
 					unit.m_Target = nextPosition;
 					unit.m_Direction = (nextPosition - transform.m_Position).Normalized();
 
-					Vector2DInt mapPos((int)unit.m_LastPosition.x, (int)unit.m_LastPosition.y);
+					Vector2DInt mapPos = Map::ConvertToMap(unit.m_LastPosition);
 					Map::m_MapUnitData[mapPos].AddUnique(unit.m_EntityID);
 					
 					unit.m_CurrentPath.pop_front();
@@ -168,6 +208,79 @@ struct UnitSystem : System
 		{
 			m_UnitComponents[unit].m_RepresentedForce = 0;
 			m_UnitComponents[unit].m_Raised = false;
+		}
+	}
+
+	void ShowPath(Transform& transform, UnitComponent& unit)
+	{
+		std::vector<Vector2DInt> path;
+		for each (Vector2DInt position in unit.m_CurrentPath)
+		{
+			path.push_back(position);
+		}
+		unsigned int index = 0;
+		for each (Vector2DInt position in path)
+		{
+			Vector2D screenPosition = Map::ConvertToScreen(position);
+			Vector2D rectangleSize = Vector2D(unit.m_HighlightShape.getSize().x * 1.45f, unit.m_HighlightShape.getSize().y * 0.25f);
+			float rotation = 0.0f;
+			Vector2DInt oldPosition = Vector2DInt();
+			if (m_TargetPath.size() > 0)
+			{
+				oldPosition = path[index - 1];
+			}
+			else
+			{
+				oldPosition = Map::ConvertToMap(transform.m_Position);
+			}
+			Vector2DInt change = position - oldPosition;
+			if (abs(change.y) == 1 && change.x == 0)
+			{
+				rotation = 90.0f;
+				screenPosition.x += unit.m_HighlightShape.getSize().x * 0.625f;
+				screenPosition.y -= unit.m_HighlightShape.getSize().y * 0.375f;
+				if (change.y < 0)
+				{
+					screenPosition.y += unit.m_HighlightShape.getSize().y * 0.5f;
+				}
+				else
+				{
+					screenPosition.y -= unit.m_HighlightShape.getSize().y * 0.5f;
+				}
+			}
+			else if (change.x > 0 && change.y > 0 || change.x < 0 && change.y < 0)
+			{
+				rotation = 45.0f;
+				screenPosition.x += unit.m_HighlightShape.getSize().x * 0.28125f;
+				screenPosition.y -= unit.m_HighlightShape.getSize().y * 0.28125f;
+				if (change.x > 0 && change.y > 0)
+				{
+					screenPosition.x -= unit.m_HighlightShape.getSize().x;
+					screenPosition.y -= unit.m_HighlightShape.getSize().y;
+				}
+				if (change.x < 0 && change.y < 0)
+				{
+					screenPosition.x += unit.m_HighlightShape.getSize().x * 0.5f;
+					screenPosition.y += unit.m_HighlightShape.getSize().y * 0.5f;
+				}
+			}
+			else if (change.x > 0 && change.y < 0 || change.x < 0 && change.y > 0)
+			{
+				rotation = -45.0f;
+				screenPosition.x += unit.m_HighlightShape.getSize().x * 0.21875f;
+				screenPosition.y += unit.m_HighlightShape.getSize().y * 0.21875f;
+				if (change.x > 0 && change.y < 0)
+				{
+					screenPosition.x -= unit.m_HighlightShape.getSize().x;
+					screenPosition.y += unit.m_HighlightShape.getSize().y;
+				}
+			}
+			sf::RectangleShape rectangle = sf::RectangleShape(sf::Vector2f(rectangleSize.x, rectangleSize.y));
+			rectangle.setFillColor(sf::Color::White);
+			rectangle.setRotation(rotation);
+			rectangle.setPosition(screenPosition.x, screenPosition.y + unit.m_HighlightShape.getSize().y * 0.375f);
+			m_TargetPath.push_back(rectangle);
+			index++;
 		}
 	}
 };

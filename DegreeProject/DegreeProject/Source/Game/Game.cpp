@@ -9,8 +9,6 @@
 #include "Game/AI/AIManager.h"
 #include "Game/Components/MovingSprite.h"
 #include "Game/Components/SpriteRenderer.h"
-#include "Game/Systems/PlayerUnitSystem.h"
-#include "Game/Systems/ECSExampleSystem.h"
 #include "Game/Systems/SpriteRenderSystem.h"
 #include "Game/Systems/UIWindowSystem.h"
 #include "Game/Systems/UITextSystem.h"
@@ -97,14 +95,12 @@ void Game::InitSystems()
 	EntityManager* entityManager = &EntityManager::Get();
 	entityManager->RegisterSystem<CharacterSystem>();
 	entityManager->RegisterSystem<UITextSystem>();
-	entityManager->RegisterSystem<ECSExampleSystem>();
-	entityManager->RegisterSystem<PlayerUnitSystem>();
 	entityManager->RegisterSystem<SpriteRenderSystem>();
+	entityManager->RegisterSystem<WarmindSystem>();
+	entityManager->RegisterSystem<PlayerSystem>();
+	entityManager->RegisterSystem<UnitSystem>();
 	entityManager->RegisterSystem<UIWindowSystem>();
 	entityManager->RegisterSystem<UISpriteRenderSystem>();
-	entityManager->RegisterSystem<WarmindSystem>();
-	entityManager->RegisterSystem<UnitSystem>();
-	entityManager->RegisterSystem<PlayerSystem>();
 }
 
 void Game::AddEntitys()
@@ -134,10 +130,8 @@ void Game::AddEntitys()
 	std::vector<unsigned int> id2{ 13, 14, 15, 16, 17 };
 	EntityID char2 = CreateCharacter(*entityManager, id2, Title::King, "Kingdom of Sicilies", "Fredrik", 100, 10, true, sf::Color(200, 181, 105));
 
-	EntityID playerUnit = entityManager->AddNewEntity();
-	entityManager->AddComponent<PlayerUnit>(playerUnit, char2);
-	entityManager->AddComponent<SpriteRenderer>(playerUnit, "Assets/Graphics/Soldier Unit.png", 32, 32, m_AssetHandler);
-	entityManager->AddComponent<Player>(playerUnit);
+	EntityID playerID = entityManager->AddNewEntity();
+	entityManager->AddComponent<Player>(playerID, char2);
 
 	entityManager->AddComponent<WarmindComponent>(char1, 1, char0);
 	entityManager->AddComponent<WarmindComponent>(char0, 4, char1);

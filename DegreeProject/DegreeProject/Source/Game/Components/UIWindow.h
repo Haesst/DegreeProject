@@ -17,6 +17,7 @@ struct UIWindow : public Component
 	sf::Text m_OwnerCharacterText;
 	sf::Font m_Font;
 	int m_RegionTax = 0;
+	unsigned int m_CurrentRegionID = 0;
 	std::string m_RegionName = "";
 	std::string m_OwnerKingdomName = "";
 	std::string m_OwnerCharacterName = "";

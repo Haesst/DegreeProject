@@ -16,8 +16,10 @@ bool inputs[Inputs::PlayerUnitSelected + 1];
 
 void InputHandler::HandleInputEvents()
 {
-	inputs[RightMouseReleased] = false;
+	inputs[LeftMouseClicked] = false;
+	inputs[RightMouseClicked] = false;
 	inputs[LeftMouseReleased] = false;
+	inputs[RightMouseReleased] = false;
 	inputs[MouseMoved] = false;
 	sf::RenderWindow* window = Window::GetWindow();
 	sf::View view = window->getView();
@@ -183,14 +185,12 @@ void InputHandler::HandleInputEvents()
 				{
 					case sf::Mouse::Left:
 					{
-						inputs[LeftMouseClicked] = false;
 						inputs[LeftMouseReleased] = true;
 						SetMousePosition(event.mouseButton.x, event.mouseButton.y, window);
 						break;
 					}
 					case sf::Mouse::Right:
 					{
-						inputs[RightMouseClicked] = false;
 						inputs[RightMouseReleased] = true;
 						SetMousePosition(event.mouseButton.x, event.mouseButton.y, window);
 						break;
@@ -289,7 +289,7 @@ bool InputHandler::GetLeftMouseClicked()
 
 bool InputHandler::GetRightMouseClicked()
 {
-	return inputs[RightMouseReleased];
+	return inputs[RightMouseClicked];
 }
 
 bool InputHandler::GetLeftMouseReleased()
