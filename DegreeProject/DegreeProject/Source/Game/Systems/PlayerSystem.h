@@ -86,20 +86,29 @@ struct PlayerSystem : System
 			Vector2DInt mousePosition = InputHandler::GetMouseMapPosition();
 			UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(unitID);
 			Transform& transform = m_EntityManager->GetComponent<Transform>(unitID);
+
+			unit.m_Moving = false;
+			transform.m_Position = unit.m_LastPosition;
+			
 			Vector2D unitPosition = transform.m_Position;
 			Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
 			std::list<Vector2DInt> path = Pathfinding::FindPath(startingPosition, mousePosition);
 
 			if (path.size() > 0)
 			{
+				if (path.back() == unit.m_CurrentPath.back())
+				{
+					unit.m_Moving = true;
+					return;
+				}
+
 				unit.SetPath(path, Map::ConvertToScreen(startingPosition));
 			}
 
-			else
-			{
-				unit.m_Moving = false;
-				transform.m_Position = Map::ConvertToScreen(startingPosition);
-			}
+			//else
+			//{
+			//	unit.m_Moving = false;
+			//}
 		}
 	}
 

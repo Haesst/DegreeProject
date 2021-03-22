@@ -45,7 +45,7 @@ struct UnitComponent : public Component
 
 	void SetPath(std::list<Vector2DInt> path, const Vector2D& startingPosition)
 	{
-		if (path.size() < 0)
+		if (path.size() <= 0)
 		{
 			return;
 		}
