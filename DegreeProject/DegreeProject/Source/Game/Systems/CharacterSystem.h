@@ -61,7 +61,7 @@ struct CharacterSystem : System
 		Transform& unitTransform = m_EntityManager->GetComponent<Transform>(unitID);
 		unit.m_Owner = ownerID;
 		Vector2D screenPosition = Map::ConvertToScreen(mapPosition);
-		unit.m_HighlightShape.setPosition(screenPosition.x, screenPosition.y);
+		//unit.m_HighlightShape.setPosition(screenPosition.x, screenPosition.y);
 		unitTransform.m_Position = screenPosition;
 		renderer.m_Sprite.setPosition(screenPosition.x, screenPosition.y);
 		Map::m_MapUnitData[mapPosition].AddUnique(unitID);

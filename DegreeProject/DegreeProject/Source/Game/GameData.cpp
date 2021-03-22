@@ -59,9 +59,12 @@ void GameData::LoadBuildings()
 		building.m_HoldingModifier = element["regionStrength"].get<int>();
 		building.m_IncomeModifier = element["regionIncome"].get<int>();
 		building.m_ArmyModifier = element["regionArmy"].get<int>();
+		building.m_DaysToConstruct = element["daysToConstruct"].get<int>();
+
+		m_Buildings.insert(std::pair(building.m_Id, building));
 	}
 
-	LOG_INFO("Buildings Loaded.");
+	LOG_INFO("{0} Buildings Loaded.", m_Buildings.size());
 }
 
 void GameData::ClearBuildings()

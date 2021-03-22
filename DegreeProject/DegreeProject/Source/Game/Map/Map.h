@@ -19,6 +19,7 @@ using json = nlohmann::json;
 #include <list>
 
 enum class FileStatus;
+struct Building;
 
 #pragma warning(push)
 #pragma warning(disable: 26812)
@@ -110,6 +111,10 @@ struct Map
 
 	static void LoadShadersAndCreateRenderStates();
 
+#pragma endregion
+
+#pragma region Buildings
+	static void StartConstructionOfBuilding(int buildingId, int regionId);
 #pragma endregion
 
 	static int GetRegionPositionFromMapCharacter(const char& c);

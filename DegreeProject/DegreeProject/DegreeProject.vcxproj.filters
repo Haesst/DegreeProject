@@ -167,6 +167,7 @@
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\AI\WarmindConsiderations.h" />
     <ClInclude Include="Source\Game\GameData.h" />
+    <ClInclude Include="Source\Game\Map\RegionBuilding.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">

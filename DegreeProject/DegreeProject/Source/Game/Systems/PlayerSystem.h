@@ -21,6 +21,11 @@ struct PlayerSystem : System
 		for (auto& entity : m_Entities)
 		{
 			HoverOverRegion(playerComponents[entity]);
+
+			if (InputHandler::GetLeftMouseReleased())
+			{
+				Map::StartConstructionOfBuilding(5, 1);
+			}
 		}
 	}
 

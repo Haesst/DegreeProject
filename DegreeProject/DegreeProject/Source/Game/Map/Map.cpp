@@ -273,6 +273,11 @@ void Map::LoadShadersAndCreateRenderStates()
 	m_Data.m_RenderStates.texture = &m_Data.m_LandTexture;
 }
 
+void Map::StartConstructionOfBuilding(int buildingId, int regionId)
+{
+	GetRegionById(regionId).m_BuildingSlotOne.StartBuild(buildingId);
+}
+
 int Map::GetRegionPositionFromMapCharacter(const char& c)
 {
 	for (size_t i = 0; i < m_Data.m_Regions.size(); ++i)

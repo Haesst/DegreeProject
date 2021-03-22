@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Engine/Vector2D.h"
+#include "RegionBuilding.h"
 
 struct MapRegion
 {
@@ -16,6 +17,7 @@ public:
 	unsigned int m_OwnerID = 0;
 	unsigned int m_DaysToSeize = 60;
 	sf::VertexArray m_VertexArray;
+	RegionBuilding m_BuildingSlotOne;
 	MapRegion() {};
 	~MapRegion() { m_MapSquares.clear(); }
 };
