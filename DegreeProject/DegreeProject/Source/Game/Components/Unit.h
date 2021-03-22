@@ -17,6 +17,12 @@ struct UnitComponent : public Component
 	int m_DaysSeizing = 0;
 
 	Vector2D m_LastPosition;
+	sf::RectangleShape m_HighlightShape;
+	sf::Color m_FillColor = sf::Color::Transparent;
+	sf::Color m_OutlineColor = sf::Color::White;
+	sf::Vector2<float> m_HighlightShapeSize = sf::Vector2(32.0f, 32.0f);
+	float m_OutlineThickness = 0.0f;
+	bool m_PlayerSelected = false;
 
 	Date m_LastSeizeDate = Date(0,0,0);
 	float m_Speed = 150.0f;
