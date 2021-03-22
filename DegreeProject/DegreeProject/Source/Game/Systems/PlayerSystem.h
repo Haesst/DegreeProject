@@ -81,7 +81,7 @@ struct PlayerSystem : System
 
 	void MoveUnit(EntityID unitID)
 	{
-		if (InputHandler::GetRightMouseReleased() == true && InputHandler::GetPlayerUnitSelected() == true)
+		if (InputHandler::GetRightMouseClicked() == true && InputHandler::GetPlayerUnitSelected() == true)
 		{
 			Vector2DInt mousePosition = InputHandler::GetMouseMapPosition();
 			UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(unitID);
@@ -104,11 +104,10 @@ struct PlayerSystem : System
 
 				unit.SetPath(path, Map::ConvertToScreen(startingPosition));
 			}
-
-			//else
-			//{
-			//	unit.m_Moving = false;
-			//}
+			else
+			{
+				unit.m_CurrentPath.clear();
+			}
 		}
 	}
 
