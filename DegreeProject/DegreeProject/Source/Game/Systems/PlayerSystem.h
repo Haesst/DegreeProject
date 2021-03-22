@@ -84,11 +84,22 @@ struct PlayerSystem : System
 		if (InputHandler::GetRightMouseReleased() == true && InputHandler::GetPlayerUnitSelected() == true)
 		{
 			Vector2DInt mousePosition = InputHandler::GetMouseMapPosition();
-			//UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(unitID);
+			UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(unitID);
 			Transform& transform = m_EntityManager->GetComponent<Transform>(unitID);
 			Vector2D unitPosition = transform.m_Position;
 			Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
-			//unit.SetPath(Pathfinding::FindPath(startingPosition, mousePosition), Map::ConvertToScreen(startingPosition));
+			std::list<Vector2DInt> path = Pathfinding::FindPath(startingPosition, mousePosition);
+
+			if (path.size() > 0)
+			{
+				unit.SetPath(path, Map::ConvertToScreen(startingPosition));
+			}
+
+			else
+			{
+				unit.m_Moving = false;
+				transform.m_Position = Map::ConvertToScreen(startingPosition);
+			}
 		}
 	}
 
