@@ -64,8 +64,7 @@ struct CharacterSystem : System
 		unit.m_HighlightShape.setPosition(screenPosition.x, screenPosition.y);
 		unitTransform.m_Position = screenPosition;
 		renderer.m_Sprite.setPosition(screenPosition.x, screenPosition.y);
-		Vector2DInt screenPositionInt = Vector2DInt((int)screenPosition.x, (int)screenPosition.y);
-		Map::m_MapUnitData[screenPositionInt].AddUnique(unitID);
+		Map::m_MapUnitData[mapPosition].AddUnique(unitID);
 		unit.m_LastPosition = screenPosition;
 		unit.m_Raised = true;
 		renderer.m_ShouldRender = true;
