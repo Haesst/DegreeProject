@@ -59,7 +59,6 @@ struct CharacterSystem : System
 	void RaiseUnit(EntityID ownerID, EntityID unitID, UnitComponent& unit, SpriteRenderer& renderer, const Vector2DInt& mapPosition)
 	{
 		Transform& unitTransform = m_EntityManager->GetComponent<Transform>(unitID);
-		LOG_INFO("Unit.GetID: {0}", unitID);
 		unit.m_Owner = ownerID;
 		Vector2D screenPosition = Map::ConvertToScreen(mapPosition);
 		unit.m_HighlightShape.setPosition(screenPosition.x, screenPosition.y);

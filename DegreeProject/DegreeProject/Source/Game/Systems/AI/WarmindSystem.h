@@ -81,7 +81,6 @@ struct WarmindSystem : System
 		{
 			int regionIndex = m_Characters[Id].m_OwnedRegionIDs[0];
 			Vector2DInt capitalPos = Map::GetRegionCapitalLocation(regionIndex);
-			LOG_INFO("WarmindUnitID: {0}", m_Warminds[Id].m_UnitEntity);
 #pragma warning(push)
 #pragma warning(disable: 26815)
 			CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
