@@ -51,6 +51,8 @@ struct AISystem : System
 
 	virtual void Update() override
 	{
+		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
 		m_TickAccu += Time::DeltaTime();
 
 		if (m_TickAccu <= m_AIUpdateTickRate)

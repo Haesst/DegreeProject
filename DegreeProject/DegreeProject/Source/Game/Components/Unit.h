@@ -25,6 +25,9 @@ struct UnitComponent : public Component
 	bool m_PlayerSelected = false;
 	bool m_PlayerControlled = false;
 
+	sf::RectangleShape m_InnerSeizeMeter;
+	sf::RectangleShape m_OuterSeizeMeter;
+
 	Date m_LastSeizeDate = Date(0,0,0);
 	float m_Speed = 150.0f;
 	EntityID m_Owner = INT_MAX;
