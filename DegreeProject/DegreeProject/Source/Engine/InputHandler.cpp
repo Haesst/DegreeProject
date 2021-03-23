@@ -16,12 +16,14 @@ bool inputs[Inputs::PlayerUnitSelected + 1];
 
 void InputHandler::HandleInputEvents()
 {
-	inputs[PlayerUnitSelected] = false;
 	inputs[LeftMouseClicked] = false;
 	inputs[RightMouseClicked] = false;
 	inputs[LeftMouseReleased] = false;
 	inputs[RightMouseReleased] = false;
 	inputs[MouseMoved] = false;
+	inputs[CharacterWindowOpen] = false;
+	inputs[RegionWindowOpen] = false;
+	inputs[PlayerUnitSelected] = false;
 	sf::RenderWindow* window = Window::GetWindow();
 	sf::View view = window->getView();
 	sf::Event event;
@@ -326,6 +328,16 @@ bool InputHandler::GetPlayerUnitSelected()
 	return inputs[PlayerUnitSelected];
 }
 
+bool InputHandler::GetCharacterWindowOpen()
+{
+	return inputs[CharacterWindowOpen];
+}
+
+bool InputHandler::GetRegionWindowOpen()
+{
+	return inputs[RegionWindowOpen];
+}
+
 bool InputHandler::GetMouseMoved()
 {
 	return inputs[MouseMoved];
@@ -334,6 +346,16 @@ bool InputHandler::GetMouseMoved()
 void InputHandler::SetPlayerUnitSelected(bool selected)
 {
 	inputs[PlayerUnitSelected] = selected;
+}
+
+void InputHandler::SetCharacterWindowOpen(bool open)
+{
+	inputs[CharacterWindowOpen] = open;
+}
+
+void InputHandler::SetRegionWindowOpen(bool open)
+{
+	inputs[RegionWindowOpen] = open;
 }
 
 float InputHandler::GetZoomSpeed()

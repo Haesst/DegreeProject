@@ -8,6 +8,8 @@ enum Inputs
 	LeftMouseReleased,
 	RightMouseReleased,
 	MouseMoved,
+	CharacterWindowOpen,
+	RegionWindowOpen,
 	PlayerUnitSelected
 };
 
@@ -24,7 +26,11 @@ public:
 	static float GetMouseScrollDirection();
 	static bool GetPlayerUnitSelected();
 	static bool GetMouseMoved();
+	static bool GetCharacterWindowOpen();
+	static bool GetRegionWindowOpen();
 	static void SetPlayerUnitSelected(bool selected);
+	static void SetCharacterWindowOpen(bool open);
+	static void SetRegionWindowOpen(bool open);
 	static float GetZoomSpeed();
 private:
 	static void MoveView(sf::RenderWindow* window, sf::View& view);

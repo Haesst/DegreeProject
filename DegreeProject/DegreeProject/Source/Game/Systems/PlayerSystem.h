@@ -218,7 +218,7 @@ struct PlayerSystem : System
 		unit.m_PlayerSelected = false;
 		unit.m_OutlineThickness = 0.0f;
 		player.m_SelectedUnitID = 0;
-		InputHandler::SetPlayerUnitSelected(true);
+		InputHandler::SetPlayerUnitSelected(false);
 	}
 
 	void SetDebugPositions(std::vector<Vector2DInt> dragPositions)

@@ -3,13 +3,14 @@
 #include <SFML/Graphics.hpp>
 #include "ECS/Component.h"
 
-struct UIWindow : public Component
+struct CharacterWindow : public Component
 {
 	sf::RectangleShape m_Shape;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
 	float m_SizeX = 600.0f;
 	float m_SizeY = 1060.0f;
+	float m_OutlineThickness = 10.0f;
 	bool m_Visible = false;
 	sf::Text m_OwnerNameText;
 	sf::Text m_TaxText;
@@ -29,16 +30,18 @@ struct UIWindow : public Component
 	sf::Text::Style m_Style = sf::Text::Regular;
 #pragma warning(pop)
 	bool m_Open = false;
-	unsigned int m_TopPortraitUI = 0;
-	unsigned int m_BottomPortraitUI = 0;
+	unsigned int m_TopPortraitID = 0;
+	unsigned int m_RegionWindowID = 0;
+	unsigned int m_BottomPortraitID = 0;
 
-	UIWindow(){}
+	CharacterWindow(){}
 
-	UIWindow(sf::Font font, unsigned int topPortraitUI, unsigned int bottomPortraitUI)
+	CharacterWindow(sf::Font font, unsigned int topPortraitID, unsigned int regionWindowID, unsigned int bottomPortraitID)
 	{
 		m_Font = font;
-		m_TopPortraitUI = topPortraitUI;
-		m_BottomPortraitUI = bottomPortraitUI;
+		m_TopPortraitID = topPortraitID;
+		m_RegionWindowID = regionWindowID;
+		m_BottomPortraitID = bottomPortraitID;
 		titles.push_back("Emperor ");
 		titles.push_back("King ");
 		titles.push_back("Duke ");

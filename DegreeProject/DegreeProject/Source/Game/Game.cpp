@@ -10,7 +10,7 @@
 #include "Game/Components/MovingSprite.h"
 #include "Game/Components/SpriteRenderer.h"
 #include "Game/Systems/SpriteRenderSystem.h"
-#include "Game/Systems/UIWindowSystem.h"
+#include "Game/Systems/CharacterWindowSystem.h"
 #include "Game/Systems/UITextSystem.h"
 #include "Game/Systems/UISpriteRenderSystem.h"	
 #include "Game/Systems/AI/WarmindSystem.h"
@@ -19,6 +19,7 @@
 #include <Game/Systems/AI/AI.h>
 #include "Game/Systems/StatBarSystem.h"
 #include "Game/Systems/DateBarSystem.h"
+#include "Game/Systems/RegionWindowSystem.h"
 
 Game::~Game()
 {
@@ -89,7 +90,7 @@ void Game::InitAssets()
 void Game::InitSound()
 {
 	m_Sound = m_AssetHandler->LoadAudioFile("Assets/Audio/MenuMusic.wav", m_SoundBuffer);
-	m_Sound.setVolume(5);
+	m_Sound.setVolume(1);
 	m_Sound.play();
 }
 
@@ -104,7 +105,8 @@ void Game::InitSystems()
 	entityManager->RegisterSystem<PlayerSystem>();
 	entityManager->RegisterSystem<DateBarSystem>();
 	entityManager->RegisterSystem<StatBarSystem>();
-	entityManager->RegisterSystem<UIWindowSystem>();
+	entityManager->RegisterSystem<CharacterWindowSystem>();
+	entityManager->RegisterSystem<RegionWindowSystem>();
 	entityManager->RegisterSystem<UISpriteRenderSystem>();
 }
 
@@ -160,21 +162,58 @@ void Game::AddEntitys()
 	Transform& armySpriteTransform = entityManager->GetComponent<Transform>(armySpriteID);
 	armySpriteTransform.m_Position = Vector2D(statBarComponent.m_SizeX * 0.5f + m_Resolution.x - statBarComponent.m_SizeX - statBarComponent.m_OutlineThickness, statBarComponent.m_SizeY * 0.3f);
 
+	//UI IDs
+	EntityID characterWindowID = entityManager->AddNewEntity();
+	EntityID topPortraitID = entityManager->AddNewEntity();
+	EntityID bottomPortraitID = entityManager->AddNewEntity();
+	EntityID regionWindowID = entityManager->AddNewEntity();
+	EntityID regionPortraitID = entityManager->AddNewEntity();
+	EntityID regionBuildSlotID = entityManager->AddNewEntity();
+	EntityID regionBuildSlotID2 = entityManager->AddNewEntity();
+	EntityID regionBuildSlotID3 = entityManager->AddNewEntity();
+	EntityID regionBuildSlotID4 = entityManager->AddNewEntity();
+
 	//UI CharacterWindow
-	EntityID topPortraitUI = entityManager->AddNewEntity();
-	entityManager->AddComponent<UISpriteRenderer>(topPortraitUI, "Assets/Graphics/Unit.png", 64, 64, m_AssetHandler);
-	Transform& topPortraitUITransform = entityManager->GetComponent<Transform>(topPortraitUI);
+	entityManager->AddComponent<CharacterWindow>(characterWindowID, m_UIFont, topPortraitID, regionWindowID, bottomPortraitID);
+	CharacterWindow& characterWindowComponent = entityManager->GetComponent<CharacterWindow>(characterWindowID);
 
-	EntityID bottomPortraitUI = entityManager->AddNewEntity();
-	entityManager->AddComponent<UISpriteRenderer>(bottomPortraitUI, "Assets/Graphics/Unit.png", 128, 128, m_AssetHandler);
-	Transform& bottomPortraitUITransform = entityManager->GetComponent<Transform>(bottomPortraitUI);
-	bottomPortraitUITransform.m_Position = Vector2D(0.0f, m_Resolution.y - 128.0f);
+	entityManager->AddComponent<UISpriteRenderer>(topPortraitID, "Assets/Graphics/Unit.png", 64, 64, m_AssetHandler);
+	Transform& topPortraitTransform = entityManager->GetComponent<Transform>(topPortraitID);
+	topPortraitTransform.m_Position = Vector2D(characterWindowComponent.m_SizeX * 0.1f, characterWindowComponent.m_SizeY * 0.025f);
+	entityManager->SetEntityActive(topPortraitID, false);
 
-	EntityID windowUI = entityManager->AddNewEntity();
-	entityManager->AddComponent<UIWindow>(windowUI, m_UIFont, topPortraitUI, bottomPortraitUI);
-	UIWindow& windowUIComponent = entityManager->GetComponent<UIWindow>(windowUI);
-	topPortraitUITransform.m_Position = Vector2D(windowUIComponent.m_SizeX * 0.1f, windowUIComponent.m_SizeY * 0.025f);
-	entityManager->SetEntityActive(topPortraitUI, false);
+	entityManager->AddComponent<UISpriteRenderer>(bottomPortraitID, "Assets/Graphics/Unit.png", 128, 128, m_AssetHandler);
+	Transform& bottomPortraitTransform = entityManager->GetComponent<Transform>(bottomPortraitID);
+	bottomPortraitTransform.m_Position = Vector2D(0.0f, m_Resolution.y - 128.0f);
+
+	//UI RegionWindow
+	entityManager->AddComponent<RegionWindow>(regionWindowID, m_UIFont, regionPortraitID, regionBuildSlotID, regionBuildSlotID2, regionBuildSlotID3, regionBuildSlotID4, characterWindowID, bottomPortraitID);
+	RegionWindow& regionWindowComponent = entityManager->GetComponent<RegionWindow>(regionWindowID);
+
+	entityManager->AddComponent<UISpriteRenderer>(regionPortraitID, "Assets/Graphics/Unit.png", 64, 64, m_AssetHandler);
+	Transform& regionPortraitTransform = entityManager->GetComponent<Transform>(regionPortraitID);
+	regionPortraitTransform.m_Position = Vector2D(regionWindowComponent.m_OutlineThickness + 64, (float)(m_Resolution.y - 64 * 8));
+	entityManager->SetEntityActive(regionPortraitID, false);
+
+	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID, "Assets/Graphics/CastleWithUnicorn.png", 32, 32, m_AssetHandler);
+	Transform& regionBuildSlotTransform = entityManager->GetComponent<Transform>(regionBuildSlotID);
+	regionBuildSlotTransform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42, (float)m_Resolution.y - 62);
+	entityManager->SetEntityActive(regionBuildSlotID, false);
+
+	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID2, "Assets/Graphics/Coins.png", 32, 32, m_AssetHandler);
+	Transform& regionBuildSlot2Transform = entityManager->GetComponent<Transform>(regionBuildSlotID2);
+	regionBuildSlot2Transform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42 - 52, (float)m_Resolution.y - 62);
+	entityManager->SetEntityActive(regionBuildSlotID2, false);
+
+	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID3, "Assets/Graphics/Charizard.png", 32, 32, m_AssetHandler);
+	Transform& regionBuildSlot3Transform = entityManager->GetComponent<Transform>(regionBuildSlotID3);
+	regionBuildSlot3Transform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42 - 104, (float)m_Resolution.y - 62);
+	entityManager->SetEntityActive(regionBuildSlotID3, false);
+
+	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID4, "Assets/Graphics/soldier unit.png", 32, 32, m_AssetHandler);
+	Transform& regionBuildSlot4Transform = entityManager->GetComponent<Transform>(regionBuildSlotID4);
+	regionBuildSlot4Transform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42 - 156, (float)m_Resolution.y - 62);
+	entityManager->SetEntityActive(regionBuildSlotID4, false);
 }
 
 void Game::InitAI()

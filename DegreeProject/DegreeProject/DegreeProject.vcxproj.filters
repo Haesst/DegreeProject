@@ -84,10 +84,19 @@
     <ClInclude Include="Source\Game\Components\CharacterComponent.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Components\CharacterWindow.h">
+      <Filter>Game\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Components\DateBar.h">
+      <Filter>Game\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Components\MovingSprite.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Components\Player.h">
+      <Filter>Game\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Components\RegionWindow.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Components\SpriteRenderer.h">
@@ -96,16 +105,10 @@
     <ClInclude Include="Source\Game\Components\StatBar.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Components\DateBar.h">
-      <Filter>Game\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Components\UISpriteRenderer.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Components\UIText.h">
-      <Filter>Game\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Components\UIWindow.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Components\Unit.h">
@@ -159,10 +162,19 @@
     <ClInclude Include="Source\Game\Systems\CharacterSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Systems\CharacterWindowSystem.h">
+      <Filter>Game\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Systems\DateBarSystem.h">
+      <Filter>Game\Systems</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\PlayerSystem.h">
+      <Filter>Game\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Systems\RegionWindowSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h">
@@ -171,16 +183,10 @@
     <ClInclude Include="Source\Game\Systems\StatBarSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Systems\DateBarSystem.h">
-      <Filter>Game\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Systems\UISpriteRenderSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\UITextSystem.h">
-      <Filter>Game\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Systems\UIWindowSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\War.h">
