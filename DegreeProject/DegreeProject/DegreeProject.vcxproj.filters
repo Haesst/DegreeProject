@@ -162,6 +162,7 @@
     <ClInclude Include="Source\Game\Systems\AI\WarmindConsiderations.h" />
     <ClInclude Include="Source\Game\GameData.h" />
     <ClInclude Include="Source\Game\Map\RegionBuilding.h" />
+    <ClInclude Include="Source\Game\Callback.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -199,5 +200,6 @@
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
     <ClCompile Include="Source\Game\GameData.cpp" />
+    <ClCompile Include="Source\Game\Callback.cpp" />
   </ItemGroup>
 </Project>

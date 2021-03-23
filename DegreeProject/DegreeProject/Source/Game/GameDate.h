@@ -5,6 +5,7 @@
 
 #include "Engine/Log.h"
 #include "Engine/Time.h"
+#include "Game/Callback.h"
 
 struct Date
 {
@@ -54,7 +55,7 @@ struct GameDate
 	float timeBeforeAddingDay = 0.3f;
 	float addDayTimer = 0.3f;
 
-	std::vector<std::function<void(Date)>> m_DayChangeSubscribers;
+	std::vector<Callback> m_DayChangeSubscribers;
 	std::vector<std::function<void(Date)>> m_MonthChangeSubscribers;
 
 	void Update()
@@ -90,7 +91,8 @@ struct GameDate
 
 		for (auto& action : m_DayChangeSubscribers)
 		{
-			action(m_Date);
+			//action(m_Date);
+			action.m_Action(action.data);
 		}
 	}
 
@@ -104,13 +106,30 @@ struct GameDate
 		m_MonthChangeSubscribers.push_back(action);
 	}
 
-	void SubscribeToDayChange(std::function<void(Date)> action)
+	int SubscribeToDayChange(CallbackMember* callback, void* data)
 	{
-		m_DayChangeSubscribers.push_back(action);
+		Callback cb = Callback(callback, data);
+		m_DayChangeSubscribers.push_back(cb);
+		return cb.id;
 	}
 
-	void UnsubscribeToDayChange(std::function<void(Date)> subscription)
+	void UnsubscribeToDayChange(unsigned int id)
 	{
+		int index = 0;
+		bool found = false;
 
+		for (; index < m_MonthsInYear; ++index)
+		{
+			if (m_DayChangeSubscribers[index].id == id)
+			{
+				found = true;
+				break;
+			}
+		}
+
+		if (found)
+		{
+			m_DayChangeSubscribers.erase(std::next(m_DayChangeSubscribers.begin(), index));
+		}
 	}
 };
