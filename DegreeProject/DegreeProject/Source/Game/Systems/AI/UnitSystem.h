@@ -194,6 +194,10 @@ struct UnitSystem : System
 #pragma warning(pop)
 		characterSystem->ConquerRegion(regionID, conqueringID);
 		characterSystem->LoseRegion(regionID, loosingEntity);
+
+		m_Warminds[conqueringID].m_CurrentWar->EndWar();
+		m_Warminds[conqueringID].m_CurrentWar = nullptr;
+		m_Warminds[loosingEntity].m_CurrentWar = nullptr;
 		return;
 	}
 
@@ -219,7 +223,7 @@ struct UnitSystem : System
 		{
 			m_UnitComponents[enemyUnit].m_RepresentedForce = 0;
 			m_UnitComponents[enemyUnit].m_Raised = false;
-			m_Warminds[m_UnitComponents[unit].m_Owner].m_CurrentWar->AddWarscore(20, true);
+			m_Warminds[m_UnitComponents[unit].m_Owner].m_CurrentWar->AddWarscore(50, true);
 		}
 
 		else
@@ -227,7 +231,7 @@ struct UnitSystem : System
 			m_UnitComponents[unit].m_RepresentedForce = 0;
 			m_UnitComponents[unit].m_Raised = false;
 			m_Renderers[unit].m_ShouldRender = false;
-			m_Warminds[m_UnitComponents[enemyUnit].m_Owner].m_CurrentWar->AddWarscore(20, false);
+			m_Warminds[m_UnitComponents[enemyUnit].m_Owner].m_CurrentWar->AddWarscore(50, false);
 		}
 	}
 
