@@ -14,8 +14,16 @@ using json = nlohmann::json;
 #include <Game\Components\Warmind.h>
 #include "Game/AI/AIManager.h"
 
+enum class Action
+{
+	War,
+	Upgrade_Settlement,
+};
+
 struct AISystem : System
 {
+	Action m_LastAction;
+
 	std::vector<std::pair<EntityID, WarmindComponent>> m_EntityToWarminds;
 
 	EntityManager* m_EntityManager = nullptr;
@@ -63,9 +71,9 @@ struct AISystem : System
 		//AI System update considerations
 		for (auto entity : m_Entities)
 		{
-			if (ExpansionDecision(entity) > .1f) //Add personality weight
+			if (ExpansionDecision(entity) > .7f) //Add personality weight
 			{
-				if (WarDecision(entity) > .1f)
+				if (WarDecision(entity) > .7f)
 				{
 					if (!m_Characters[entity].m_AtWar)
 					{

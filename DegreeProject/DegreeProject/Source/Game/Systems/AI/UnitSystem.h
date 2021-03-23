@@ -226,7 +226,7 @@ struct UnitSystem : System
 
 		if (m_Warminds[conqueringID].m_CurrentWar != nullptr)
 		{
-			m_Warminds[conqueringID].m_CurrentWar->EndWar();
+			m_Warminds[conqueringID].m_CurrentWar->EndWar(conqueringID);
 			m_Warminds[conqueringID].m_CurrentWar = nullptr;
 			m_Warminds[loosingEntity].m_CurrentWar = nullptr;
 		}

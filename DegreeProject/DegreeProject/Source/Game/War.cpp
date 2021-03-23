@@ -24,7 +24,7 @@ void War::AddWarscore(int warScore, bool attackerWinning)
 
 		if (m_AttackerWarscore > 100)
 		{
-			EndWar(/*Attacker*/);
+			EndWar(m_Attacker->GetID());
 		}
 	}
 
@@ -34,15 +34,18 @@ void War::AddWarscore(int warScore, bool attackerWinning)
 
 		if (m_DefenderWarscore > 100)
 		{
-			EndWar(/*Defender*/);
+			EndWar(m_Defender->GetID());
 		}
 	}
 }
 
-void War::EndWar()
+void War::EndWar(EntityID winningEntity)
 {
 	m_Attacker->m_AtWar = false;
 	m_Defender->m_AtWar = false;
+
+	LOG_INFO("{0}'s war against {1} is over. {2} Won!", m_Attacker->m_Name, m_Defender->m_Name, m_Characters[winningEntity].m_Name);
+
 
 	if (!m_Attacker->m_IsPlayerControlled)
 	{
