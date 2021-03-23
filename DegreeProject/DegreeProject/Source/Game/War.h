@@ -4,6 +4,7 @@
 
 struct WarmindComponent;
 struct CharacterComponent;
+struct UnitComponent;
 
 struct War
 {
@@ -17,6 +18,7 @@ struct War
 
 	WarmindComponent* m_Warminds = nullptr;
 	CharacterComponent* m_Characters = nullptr;
+	UnitComponent* m_Units = nullptr;
 
 	int m_WargoalRegion = -1;
 

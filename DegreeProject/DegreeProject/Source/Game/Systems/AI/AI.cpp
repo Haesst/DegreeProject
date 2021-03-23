@@ -60,6 +60,7 @@ float AISystem::ExpansionDecision(EntityID ent)
 		{
 			highest = actionScorePerRegion[i].first;
 			warmindComponents[ent].m_WargoalRegionId = actionScorePerRegion[i].second;
+			warmindComponents[ent].m_Opponent = Map::GetRegionById(actionScorePerRegion[i].second).m_OwnerID;
 			bestIndex = i;
 		}
 	}
@@ -74,9 +75,7 @@ float AISystem::ExpansionDecision(EntityID ent)
 
 void AISystem::DeclareWar(EntityID instigator, EntityID target, int warGoalRegion)
 {
-	LOG_INFO("Declaring war!");
-	//LOG_INFO("{0} Declared war with {1} for {2}", m_Characters[instigator].m_Name, m_Characters[target].m_Name, Map::GetRegionById(warGoalRegion).m_RegionName);
-
+	LOG_INFO("{0} Declared war with {1} for {2}", m_Characters[instigator].m_Name, m_Characters[target].m_Name, Map::GetRegionById(warGoalRegion).m_RegionName);
 	War* war = new War(m_Characters[instigator], m_Characters[target], warGoalRegion);
 
 	m_Characters[instigator].m_AtWar = true;
