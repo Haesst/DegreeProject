@@ -12,9 +12,13 @@ struct StatBar : public Component
 	float m_SizeY = 50.0f;
 	float m_OutlineThickness = 10.0f;
 	sf::Text m_CurrentGoldText;
+	sf::Text m_CurrentIncomeText;
 	sf::Text m_MaxArmyText;
+	sf::Text m_CurrentMaxArmyText;
 	sf::Font m_Font;
 	std::string m_CurrentGold = "";
+	std::string m_CurrentIncome = "";
+	std::string m_MaxArmy = "";
 	std::string m_CurrentMaxArmy = "";
 	int m_CharacterSize = 30;
 #pragma warning(push)

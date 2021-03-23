@@ -57,6 +57,10 @@ struct UnitSystem : System
 				unit.m_HighlightShape.setOutlineThickness(unit.m_OutlineThickness);
 				unit.m_HighlightShape.setSize(unit.m_HighlightShapeSize);
 				unit.m_HighlightShape.setPosition(transform.m_Position.x, transform.m_Position.y);
+				if (unit.m_PlayerSelected)
+				{
+					InputHandler::SetPlayerUnitSelected(true);
+				}
 			}
 		}
 	}

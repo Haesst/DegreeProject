@@ -83,7 +83,7 @@ struct PlayerSystem : System
 
 	void MoveUnit(EntityID unitID)
 	{
-		if (InputHandler::GetRightMouseClicked() == true && InputHandler::GetPlayerUnitSelected() == true)
+		if (InputHandler::GetRightMouseReleased() == true && InputHandler::GetPlayerUnitSelected() == true)
 		{
 			Vector2DInt mousePosition = InputHandler::GetMouseMapPosition();
 			UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(unitID);

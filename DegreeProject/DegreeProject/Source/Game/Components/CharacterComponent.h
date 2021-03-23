@@ -24,12 +24,14 @@ struct CharacterComponent : public Component
 	const char* m_Name = "";
 	std::vector<unsigned int> m_OwnedRegionIDs;
 	int m_CurrentGold = 0;
-	int m_RaisedArmySize = 0;
+	unsigned int m_RaisedArmySize = 0;
+	unsigned int m_CurrentMaxArmySize = 0;
 	unsigned int m_MaxArmySize = 0;
 	bool m_IsPlayerControlled = false;
 	sf::Color m_RegionColor = sf::Color::Black;
 	bool m_AtWar = false;
 	int m_PersonalityIndex = 0;
+	int m_Income = 0;
 
 	CharacterComponent() {};
 
@@ -41,6 +43,7 @@ struct CharacterComponent : public Component
 		m_OwnedRegionIDs = regionIDs;
 		m_CurrentGold = gold;
 		m_MaxArmySize = armySize;
+		m_CurrentMaxArmySize = m_MaxArmySize;
 		m_IsPlayerControlled = isPlayerControlled;
 		m_RegionColor = regionColor;
 		m_PersonalityIndex = personalityIndex;
@@ -68,7 +71,7 @@ struct CharacterComponent : public Component
 		}
 
 		incomingGold -= (int)(m_RaisedArmySize * 0.1f);
-
+		m_Income = incomingGold;
 		m_CurrentGold += incomingGold;
 	}
 };

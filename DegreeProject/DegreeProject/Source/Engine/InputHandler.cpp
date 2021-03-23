@@ -16,6 +16,7 @@ bool inputs[Inputs::PlayerUnitSelected + 1];
 
 void InputHandler::HandleInputEvents()
 {
+	inputs[PlayerUnitSelected] = false;
 	inputs[LeftMouseClicked] = false;
 	inputs[RightMouseClicked] = false;
 	inputs[LeftMouseReleased] = false;
@@ -123,6 +124,7 @@ void InputHandler::HandleInputEvents()
 						break;
 					}
 				}
+				break;
 			}
 			case sf::Event::Resized:
 			{
@@ -178,6 +180,7 @@ void InputHandler::HandleInputEvents()
 						break;
 					}
 				}
+				break;
 			}
 			case sf::Event::MouseButtonReleased:
 			{
@@ -212,6 +215,7 @@ void InputHandler::HandleInputEvents()
 						break;
 					}
 				}
+				break;
 			}
 			case sf::Event::MouseWheelScrolled:
 			{
