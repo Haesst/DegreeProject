@@ -108,4 +108,18 @@ struct CharacterSystem : System
 #pragma warning(pop)
 		textUISystem->LoseRegion(regionIndex, losingEntity);
 	}
+
+	EntityID GetPlayerID()
+	{
+		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+
+		for (auto entity : m_Entities)
+		{
+			if (characters[entity].m_IsPlayerControlled)
+			{
+				return characters[entity].GetID();
+			}
+		}
+		return 0;
+	}
 };

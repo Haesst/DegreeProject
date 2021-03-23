@@ -78,13 +78,22 @@
     <ClInclude Include="Source\Game\AI\AIManager.h">
       <Filter>Game\AI</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Callback.h">
+      <Filter>Game</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Components\CharacterComponent.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Components\MovingSprite.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Components\Player.h">
+      <Filter>Game\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Components\SpriteRenderer.h">
+      <Filter>Game\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Components\StatBar.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Components\UISpriteRenderer.h">
@@ -105,6 +114,9 @@
     <ClInclude Include="Source\Game\Game.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\GameData.h">
+      <Filter>Game</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\GameDate.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -120,6 +132,9 @@
     <ClInclude Include="Source\Game\Map\MapRegion.h">
       <Filter>Game\Map</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Map\RegionBuilding.h">
+      <Filter>Game\Map</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Pathfinding.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -132,6 +147,9 @@
     <ClInclude Include="Source\Game\Systems\AI\UnitSystem.h">
       <Filter>Game\Systems\AI</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Systems\AI\WarmindConsiderations.h">
+      <Filter>Game\Systems\AI</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Systems\AI\WarmindSystem.h">
       <Filter>Game\Systems\AI</Filter>
     </ClInclude>
@@ -141,7 +159,13 @@
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Systems\PlayerSystem.h">
+      <Filter>Game\Systems</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h">
+      <Filter>Game\Systems</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Systems\StatBarSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\UISpriteRenderSystem.h">
@@ -153,15 +177,6 @@
     <ClInclude Include="Source\Game\Systems\UIWindowSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Components\Player.h">
-      <Filter>Game\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Systems\PlayerSystem.h">
-      <Filter>Game\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Systems\AI\WarmindConsiderations.h" />
-    <ClInclude Include="Source\Game\GameData.h" />
-    <ClInclude Include="Source\Game\Map\RegionBuilding.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -182,7 +197,13 @@
     <ClCompile Include="Source\Engine\Window.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Callback.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Game\Game.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\GameData.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\HotReloader.cpp">
@@ -198,6 +219,5 @@
       <Filter>Game\Systems\AI</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Game\GameData.cpp" />
   </ItemGroup>
 </Project>

@@ -14,6 +14,8 @@ enum class Title
 	Baron
 };
 
+#pragma warning(push)
+#pragma warning(disable: 26812)
 struct CharacterComponent : public Component
 {
 	sf::Sprite m_CharacterPortrait;
@@ -65,9 +67,9 @@ struct CharacterComponent : public Component
 			incomingGold += region.m_RegionTax;
 		}
 
-		incomingGold -= (m_RaisedArmySize * 0.1f);
+		incomingGold -= (int)(m_RaisedArmySize * 0.1f);
 
 		m_CurrentGold += incomingGold;
 	}
 };
-
+#pragma warning(pop)

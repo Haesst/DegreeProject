@@ -17,6 +17,7 @@
 #include "Game/Systems/AI/UnitSystem.h"
 #include "Game/Systems/PlayerSystem.h"
 #include <Game/Systems/AI/AI.h>
+#include "Game/Systems/StatBarSystem.h"
 
 Game::~Game()
 {
@@ -87,7 +88,7 @@ void Game::InitAssets()
 void Game::InitSound()
 {
 	m_Sound = m_AssetHandler->LoadAudioFile("Assets/Audio/MenuMusic.wav", m_SoundBuffer);
-	m_Sound.setVolume(0);
+	m_Sound.setVolume(10);
 	m_Sound.play();
 }
 
@@ -100,7 +101,7 @@ void Game::InitSystems()
 	entityManager->RegisterSystem<WarmindSystem>();
 	entityManager->RegisterSystem<SpriteRenderSystem>();
 	entityManager->RegisterSystem<PlayerSystem>();
-
+	entityManager->RegisterSystem<StatBarSystem>();
 	entityManager->RegisterSystem<UIWindowSystem>();
 	entityManager->RegisterSystem<UISpriteRenderSystem>();
 }
@@ -138,21 +139,35 @@ void Game::AddEntitys()
 	entityManager->AddComponent<WarmindComponent>(char1, 1, char0);
 	entityManager->AddComponent<WarmindComponent>(char0, 4, char1);
 
-	//UI
+	//UI StatBar
+	EntityID statBarID = entityManager->AddNewEntity();
+	entityManager->AddComponent<StatBar>(statBarID, m_UIFont);
+	StatBar& statBarComponent = entityManager->GetComponent<StatBar>(statBarID);
+
+	EntityID goldSpriteID = entityManager->AddNewEntity();
+	entityManager->AddComponent<UISpriteRenderer>(goldSpriteID, "Assets/Graphics/Coins.png", 32, 32, m_AssetHandler);
+	Transform& goldSpriteTransform = entityManager->GetComponent<Transform>(goldSpriteID);
+	goldSpriteTransform.m_Position = Vector2D(statBarComponent.m_SizeX * 0.1f + m_Resolution.x - statBarComponent.m_SizeX - statBarComponent.m_OutlineThickness, statBarComponent.m_SizeY * 0.4f);
+
+	EntityID armySpriteID = entityManager->AddNewEntity();
+	entityManager->AddComponent<UISpriteRenderer>(armySpriteID, "Assets/Graphics/soldier unit.png", 32, 32, m_AssetHandler);
+	Transform& armySpriteTransform = entityManager->GetComponent<Transform>(armySpriteID);
+	armySpriteTransform.m_Position = Vector2D(statBarComponent.m_SizeX * 0.5f + m_Resolution.x - statBarComponent.m_SizeX - statBarComponent.m_OutlineThickness, statBarComponent.m_SizeY * 0.4f);
+
+	//UI CharacterWindow
 	EntityID topPortraitUI = entityManager->AddNewEntity();
 	entityManager->AddComponent<UISpriteRenderer>(topPortraitUI, "Assets/Graphics/Unit.png", 64, 64, m_AssetHandler);
-	Transform* topPortraitUITransform = &entityManager->GetComponent<Transform>(topPortraitUI);
+	Transform& topPortraitUITransform = entityManager->GetComponent<Transform>(topPortraitUI);
 
 	EntityID bottomPortraitUI = entityManager->AddNewEntity();
 	entityManager->AddComponent<UISpriteRenderer>(bottomPortraitUI, "Assets/Graphics/Unit.png", 128, 128, m_AssetHandler);
-	Transform* bottomPortraitUITransform = &entityManager->GetComponent<Transform>(bottomPortraitUI);
-	bottomPortraitUITransform->m_Position = Vector2D(0.0f, m_Resolution.y - 128.0f);
+	Transform& bottomPortraitUITransform = entityManager->GetComponent<Transform>(bottomPortraitUI);
+	bottomPortraitUITransform.m_Position = Vector2D(0.0f, m_Resolution.y - 128.0f);
 
 	EntityID windowUI = entityManager->AddNewEntity();
 	entityManager->AddComponent<UIWindow>(windowUI, m_UIFont, topPortraitUI, bottomPortraitUI);
-
-	UIWindow* windowUIComponent = &entityManager->GetComponent<UIWindow>(windowUI);
-	topPortraitUITransform->m_Position = Vector2D(windowUIComponent->m_SizeX * 0.1f, windowUIComponent->m_SizeY * 0.025f);
+	UIWindow& windowUIComponent = entityManager->GetComponent<UIWindow>(windowUI);
+	topPortraitUITransform.m_Position = Vector2D(windowUIComponent.m_SizeX * 0.1f, windowUIComponent.m_SizeY * 0.025f);
 	entityManager->SetEntityActive(topPortraitUI, false);
 }
 

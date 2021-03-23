@@ -275,7 +275,12 @@ void Map::LoadShadersAndCreateRenderStates()
 
 void Map::StartConstructionOfBuilding(int buildingId, int regionId)
 {
-	GetRegionById(regionId).m_BuildingSlotOne.StartBuild(buildingId);
+	RegionBuilding& building = GetRegionById(regionId).m_BuildingSlotOne;
+
+	if (building.m_BuildingId < 0)
+	{
+		building.StartBuild(buildingId);
+	}
 }
 
 int Map::GetRegionPositionFromMapCharacter(const char& c)

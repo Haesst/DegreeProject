@@ -98,10 +98,6 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="Source\Game\Components\Player.h" />
-    <ClInclude Include="Source\Game\GameData.h" />
-    <ClInclude Include="Source\Game\Map\RegionBuilding.h" />
-    <ClInclude Include="Source\Game\Systems\PlayerSystem.h" />
     <ClInclude Include="Source\ECS\Component.h" />
     <ClInclude Include="Source\ECS\ComponentList.h" />
     <ClInclude Include="Source\ECS\Components\Transform.h" />
@@ -118,20 +114,25 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Engine\Vector2D.h" />
     <ClInclude Include="Source\Engine\Window.h" />
     <ClInclude Include="Source\Game\AI\AIManager.h" />
+    <ClInclude Include="Source\Game\Callback.h" />
     <ClInclude Include="Source\Game\Components\CharacterComponent.h" />
     <ClInclude Include="Source\Game\Components\MovingSprite.h" />
+    <ClInclude Include="Source\Game\Components\Player.h" />
     <ClInclude Include="Source\Game\Components\SpriteRenderer.h" />
+    <ClInclude Include="Source\Game\Components\StatBar.h" />
     <ClInclude Include="Source\Game\Components\UISpriteRenderer.h" />
     <ClInclude Include="Source\Game\Components\UIText.h" />
     <ClInclude Include="Source\Game\Components\UIWindow.h" />
     <ClInclude Include="Source\Game\Components\Unit.h" />
     <ClInclude Include="Source\Game\Components\Warmind.h" />
     <ClInclude Include="Source\Game\Game.h" />
+    <ClInclude Include="Source\Game\GameData.h" />
     <ClInclude Include="Source\Game\GameDate.h" />
     <ClInclude Include="Source\Game\HotReloader.h" />
     <ClInclude Include="Source\Game\Map\Map.h" />
     <ClInclude Include="Source\Game\Map\MapData.h" />
     <ClInclude Include="Source\Game\Map\MapRegion.h" />
+    <ClInclude Include="Source\Game\Map\RegionBuilding.h" />
     <ClInclude Include="Source\Game\Pathfinding.h" />
     <ClInclude Include="Source\Game\Systems\AI\AI.h" />
     <ClInclude Include="Source\Game\Systems\AI\AIConsideration.h" />
@@ -140,7 +141,9 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Systems\AI\WarmindSystem.h" />
     <ClInclude Include="Source\Game\Systems\CharacterSystem.h" />
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h" />
+    <ClInclude Include="Source\Game\Systems\PlayerSystem.h" />
     <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h" />
+    <ClInclude Include="Source\Game\Systems\StatBarSystem.h" />
     <ClInclude Include="Source\Game\Systems\UISpriteRenderSystem.h" />
     <ClInclude Include="Source\Game\Systems\UITextSystem.h" />
     <ClInclude Include="Source\Game\Systems\UIWindowSystem.h" />
@@ -152,6 +155,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\Engine\Log.cpp" />
     <ClCompile Include="Source\Engine\Time.cpp" />
     <ClCompile Include="Source\Engine\Window.cpp" />
+    <ClCompile Include="Source\Game\Callback.cpp" />
     <ClCompile Include="Source\Game\Game.cpp" />
     <ClCompile Include="Source\Game\GameData.cpp" />
     <ClCompile Include="Source\Game\HotReloader.cpp" />
