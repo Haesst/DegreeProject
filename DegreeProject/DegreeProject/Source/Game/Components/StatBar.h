@@ -9,14 +9,14 @@ struct StatBar : public Component
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
 	float m_SizeX = 400.0f;
-	float m_SizeY = 100.0f;
+	float m_SizeY = 50.0f;
 	float m_OutlineThickness = 10.0f;
 	sf::Text m_CurrentGoldText;
 	sf::Text m_MaxArmyText;
 	sf::Font m_Font;
 	std::string m_CurrentGold = "";
 	std::string m_CurrentMaxArmy = "";
-	int m_CharacterSize = 50;
+	int m_CharacterSize = 30;
 #pragma warning(push)
 #pragma warning(disable: 26812)
 	sf::Text::Style m_Style = sf::Text::Regular;

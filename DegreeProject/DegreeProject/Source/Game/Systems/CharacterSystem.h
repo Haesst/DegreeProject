@@ -120,6 +120,6 @@ struct CharacterSystem : System
 				return characters[entity].GetID();
 			}
 		}
-		return -1;
+		return 0;
 	}
 };

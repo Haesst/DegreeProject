@@ -145,14 +145,14 @@ void Game::AddEntitys()
 	StatBar& statBarComponent = entityManager->GetComponent<StatBar>(statBarID);
 
 	EntityID goldSpriteID = entityManager->AddNewEntity();
-	entityManager->AddComponent<UISpriteRenderer>(goldSpriteID, "Assets/Graphics/CastleWithUnicorn.png", 64, 64, m_AssetHandler);
+	entityManager->AddComponent<UISpriteRenderer>(goldSpriteID, "Assets/Graphics/CastleWithUnicorn.png", 32, 32, m_AssetHandler);
 	Transform& goldSpriteTransform = entityManager->GetComponent<Transform>(goldSpriteID);
-	goldSpriteTransform.m_Position = Vector2D(statBarComponent.m_SizeX * 0.1f + m_Resolution.x - statBarComponent.m_SizeX - statBarComponent.m_OutlineThickness, statBarComponent.m_SizeY * 0.25f);
+	goldSpriteTransform.m_Position = Vector2D(statBarComponent.m_SizeX * 0.1f + m_Resolution.x - statBarComponent.m_SizeX - statBarComponent.m_OutlineThickness, statBarComponent.m_SizeY * 0.4f);
 
 	EntityID armySpriteID = entityManager->AddNewEntity();
-	entityManager->AddComponent<UISpriteRenderer>(armySpriteID, "Assets/Graphics/soldier unit.png", 64, 64, m_AssetHandler);
+	entityManager->AddComponent<UISpriteRenderer>(armySpriteID, "Assets/Graphics/soldier unit.png", 32, 32, m_AssetHandler);
 	Transform& armySpriteTransform = entityManager->GetComponent<Transform>(armySpriteID);
-	armySpriteTransform.m_Position = Vector2D(statBarComponent.m_SizeX * 0.5f + m_Resolution.x - statBarComponent.m_SizeX - statBarComponent.m_OutlineThickness, statBarComponent.m_SizeY * 0.25f);
+	armySpriteTransform.m_Position = Vector2D(statBarComponent.m_SizeX * 0.5f + m_Resolution.x - statBarComponent.m_SizeX - statBarComponent.m_OutlineThickness, statBarComponent.m_SizeY * 0.4f);
 
 	//UI CharacterWindow
 	EntityID topPortraitUI = entityManager->AddNewEntity();
