@@ -27,7 +27,7 @@ struct RegionBuilding
 		LOG_WARN("Construction Started!");
 	}
 
-	void OnDayChange(Date date)
+	void OnDayChange(Date)
 	{
 		if (m_Finished)
 		{
