@@ -96,9 +96,23 @@ struct GameDate
 		}
 	}
 
+	char* GetDaySuffix()
+	{
+		int lastDayDigit = m_Date.m_Day % 10;
+
+		switch (lastDayDigit)
+		{
+		case 1: return "st";
+		case 2: return "nd";
+		case 3: return "rd";
+		default:
+			return "th";
+		}
+	}
+
 	std::string GetDateString()
 	{
-		return std::to_string(m_Date.m_Day) + " " + m_MonthName[m_Date.m_Month] + " " + std::to_string(m_Date.m_Year);
+		return std::to_string(m_Date.m_Day) + GetDaySuffix() + " of " + m_MonthName[m_Date.m_Month] + ". " + std::to_string(m_Date.m_Year) + " AD";
 	}
 
 	void SubscribeToMonthChange(std::function<void(Date)> action)
