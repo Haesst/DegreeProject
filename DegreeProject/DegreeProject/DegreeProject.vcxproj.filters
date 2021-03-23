@@ -177,6 +177,7 @@
     <ClInclude Include="Source\Game\Systems\UIWindowSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\War.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -219,5 +220,6 @@
       <Filter>Game\Systems\AI</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
+    <ClCompile Include="Source\Game\War.cpp" />
   </ItemGroup>
 </Project>
