@@ -2,6 +2,7 @@
 #include "ECS\Component.h"
 #include "Game\Components\CharacterComponent.h"
 #include <Game\Components\Unit.h>
+#include <Game\War.h>
 
 struct WarmindComponent : Component
 {
@@ -9,7 +10,8 @@ struct WarmindComponent : Component
 
 	EntityID m_Opponent;
 
-	bool m_Defending = false;
+	War* m_CurrentWar = nullptr;
+
 	bool m_Active = false;
 	bool m_AtWar = false;
 	bool m_RecentlyAtWar = false; //Flag for starting war

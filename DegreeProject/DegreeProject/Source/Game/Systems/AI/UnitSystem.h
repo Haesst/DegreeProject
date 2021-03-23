@@ -215,6 +215,7 @@ struct UnitSystem : System
 		{
 			m_UnitComponents[enemyUnit].m_RepresentedForce = 0;
 			m_UnitComponents[enemyUnit].m_Raised = false;
+			m_Warminds[m_UnitComponents[unit].m_Owner].m_CurrentWar->AddWarscore(20, true);
 		}
 
 		else
@@ -222,6 +223,7 @@ struct UnitSystem : System
 			m_UnitComponents[unit].m_RepresentedForce = 0;
 			m_UnitComponents[unit].m_Raised = false;
 			m_Renderers[unit].m_ShouldRender = false;
+			m_Warminds[m_UnitComponents[enemyUnit].m_Owner].m_CurrentWar->AddWarscore(20, false);
 		}
 	}
 

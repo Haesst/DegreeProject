@@ -102,6 +102,11 @@ struct WarmindSystem : System
 
 	void OrderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
 	{
+		if (m_Warminds[warmindID].m_CurrentWar == nullptr)
+		{
+			return;
+		}
+
 		auto& enemyWarmind = m_Warminds[m_Warminds[warmindID].m_Opponent];
 		auto& enemyUnit = m_Units[enemyWarmind.m_UnitEntity];
 
@@ -112,7 +117,7 @@ struct WarmindSystem : System
 
 		Vector2DInt battlefieldIntPosition;
 
-		if (enemyUnit.m_CurrentPath.size() > 0 && !m_Warminds[warmindID].m_Defending)
+		if (enemyUnit.m_CurrentPath.size() > 0 && !m_Warminds[warmindID].m_CurrentWar->IsDefender(warmindID))
 		{
 			LOG_INFO("{0} is chasing the enemy army", m_Characters[warmindID].m_Name);
 			battlefieldIntPosition = enemyUnit.m_CurrentPath.back();
@@ -162,15 +167,16 @@ struct WarmindSystem : System
 	void ConsiderOrders(EntityID warmind, UnitComponent& unit, EntityID targetWarmind)
 	{
 		m_Units[m_Warminds[warmind].m_UnitEntity].m_Moving = false;
+		auto& enemyUnit = m_Units[m_Warminds[targetWarmind].m_UnitEntity];
 
 		SiegeCapitalConsideration siegeConsideration;
 		float siegeEval = siegeConsideration.Evaluate(warmind, targetWarmind);
 		FightEnemyArmyConsideration fightConsideration;
 		float fightEval = fightConsideration.Evaluate(warmind, targetWarmind);
 		
-		if (siegeEval > fightEval)
+		if (siegeEval > fightEval || !enemyUnit.m_Raised)
 		{
-			if (!m_Warminds[warmind].m_Defending)
+			if (!m_Warminds[warmind].m_CurrentWar->IsDefender(targetWarmind))
 			{
 				LOG_INFO("Warmind belonging to {0} decided to siege the enemy capital", m_Characters[warmind].m_Name);
 			}
