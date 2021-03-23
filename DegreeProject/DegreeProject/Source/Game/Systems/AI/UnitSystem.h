@@ -87,8 +87,37 @@ struct UnitSystem : System
 				Vector2D pos = Map::ConvertToScreen(unit.m_CurrentPath.back());
 				m_EndPosition.setPosition(pos.x, pos.y);
 				Window::GetWindow()->draw(m_EndPosition);
+				DisplaySeizeMeter(unit);
 			}
 		}
+	}
+	
+	void DisplaySeizeMeter(UnitComponent& unit)
+	{
+		if (unit.m_SeizingRegionID < 0)
+		{
+			return;
+		}
+		Transform& transform = EntityManager::Get().GetComponent<Transform>(unit.m_EntityID);
+
+		sf::Vector2 offset(0.0f, -20.0f);
+		sf::Vector2 innerOffset(1.0f, 1.0f);
+
+		float innerWidth = 30.0f * CalculateSeizeProgress(unit.m_DaysSeizing, Map::GetRegionById(unit.m_SeizingRegionID).m_DaysToSeize);
+
+		unit.m_InnerSeizeMeter.setPosition(offset + innerOffset + sf::Vector2(transform.m_Position.x, transform.m_Position.y));
+		unit.m_InnerSeizeMeter.setSize({ innerWidth, 10.0f });
+		unit.m_InnerSeizeMeter.setFillColor(sf::Color(40, 70, 170, 250));
+		unit.m_OuterSeizeMeter.setSize({ 32.0f, 12.0f });
+		unit.m_OuterSeizeMeter.setPosition(offset + sf::Vector2(transform.m_Position.x, transform.m_Position.y));
+
+		Window::GetWindow()->draw(unit.m_OuterSeizeMeter);
+		Window::GetWindow()->draw(unit.m_InnerSeizeMeter);
+	}
+
+	float CalculateSeizeProgress(int currentDays, int totalDays)
+	{
+		return (float)currentDays / (float)totalDays;
 	}
 
 	void MoveUnit(UnitComponent& unit, Transform& transform)
@@ -195,10 +224,12 @@ struct UnitSystem : System
 		characterSystem->ConquerRegion(regionID, conqueringID);
 		characterSystem->LoseRegion(regionID, loosingEntity);
 
-		m_Warminds[conqueringID].m_CurrentWar->EndWar();
-		m_Warminds[conqueringID].m_CurrentWar = nullptr;
-		m_Warminds[loosingEntity].m_CurrentWar = nullptr;
-		return;
+		if (m_Warminds[conqueringID].m_CurrentWar != nullptr)
+		{
+			m_Warminds[conqueringID].m_CurrentWar->EndWar();
+			m_Warminds[conqueringID].m_CurrentWar = nullptr;
+			m_Warminds[loosingEntity].m_CurrentWar = nullptr;
+		}
 	}
 
 	bool EnemyAtSquare(Vector2DInt square, EntityID opponent)
