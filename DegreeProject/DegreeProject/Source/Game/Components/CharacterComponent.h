@@ -65,7 +65,7 @@ struct CharacterComponent : public Component
 			incomingGold += region.m_RegionTax;
 		}
 
-		incomingGold -= m_RaisedArmySize;
+		incomingGold -= (m_RaisedArmySize * 0.1f);
 
 		m_CurrentGold += incomingGold;
 	}

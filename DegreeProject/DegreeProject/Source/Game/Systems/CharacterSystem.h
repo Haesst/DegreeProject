@@ -18,6 +18,7 @@ struct CharacterSystem : System
 	// Do any kind of init here but remember to register
 	// the systems component signature. IE: add every component
 	// that the system needs or should look for
+
 	CharacterSystem()
 	{
 		AddComponentSignature<CharacterComponent>();
@@ -58,6 +59,8 @@ struct CharacterSystem : System
 
 	void RaiseUnit(EntityID ownerID, bool playerControlled, UnitComponent& unit, SpriteRenderer& renderer, const Vector2DInt& mapPosition)
 	{
+		CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(ownerID);
+
 		Transform& unitTransform = m_EntityManager->GetComponent<Transform>(unit.GetID());
 		unit.m_Owner = ownerID;
 		unit.m_PlayerControlled = playerControlled;
@@ -69,6 +72,8 @@ struct CharacterSystem : System
 		unit.m_LastPosition = screenPosition;
 		unit.m_Raised = true;
 		renderer.m_ShouldRender = true;
+
+		character.m_RaisedArmySize = character.m_MaxArmySize; //Todo: Army recharge
 	}
 
 	void ConquerRegion(unsigned int regionID, unsigned int conqueringEntity)
