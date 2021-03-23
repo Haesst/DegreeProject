@@ -76,17 +76,17 @@ void AISystem::DeclareWar(EntityID instigator, EntityID target, int warGoalRegio
 {
 	LOG_INFO("{0} Declared war with {1} for {2}", m_Characters[instigator].m_Name, m_Characters[target].m_Name, Map::GetRegionById(warGoalRegion).m_RegionName);
 
-	War war(m_Characters[instigator], m_Characters[target], warGoalRegion);
-
-	m_Characters[instigator].m_AtWar = true;
-	m_Warminds[instigator].m_Active = true;
-	m_Warminds[instigator].m_RecentlyAtWar = true;
-	m_Warminds[instigator].m_CurrentWar = &war;
-	m_Warminds[instigator].m_Opponent = target;
-
-	m_Warminds[target].m_CurrentWar = &war;
-	m_Characters[target].m_AtWar = true;
-	m_Warminds[target].m_Opponent = instigator;
-	m_Warminds[target].m_Active = true;
-	m_Warminds[target].m_RecentlyAtWar = true;
+	//War war(m_Characters[instigator], m_Characters[target], warGoalRegion);
+	//
+	//m_Characters[instigator].m_AtWar = true;
+	//m_Warminds[instigator].m_Active = true;
+	//m_Warminds[instigator].m_RecentlyAtWar = true;
+	//m_Warminds[instigator].m_CurrentWar = &war;
+	//m_Warminds[instigator].m_Opponent = target;
+	//
+	//m_Warminds[target].m_CurrentWar = &war;
+	//m_Characters[target].m_AtWar = true;
+	//m_Warminds[target].m_Opponent = instigator;
+	//m_Warminds[target].m_Active = true;
+	//m_Warminds[target].m_RecentlyAtWar = true;
 }
