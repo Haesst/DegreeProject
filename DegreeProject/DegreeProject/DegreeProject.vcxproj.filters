@@ -96,6 +96,9 @@
     <ClInclude Include="Source\Game\Components\StatBar.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Components\DateBar.h">
+      <Filter>Game\Components</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Components\UISpriteRenderer.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
@@ -168,6 +171,9 @@
     <ClInclude Include="Source\Game\Systems\StatBarSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Systems\DateBarSystem.h">
+      <Filter>Game\Systems</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Systems\UISpriteRenderSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
@@ -177,7 +183,9 @@
     <ClInclude Include="Source\Game\Systems\UIWindowSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\War.h" />
+    <ClInclude Include="Source\Game\War.h">
+      <Filter>Game</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -219,7 +227,9 @@
     <ClCompile Include="Source\Game\Systems\AI\AI.cpp">
       <Filter>Game\Systems\AI</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\War.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Game\War.cpp" />
   </ItemGroup>
 </Project>

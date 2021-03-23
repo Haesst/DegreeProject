@@ -18,6 +18,7 @@
 #include "Game/Systems/PlayerSystem.h"
 #include <Game/Systems/AI/AI.h>
 #include "Game/Systems/StatBarSystem.h"
+#include "Game/Systems/DateBarSystem.h"
 
 Game::~Game()
 {
@@ -88,7 +89,7 @@ void Game::InitAssets()
 void Game::InitSound()
 {
 	m_Sound = m_AssetHandler->LoadAudioFile("Assets/Audio/MenuMusic.wav", m_SoundBuffer);
-	m_Sound.setVolume(10);
+	m_Sound.setVolume(5);
 	m_Sound.play();
 }
 
@@ -101,6 +102,7 @@ void Game::InitSystems()
 	entityManager->RegisterSystem<WarmindSystem>();
 	entityManager->RegisterSystem<SpriteRenderSystem>();
 	entityManager->RegisterSystem<PlayerSystem>();
+	entityManager->RegisterSystem<DateBarSystem>();
 	entityManager->RegisterSystem<StatBarSystem>();
 	entityManager->RegisterSystem<UIWindowSystem>();
 	entityManager->RegisterSystem<UISpriteRenderSystem>();
@@ -138,6 +140,10 @@ void Game::AddEntitys()
 
 	entityManager->AddComponent<WarmindComponent>(char1, 1, char0);
 	entityManager->AddComponent<WarmindComponent>(char0, 4, char1);
+
+	//UI TimeBar
+	EntityID dateBarID = entityManager->AddNewEntity();
+	entityManager->AddComponent<DateBar>(dateBarID, m_UIFont);
 
 	//UI StatBar
 	EntityID statBarID = entityManager->AddNewEntity();
