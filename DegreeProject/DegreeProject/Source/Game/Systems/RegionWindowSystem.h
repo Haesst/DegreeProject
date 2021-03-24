@@ -46,25 +46,25 @@ struct RegionWindowSystem : System
 				m_RegionWindows[entity].m_WindowShape.setOutlineThickness(m_RegionWindows[entity].m_OutlineThickness);
 				m_RegionWindows[entity].m_WindowShape.setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX, m_RegionWindows[entity].m_SizeY));
 
-				m_RegionWindows[entity].m_BuildingSlotShape.setFillColor(sf::Color::Transparent);
+				m_RegionWindows[entity].m_BuildingSlotShape.setFillColor(m_RegionWindows[entity].m_BuildingSlotColor);
 				m_RegionWindows[entity].m_BuildingSlotShape.setOutlineColor(m_RegionWindows[entity].m_OwnerColor);
 				m_RegionWindows[entity].m_BuildingSlotShape.setOutlineThickness(m_RegionWindows[entity].m_OutlineThickness * 0.5f);
 				m_RegionWindows[entity].m_BuildingSlotShape.setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX * 0.05f, m_RegionWindows[entity].m_SizeY * 0.05f));
 				m_RegionWindows[entity].m_BuildingSlotShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_RegionWindows[entity].m_SizeX - 41, Window::GetWindow()->getSize().y - 61)));
 
-				m_RegionWindows[entity].m_BuildingSlotShape2.setFillColor(sf::Color::Transparent);
+				m_RegionWindows[entity].m_BuildingSlotShape2.setFillColor(m_RegionWindows[entity].m_BuildingSlotColor2);
 				m_RegionWindows[entity].m_BuildingSlotShape2.setOutlineColor(m_RegionWindows[entity].m_OwnerColor);
 				m_RegionWindows[entity].m_BuildingSlotShape2.setOutlineThickness(m_RegionWindows[entity].m_OutlineThickness * 0.5f);
 				m_RegionWindows[entity].m_BuildingSlotShape2.setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX * 0.05f, m_RegionWindows[entity].m_SizeY * 0.05f));
 				m_RegionWindows[entity].m_BuildingSlotShape2.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_RegionWindows[entity].m_SizeX - 41 - 52, Window::GetWindow()->getSize().y - 61)));
 
-				m_RegionWindows[entity].m_BuildingSlotShape3.setFillColor(sf::Color::Transparent);
+				m_RegionWindows[entity].m_BuildingSlotShape3.setFillColor(m_RegionWindows[entity].m_BuildingSlotColor3);
 				m_RegionWindows[entity].m_BuildingSlotShape3.setOutlineColor(m_RegionWindows[entity].m_OwnerColor);
 				m_RegionWindows[entity].m_BuildingSlotShape3.setOutlineThickness(m_RegionWindows[entity].m_OutlineThickness * 0.5f);
 				m_RegionWindows[entity].m_BuildingSlotShape3.setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX * 0.05f, m_RegionWindows[entity].m_SizeY * 0.05f));
 				m_RegionWindows[entity].m_BuildingSlotShape3.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_RegionWindows[entity].m_SizeX - 41 - 104, Window::GetWindow()->getSize().y - 61)));
 
-				m_RegionWindows[entity].m_BuildingSlotShape4.setFillColor(sf::Color::Transparent);
+				m_RegionWindows[entity].m_BuildingSlotShape4.setFillColor(m_RegionWindows[entity].m_BuildingSlotColor4);
 				m_RegionWindows[entity].m_BuildingSlotShape4.setOutlineColor(m_RegionWindows[entity].m_OwnerColor);
 				m_RegionWindows[entity].m_BuildingSlotShape4.setOutlineThickness(m_RegionWindows[entity].m_OutlineThickness * 0.5f);
 				m_RegionWindows[entity].m_BuildingSlotShape4.setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX * 0.05f, m_RegionWindows[entity].m_SizeY * 0.05f));
@@ -129,6 +129,38 @@ struct RegionWindowSystem : System
 					regionWindow.m_RegionName = currentMapRegion.m_RegionName;
 					regionWindow.m_KingdomName = characters[currentMapRegion.m_OwnerID].m_KingdomName;
 					regionWindow.m_OwnerColor = characters[currentMapRegion.m_OwnerID].m_RegionColor;
+					if (currentMapRegion.m_BuildingSlots[0].m_Finished)
+					{
+						regionWindow.m_BuildingSlotColor = regionWindow.m_OwnerColor;
+					}
+					else
+					{
+						regionWindow.m_BuildingSlotColor = sf::Color::Transparent;
+					}
+					if (currentMapRegion.m_BuildingSlots[1].m_Finished)
+					{
+						regionWindow.m_BuildingSlotColor2 = regionWindow.m_OwnerColor;
+					}
+					else
+					{
+						regionWindow.m_BuildingSlotColor2 = sf::Color::Transparent;
+					}
+					if (currentMapRegion.m_BuildingSlots[2].m_Finished)
+					{
+						regionWindow.m_BuildingSlotColor3 = regionWindow.m_OwnerColor;
+					}
+					else
+					{
+						regionWindow.m_BuildingSlotColor3 = sf::Color::Transparent;
+					}
+					if (currentMapRegion.m_BuildingSlots[3].m_Finished)
+					{
+						regionWindow.m_BuildingSlotColor4 = regionWindow.m_OwnerColor;
+					}
+					else
+					{
+						regionWindow.m_BuildingSlotColor4 = sf::Color::Transparent;
+					}
 				}
 				regionWindow.m_Open = true;
 			}
