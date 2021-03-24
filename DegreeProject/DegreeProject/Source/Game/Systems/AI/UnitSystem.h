@@ -12,9 +12,6 @@ struct UnitSystem : System
 	WarmindComponent* m_Warminds = nullptr;
 	SpriteRenderer* m_Renderers = nullptr;
 
-	std::list<sf::RectangleShape> m_TargetPath;
-	sf::RectangleShape m_EndPosition;
-
 	float m_MoveTolerance = 0.3f;
 
 	Vector2D m_SeizeMeterOffset = { 0.0f, -20.0f };
@@ -86,19 +83,19 @@ struct UnitSystem : System
 
 			if (unit.m_Raised)
 			{
-				if (unit.m_Moving && unit.m_PlayerSelected)
+				if (unit.m_Moving)//&& unit.m_PlayerSelected)
 				{
-					for each (sf::RectangleShape rectangle in m_TargetPath)
+					for each (sf::RectangleShape rectangle in unit.m_TargetPath)
 					{
 						Window::GetWindow()->draw(rectangle);
 					}
 				}
 
-				m_EndPosition.setSize(sf::Vector2f(32.0f, 32.0f));
-				m_EndPosition.setFillColor(sf::Color::Red);
+				unit.m_EndPosition.setSize(sf::Vector2f(32.0f, 32.0f));
+				unit.m_EndPosition.setFillColor(sf::Color::Red);
 				Vector2D pos = Map::ConvertToScreen(unit.m_CurrentPath.back());
-				m_EndPosition.setPosition(pos.x, pos.y);
-				Window::GetWindow()->draw(m_EndPosition);
+				unit.m_EndPosition.setPosition(pos.x, pos.y);
+				Window::GetWindow()->draw(unit.m_EndPosition);
 				DisplaySeizeMeter(unit);
 			}
 		}
@@ -146,6 +143,11 @@ struct UnitSystem : System
 			}
 			else
 			{
+				if (Map::MapSquareDataContainsKey(Map::ConvertToMap(unit.m_LastPosition)))
+				{
+					Map::GetMapSquareData(Map::ConvertToMap(unit.m_LastPosition)).Remove(unit.GetID());
+				}
+
 				unit.m_LastPosition = unit.m_Target;
 				transform.m_Position = unit.m_Target;
 				Vector2DInt pos = Map::ConvertToMap(unit.m_Target);
@@ -154,8 +156,12 @@ struct UnitSystem : System
 				if (EnemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
 				{
 					EntityID enemyID = m_Warminds[unit.m_Owner].m_Opponent;
-					UnitComponent& enemyUnit = m_UnitComponents[m_Warminds[enemyID].m_UnitEntity];
-					EnterCombat(unit.m_EntityID, enemyUnit.GetID());
+					UnitComponent& enemyUnit = m_UnitComponents[m_Characters[enemyID].m_UnitEntity];
+
+					if (enemyUnit.m_Raised)
+					{
+						EnterCombat(unit.m_EntityID, enemyUnit.GetID());
+					}
 				}
 
 				// Check for enemy at square and kill him
@@ -169,9 +175,9 @@ struct UnitSystem : System
 					Map::m_MapUnitData[mapPos].AddUnique(unit.m_EntityID);
 					
 					unit.m_CurrentPath.pop_front();
-					if (m_TargetPath.size() > 0 && unit.m_PlayerControlled)
+					if (unit.m_TargetPath.size() > 0) //&& unit.m_PlayerControlled)
 					{
-						m_TargetPath.pop_front();
+						unit.m_TargetPath.pop_front();
 					}
 				}
 				else
@@ -239,11 +245,11 @@ struct UnitSystem : System
 		characterSystem->ConquerRegion(regionID, conqueringID);
 		characterSystem->LoseRegion(regionID, loosingEntity);
 
-		if (m_Warminds[conqueringID].m_CurrentWar != nullptr)
+		if (m_Characters[conqueringID].m_CurrentWar != nullptr)
 		{
-			m_Warminds[conqueringID].m_CurrentWar->EndWar(conqueringID);
-			m_Warminds[conqueringID].m_CurrentWar = nullptr;
-			m_Warminds[loosingEntity].m_CurrentWar = nullptr;
+			m_Characters[conqueringID].m_CurrentWar->EndWar(conqueringID);
+			m_Characters[conqueringID].m_CurrentWar = nullptr;
+			m_Characters[loosingEntity].m_CurrentWar = nullptr;
 		}
 	}
 
@@ -267,23 +273,29 @@ struct UnitSystem : System
 
 		if (m_UnitComponents[unit].m_RepresentedForce > m_UnitComponents[enemyUnit].m_RepresentedForce)
 		{
-			m_UnitComponents[enemyUnit].m_RepresentedForce = 0;
-			m_UnitComponents[enemyUnit].m_Raised = false;
-			m_Warminds[m_UnitComponents[unit].m_Owner].m_CurrentWar->AddWarscore(50, true);
+			KillUnit(enemyUnit);
+			m_Characters[m_UnitComponents[unit].m_Owner].m_CurrentWar->AddWarscore(50, true);
 		}
 
 		else
 		{
-			m_UnitComponents[unit].m_RepresentedForce = 0;
-			m_UnitComponents[unit].m_Raised = false;
-			m_Renderers[unit].m_ShouldRender = false;
-			m_Warminds[m_UnitComponents[enemyUnit].m_Owner].m_CurrentWar->AddWarscore(50, false);
+			KillUnit(unit);
+			m_Characters[m_UnitComponents[enemyUnit].m_Owner].m_CurrentWar->AddWarscore(50, false);
 		}
+	}
+
+	void KillUnit(EntityID ID)
+	{
+		m_UnitComponents[ID].m_Moving = false;
+		m_UnitComponents[ID].m_CurrentPath.clear();
+		m_UnitComponents[ID].m_RepresentedForce = 0;
+		m_UnitComponents[ID].m_Raised = false;
+		m_Renderers[ID].m_ShouldRender = false;
 	}
 
 	void ShowPath(Transform& transform, UnitComponent& unit)
 	{
-		m_TargetPath.clear();
+		unit.m_TargetPath.clear();
 		std::vector<Vector2DInt> path;
 		for each (Vector2DInt position in unit.m_CurrentPath)
 		{
@@ -296,7 +308,7 @@ struct UnitSystem : System
 			Vector2D rectangleSize = Vector2D(unit.m_HighlightShape.getSize().x * 1.45f, unit.m_HighlightShape.getSize().y * 0.25f);
 			float rotation = 0.0f;
 			Vector2DInt oldPosition = Vector2DInt();
-			if (m_TargetPath.size() > 0)
+			if (unit.m_TargetPath.size() > 0)
 			{
 				oldPosition = path[index - 1];
 			}
@@ -350,7 +362,7 @@ struct UnitSystem : System
 			rectangle.setFillColor(sf::Color::White);
 			rectangle.setRotation(rotation);
 			rectangle.setPosition(screenPosition.x, screenPosition.y + unit.m_HighlightShape.getSize().y * 0.375f);
-			m_TargetPath.push_back(rectangle);
+			unit.m_TargetPath.push_back(rectangle);
 			index++;
 		}
 	}

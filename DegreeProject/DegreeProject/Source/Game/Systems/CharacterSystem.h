@@ -13,6 +13,9 @@
 struct CharacterSystem : System
 {
 	EntityManager* m_EntityManager = nullptr;
+	CharacterComponent* m_Characters = nullptr;
+	UnitComponent* m_Units = nullptr;
+	SpriteRenderer* m_Renderers = nullptr;
 
 	// Constructor, Runs when the system is initialized
 	// Do any kind of init here but remember to register
@@ -23,21 +26,30 @@ struct CharacterSystem : System
 	{
 		AddComponentSignature<CharacterComponent>();
 		m_EntityManager = &EntityManager::Get();
+		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+		m_Units = m_EntityManager->GetComponentArray<UnitComponent>();
+		m_Renderers = m_EntityManager->GetComponentArray<SpriteRenderer>();
 	}
 
 	virtual void Start() override
 	{
-		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-
 		for (auto entity : m_Entities)
 		{
-			for (unsigned int ownedID : characters[entity].m_OwnedRegionIDs)
+			for (unsigned int ownedID : m_Characters[entity].m_OwnedRegionIDs)
 			{
 				Map::GetRegionById(ownedID).m_OwnerID = entity;
 			}
 
-			characters[entity].Start();
+			m_Characters[entity].Start();
 		}
+	}
+
+	bool GetPlayerControlled(EntityID ent)
+	{
+		EntityManager* entityManager = &EntityManager::Get();
+		CharacterComponent& character = entityManager->GetComponent<CharacterComponent>(ent);
+
+		return character.m_IsPlayerControlled;
 	}
 
 	// Update gets called every frame and loops through every entity that has the signature that
@@ -47,10 +59,18 @@ struct CharacterSystem : System
 		//Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
 		//CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 
-		//for (auto entity : m_Entities)
-		//{
-
-		//}
+		for (auto entity : m_Entities)
+		{
+			if (m_Characters[entity].m_AtWar && !m_Units[m_Characters[entity].m_UnitEntity].m_Raised)
+			{
+				if (!GetPlayerControlled(entity))
+				{
+					int regionIndex = m_Characters[entity].m_OwnedRegionIDs[0];
+					Vector2DInt capitalPos = Map::GetRegionCapitalLocation(regionIndex);
+					RaiseUnit(entity, false, m_Units[m_Characters[entity].m_UnitEntity], m_Renderers[m_Characters[entity].m_UnitEntity], capitalPos);
+				}
+			}
+		}
 	}
 
 	virtual void Render() override

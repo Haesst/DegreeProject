@@ -26,7 +26,7 @@ struct Building;
 
 struct SquareData
 {
-	std::list<EntityID> m_EntitiesInSquare;
+	std::list<EntityID> m_EntitiesInSquare = std::list<EntityID>();
 	unsigned int m_RegionID;
 
 	void AddUnique(EntityID entityToAdd)
@@ -42,12 +42,20 @@ struct SquareData
 		m_EntitiesInSquare.push_back(entityToAdd);
 	}
 
+	void Remove(EntityID entityToRemove)
+	{
+		m_EntitiesInSquare.remove(entityToRemove);
+	}
+
 	SquareData(unsigned int regionID)
 		: m_RegionID(regionID)
-	{}
+	{
+		m_EntitiesInSquare.clear();
+	}
 
 	SquareData()
 	{
+		m_EntitiesInSquare.clear();
 		m_RegionID = 0; // apparantly need a default constructor, need to see where
 	}
 };

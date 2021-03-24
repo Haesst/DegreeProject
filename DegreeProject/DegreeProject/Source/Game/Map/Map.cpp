@@ -197,6 +197,8 @@ void Map::ClearRegions()
 	m_Data.m_Regions.clear();
 }
 
+
+
 SquareData& Map::GetMapSquareData(Vector2DInt key)
 {
 	for (auto& p : m_MapUnitData)

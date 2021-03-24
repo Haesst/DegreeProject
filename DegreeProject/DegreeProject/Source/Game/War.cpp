@@ -49,11 +49,12 @@ void War::EndWar(EntityID winningEntity)
 
 	if (!m_Attacker->m_IsPlayerControlled)
 	{
-		WarmindComponent& attackerWarmind = m_Warminds[m_Attacker->GetID()];
+		WarmindComponent& attackerWarmind = m_Warminds[m_Attacker->GetID()]; //switch out to character
 		attackerWarmind.m_Active = false;
 		attackerWarmind.m_AtWar = false;
 		m_Attacker->m_RaisedArmySize = 0;
-		m_Units[attackerWarmind.m_UnitEntity].m_Raised = false;
+
+		m_Units[m_Attacker->m_UnitEntity].m_Raised = false;
 	}
 
 	if (!m_Defender->m_IsPlayerControlled)
@@ -62,7 +63,8 @@ void War::EndWar(EntityID winningEntity)
 		defenderWarmind.m_Active = false;
 		defenderWarmind.m_AtWar = false;
 		m_Defender->m_RaisedArmySize = 0;
-		m_Units[defenderWarmind.m_UnitEntity].m_Raised = false;
+
+		m_Units[m_Defender->m_UnitEntity].m_Raised = false;
 	}
 }
 

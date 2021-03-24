@@ -6,6 +6,7 @@
 #include "WarmindConsiderations.h"
 #include "Game/Components/CharacterComponent.h"
 #include "Game/Pathfinding.h"
+#include "UnitSystem.h"
 
 struct WarmindSystem : System
 {
@@ -31,20 +32,6 @@ struct WarmindSystem : System
 		m_Transforms = m_EntityManager->GetComponentArray<Transform>();
 	}
 
-	virtual void Start() override
-	{
-		for (EntityID ent : m_Entities)
-		{
-			m_Warminds[ent].m_UnitEntity = m_EntityManager->AddNewEntity();
-			m_EntityManager->AddComponent<UnitComponent>(m_Warminds[ent].m_UnitEntity, m_Characters[ent].m_MaxArmySize, ent);
-			AssetHandler handler;
-			m_EntityManager->AddComponent<SpriteRenderer>(m_Warminds[ent].m_UnitEntity, "Assets/Graphics/soldier unit.png", 32, 32, &handler);
-			auto warmindComp = m_EntityManager->GetComponent<WarmindComponent>(ent);
-			SpriteRenderer& renderer = m_EntityManager->GetComponent<SpriteRenderer>(warmindComp.m_UnitEntity);
-			renderer.m_ShouldRender = false;
-		}
-	}
-
 	virtual void Update() override
 	{
 		for (auto entity : m_Entities)
@@ -54,61 +41,42 @@ struct WarmindSystem : System
 				continue;
 			}
 
-			if (m_Warminds[entity].m_RecentlyAtWar)
-			{
-				OnWarStarted(entity);
-				m_Warminds[entity].m_RecentlyAtWar = false;
-			}
-
-			if (m_Units[m_Warminds[entity].m_UnitEntity].m_Raised)
+			if (m_Units[m_Characters[entity].m_UnitEntity].m_Raised)
 			{
 				m_Warminds[entity].m_OrderAccu += Time::DeltaTime();
 
 				if (m_Warminds[entity].m_OrderAccu >= m_Warminds[entity].m_OrderTimer)
 				{
 					m_Warminds[entity].m_OrderAccu = 0.0f;
-					ConsiderOrders(entity, m_Units[m_Warminds[entity].m_UnitEntity], m_Warminds[entity].m_Opponent);
+					ConsiderOrders(entity, m_Units[m_Characters[entity].m_UnitEntity], m_Warminds[entity].m_Opponent);
 				}
 			}
 		}
 	}
 
-	void OnWarStarted(EntityID Id)
-	{
-		auto warmindComp = m_EntityManager->GetComponent<WarmindComponent>(Id);
-		UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(warmindComp.m_UnitEntity);
-		SpriteRenderer& renderer = m_EntityManager->GetComponent<SpriteRenderer>(warmindComp.m_UnitEntity);
-
-		if (!unit.m_Raised)
-		{
-			int regionIndex = m_Characters[Id].m_OwnedRegionIDs[0];
-			Vector2DInt capitalPos = Map::GetRegionCapitalLocation(regionIndex);
-#pragma warning(push)
-#pragma warning(disable: 26815)
-			CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
-#pragma warning(pop)
-			characterSystem->RaiseUnit(Id, false, unit, renderer, capitalPos);
-			LOG_INFO("Warmind belonging to {0} is considering new orders", m_Characters[Id].m_Name);
-		}
-	}
-
 	void OrderSiegeCapital(EntityID warmindID, UnitComponent& unit)
 	{
-		Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Warminds[warmindID].m_UnitEntity).m_Position;
+		Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Characters[warmindID].m_UnitEntity).m_Position;
 		Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
 
 		unit.SetPath(Pathfinding::FindPath(startingPosition, Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId)), Map::ConvertToScreen(startingPosition));
+
+#pragma warning(push)
+#pragma warning(disable: 26815)
+		UnitSystem* unitSystem = (UnitSystem*)m_EntityManager->GetSystem<UnitSystem>().get();
+#pragma warning(pop)
+		unitSystem->ShowPath(m_Transforms[unit.GetID()], unit);
 	}
 
 	void OrderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
 	{
-		if (m_Warminds[warmindID].m_CurrentWar == nullptr)
+		if (m_Characters[warmindID].m_CurrentWar == nullptr)
 		{
 			return;
 		}
 
-		auto& enemyWarmind = m_Warminds[m_Warminds[warmindID].m_Opponent];
-		auto& enemyUnit = m_Units[enemyWarmind.m_UnitEntity];
+		auto& enemyChar = m_Characters[m_Warminds[warmindID].m_Opponent];
+		auto& enemyUnit = m_Units[enemyChar.m_UnitEntity];
 
 		if (!enemyUnit.m_Raised)
 		{
@@ -117,7 +85,7 @@ struct WarmindSystem : System
 
 		Vector2DInt battlefieldIntPosition;
 
-		if (enemyUnit.m_CurrentPath.size() > 0 && !m_Warminds[warmindID].m_CurrentWar->IsDefender(warmindID))
+		if (enemyUnit.m_CurrentPath.size() > 0 && !m_Characters[warmindID].m_CurrentWar->IsDefender(warmindID))
 		{
 			LOG_INFO("{0} is chasing the enemy army", m_Characters[warmindID].m_Name);
 			battlefieldIntPosition = enemyUnit.m_CurrentPath.back();
@@ -138,50 +106,32 @@ struct WarmindSystem : System
 		if (path.size() > 0)
 		{
 			unit.SetPath(path, Map::ConvertToScreen(startingPosition));
+#pragma warning(push)
+#pragma warning(disable: 26815)
+			UnitSystem* unitSystem = (UnitSystem*)m_EntityManager->GetSystem<UnitSystem>().get();
+#pragma warning(pop)
+			unitSystem->ShowPath(m_Transforms[unit.GetID()], unit);
 		}
-			
 	}
 
-	void RaiseUnits(EntityID unitEnt, UnitComponent& unit, SpriteRenderer& renderer, const Vector2D& position)
+	void ConsiderOrders(EntityID warmind, UnitComponent& unit, EntityID target)
 	{
-		auto& transform = m_EntityManager->GetComponent<Transform>(unitEnt);
-		transform.m_Position = position;
-		renderer.m_Sprite.setPosition(position.x, position.y);
-
-		Vector2DInt pos((int)position.x, (int)position.y);
-
-		Map::m_MapUnitData[pos].AddUnique(unitEnt);
-		unit.m_LastPosition = position;
-
-		unit.m_Raised = true;
-		renderer.m_ShouldRender = true;
-	}
-
-	void KillUnit(EntityID ID)
-	{
-		m_Units[ID].m_RepresentedForce = 0;
-		m_Units[ID].m_Raised = false;
-		m_Renderers[ID].m_ShouldRender = false;
-	}
-
-	void ConsiderOrders(EntityID warmind, UnitComponent& unit, EntityID targetWarmind)
-	{
-		m_Units[m_Warminds[warmind].m_UnitEntity].m_Moving = false;
-		auto& enemyUnit = m_Units[m_Warminds[targetWarmind].m_UnitEntity];
+		m_Units[m_Characters[warmind].m_UnitEntity].m_Moving = false;
+		auto& enemyUnit = m_Units[m_Characters[target].m_UnitEntity]; //change to character
 
 		SiegeCapitalConsideration siegeConsideration;
-		float siegeEval = siegeConsideration.Evaluate(warmind, targetWarmind);
+		float siegeEval = siegeConsideration.Evaluate(warmind, target);
 		FightEnemyArmyConsideration fightConsideration;
-		float fightEval = fightConsideration.Evaluate(warmind, targetWarmind);
+		float fightEval = fightConsideration.Evaluate(warmind, target);
 		
 		if (siegeEval > fightEval || !enemyUnit.m_Raised)
 		{
-			if (!m_Warminds[warmind].m_CurrentWar->IsDefender(targetWarmind))
+			if (!m_Characters[warmind].m_CurrentWar->IsDefender(target))
 			{
 				LOG_INFO("Warmind belonging to {0} decided to siege the enemy capital", m_Characters[warmind].m_Name);
 			}
 
-			OrderSiegeCapital(warmind, m_Units[m_Warminds[warmind].m_UnitEntity]);
+			OrderSiegeCapital(warmind, m_Units[m_Characters[warmind].m_UnitEntity]);
 		}
 
 		else

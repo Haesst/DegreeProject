@@ -14,16 +14,8 @@ using json = nlohmann::json;
 #include <Game\Components\Warmind.h>
 #include "Game/AI/AIManager.h"
 
-enum class Action
-{
-	War,
-	Upgrade_Settlement,
-};
-
 struct AISystem : System
 {
-	Action m_LastAction;
-
 	std::vector<std::pair<EntityID, WarmindComponent>> m_EntityToWarminds;
 
 	EntityManager* m_EntityManager = nullptr;
@@ -77,7 +69,7 @@ struct AISystem : System
 				{
 					if (!m_Characters[entity].m_AtWar)
 					{
-						DeclareWar(entity, m_Warminds[entity].m_Opponent, m_Warminds[entity].m_WargoalRegionId);
+						m_Characters[entity].DeclareWar(m_Warminds[entity].m_Opponent, m_Warminds[entity].m_WargoalRegionId);
 					}
 				}
 			}
@@ -89,6 +81,4 @@ struct AISystem : System
 	float WarDecision(EntityID ent);
 
 	float ExpansionDecision(EntityID ent);
-
-	void DeclareWar(EntityID instigator, EntityID target, int warGoalRegion);
 };

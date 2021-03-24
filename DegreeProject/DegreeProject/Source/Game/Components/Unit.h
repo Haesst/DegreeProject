@@ -10,6 +10,8 @@ struct UnitComponent : public Component
 	int m_RepresentedForce = 0;
 	bool m_Raised = false;
 	std::list<Vector2DInt> m_CurrentPath = std::list<Vector2DInt>();
+	std::list<sf::RectangleShape> m_TargetPath = std::list<sf::RectangleShape>();
+	sf::RectangleShape m_EndPosition;
 	Vector2D m_Target;
 	Vector2D m_Direction;
 	bool m_Moving = false;
@@ -58,6 +60,11 @@ struct UnitComponent : public Component
 		{
 			m_SeizingRegionID = -1;
 			m_DaysSeizing = 0;
+		}
+
+		if (Map::m_MapUnitData.find(path.front()) == Map::m_MapUnitData.end())
+		{
+			return;
 		}
 
 		m_CurrentPath = path;
