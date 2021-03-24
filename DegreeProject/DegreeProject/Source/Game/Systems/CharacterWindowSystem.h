@@ -122,16 +122,20 @@ struct CharacterWindowSystem : System
 		InputHandler::SetCharacterWindowOpen(characterWindow.m_Visible);
 		if (InputHandler::GetRightMouseReleased() && !InputHandler::GetPlayerUnitSelected() && characterWindow.m_Open)
 		{
-			characterWindow.m_Visible = !characterWindow.m_Visible;
-			if (characterWindow.m_Visible)
+			Vector2D mousePosition = InputHandler::GetMousePosition();
+			if (!characterWindow.m_Shape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				m_EntityManager->SetEntityActive(characterWindow.m_TopPortraitID, true);
-				m_EntityManager->SetEntityActive(characterWindow.m_BottomPortraitID, false);
-			}
-			else
-			{
-				m_EntityManager->SetEntityActive(characterWindow.m_TopPortraitID, false);
-				m_EntityManager->SetEntityActive(characterWindow.m_BottomPortraitID, true);
+				characterWindow.m_Visible = !characterWindow.m_Visible;
+				if (characterWindow.m_Visible)
+				{
+					m_EntityManager->SetEntityActive(characterWindow.m_TopPortraitID, true);
+					m_EntityManager->SetEntityActive(characterWindow.m_BottomPortraitID, false);
+				}
+				else
+				{
+					m_EntityManager->SetEntityActive(characterWindow.m_TopPortraitID, false);
+					m_EntityManager->SetEntityActive(characterWindow.m_BottomPortraitID, true);
+				}
 			}
 		}
 		else if (InputHandler::GetPlayerUnitSelected() || InputHandler::GetRegionWindowOpen())

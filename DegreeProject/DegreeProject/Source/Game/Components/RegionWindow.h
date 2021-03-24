@@ -12,6 +12,10 @@ struct RegionWindow : public Component
 	sf::RectangleShape m_BuildingSlotShape4;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
+	sf::Color m_BuildingSlotColor = sf::Color::Transparent;
+	sf::Color m_BuildingSlotColor2 = sf::Color::Transparent;
+	sf::Color m_BuildingSlotColor3 = sf::Color::Transparent;
+	sf::Color m_BuildingSlotColor4 = sf::Color::Transparent;
 	float m_SizeX = 600.0f;
 	float m_SizeY = 600.0f;
 	float m_OutlineThickness = 10.0f;
