@@ -15,15 +15,17 @@ struct UnitSystem : System
 	float m_MoveTolerance = 0.3f;
 
 	Vector2D m_SeizeMeterOffset = { 0.0f, -20.0f };
+	Vector2D m_CombatMeterOffset = { 0.0f, 30.0f };
 	Vector2D m_SeizeMeterInnerOffset = { 1.0f, 1.0f };
 
-	float m_SeizeMeterWidth = 32.0f;
-	float m_SeizeMeterHeight = 12.0f;
-	float m_SeizeMeterBorder = 1.0f;
-	float m_SeizeMeterDoubleBorder;
+	float m_ProgressMeterWidth = 32.0f;
+	float m_ProgressMeterHeight = 12.0f;
+	float m_ProgressMeterBorder = 1.0f;
+	float m_ProgressMeterDoubleBorder;
 
-	sf::Color m_SeizeMeterOuterColor = sf::Color(25, 25, 25, 250);
+	sf::Color m_ProgressMeterOuterColor = sf::Color(25, 25, 25, 250);
 	sf::Color m_SeizeMeterFillColor = sf::Color(40, 70, 170, 250);
+	sf::Color m_CombatMeterFillColor = sf::Color(170, 70, 40, 250);
 
 	UnitSystem()
 	{
@@ -33,7 +35,7 @@ struct UnitSystem : System
 		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
 		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 		m_Renderers = m_EntityManager->GetComponentArray<SpriteRenderer>();
-		m_SeizeMeterDoubleBorder = m_SeizeMeterBorder * 2;
+		m_ProgressMeterDoubleBorder = m_ProgressMeterBorder * 2;
 	}
 
 	virtual void Start() override
@@ -109,40 +111,38 @@ struct UnitSystem : System
 				Vector2D pos = Map::ConvertToScreen(unit.m_CurrentPath.back());
 				unit.m_EndPosition.setPosition(pos.x, pos.y);
 				Window::GetWindow()->draw(unit.m_EndPosition);
-				DisplaySeizeMeter(unit);
+
+				if (unit.m_SeizingRegionID > 0)
+				{
+					DisplayProgressMeter(unit, (float)unit.m_DaysSeizing, Map::GetRegionById(unit.m_SeizingRegionID).m_DaysToSeize, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
+				}
+
+				if (unit.m_InCombat)
+				{
+					DisplayProgressMeter(unit, unit.m_CombatTimerAccu, unit.m_CombatTimer, { m_CombatMeterOffset.x, m_CombatMeterOffset.y }, m_CombatMeterFillColor);
+				}
 			}
 		}
 	}
-	
-	void DisplaySeizeMeter(UnitComponent& unit)
-	{
-		if (unit.m_SeizingRegionID <= 0)
-		{
-			return;
-		}
 
+	void DisplayProgressMeter(UnitComponent& unit, float timeElapsed, float totalTime, sf::Vector2f offset, sf::Color fillColor)
+	{
 		Transform& transform = EntityManager::Get().GetComponent<Transform>(unit.m_EntityID);
 
-		sf::Vector2 offset(m_SeizeMeterOffset.x, m_SeizeMeterOffset.y);
 		sf::Vector2 innerOffset(m_SeizeMeterInnerOffset.x, m_SeizeMeterInnerOffset.y);
 
-		float innerWidth = m_SeizeMeterWidth - m_SeizeMeterDoubleBorder;
-		innerWidth *= CalculateSeizeProgress(unit.m_DaysSeizing, Map::GetRegionById(unit.m_SeizingRegionID).m_DaysToSeize);
+		float innerWidth = m_ProgressMeterWidth - m_ProgressMeterDoubleBorder;
+		innerWidth *= timeElapsed / totalTime;
 
 		unit.m_InnerSeizeMeter.setPosition(offset + innerOffset + sf::Vector2(transform.m_Position.x, transform.m_Position.y));
-		unit.m_InnerSeizeMeter.setSize({ innerWidth, m_SeizeMeterHeight - m_SeizeMeterDoubleBorder });
-		unit.m_InnerSeizeMeter.setFillColor(m_SeizeMeterFillColor);
-		unit.m_OuterSeizeMeter.setSize({ m_SeizeMeterWidth, m_SeizeMeterHeight });
+		unit.m_InnerSeizeMeter.setSize({ innerWidth, m_ProgressMeterHeight - m_ProgressMeterDoubleBorder });
+		unit.m_InnerSeizeMeter.setFillColor(fillColor);
+		unit.m_OuterSeizeMeter.setSize({ m_ProgressMeterWidth, m_ProgressMeterHeight });
 		unit.m_OuterSeizeMeter.setPosition(offset + sf::Vector2(transform.m_Position.x, transform.m_Position.y));
-		unit.m_OuterSeizeMeter.setFillColor(m_SeizeMeterOuterColor);
+		unit.m_OuterSeizeMeter.setFillColor(m_ProgressMeterOuterColor);
 
 		Window::GetWindow()->draw(unit.m_OuterSeizeMeter);
 		Window::GetWindow()->draw(unit.m_InnerSeizeMeter);
-	}
-
-	float CalculateSeizeProgress(int currentDays, int totalDays)
-	{
-		return (float)currentDays / (float)totalDays;
 	}
 
 	void MoveUnit(UnitComponent& unit, Transform& transform)
