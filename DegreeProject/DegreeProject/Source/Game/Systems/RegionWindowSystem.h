@@ -35,6 +35,8 @@ struct RegionWindowSystem : System
 
 			if (m_RegionWindows[entity].m_Visible)
 			{
+				ClickButton(m_RegionWindows[entity]);
+
 				int positionX = (int)m_RegionWindows[entity].m_OutlineThickness;
 				int positionY = m_Window->getSize().y - (int)(m_RegionWindows[entity].m_SizeY + m_RegionWindows[entity].m_OutlineThickness);
 
@@ -142,24 +144,31 @@ struct RegionWindowSystem : System
 		InputHandler::SetRegionWindowOpen(regionWindow.m_Visible);
 		if (InputHandler::GetLeftMouseReleased() && !InputHandler::GetPlayerUnitSelected() && regionWindow.m_Open)
 		{
-			regionWindow.m_Visible = !regionWindow.m_Visible;
-			if (regionWindow.m_Visible)
+			Vector2D mousePosition = InputHandler::GetMousePosition();
+			bool onWindow = regionWindow.m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y);
+			LOG_INFO(mousePosition);
+			LOG_INFO(onWindow);
+			if (!onWindow)
 			{
-				m_EntityManager->SetEntityActive(regionWindow.m_RegionPortraitID, true);
-				m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID, true);
-				m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID2, true);
-				m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID3, true);
-				m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID4, true);
-				m_EntityManager->SetEntityActive(regionWindow.m_BottomPortraitID, false);
-			}
-			else
-			{
-				m_EntityManager->SetEntityActive(regionWindow.m_RegionPortraitID, false);
-				m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID, false);
-				m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID2, false);
-				m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID3, false);
-				m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID4, false);
-				m_EntityManager->SetEntityActive(regionWindow.m_BottomPortraitID, true);
+				regionWindow.m_Visible = !regionWindow.m_Visible;
+				if (regionWindow.m_Visible)
+				{
+					m_EntityManager->SetEntityActive(regionWindow.m_RegionPortraitID, true);
+					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID, true);
+					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID2, true);
+					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID3, true);
+					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID4, true);
+					m_EntityManager->SetEntityActive(regionWindow.m_BottomPortraitID, false);
+				}
+				else
+				{
+					m_EntityManager->SetEntityActive(regionWindow.m_RegionPortraitID, false);
+					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID, false);
+					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID2, false);
+					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID3, false);
+					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID4, false);
+					m_EntityManager->SetEntityActive(regionWindow.m_BottomPortraitID, true);
+				}
 			}
 		}
 		else if (InputHandler::GetPlayerUnitSelected() || InputHandler::GetCharacterWindowOpen())
@@ -177,5 +186,33 @@ struct RegionWindowSystem : System
 		m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID2, false);
 		m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID3, false);
 		m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID4, false);
+	}
+
+	void ClickButton(RegionWindow& regionWindow)
+	{
+		if (InputHandler::GetLeftMouseReleased())
+		{
+			Vector2D mousePosition = InputHandler::GetMousePosition();
+			if (regionWindow.m_BuildingSlotShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				LOG_INFO("BuildingClicked");
+				Map::StartConstructionOfBuilding(1, regionWindow.m_CurrentRegionID);
+			}
+			else if (regionWindow.m_BuildingSlotShape2.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				LOG_INFO("BuildingClicked");
+				Map::StartConstructionOfBuilding(2, regionWindow.m_CurrentRegionID);
+			}
+			else if (regionWindow.m_BuildingSlotShape3.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				LOG_INFO("BuildingClicked");
+				Map::StartConstructionOfBuilding(3, regionWindow.m_CurrentRegionID);
+			}
+			else if (regionWindow.m_BuildingSlotShape4.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				LOG_INFO("BuildingClicked");
+				Map::StartConstructionOfBuilding(4, regionWindow.m_CurrentRegionID);
+			}
+		}
 	}
 };

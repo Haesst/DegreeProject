@@ -57,10 +57,6 @@ struct PlayerSystem : System
 			SelectUnit(entity, playerComponents[entity].m_OwnedCharacter);
 			MoveUnit(playerComponents[entity].m_SelectedUnitID);
 			HoverOverRegion(playerComponents[entity]);
-			if (InputHandler::GetLeftMouseReleased())
-			{
-				Map::StartConstructionOfBuilding(5, 1);
-			}
 		}
 	}
 

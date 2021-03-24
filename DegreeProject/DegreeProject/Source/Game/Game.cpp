@@ -200,17 +200,17 @@ void Game::AddEntitys()
 	regionBuildSlotTransform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42, (float)m_Resolution.y - 62);
 	entityManager->SetEntityActive(regionBuildSlotID, false);
 
-	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID2, "Assets/Graphics/Coins.png", 32, 32, m_AssetHandler);
+	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID2, "Assets/Graphics/soldier unit.png", 32, 32, m_AssetHandler);
 	Transform& regionBuildSlot2Transform = entityManager->GetComponent<Transform>(regionBuildSlotID2);
 	regionBuildSlot2Transform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42 - 52, (float)m_Resolution.y - 62);
 	entityManager->SetEntityActive(regionBuildSlotID2, false);
 
-	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID3, "Assets/Graphics/Charizard.png", 32, 32, m_AssetHandler);
+	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID3, "Assets/Graphics/Coins.png", 32, 32, m_AssetHandler);
 	Transform& regionBuildSlot3Transform = entityManager->GetComponent<Transform>(regionBuildSlotID3);
 	regionBuildSlot3Transform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42 - 104, (float)m_Resolution.y - 62);
 	entityManager->SetEntityActive(regionBuildSlotID3, false);
 
-	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID4, "Assets/Graphics/soldier unit.png", 32, 32, m_AssetHandler);
+	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID4, "Assets/Graphics/Charizard.png", 32, 32, m_AssetHandler);
 	Transform& regionBuildSlot4Transform = entityManager->GetComponent<Transform>(regionBuildSlotID4);
 	regionBuildSlot4Transform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42 - 156, (float)m_Resolution.y - 62);
 	entityManager->SetEntityActive(regionBuildSlotID4, false);
