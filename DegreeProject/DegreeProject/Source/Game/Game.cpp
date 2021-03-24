@@ -129,13 +129,13 @@ void Game::AddEntitys()
 	m_UIFont = m_AssetHandler->LoadFontFromFile("Assets/Fonts/TestFont.ttf");
 
 	std::vector<unsigned int> id0{ 1, 2, 3, 4, 5, 6, 7 };
-	EntityID char0 = CreateCharacter(*entityManager, id0, Title::King, "Kingdom of Milano", "Erik", 100, 5, false, sf::Color(181, 54, 107));
+	EntityID char0 = CreateCharacter(*entityManager, id0, Title::King, "Kingdom of Milano", "Erik", 50, 5, false, sf::Color(181, 54, 107));
 
 	std::vector<unsigned int> id1{ 8, 9, 10, 11, 12 };
 	EntityID char1 = CreateCharacter(*entityManager, id1, Title::Emperor, "Roman Empire", "Robin", 100, 10, false, sf::Color(54, 181, 105));
 
 	std::vector<unsigned int> id2{ 13, 14, 15, 16, 17 };
-	EntityID char2 = CreateCharacter(*entityManager, id2, Title::King, "Kingdom of Sicilies", "Fredrik", 100, 10, true, sf::Color(200, 181, 105));
+	EntityID char2 = CreateCharacter(*entityManager, id2, Title::King, "Kingdom of Sicilies", "Fredrik", 150, 10, true, sf::Color(200, 181, 105));
 
 	EntityID playerID = entityManager->AddNewEntity();
 	entityManager->AddComponent<Player>(playerID, char2);

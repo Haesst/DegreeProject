@@ -96,20 +96,22 @@ struct CharacterComponent : public Component
 		LOG_INFO("{0} Declared war with {1} for {2}", m_Name, characters[target].m_Name, Map::GetRegionById(warGoalRegion).m_RegionName);
 
 		War* war = new War(characters[m_EntityID], characters[target], warGoalRegion);
+		
 		m_CurrentWar = war;
+		m_AtWar = true;
+		
+		characters[target].m_RecentlyAtWar = true;
+		characters[target].m_CurrentWar = war;
+		characters[target].m_AtWar = true;
 
 		if (!m_IsPlayerControlled)
 		{
-			m_AtWar = true;
 			warminds[m_EntityID].m_Active = true;
 			m_RecentlyAtWar = true;
 		}
 
 		if (!characters[target].m_IsPlayerControlled)
 		{
-			characters[target].m_RecentlyAtWar = true;
-			characters[target].m_CurrentWar = war;
-			characters[target].m_AtWar = true;
 			warminds[target].m_Opponent = m_EntityID;
 			warminds[target].m_Active = true;
 		}

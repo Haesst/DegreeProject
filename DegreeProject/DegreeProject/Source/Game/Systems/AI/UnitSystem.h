@@ -68,6 +68,7 @@ struct UnitSystem : System
 				unit.m_HighlightShape.setOutlineThickness(unit.m_OutlineThickness);
 				unit.m_HighlightShape.setSize(unit.m_HighlightShapeSize);
 				unit.m_HighlightShape.setPosition(transform.m_Position.x, transform.m_Position.y);
+
 				if (unit.m_PlayerSelected)
 				{
 					InputHandler::SetPlayerUnitSelected(true);
@@ -281,11 +282,16 @@ struct UnitSystem : System
 
 	void StartCombatTimer(EntityID unit, EntityID enemyUnit)
 	{
+		LOG_INFO("Battle began between {0}'s army and {1}'s army", m_Characters[m_UnitComponents[unit].m_Owner].m_Name, m_Characters[m_UnitComponents[enemyUnit].m_Owner].m_Name);
+
+
 		if (!m_UnitComponents[unit].m_InCombat && !m_UnitComponents[enemyUnit].m_InCombat)
 		{
+			m_UnitComponents[unit].m_Moving = false;
 			m_UnitComponents[unit].EnemyArmy = &m_UnitComponents[enemyUnit];
 			m_UnitComponents[enemyUnit].EnemyArmy = &m_UnitComponents[unit];
 
+			m_UnitComponents[enemyUnit].m_Moving = false;
 			m_UnitComponents[unit].m_InCombat = true;
 			m_UnitComponents[enemyUnit].m_InCombat = true;
 		}

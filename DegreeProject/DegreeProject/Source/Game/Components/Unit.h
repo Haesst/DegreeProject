@@ -34,7 +34,6 @@ struct UnitComponent : public Component
 	float m_Speed = 150.0f;
 	EntityID m_Owner = INT_MAX;
 	EntityManager* m_EntityManager;
-	Transform* transform;
 
 	bool m_InCombat = false;
 	float m_CombatTimer = 3.0f;
@@ -44,7 +43,6 @@ struct UnitComponent : public Component
 	UnitComponent()
 	{
 		m_EntityManager = &EntityManager::Get();
-		transform = &m_EntityManager->GetComponent<Transform>(m_EntityID);
 	}
 
 	UnitComponent(int representedForce, EntityID owner)

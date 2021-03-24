@@ -133,11 +133,13 @@ void InputHandler::HandleInputEvents()
 			}
 			case sf::Event::GainedFocus:
 			{
+				Time::UnpauseGame();
 				//std::cout << "ResumeGame" << std::endl;
 				break;
 			}
 			case sf::Event::LostFocus:
 			{
+				Time::PauseGame();
 				//std::cout << "PauseGame" << std::endl;
 				break;
 			}

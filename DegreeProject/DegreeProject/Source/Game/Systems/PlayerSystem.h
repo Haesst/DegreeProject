@@ -20,29 +20,30 @@ struct PlayerSystem : System
 	PlayerSystem()
 	{
 		AddComponentSignature<Player>();
+		//AddComponentSignature<CharacterComponent>();
 		m_EntityManager = &EntityManager::Get();
 	}
 
 	virtual void Start() override
 	{
-		AssetHandler assetHandler;
-		EntityID unitID = m_EntityManager->AddNewEntity();
-		m_EntityManager->AddComponent<UnitComponent>(unitID);
-		m_EntityManager->AddComponent<SpriteRenderer>(unitID, "Assets/Graphics/Soldier Unit.png", 32, 32, &assetHandler);
-		SpriteRenderer& renderer = m_EntityManager->GetComponent<SpriteRenderer>(unitID);
 		Player* playerComponents = m_EntityManager->GetComponentArray<Player>();
-		UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(unitID);
 
 		for (auto& entity : m_Entities)
 		{
+			CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(playerComponents[entity].m_OwnedCharacter);
+			character.InitUnit();
+
+			SpriteRenderer& renderer = m_EntityManager->GetComponent<SpriteRenderer>(character.m_UnitEntity);
+			UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(character.m_UnitEntity);
+
 			Vector2DInt capitalPosition = Map::GetRegionById(2).m_MapSquares[0];
 #pragma warning(push)
 #pragma warning(disable: 26815)
 			CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
 #pragma warning(pop)
 			characterSystem->RaiseUnit(playerComponents[entity].m_OwnedCharacter, true, unit, renderer, capitalPosition);
-			CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(playerComponents[entity].m_OwnedCharacter);
-			character.m_AtWar = true;
+
+			character.DeclareWar(17, 1);
 		}
 	}
 

@@ -59,13 +59,9 @@ struct WarmindSystem : System
 		Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Characters[warmindID].m_UnitEntity).m_Position;
 		Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
 
-		unit.SetPath(Pathfinding::FindPath(startingPosition, Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId)), Map::ConvertToScreen(startingPosition));
+		Vector2DInt capitalPosition = Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId);
 
-#pragma warning(push)
-#pragma warning(disable: 26815)
-		UnitSystem* unitSystem = (UnitSystem*)m_EntityManager->GetSystem<UnitSystem>().get();
-#pragma warning(pop)
-		unitSystem->ShowPath(m_Transforms[unit.GetID()], unit);
+		MoveUnit(unit.m_EntityID, capitalPosition);
 	}
 
 	void OrderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
@@ -98,20 +94,7 @@ struct WarmindSystem : System
 			battlefieldIntPosition = Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares[2];
 		}
 
-		Vector2DInt startingPosition = Map::ConvertToMap(m_Transforms[unit.GetID()].m_Position);
-		LOG_INFO("Starting position: {0}", startingPosition);
-
-		std::list<Vector2DInt> path = Pathfinding::FindPath(startingPosition, battlefieldIntPosition);
-
-		if (path.size() > 0)
-		{
-			unit.SetPath(path, Map::ConvertToScreen(startingPosition));
-#pragma warning(push)
-#pragma warning(disable: 26815)
-			UnitSystem* unitSystem = (UnitSystem*)m_EntityManager->GetSystem<UnitSystem>().get();
-#pragma warning(pop)
-			unitSystem->ShowPath(m_Transforms[unit.GetID()], unit);
-		}
+		MoveUnit(unit.m_EntityID, battlefieldIntPosition);
 	}
 
 	void ConsiderOrders(EntityID warmind, UnitComponent& unit, EntityID target)
@@ -138,6 +121,39 @@ struct WarmindSystem : System
 		{
 			LOG_INFO("Warmind belonging to {0} decided to fight the enemy army", m_Characters[warmind].m_Name);
 			OrderFightEnemyArmy(warmind, unit);
+		}
+	}
+
+	void MoveUnit(EntityID unitToMove, Vector2DInt targetPosition)
+	{
+		UnitComponent& unit = m_Units[unitToMove];
+		Transform& transform = m_EntityManager->GetComponent<Transform>(unitToMove);
+
+		unit.m_Moving = false;
+		transform.m_Position = unit.m_LastPosition;
+
+		Vector2D unitPosition = transform.m_Position;
+		Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
+		std::list<Vector2DInt> path = Pathfinding::FindPath(startingPosition, targetPosition);
+
+		if (path.size() > 0)
+		{
+			if (path.back() == unit.m_CurrentPath.back())
+			{
+				unit.m_Moving = true;
+				return;
+			}
+
+			unit.SetPath(path, Map::ConvertToScreen(startingPosition));
+#pragma warning(push)
+#pragma warning(disable: 26815)
+			UnitSystem* unitSystem = (UnitSystem*)m_EntityManager->GetSystem<UnitSystem>().get();
+#pragma warning(pop)
+			unitSystem->ShowPath(transform, unit);
+		}
+		else
+		{
+			unit.m_CurrentPath.clear();
 		}
 	}
 };

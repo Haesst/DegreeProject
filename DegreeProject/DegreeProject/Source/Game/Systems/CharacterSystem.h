@@ -85,6 +85,11 @@ struct CharacterSystem : System
 	{
 		CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(ownerID);
 
+		if (unit.m_Raised)
+		{
+			return;
+		}
+
 		Transform& unitTransform = m_EntityManager->GetComponent<Transform>(unit.GetID());
 		unit.m_Owner = ownerID;
 		unit.m_PlayerControlled = playerControlled;
