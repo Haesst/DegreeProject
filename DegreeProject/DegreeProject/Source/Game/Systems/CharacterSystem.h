@@ -72,6 +72,7 @@ struct CharacterSystem : System
 		unit.m_LastPosition = screenPosition;
 		unit.m_Raised = true;
 		renderer.m_ShouldRender = true;
+		renderer.m_Sprite.setColor(character.m_RegionColor);
 
 		character.m_RaisedArmySize = character.m_MaxArmySize; //Todo: Army recharge
 	}

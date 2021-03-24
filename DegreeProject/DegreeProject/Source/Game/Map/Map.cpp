@@ -276,7 +276,7 @@ void Map::LoadShadersAndCreateRenderStates()
 void Map::StartConstructionOfBuilding(int buildingId, int buildSlot, int regionId)
 {
 	// not working -> int maxBuildings = (sizeof(RegionBuilding) / sizeof(*GetRegionById(regionId).m_BuildingSlots));
-	ASSERT(buildSlot > 0 /*&& buildSlot < maxBuildings */, "Invalid buildslot");
+	ASSERT(buildSlot >= 0 /*&& buildSlot < maxBuildings */, "Invalid buildslot");
 
 	RegionBuilding& building = GetRegionById(regionId).m_BuildingSlots[buildSlot];
 

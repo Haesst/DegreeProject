@@ -132,34 +132,42 @@ struct RegionWindowSystem : System
 					if (currentMapRegion.m_BuildingSlots[0].m_Finished)
 					{
 						regionWindow.m_BuildingSlotColor = regionWindow.m_OwnerColor;
+						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID).m_Sprite.setColor(regionWindow.m_OwnerColor);
 					}
 					else
 					{
 						regionWindow.m_BuildingSlotColor = sf::Color::Transparent;
+						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID).m_Sprite.setColor(sf::Color::White);
 					}
 					if (currentMapRegion.m_BuildingSlots[1].m_Finished)
 					{
 						regionWindow.m_BuildingSlotColor2 = regionWindow.m_OwnerColor;
+						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID2).m_Sprite.setColor(regionWindow.m_OwnerColor);
 					}
 					else
 					{
 						regionWindow.m_BuildingSlotColor2 = sf::Color::Transparent;
+						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID2).m_Sprite.setColor(sf::Color::White);
 					}
 					if (currentMapRegion.m_BuildingSlots[2].m_Finished)
 					{
 						regionWindow.m_BuildingSlotColor3 = regionWindow.m_OwnerColor;
+						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID3).m_Sprite.setColor(regionWindow.m_OwnerColor);
 					}
 					else
 					{
 						regionWindow.m_BuildingSlotColor3 = sf::Color::Transparent;
+						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID3).m_Sprite.setColor(sf::Color::White);
 					}
 					if (currentMapRegion.m_BuildingSlots[3].m_Finished)
 					{
 						regionWindow.m_BuildingSlotColor4 = regionWindow.m_OwnerColor;
+						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID4).m_Sprite.setColor(regionWindow.m_OwnerColor);
 					}
 					else
 					{
 						regionWindow.m_BuildingSlotColor4 = sf::Color::Transparent;
+						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID4).m_Sprite.setColor(sf::Color::White);
 					}
 				}
 				regionWindow.m_Open = true;
