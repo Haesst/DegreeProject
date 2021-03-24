@@ -8,6 +8,7 @@ class Time
 private:
 	static float m_DeltaTime;
 	static sf::Clock m_DeltaClock;
+	static bool m_GamePaused;
 
 public:
 	static GameDate m_GameDate;
@@ -19,4 +20,7 @@ public:
 	}
 
 	static void UpdateTime();
+	static void PauseGame();
+	static void UnpauseGame();
+	static bool GamePaused() { return m_GamePaused; };
 };

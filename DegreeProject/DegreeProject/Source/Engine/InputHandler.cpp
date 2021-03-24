@@ -118,8 +118,7 @@ void InputHandler::HandleInputEvents()
 					}
 					case sf::Keyboard::Space:
 					{
-						//std::cout << "SpacePressed" << std::endl;
-						//std::cout << "PauseGame" << std::endl;
+						Time::GamePaused() ? Time::UnpauseGame() : Time::PauseGame();
 					}
 					default:
 					{
