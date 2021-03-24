@@ -36,6 +36,11 @@ struct UnitComponent : public Component
 	EntityManager* m_EntityManager;
 	Transform* transform;
 
+	bool m_InCombat = false;
+	float m_CombatTimer = 3.0f;
+	float m_CombatTimerAccu = 0.0f;
+	UnitComponent* EnemyArmy = nullptr;
+
 	UnitComponent()
 	{
 		m_EntityManager = &EntityManager::Get();
@@ -51,6 +56,11 @@ struct UnitComponent : public Component
 
 	void SetPath(std::list<Vector2DInt> path, const Vector2D& startingPosition)
 	{
+		if (m_InCombat)
+		{
+			return;
+		}
+
 		if (path.size() <= 0)
 		{
 			return;

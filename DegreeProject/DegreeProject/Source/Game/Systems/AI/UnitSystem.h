@@ -70,6 +70,19 @@ struct UnitSystem : System
 				{
 					InputHandler::SetPlayerUnitSelected(true);
 				}
+
+				if (unit.m_InCombat)
+				{
+					unit.m_CombatTimerAccu += Time::DeltaTime();
+					if (unit.m_CombatTimerAccu > unit.m_CombatTimer)
+					{
+						if (unit.EnemyArmy != nullptr)
+						{
+							DetermineCombat(unit.m_EntityID, unit.EnemyArmy->m_EntityID);
+							unit.m_CombatTimerAccu = 0.0f;
+						}
+					}
+				}
 			}
 		}
 	}
@@ -160,7 +173,7 @@ struct UnitSystem : System
 
 					if (enemyUnit.m_Raised)
 					{
-						EnterCombat(unit.m_EntityID, enemyUnit.GetID());
+						StartCombatTimer(unit.m_EntityID, enemyUnit.m_EntityID);
 					}
 				}
 
@@ -266,21 +279,46 @@ struct UnitSystem : System
 		return false;
 	}
 
-	void EnterCombat(EntityID unit, EntityID enemyUnit)
+	void StartCombatTimer(EntityID unit, EntityID enemyUnit)
+	{
+		if (!m_UnitComponents[unit].m_InCombat && !m_UnitComponents[enemyUnit].m_InCombat)
+		{
+			m_UnitComponents[unit].EnemyArmy = &m_UnitComponents[enemyUnit];
+			m_UnitComponents[enemyUnit].EnemyArmy = &m_UnitComponents[unit];
+
+			m_UnitComponents[unit].m_InCombat = true;
+			m_UnitComponents[enemyUnit].m_InCombat = true;
+		}
+	}
+
+	void DetermineCombat(EntityID unit, EntityID enemyUnit)
 	{
 		//Very WIP early combat prototype
 		//Todo: Needs more weights and values affecting the outcome than army size
 
-		if (m_UnitComponents[unit].m_RepresentedForce > m_UnitComponents[enemyUnit].m_RepresentedForce)
+		if (m_UnitComponents[unit].m_CombatTimerAccu > m_UnitComponents[unit].m_CombatTimer)
 		{
-			KillUnit(enemyUnit);
-			m_Characters[m_UnitComponents[unit].m_Owner].m_CurrentWar->AddWarscore(50, true);
-		}
+			if (m_UnitComponents[unit].m_RepresentedForce > m_UnitComponents[enemyUnit].m_RepresentedForce)
+			{
+				KillUnit(enemyUnit);
+				m_Characters[m_UnitComponents[unit].m_Owner].m_CurrentWar->AddWarscore(50, true);
+				m_UnitComponents[unit].m_Moving = true;
+				m_UnitComponents[unit].EnemyArmy = nullptr;
+				m_UnitComponents[enemyUnit].EnemyArmy = nullptr;
+				m_UnitComponents[unit].m_InCombat = false;
+				m_UnitComponents[enemyUnit].m_InCombat = false;
+			}
 
-		else
-		{
-			KillUnit(unit);
-			m_Characters[m_UnitComponents[enemyUnit].m_Owner].m_CurrentWar->AddWarscore(50, false);
+			else
+			{
+				KillUnit(unit);
+				m_Characters[m_UnitComponents[enemyUnit].m_Owner].m_CurrentWar->AddWarscore(50, false);
+				m_UnitComponents[unit].m_Moving = true;
+				m_UnitComponents[unit].EnemyArmy = nullptr;
+				m_UnitComponents[enemyUnit].EnemyArmy = nullptr;
+				m_UnitComponents[unit].m_InCombat = false;
+				m_UnitComponents[enemyUnit].m_InCombat = false;
+			}
 		}
 	}
 
