@@ -187,7 +187,7 @@ void Game::AddEntitys()
 	bottomPortraitTransform.m_Position = Vector2D(0.0f, m_Resolution.y - 128.0f);
 
 	//UI RegionWindow
-	EntityID regionBuildSlotIDs[4] = { regionBuildSlotID, regionBuildSlotID2, regionBuildSlotID3, regionBuildSlotID4 };
+	EntityID regionBuildSlotIDs[BUILDING_SLOTS] = { regionBuildSlotID, regionBuildSlotID2, regionBuildSlotID3, regionBuildSlotID4 };
 	entityManager->AddComponent<RegionWindow>(regionWindowID, m_UIFont, regionPortraitID, regionBuildSlotIDs, characterWindowID, bottomPortraitID);
 	RegionWindow& regionWindowComponent = entityManager->GetComponent<RegionWindow>(regionWindowID);
 

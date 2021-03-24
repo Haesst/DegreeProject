@@ -20,6 +20,8 @@ class EntityManager;
 enum class FileStatus;
 enum class Title;
 
+const static unsigned int BUILDING_SLOTS = 4;
+
 class Game
 {
 private:
