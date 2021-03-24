@@ -145,10 +145,7 @@ struct RegionWindowSystem : System
 		if (InputHandler::GetLeftMouseReleased() && !InputHandler::GetPlayerUnitSelected() && regionWindow.m_Open)
 		{
 			Vector2D mousePosition = InputHandler::GetMousePosition();
-			bool onWindow = regionWindow.m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y);
-			LOG_INFO(mousePosition);
-			LOG_INFO(onWindow);
-			if (!onWindow)
+			if (!regionWindow.m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				regionWindow.m_Visible = !regionWindow.m_Visible;
 				if (regionWindow.m_Visible)
@@ -195,22 +192,18 @@ struct RegionWindowSystem : System
 			Vector2D mousePosition = InputHandler::GetMousePosition();
 			if (regionWindow.m_BuildingSlotShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				LOG_INFO("BuildingClicked");
 				Map::StartConstructionOfBuilding(1, regionWindow.m_CurrentRegionID);
 			}
 			else if (regionWindow.m_BuildingSlotShape2.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				LOG_INFO("BuildingClicked");
 				Map::StartConstructionOfBuilding(2, regionWindow.m_CurrentRegionID);
 			}
 			else if (regionWindow.m_BuildingSlotShape3.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				LOG_INFO("BuildingClicked");
 				Map::StartConstructionOfBuilding(3, regionWindow.m_CurrentRegionID);
 			}
 			else if (regionWindow.m_BuildingSlotShape4.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				LOG_INFO("BuildingClicked");
 				Map::StartConstructionOfBuilding(4, regionWindow.m_CurrentRegionID);
 			}
 		}
