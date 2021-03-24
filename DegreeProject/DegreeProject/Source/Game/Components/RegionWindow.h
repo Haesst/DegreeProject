@@ -9,9 +9,11 @@ struct RegionWindow : public Component
 {
 	sf::RectangleShape m_WindowShape;
 	sf::RectangleShape m_BuildingSlotShapes[NUMBER_OF_BUILDING_SLOTS];
+	sf::RectangleShape m_RaiseArmyShape;
 	sf::Color m_BuildingSlotColors[NUMBER_OF_BUILDING_SLOTS];
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
+	sf::Color m_RaiseArmyColor = sf::Color::Transparent;
 	float m_SizeX = 600.0f;
 	float m_SizeY = 600.0f;
 	float m_OutlineThickness = 10.0f;
@@ -27,6 +29,7 @@ struct RegionWindow : public Component
 	EntityID m_BuildingIconIDs[NUMBER_OF_BUILDING_SLOTS];
 	unsigned int m_CharacterWindowID = 0;
 	unsigned int m_BottomPortraitID = 0;
+	unsigned int m_RaiseArmyID = 0;
 	bool m_Visible = false;
 	bool m_Open = false;
 	unsigned int m_CurrentRegionID = 0;
@@ -45,7 +48,7 @@ struct RegionWindow : public Component
 		}
 	}
 
-	RegionWindow(sf::Font font, unsigned int regionPortraitID, EntityID regionBuildSlotID[NUMBER_OF_BUILDING_SLOTS], unsigned int characterWindowID, unsigned int bottomPortraitID)
+	RegionWindow(sf::Font font, unsigned int regionPortraitID, EntityID regionBuildSlotID[NUMBER_OF_BUILDING_SLOTS], unsigned int raiseArmyID, unsigned int characterWindowID, unsigned int bottomPortraitID)
 	{
 		m_Font = font;
 		m_RegionPortraitID = regionPortraitID;
@@ -53,6 +56,7 @@ struct RegionWindow : public Component
 		{
 			m_BuildingIconIDs[index] = regionBuildSlotID[index];
 		}
+		m_RaiseArmyID = raiseArmyID;
 		m_CharacterWindowID = characterWindowID;
 		m_BottomPortraitID = bottomPortraitID;
 	}

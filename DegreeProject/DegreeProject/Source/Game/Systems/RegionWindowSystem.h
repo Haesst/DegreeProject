@@ -11,6 +11,7 @@ struct RegionWindowSystem : System
 	EntityManager* m_EntityManager = nullptr;
 	sf::RenderWindow* m_Window = nullptr;
 	RegionWindow* m_RegionWindows = nullptr;
+	CharacterComponent* playerCharacter = nullptr;
 
 	RegionWindowSystem()
 	{
@@ -24,6 +25,11 @@ struct RegionWindowSystem : System
 	virtual void Start() override
 	{
 		m_RegionWindows = m_EntityManager->GetComponentArray<RegionWindow>();
+#pragma warning(push)
+#pragma warning(disable: 26815)
+		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
+#pragma warning(pop)
+		playerCharacter = &m_EntityManager->GetComponent<CharacterComponent>(characterSystem->GetPlayerID());
 	}
 
 	virtual void Update() override
@@ -54,6 +60,12 @@ struct RegionWindowSystem : System
 					m_RegionWindows[entity].m_BuildingSlotShapes[index].setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX * 0.05f, m_RegionWindows[entity].m_SizeY * 0.05f));
 					m_RegionWindows[entity].m_BuildingSlotShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_RegionWindows[entity].m_SizeX - 41 - 52 * index, Window::GetWindow()->getSize().y - 61)));
 				}
+
+				m_RegionWindows[entity].m_RaiseArmyShape.setFillColor(m_RegionWindows[entity].m_RaiseArmyColor);
+				m_RegionWindows[entity].m_RaiseArmyShape.setOutlineColor(m_RegionWindows[entity].m_OwnerColor);
+				m_RegionWindows[entity].m_RaiseArmyShape.setOutlineThickness(m_RegionWindows[entity].m_OutlineThickness * 0.5f);
+				m_RegionWindows[entity].m_RaiseArmyShape.setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX * 0.05f, m_RegionWindows[entity].m_SizeY * 0.05f));
+				m_RegionWindows[entity].m_RaiseArmyShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_RegionWindows[entity].m_SizeX - 41, Window::GetWindow()->getSize().y - 61 - 52)));
 
 				m_RegionWindows[entity].m_RegionNameText.setFont(m_RegionWindows[entity].m_Font);
 				m_RegionWindows[entity].m_RegionNameText.setCharacterSize(m_RegionWindows[entity].m_CharacterSize);
@@ -89,6 +101,7 @@ struct RegionWindowSystem : System
 				m_Window->draw(m_RegionWindows[entity].m_RegionNameText);
 				m_Window->draw(m_RegionWindows[entity].m_RegionTaxText);
 				m_Window->draw(m_RegionWindows[entity].m_KingdomNameText);
+				m_Window->draw(m_RegionWindows[entity].m_RaiseArmyShape);
 				for (unsigned int index = 0; index < m_RegionWindows[entity].m_NumberOfBuildingSlots; index++)
 				{
 					m_Window->draw(m_RegionWindows[entity].m_BuildingSlotShapes[index]);
@@ -149,6 +162,7 @@ struct RegionWindowSystem : System
 				if (regionWindow.m_Visible)
 				{
 					m_EntityManager->SetEntityActive(regionWindow.m_RegionPortraitID, true);
+					m_EntityManager->SetEntityActive(regionWindow.m_RaiseArmyID, true);
 					for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
 					{
 						m_EntityManager->SetEntityActive(regionWindow.m_BuildingIconIDs[index], true);
@@ -173,6 +187,7 @@ struct RegionWindowSystem : System
 		regionWindow.m_Open = false;
 		regionWindow.m_Visible = false;
 		m_EntityManager->SetEntityActive(regionWindow.m_RegionPortraitID, false);
+		m_EntityManager->SetEntityActive(regionWindow.m_RaiseArmyID, false);
 		for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
 		{
 			m_EntityManager->SetEntityActive(regionWindow.m_BuildingIconIDs[index], false);
@@ -184,6 +199,18 @@ struct RegionWindowSystem : System
 		if (InputHandler::GetLeftMouseReleased())
 		{
 			Vector2D mousePosition = InputHandler::GetMousePosition();
+			if (regionWindow.m_RaiseArmyShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				SpriteRenderer& renderer = m_EntityManager->GetComponent<SpriteRenderer>(playerCharacter->m_UnitEntity);
+				UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(playerCharacter->m_UnitEntity);
+				Vector2DInt capitalPosition = Map::GetRegionCapitalLocation(regionWindow.m_CurrentRegionID);
+#pragma warning(push)
+#pragma warning(disable: 26815)
+				CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
+#pragma warning(pop)
+				characterSystem->RaiseUnit(playerCharacter->m_EntityID, true, unit, renderer, capitalPosition);
+				return;
+			}
 			for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
 			{
 				if (regionWindow.m_BuildingSlotShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))

@@ -115,7 +115,7 @@ struct UnitSystem : System
 
 				if (unit.m_SeizingRegionID > 0)
 				{
-					DisplayProgressMeter(unit, (float)unit.m_DaysSeizing, Map::GetRegionById(unit.m_SeizingRegionID).m_DaysToSeize, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
+					DisplayProgressMeter(unit, (float)unit.m_DaysSeizing, (float)Map::GetRegionById(unit.m_SeizingRegionID).m_DaysToSeize, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
 				}
 
 				if (unit.m_InCombat)

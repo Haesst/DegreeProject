@@ -20,7 +20,6 @@ struct PlayerSystem : System
 	PlayerSystem()
 	{
 		AddComponentSignature<Player>();
-		//AddComponentSignature<CharacterComponent>();
 		m_EntityManager = &EntityManager::Get();
 	}
 
@@ -32,17 +31,6 @@ struct PlayerSystem : System
 		{
 			CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(playerComponents[entity].m_OwnedCharacter);
 			character.InitUnit();
-
-			SpriteRenderer& renderer = m_EntityManager->GetComponent<SpriteRenderer>(character.m_UnitEntity);
-			UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(character.m_UnitEntity);
-
-			Vector2DInt capitalPosition = Map::GetRegionById(2).m_MapSquares[0];
-#pragma warning(push)
-#pragma warning(disable: 26815)
-			CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
-#pragma warning(pop)
-			characterSystem->RaiseUnit(playerComponents[entity].m_OwnedCharacter, true, unit, renderer, capitalPosition);
-
 			character.DeclareWar(17, 1);
 		}
 	}
@@ -197,8 +185,6 @@ struct PlayerSystem : System
 							{
 								unit.m_PlayerSelected = true;
 								unit.m_OutlineThickness = 1.0f;
-								//Player& player = m_EntityManager->GetComponent<Player>(playerID);
-								//player.m_SelectedUnits.push_back(unitID);
 								break;
 							}
 						}

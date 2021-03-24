@@ -168,6 +168,7 @@ void Game::AddEntitys()
 	EntityID bottomPortraitID = entityManager->AddNewEntity();
 	EntityID regionWindowID = entityManager->AddNewEntity();
 	EntityID regionPortraitID = entityManager->AddNewEntity();
+	EntityID regionRaiseArmyID = entityManager->AddNewEntity();
 	EntityID regionBuildSlotID = entityManager->AddNewEntity();
 	EntityID regionBuildSlotID2 = entityManager->AddNewEntity();
 	EntityID regionBuildSlotID3 = entityManager->AddNewEntity();
@@ -188,8 +189,13 @@ void Game::AddEntitys()
 
 	//UI RegionWindow
 	EntityID regionBuildSlotIDs[BUILDING_SLOTS] = { regionBuildSlotID, regionBuildSlotID2, regionBuildSlotID3, regionBuildSlotID4 };
-	entityManager->AddComponent<RegionWindow>(regionWindowID, m_UIFont, regionPortraitID, regionBuildSlotIDs, characterWindowID, bottomPortraitID);
+	entityManager->AddComponent<RegionWindow>(regionWindowID, m_UIFont, regionPortraitID, regionBuildSlotIDs, regionRaiseArmyID, characterWindowID, bottomPortraitID);
 	RegionWindow& regionWindowComponent = entityManager->GetComponent<RegionWindow>(regionWindowID);
+
+	entityManager->AddComponent<UISpriteRenderer>(regionRaiseArmyID, "Assets/Graphics/soldier unit.png", 32, 32, m_AssetHandler);
+	Transform& regionRaiseArmyTransform = entityManager->GetComponent<Transform>(regionRaiseArmyID);
+	regionRaiseArmyTransform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42, (float)m_Resolution.y - 62 - 52);
+	entityManager->SetEntityActive(regionRaiseArmyID, false);
 
 	entityManager->AddComponent<UISpriteRenderer>(regionPortraitID, "Assets/Graphics/Unit.png", 64, 64, m_AssetHandler);
 	Transform& regionPortraitTransform = entityManager->GetComponent<Transform>(regionPortraitID);
