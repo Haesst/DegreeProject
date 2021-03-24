@@ -17,6 +17,17 @@ struct UnitSystem : System
 
 	float m_MoveTolerance = 0.3f;
 
+	Vector2D m_SeizeMeterOffset = { 0.0f, -20.0f };
+	Vector2D m_SeizeMeterInnerOffset = { 1.0f, 1.0f };
+
+	float m_SeizeMeterWidth = 32.0f;
+	float m_SeizeMeterHeight = 12.0f;
+	float m_SeizeMeterBorder = 1.0f;
+	float m_SeizeMeterDoubleBorder;
+
+	sf::Color m_SeizeMeterOuterColor = sf::Color(25, 25, 25, 250);
+	sf::Color m_SeizeMeterFillColor = sf::Color(40, 70, 170, 250);
+
 	UnitSystem()
 	{
 		AddComponentSignature<UnitComponent>();
@@ -25,6 +36,7 @@ struct UnitSystem : System
 		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
 		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 		m_Renderers = m_EntityManager->GetComponentArray<SpriteRenderer>();
+		m_SeizeMeterDoubleBorder = m_SeizeMeterBorder * 2;
 	}
 
 	virtual void Start() override
@@ -98,18 +110,21 @@ struct UnitSystem : System
 		{
 			return;
 		}
+
 		Transform& transform = EntityManager::Get().GetComponent<Transform>(unit.m_EntityID);
 
-		sf::Vector2 offset(0.0f, -20.0f);
-		sf::Vector2 innerOffset(1.0f, 1.0f);
+		sf::Vector2 offset(m_SeizeMeterOffset.x, m_SeizeMeterOffset.y);
+		sf::Vector2 innerOffset(m_SeizeMeterInnerOffset.x, m_SeizeMeterInnerOffset.y);
 
-		float innerWidth = 30.0f * CalculateSeizeProgress(unit.m_DaysSeizing, Map::GetRegionById(unit.m_SeizingRegionID).m_DaysToSeize);
+		float innerWidth = m_SeizeMeterWidth - m_SeizeMeterDoubleBorder;
+		innerWidth *= CalculateSeizeProgress(unit.m_DaysSeizing, Map::GetRegionById(unit.m_SeizingRegionID).m_DaysToSeize);
 
 		unit.m_InnerSeizeMeter.setPosition(offset + innerOffset + sf::Vector2(transform.m_Position.x, transform.m_Position.y));
-		unit.m_InnerSeizeMeter.setSize({ innerWidth, 10.0f });
-		unit.m_InnerSeizeMeter.setFillColor(sf::Color(40, 70, 170, 250));
-		unit.m_OuterSeizeMeter.setSize({ 32.0f, 12.0f });
+		unit.m_InnerSeizeMeter.setSize({ innerWidth, m_SeizeMeterHeight - m_SeizeMeterDoubleBorder });
+		unit.m_InnerSeizeMeter.setFillColor(m_SeizeMeterFillColor);
+		unit.m_OuterSeizeMeter.setSize({ m_SeizeMeterWidth, m_SeizeMeterHeight });
 		unit.m_OuterSeizeMeter.setPosition(offset + sf::Vector2(transform.m_Position.x, transform.m_Position.y));
+		unit.m_OuterSeizeMeter.setFillColor(m_SeizeMeterOuterColor);
 
 		Window::GetWindow()->draw(unit.m_OuterSeizeMeter);
 		Window::GetWindow()->draw(unit.m_InnerSeizeMeter);
