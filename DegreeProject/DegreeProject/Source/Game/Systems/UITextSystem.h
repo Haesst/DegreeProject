@@ -118,14 +118,18 @@ struct UITextSystem : System
 
 	void ConquerRegion(unsigned int regionID, unsigned conqueringEntity)
 	{
-		UIText& text = m_EntityManager->GetComponent<UIText>(conqueringEntity + 1);
+		CharacterComponent& characterComp = m_EntityManager->GetComponent<CharacterComponent>(conqueringEntity);
+
+		UIText& text = m_EntityManager->GetComponent<UIText>(characterComp.m_TextUI);
 		text.m_OwnedRegionIDs.push_back(regionID);
 		AdjustText(text);
 	}
 
 	void LoseRegion(unsigned regionIndex, unsigned int losingEntity)
 	{
-		UIText& text = m_EntityManager->GetComponent<UIText>(losingEntity + 1);
+		CharacterComponent& characterComp = m_EntityManager->GetComponent<CharacterComponent>(losingEntity);
+
+		UIText& text = m_EntityManager->GetComponent<UIText>(characterComp.m_TextUI);
 		text.m_OwnedRegionIDs.erase(text.m_OwnedRegionIDs.begin() + regionIndex);
 		AdjustText(text);
 	}

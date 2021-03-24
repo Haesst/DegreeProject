@@ -251,5 +251,8 @@ EntityID Game::CreateCharacter(EntityManager& entityManager, std::vector<unsigne
 	EntityID textUI = entityManager.AddNewEntity();
 	entityManager.AddComponent<UIText>(textUI, m_UIFont, realmName, ownedRegions);
 
+	CharacterComponent& characterComp = entityManager.GetComponent<CharacterComponent>(character);
+	characterComp.m_TextUI = textUI;
+
 	return character;
 }

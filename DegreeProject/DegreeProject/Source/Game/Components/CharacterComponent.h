@@ -38,6 +38,10 @@ struct CharacterComponent : public Component
 	int m_Income = 0;
 	War* m_CurrentWar = nullptr;
 
+	EntityID m_TextUI = (SIZE_T)INT_MAX;
+
+	bool m_RecentlyAtWar = false;  //Flag for raising units when war starts
+
 	EntityID m_UnitEntity = INT_MAX;
 
 	CharacterComponent() {};
@@ -98,10 +102,12 @@ struct CharacterComponent : public Component
 		{
 			m_AtWar = true;
 			warminds[m_EntityID].m_Active = true;
+			m_RecentlyAtWar = true;
 		}
 
 		if (!characters[target].m_IsPlayerControlled)
 		{
+			characters[target].m_RecentlyAtWar = true;
 			characters[target].m_CurrentWar = war;
 			characters[target].m_AtWar = true;
 			warminds[target].m_Opponent = m_EntityID;

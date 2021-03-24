@@ -63,11 +63,15 @@ struct CharacterSystem : System
 		{
 			if (m_Characters[entity].m_AtWar && !m_Units[m_Characters[entity].m_UnitEntity].m_Raised)
 			{
-				if (!GetPlayerControlled(entity))
+				if (m_Characters[entity].m_RecentlyAtWar)
 				{
-					int regionIndex = m_Characters[entity].m_OwnedRegionIDs[0];
-					Vector2DInt capitalPos = Map::GetRegionCapitalLocation(regionIndex);
-					RaiseUnit(entity, false, m_Units[m_Characters[entity].m_UnitEntity], m_Renderers[m_Characters[entity].m_UnitEntity], capitalPos);
+					if (!GetPlayerControlled(entity))
+					{
+						int regionIndex = m_Characters[entity].m_OwnedRegionIDs[0];
+						Vector2DInt capitalPos = Map::GetRegionCapitalLocation(regionIndex);
+						RaiseUnit(entity, false, m_Units[m_Characters[entity].m_UnitEntity], m_Renderers[m_Characters[entity].m_UnitEntity], capitalPos);
+						m_Characters[entity].m_RecentlyAtWar = false;
+					}
 				}
 			}
 		}

@@ -103,7 +103,7 @@ struct UnitSystem : System
 	
 	void DisplaySeizeMeter(UnitComponent& unit)
 	{
-		if (unit.m_SeizingRegionID < 0)
+		if (unit.m_SeizingRegionID <= 0)
 		{
 			return;
 		}
@@ -192,7 +192,7 @@ struct UnitSystem : System
 
 	void SeizeRegion(UnitComponent& unit)
 	{
-		if (unit.m_SeizingRegionID < 0)
+		if (unit.m_SeizingRegionID <= 0)
 		{
 			return;
 		}
