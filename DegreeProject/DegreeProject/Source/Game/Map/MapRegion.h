@@ -17,7 +17,7 @@ public:
 	unsigned int m_OwnerID = 0;
 	unsigned int m_DaysToSeize = 60;
 	sf::VertexArray m_VertexArray;
-	RegionBuilding m_BuildingSlotOne;
+	RegionBuilding m_BuildingSlots[4];
 	MapRegion() {};
 	~MapRegion() { m_MapSquares.clear(); }
 };

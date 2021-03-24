@@ -192,19 +192,19 @@ struct RegionWindowSystem : System
 			Vector2D mousePosition = InputHandler::GetMousePosition();
 			if (regionWindow.m_BuildingSlotShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				Map::StartConstructionOfBuilding(1, regionWindow.m_CurrentRegionID);
+				Map::StartConstructionOfBuilding(1, 0, regionWindow.m_CurrentRegionID);
 			}
 			else if (regionWindow.m_BuildingSlotShape2.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				Map::StartConstructionOfBuilding(2, regionWindow.m_CurrentRegionID);
+				Map::StartConstructionOfBuilding(2, 1, regionWindow.m_CurrentRegionID);
 			}
 			else if (regionWindow.m_BuildingSlotShape3.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				Map::StartConstructionOfBuilding(3, regionWindow.m_CurrentRegionID);
+				Map::StartConstructionOfBuilding(3, 2, regionWindow.m_CurrentRegionID);
 			}
 			else if (regionWindow.m_BuildingSlotShape4.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				Map::StartConstructionOfBuilding(4, regionWindow.m_CurrentRegionID);
+				Map::StartConstructionOfBuilding(4, 3, regionWindow.m_CurrentRegionID);
 			}
 		}
 	}

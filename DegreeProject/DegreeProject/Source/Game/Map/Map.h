@@ -114,7 +114,7 @@ struct Map
 #pragma endregion
 
 #pragma region Buildings
-	static void StartConstructionOfBuilding(int buildingId, int regionId);
+	static void StartConstructionOfBuilding(int buildingId, int buildSlot, int regionId);
 #pragma endregion
 
 	static int GetRegionPositionFromMapCharacter(const char& c);

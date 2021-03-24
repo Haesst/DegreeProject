@@ -273,9 +273,12 @@ void Map::LoadShadersAndCreateRenderStates()
 	m_Data.m_RenderStates.texture = &m_Data.m_LandTexture;
 }
 
-void Map::StartConstructionOfBuilding(int buildingId, int regionId)
+void Map::StartConstructionOfBuilding(int buildingId, int buildSlot, int regionId)
 {
-	RegionBuilding& building = GetRegionById(regionId).m_BuildingSlotOne;
+	// not working -> int maxBuildings = (sizeof(RegionBuilding) / sizeof(*GetRegionById(regionId).m_BuildingSlots));
+	ASSERT(buildSlot > 0 /*&& buildSlot < maxBuildings */, "Invalid buildslot");
+
+	RegionBuilding& building = GetRegionById(regionId).m_BuildingSlots[buildSlot];
 
 	if (building.m_BuildingId < 0)
 	{
