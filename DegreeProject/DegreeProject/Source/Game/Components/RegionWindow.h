@@ -3,19 +3,15 @@
 #include <SFML/Graphics.hpp>
 #include "ECS/Component.h"
 
+const static unsigned int NUMBER_OF_BUILDING_SLOTS = 4;
+
 struct RegionWindow : public Component
 {
 	sf::RectangleShape m_WindowShape;
-	sf::RectangleShape m_BuildingSlotShape;
-	sf::RectangleShape m_BuildingSlotShape2;
-	sf::RectangleShape m_BuildingSlotShape3;
-	sf::RectangleShape m_BuildingSlotShape4;
+	sf::RectangleShape m_BuildingSlotShapes[NUMBER_OF_BUILDING_SLOTS];
+	sf::Color m_BuildingSlotColors[NUMBER_OF_BUILDING_SLOTS];
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
-	sf::Color m_BuildingSlotColor = sf::Color::Transparent;
-	sf::Color m_BuildingSlotColor2 = sf::Color::Transparent;
-	sf::Color m_BuildingSlotColor3 = sf::Color::Transparent;
-	sf::Color m_BuildingSlotColor4 = sf::Color::Transparent;
 	float m_SizeX = 600.0f;
 	float m_SizeY = 600.0f;
 	float m_OutlineThickness = 10.0f;
@@ -28,30 +24,35 @@ struct RegionWindow : public Component
 	std::string m_KingdomName = "";
 	int m_CharacterSize = 50;
 	unsigned int m_RegionPortraitID = 0;
-	unsigned int m_BuildSlotID = 0;
-	unsigned int m_BuildSlotID2 = 0;
-	unsigned int m_BuildSlotID3 = 0;
-	unsigned int m_BuildSlotID4 = 0;
+	EntityID m_BuildingIconIDs[NUMBER_OF_BUILDING_SLOTS];
 	unsigned int m_CharacterWindowID = 0;
 	unsigned int m_BottomPortraitID = 0;
 	bool m_Visible = false;
 	bool m_Open = false;
 	unsigned int m_CurrentRegionID = 0;
+	unsigned int m_NumberOfBuildingSlots = NUMBER_OF_BUILDING_SLOTS;
+
 #pragma warning(push)
 #pragma warning(disable: 26812)
 	sf::Text::Style m_Style = sf::Text::Regular;
 #pragma warning(pop)
 
-	RegionWindow() {}
+	RegionWindow()
+	{
+		for (unsigned int index = 0; index < m_NumberOfBuildingSlots; index++)
+		{
+			m_BuildingIconIDs[index] = index;
+		}
+	}
 
-	RegionWindow(sf::Font font, unsigned int regionPortraitID, unsigned int regionBuildSlotID, unsigned int regionBuildSlotID2, unsigned int regionBuildSlotID3, unsigned int regionBuildSlotID4, unsigned int characterWindowID, unsigned int bottomPortraitID)
+	RegionWindow(sf::Font font, unsigned int regionPortraitID, EntityID regionBuildSlotID[NUMBER_OF_BUILDING_SLOTS], unsigned int characterWindowID, unsigned int bottomPortraitID)
 	{
 		m_Font = font;
 		m_RegionPortraitID = regionPortraitID;
-		m_BuildSlotID = regionBuildSlotID;
-		m_BuildSlotID2 = regionBuildSlotID2;
-		m_BuildSlotID3 = regionBuildSlotID3;
-		m_BuildSlotID4 = regionBuildSlotID4;
+		for (unsigned int index = 0; index < m_NumberOfBuildingSlots; index++)
+		{
+			m_BuildingIconIDs[index] = regionBuildSlotID[index];
+		}
 		m_CharacterWindowID = characterWindowID;
 		m_BottomPortraitID = bottomPortraitID;
 	}

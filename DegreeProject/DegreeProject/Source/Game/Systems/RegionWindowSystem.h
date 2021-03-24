@@ -46,29 +46,14 @@ struct RegionWindowSystem : System
 				m_RegionWindows[entity].m_WindowShape.setOutlineThickness(m_RegionWindows[entity].m_OutlineThickness);
 				m_RegionWindows[entity].m_WindowShape.setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX, m_RegionWindows[entity].m_SizeY));
 
-				m_RegionWindows[entity].m_BuildingSlotShape.setFillColor(m_RegionWindows[entity].m_BuildingSlotColor);
-				m_RegionWindows[entity].m_BuildingSlotShape.setOutlineColor(m_RegionWindows[entity].m_OwnerColor);
-				m_RegionWindows[entity].m_BuildingSlotShape.setOutlineThickness(m_RegionWindows[entity].m_OutlineThickness * 0.5f);
-				m_RegionWindows[entity].m_BuildingSlotShape.setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX * 0.05f, m_RegionWindows[entity].m_SizeY * 0.05f));
-				m_RegionWindows[entity].m_BuildingSlotShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_RegionWindows[entity].m_SizeX - 41, Window::GetWindow()->getSize().y - 61)));
-
-				m_RegionWindows[entity].m_BuildingSlotShape2.setFillColor(m_RegionWindows[entity].m_BuildingSlotColor2);
-				m_RegionWindows[entity].m_BuildingSlotShape2.setOutlineColor(m_RegionWindows[entity].m_OwnerColor);
-				m_RegionWindows[entity].m_BuildingSlotShape2.setOutlineThickness(m_RegionWindows[entity].m_OutlineThickness * 0.5f);
-				m_RegionWindows[entity].m_BuildingSlotShape2.setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX * 0.05f, m_RegionWindows[entity].m_SizeY * 0.05f));
-				m_RegionWindows[entity].m_BuildingSlotShape2.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_RegionWindows[entity].m_SizeX - 41 - 52, Window::GetWindow()->getSize().y - 61)));
-
-				m_RegionWindows[entity].m_BuildingSlotShape3.setFillColor(m_RegionWindows[entity].m_BuildingSlotColor3);
-				m_RegionWindows[entity].m_BuildingSlotShape3.setOutlineColor(m_RegionWindows[entity].m_OwnerColor);
-				m_RegionWindows[entity].m_BuildingSlotShape3.setOutlineThickness(m_RegionWindows[entity].m_OutlineThickness * 0.5f);
-				m_RegionWindows[entity].m_BuildingSlotShape3.setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX * 0.05f, m_RegionWindows[entity].m_SizeY * 0.05f));
-				m_RegionWindows[entity].m_BuildingSlotShape3.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_RegionWindows[entity].m_SizeX - 41 - 104, Window::GetWindow()->getSize().y - 61)));
-
-				m_RegionWindows[entity].m_BuildingSlotShape4.setFillColor(m_RegionWindows[entity].m_BuildingSlotColor4);
-				m_RegionWindows[entity].m_BuildingSlotShape4.setOutlineColor(m_RegionWindows[entity].m_OwnerColor);
-				m_RegionWindows[entity].m_BuildingSlotShape4.setOutlineThickness(m_RegionWindows[entity].m_OutlineThickness * 0.5f);
-				m_RegionWindows[entity].m_BuildingSlotShape4.setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX * 0.05f, m_RegionWindows[entity].m_SizeY * 0.05f));
-				m_RegionWindows[entity].m_BuildingSlotShape4.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_RegionWindows[entity].m_SizeX - 41 - 156, Window::GetWindow()->getSize().y - 61)));
+				for (unsigned int index = 0; index < m_RegionWindows[entity].m_NumberOfBuildingSlots; index++)
+				{
+					m_RegionWindows[entity].m_BuildingSlotShapes[index].setFillColor(m_RegionWindows[entity].m_BuildingSlotColors[index]);
+					m_RegionWindows[entity].m_BuildingSlotShapes[index].setOutlineColor(m_RegionWindows[entity].m_OwnerColor);
+					m_RegionWindows[entity].m_BuildingSlotShapes[index].setOutlineThickness(m_RegionWindows[entity].m_OutlineThickness * 0.5f);
+					m_RegionWindows[entity].m_BuildingSlotShapes[index].setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX * 0.05f, m_RegionWindows[entity].m_SizeY * 0.05f));
+					m_RegionWindows[entity].m_BuildingSlotShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_RegionWindows[entity].m_SizeX - 41 - 52 * index, Window::GetWindow()->getSize().y - 61)));
+				}
 
 				m_RegionWindows[entity].m_RegionNameText.setFont(m_RegionWindows[entity].m_Font);
 				m_RegionWindows[entity].m_RegionNameText.setCharacterSize(m_RegionWindows[entity].m_CharacterSize);
@@ -101,13 +86,13 @@ struct RegionWindowSystem : System
 			if (m_RegionWindows[entity].m_Visible)
 			{
 				m_Window->draw(m_RegionWindows[entity].m_WindowShape);
-				m_Window->draw(m_RegionWindows[entity].m_BuildingSlotShape);
-				m_Window->draw(m_RegionWindows[entity].m_BuildingSlotShape2);
-				m_Window->draw(m_RegionWindows[entity].m_BuildingSlotShape3);
-				m_Window->draw(m_RegionWindows[entity].m_BuildingSlotShape4);
 				m_Window->draw(m_RegionWindows[entity].m_RegionNameText);
 				m_Window->draw(m_RegionWindows[entity].m_RegionTaxText);
 				m_Window->draw(m_RegionWindows[entity].m_KingdomNameText);
+				for (unsigned int index = 0; index < m_RegionWindows[entity].m_NumberOfBuildingSlots; index++)
+				{
+					m_Window->draw(m_RegionWindows[entity].m_BuildingSlotShapes[index]);
+				}
 			}
 		}
 	}
@@ -129,45 +114,18 @@ struct RegionWindowSystem : System
 					regionWindow.m_RegionName = currentMapRegion.m_RegionName;
 					regionWindow.m_KingdomName = characters[currentMapRegion.m_OwnerID].m_KingdomName;
 					regionWindow.m_OwnerColor = characters[currentMapRegion.m_OwnerID].m_RegionColor;
-					if (currentMapRegion.m_BuildingSlots[0].m_Finished)
+					for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
 					{
-						regionWindow.m_BuildingSlotColor = regionWindow.m_OwnerColor;
-						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID).m_Sprite.setColor(regionWindow.m_OwnerColor);
-					}
-					else
-					{
-						regionWindow.m_BuildingSlotColor = sf::Color::Transparent;
-						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID).m_Sprite.setColor(sf::Color::White);
-					}
-					if (currentMapRegion.m_BuildingSlots[1].m_Finished)
-					{
-						regionWindow.m_BuildingSlotColor2 = regionWindow.m_OwnerColor;
-						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID2).m_Sprite.setColor(regionWindow.m_OwnerColor);
-					}
-					else
-					{
-						regionWindow.m_BuildingSlotColor2 = sf::Color::Transparent;
-						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID2).m_Sprite.setColor(sf::Color::White);
-					}
-					if (currentMapRegion.m_BuildingSlots[2].m_Finished)
-					{
-						regionWindow.m_BuildingSlotColor3 = regionWindow.m_OwnerColor;
-						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID3).m_Sprite.setColor(regionWindow.m_OwnerColor);
-					}
-					else
-					{
-						regionWindow.m_BuildingSlotColor3 = sf::Color::Transparent;
-						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID3).m_Sprite.setColor(sf::Color::White);
-					}
-					if (currentMapRegion.m_BuildingSlots[3].m_Finished)
-					{
-						regionWindow.m_BuildingSlotColor4 = regionWindow.m_OwnerColor;
-						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID4).m_Sprite.setColor(regionWindow.m_OwnerColor);
-					}
-					else
-					{
-						regionWindow.m_BuildingSlotColor4 = sf::Color::Transparent;
-						m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildSlotID4).m_Sprite.setColor(sf::Color::White);
+						if (currentMapRegion.m_BuildingSlots[index].m_Finished)
+						{
+							regionWindow.m_BuildingSlotColors[index] = regionWindow.m_OwnerColor;
+							m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildingIconIDs[index]).m_Sprite.setColor(regionWindow.m_OwnerColor);
+						}
+						else
+						{
+							regionWindow.m_BuildingSlotColors[index] = sf::Color::Transparent;
+							m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildingIconIDs[index]).m_Sprite.setColor(sf::Color::White);
+						}
 					}
 				}
 				regionWindow.m_Open = true;
@@ -191,19 +149,15 @@ struct RegionWindowSystem : System
 				if (regionWindow.m_Visible)
 				{
 					m_EntityManager->SetEntityActive(regionWindow.m_RegionPortraitID, true);
-					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID, true);
-					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID2, true);
-					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID3, true);
-					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID4, true);
+					for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
+					{
+						m_EntityManager->SetEntityActive(regionWindow.m_BuildingIconIDs[index], true);
+					}
 					m_EntityManager->SetEntityActive(regionWindow.m_BottomPortraitID, false);
 				}
 				else
 				{
-					m_EntityManager->SetEntityActive(regionWindow.m_RegionPortraitID, false);
-					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID, false);
-					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID2, false);
-					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID3, false);
-					m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID4, false);
+					CloseWindow(regionWindow);
 					m_EntityManager->SetEntityActive(regionWindow.m_BottomPortraitID, true);
 				}
 			}
@@ -219,10 +173,10 @@ struct RegionWindowSystem : System
 		regionWindow.m_Open = false;
 		regionWindow.m_Visible = false;
 		m_EntityManager->SetEntityActive(regionWindow.m_RegionPortraitID, false);
-		m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID, false);
-		m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID2, false);
-		m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID3, false);
-		m_EntityManager->SetEntityActive(regionWindow.m_BuildSlotID4, false);
+		for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
+		{
+			m_EntityManager->SetEntityActive(regionWindow.m_BuildingIconIDs[index], false);
+		}
 	}
 
 	void ClickButton(RegionWindow& regionWindow)
@@ -230,21 +184,13 @@ struct RegionWindowSystem : System
 		if (InputHandler::GetLeftMouseReleased())
 		{
 			Vector2D mousePosition = InputHandler::GetMousePosition();
-			if (regionWindow.m_BuildingSlotShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
 			{
-				Map::StartConstructionOfBuilding(1, 0, regionWindow.m_CurrentRegionID);
-			}
-			else if (regionWindow.m_BuildingSlotShape2.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
-			{
-				Map::StartConstructionOfBuilding(2, 1, regionWindow.m_CurrentRegionID);
-			}
-			else if (regionWindow.m_BuildingSlotShape3.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
-			{
-				Map::StartConstructionOfBuilding(3, 2, regionWindow.m_CurrentRegionID);
-			}
-			else if (regionWindow.m_BuildingSlotShape4.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
-			{
-				Map::StartConstructionOfBuilding(4, 3, regionWindow.m_CurrentRegionID);
+				if (regionWindow.m_BuildingSlotShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+				{
+					Map::StartConstructionOfBuilding(index + 1, index, regionWindow.m_CurrentRegionID);
+					break;
+				}
 			}
 		}
 	}

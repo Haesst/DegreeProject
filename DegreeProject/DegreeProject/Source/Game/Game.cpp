@@ -187,7 +187,8 @@ void Game::AddEntitys()
 	bottomPortraitTransform.m_Position = Vector2D(0.0f, m_Resolution.y - 128.0f);
 
 	//UI RegionWindow
-	entityManager->AddComponent<RegionWindow>(regionWindowID, m_UIFont, regionPortraitID, regionBuildSlotID, regionBuildSlotID2, regionBuildSlotID3, regionBuildSlotID4, characterWindowID, bottomPortraitID);
+	EntityID regionBuildSlotIDs[4] = { regionBuildSlotID, regionBuildSlotID2, regionBuildSlotID3, regionBuildSlotID4 };
+	entityManager->AddComponent<RegionWindow>(regionWindowID, m_UIFont, regionPortraitID, regionBuildSlotIDs, characterWindowID, bottomPortraitID);
 	RegionWindow& regionWindowComponent = entityManager->GetComponent<RegionWindow>(regionWindowID);
 
 	entityManager->AddComponent<UISpriteRenderer>(regionPortraitID, "Assets/Graphics/Unit.png", 64, 64, m_AssetHandler);
