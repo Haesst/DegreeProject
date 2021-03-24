@@ -8,6 +8,7 @@ enum Inputs
 	LeftMouseReleased,
 	RightMouseReleased,
 	MouseMoved,
+	EscapePressed,
 	CharacterWindowOpen,
 	RegionWindowOpen,
 	PlayerUnitSelected
@@ -26,6 +27,7 @@ public:
 	static float GetMouseScrollDirection();
 	static bool GetPlayerUnitSelected();
 	static bool GetMouseMoved();
+	static bool GetEscapePressed();
 	static bool GetCharacterWindowOpen();
 	static bool GetRegionWindowOpen();
 	static void SetPlayerUnitSelected(bool selected);

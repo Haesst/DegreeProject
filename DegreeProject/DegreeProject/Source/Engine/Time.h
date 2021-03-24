@@ -14,10 +14,7 @@ public:
 	static GameDate m_GameDate;
 
 public:
-	static float DeltaTime()
-	{
-		return m_DeltaTime;
-	}
+	static float DeltaTime() { return m_DeltaTime;	};
 
 	static void UpdateTime();
 	static void PauseGame();

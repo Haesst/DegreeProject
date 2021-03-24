@@ -12,6 +12,7 @@ struct RegionWindowSystem : System
 	sf::RenderWindow* m_Window = nullptr;
 	RegionWindow* m_RegionWindows = nullptr;
 	CharacterComponent* playerCharacter = nullptr;
+	bool m_PlayerRegion = false;
 
 	RegionWindowSystem()
 	{
@@ -37,7 +38,7 @@ struct RegionWindowSystem : System
 		for (auto entity : m_Entities)
 		{
 			UpdateInfo(m_RegionWindows[entity]);
-			OpenWindow(m_RegionWindows[entity]);
+			HandleWindow(m_RegionWindows[entity]);
 
 			if (m_RegionWindows[entity].m_Visible)
 			{
@@ -112,36 +113,45 @@ struct RegionWindowSystem : System
 
 	void UpdateInfo(RegionWindow& regionWindow)
 	{
-		if (InputHandler::GetLeftMouseClicked() && !InputHandler::GetPlayerUnitSelected() && !regionWindow.m_Visible)
+		if (InputHandler::GetLeftMouseClicked() && !InputHandler::GetPlayerUnitSelected() && !InputHandler::GetCharacterWindowOpen())
 		{
-			Vector2DInt mousePosition = InputHandler::GetMouseMapPosition();
-			if (Map::m_MapUnitData.find(mousePosition) != Map::m_MapUnitData.end())
+			Vector2D mousePosition = InputHandler::GetMousePosition();
+			if (!regionWindow.m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				EntityID regionID = Map::m_MapUnitData[mousePosition].m_RegionID;
-				if (regionWindow.m_CurrentRegionID != regionID)
+				Vector2DInt mouseMapPosition = InputHandler::GetMouseMapPosition();
+				if (Map::m_MapUnitData.find(mouseMapPosition) != Map::m_MapUnitData.end())
 				{
-					CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-					regionWindow.m_CurrentRegionID = regionID;
-					MapRegion& currentMapRegion = Map::GetRegionById(regionID);
-					regionWindow.m_RegionTax = std::to_string(currentMapRegion.m_RegionTax);
-					regionWindow.m_RegionName = currentMapRegion.m_RegionName;
-					regionWindow.m_KingdomName = characters[currentMapRegion.m_OwnerID].m_KingdomName;
-					regionWindow.m_OwnerColor = characters[currentMapRegion.m_OwnerID].m_RegionColor;
-					for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
+					EntityID regionID = Map::m_MapUnitData[mouseMapPosition].m_RegionID;
+					if (regionWindow.m_CurrentRegionID != regionID)
 					{
-						if (currentMapRegion.m_BuildingSlots[index].m_Finished)
+						regionWindow.m_CurrentRegionID = regionID;
+						CheckIfPlayerRegion(regionWindow.m_CurrentRegionID);
+						MapRegion& currentMapRegion = Map::GetRegionById(regionID);
+						regionWindow.m_RegionTax = std::to_string(currentMapRegion.m_RegionTax);
+						regionWindow.m_RegionName = currentMapRegion.m_RegionName;
+						CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(currentMapRegion.m_OwnerID);
+						regionWindow.m_KingdomName = character.m_KingdomName;
+						regionWindow.m_OwnerColor = character.m_RegionColor;
+						for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
 						{
-							regionWindow.m_BuildingSlotColors[index] = regionWindow.m_OwnerColor;
-							m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildingIconIDs[index]).m_Sprite.setColor(regionWindow.m_OwnerColor);
-						}
-						else
-						{
-							regionWindow.m_BuildingSlotColors[index] = sf::Color::Transparent;
-							m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildingIconIDs[index]).m_Sprite.setColor(sf::Color::White);
+							if (currentMapRegion.m_BuildingSlots[index].m_Finished)
+							{
+								regionWindow.m_BuildingSlotColors[index] = regionWindow.m_OwnerColor;
+								m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildingIconIDs[index]).m_Sprite.setColor(regionWindow.m_OwnerColor);
+							}
+							else
+							{
+								regionWindow.m_BuildingSlotColors[index] = sf::Color::Transparent;
+								m_EntityManager->GetComponent<UISpriteRenderer>(regionWindow.m_BuildingIconIDs[index]).m_Sprite.setColor(sf::Color::White);
+							}
 						}
 					}
+					regionWindow.m_Open = true;
 				}
-				regionWindow.m_Open = true;
+				else
+				{
+					regionWindow.m_Open = false;
+				}
 			}
 			else
 			{
@@ -150,36 +160,34 @@ struct RegionWindowSystem : System
 		}
 	}
 
-	void OpenWindow(RegionWindow& regionWindow)
+	void HandleWindow(RegionWindow& regionWindow)
 	{
 		InputHandler::SetRegionWindowOpen(regionWindow.m_Visible);
-		if (InputHandler::GetLeftMouseReleased() && !InputHandler::GetPlayerUnitSelected() && regionWindow.m_Open)
+		if (InputHandler::GetLeftMouseReleased() && !InputHandler::GetPlayerUnitSelected() && regionWindow.m_Open && !regionWindow.m_Visible)
 		{
-			Vector2D mousePosition = InputHandler::GetMousePosition();
-			if (!regionWindow.m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
-			{
-				regionWindow.m_Visible = !regionWindow.m_Visible;
-				if (regionWindow.m_Visible)
-				{
-					m_EntityManager->SetEntityActive(regionWindow.m_RegionPortraitID, true);
-					m_EntityManager->SetEntityActive(regionWindow.m_RaiseArmyID, true);
-					for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
-					{
-						m_EntityManager->SetEntityActive(regionWindow.m_BuildingIconIDs[index], true);
-					}
-					m_EntityManager->SetEntityActive(regionWindow.m_BottomPortraitID, false);
-				}
-				else
-				{
-					CloseWindow(regionWindow);
-					m_EntityManager->SetEntityActive(regionWindow.m_BottomPortraitID, true);
-				}
-			}
+			OpenWindow(regionWindow);
 		}
-		else if (InputHandler::GetPlayerUnitSelected() || InputHandler::GetCharacterWindowOpen())
+		else if (regionWindow.m_Visible && (InputHandler::GetPlayerUnitSelected() || InputHandler::GetEscapePressed()))
+		{
+			CloseWindow(regionWindow);
+			m_EntityManager->SetEntityActive(regionWindow.m_BottomPortraitID, true);
+		}
+		else if(InputHandler::GetCharacterWindowOpen())
 		{
 			CloseWindow(regionWindow);
 		}
+	}
+
+	void OpenWindow(RegionWindow& regionWindow)
+	{
+		regionWindow.m_Visible = true;
+		m_EntityManager->SetEntityActive(regionWindow.m_RegionPortraitID, true);
+		m_EntityManager->SetEntityActive(regionWindow.m_RaiseArmyID, true);
+		for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
+		{
+			m_EntityManager->SetEntityActive(regionWindow.m_BuildingIconIDs[index], true);
+		}
+		m_EntityManager->SetEntityActive(regionWindow.m_BottomPortraitID, false);
 	}
 
 	void CloseWindow(RegionWindow& regionWindow)
@@ -196,7 +204,7 @@ struct RegionWindowSystem : System
 
 	void ClickButton(RegionWindow& regionWindow)
 	{
-		if (InputHandler::GetLeftMouseReleased())
+		if (InputHandler::GetLeftMouseReleased() && m_PlayerRegion)
 		{
 			Vector2D mousePosition = InputHandler::GetMousePosition();
 			if (regionWindow.m_RaiseArmyShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
@@ -220,5 +228,22 @@ struct RegionWindowSystem : System
 				}
 			}
 		}
+	}
+
+	bool CheckIfPlayerRegion(EntityID currentRegionID)
+	{
+		for (unsigned int ownedRegionID : playerCharacter->m_OwnedRegionIDs)
+		{
+			if (currentRegionID == ownedRegionID)
+			{
+				m_PlayerRegion = true;
+				break;
+			}
+			else
+			{
+				m_PlayerRegion = false;
+			}
+		}
+		return m_PlayerRegion;
 	}
 };

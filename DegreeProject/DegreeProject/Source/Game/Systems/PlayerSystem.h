@@ -31,7 +31,6 @@ struct PlayerSystem : System
 		{
 			CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(playerComponents[entity].m_OwnedCharacter);
 			character.InitUnit();
-			character.DeclareWar(17, 1);
 		}
 	}
 

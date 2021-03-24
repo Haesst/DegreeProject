@@ -21,6 +21,7 @@ void InputHandler::HandleInputEvents()
 	inputs[LeftMouseReleased] = false;
 	inputs[RightMouseReleased] = false;
 	inputs[MouseMoved] = false;
+	inputs[EscapePressed] = false;
 	inputs[CharacterWindowOpen] = false;
 	inputs[RegionWindowOpen] = false;
 	inputs[PlayerUnitSelected] = false;
@@ -114,11 +115,18 @@ void InputHandler::HandleInputEvents()
 					}
 					case sf::Keyboard::Escape:
 					{
-						window->close();
+						inputs[EscapePressed] = true;
+						break;
 					}
 					case sf::Keyboard::Space:
 					{
 						Time::GamePaused() ? Time::UnpauseGame() : Time::PauseGame();
+						break;
+					}
+					case sf::Keyboard::Delete:
+					{
+						window->close();
+						break;
 					}
 					default:
 					{
@@ -134,13 +142,11 @@ void InputHandler::HandleInputEvents()
 			case sf::Event::GainedFocus:
 			{
 				Time::UnpauseGame();
-				//std::cout << "ResumeGame" << std::endl;
 				break;
 			}
 			case sf::Event::LostFocus:
 			{
 				Time::PauseGame();
-				//std::cout << "PauseGame" << std::endl;
 				break;
 			}
 			case sf::Event::TextEntered:
@@ -342,6 +348,11 @@ bool InputHandler::GetRegionWindowOpen()
 bool InputHandler::GetMouseMoved()
 {
 	return inputs[MouseMoved];
+}
+
+bool InputHandler::GetEscapePressed()
+{
+	return inputs[EscapePressed];
 }
 
 void InputHandler::SetPlayerUnitSelected(bool selected)
