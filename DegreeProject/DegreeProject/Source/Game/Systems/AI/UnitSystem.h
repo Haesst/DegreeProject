@@ -379,7 +379,6 @@ struct UnitSystem : System
 				}
 
 				KillUnit(unit);
-				War& currentWar = m_Characters[m_UnitComponents[unit].m_Owner].GetWarAgainst(m_UnitComponents[enemyUnit].m_Owner);
 				currentWar.AddWarscore(50, true);
 
 				m_UnitComponents[unit].m_Moving = true;
