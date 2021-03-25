@@ -7,9 +7,11 @@ struct CharacterWindow : public Component
 {
 	sf::RectangleShape m_Shape;
 	sf::RectangleShape m_DeclareWarShape;
+	sf::RectangleShape m_MakePeaceShape;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
 	sf::Color m_DeclareWarColor = sf::Color::Transparent;
+	sf::Color m_MakePeaceColor = sf::Color::Transparent;
 	float m_SizeX = 600.0f;
 	float m_SizeY = 1060.0f;
 	float m_OutlineThickness = 10.0f;
@@ -20,6 +22,7 @@ struct CharacterWindow : public Component
 	sf::Text m_OwnerCharacterText;
 	sf::Font m_Font;
 	sf::Text m_DeclareWarText;
+	sf::Text m_MakePeaceText;
 	int m_RegionTax = 0;
 	unsigned int m_CurrentRegionID = 0;
 	std::string m_RegionName = "";
@@ -27,6 +30,7 @@ struct CharacterWindow : public Component
 	std::string m_OwnerCharacterName = "";
 	std::string m_OwnerTitle = "";
 	std::string m_DeclareWar = "Declare War";
+	std::string m_MakePeace = "Make Peace";
 	std::vector<std::string> titles;
 	int m_CharacterSize = 50;
 #pragma warning(push)

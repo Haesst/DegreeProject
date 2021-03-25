@@ -192,34 +192,38 @@ void Game::AddEntitys()
 	entityManager->AddComponent<RegionWindow>(regionWindowID, m_UIFont, regionPortraitID, regionBuildSlotIDs, regionRaiseArmyID, characterWindowID, bottomPortraitID);
 	RegionWindow& regionWindowComponent = entityManager->GetComponent<RegionWindow>(regionWindowID);
 
-	entityManager->AddComponent<UISpriteRenderer>(regionRaiseArmyID, "Assets/Graphics/soldier unit.png", 32, 32, m_AssetHandler);
-	Transform& regionRaiseArmyTransform = entityManager->GetComponent<Transform>(regionRaiseArmyID);
-	regionRaiseArmyTransform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42, (float)m_Resolution.y - 62 - 52);
-	entityManager->SetEntityActive(regionRaiseArmyID, false);
-
 	entityManager->AddComponent<UISpriteRenderer>(regionPortraitID, "Assets/Graphics/Unit.png", 64, 64, m_AssetHandler);
 	Transform& regionPortraitTransform = entityManager->GetComponent<Transform>(regionPortraitID);
 	regionPortraitTransform.m_Position = Vector2D(regionWindowComponent.m_OutlineThickness + 64, (float)(m_Resolution.y - 64 * 8));
 	entityManager->SetEntityActive(regionPortraitID, false);
 
-	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID, "Assets/Graphics/FortIcon.png", 32, 32, m_AssetHandler);
+	float iconSlotPositionX = regionWindowComponent.m_SizeX - 64 - regionWindowComponent.m_OutlineThickness;
+	float iconSlotPositionOffset = 64 + regionWindowComponent.m_OutlineThickness * 2;
+	float iconSlotPositionY = m_Resolution.y - 64 - regionWindowComponent.m_OutlineThickness * 3;
+
+	entityManager->AddComponent<UISpriteRenderer>(regionRaiseArmyID, "Assets/Graphics/soldier unit.png", 64, 64, m_AssetHandler);
+	Transform& regionRaiseArmyTransform = entityManager->GetComponent<Transform>(regionRaiseArmyID);
+	regionRaiseArmyTransform.m_Position = Vector2D(iconSlotPositionX, iconSlotPositionY - iconSlotPositionOffset);
+	entityManager->SetEntityActive(regionRaiseArmyID, false);
+
+	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID, "Assets/Graphics/FortIcon.png", 64, 64, m_AssetHandler);
 	Transform& regionBuildSlotTransform = entityManager->GetComponent<Transform>(regionBuildSlotID);
-	regionBuildSlotTransform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42, (float)m_Resolution.y - 62);
+	regionBuildSlotTransform.m_Position = Vector2D(iconSlotPositionX, iconSlotPositionY);
 	entityManager->SetEntityActive(regionBuildSlotID, false);
 
-	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID2, "Assets/Graphics/BarackIcon.png", 32, 32, m_AssetHandler);
+	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID2, "Assets/Graphics/BarackIcon.png", 64, 64, m_AssetHandler);
 	Transform& regionBuildSlot2Transform = entityManager->GetComponent<Transform>(regionBuildSlotID2);
-	regionBuildSlot2Transform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42 - 52, (float)m_Resolution.y - 62);
+	regionBuildSlot2Transform.m_Position = Vector2D(iconSlotPositionX - iconSlotPositionOffset, iconSlotPositionY);
 	entityManager->SetEntityActive(regionBuildSlotID2, false);
 
-	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID3, "Assets/Graphics/MarketIcon.png", 32, 32, m_AssetHandler);
+	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID3, "Assets/Graphics/MarketIcon.png", 64, 64, m_AssetHandler);
 	Transform& regionBuildSlot3Transform = entityManager->GetComponent<Transform>(regionBuildSlotID3);
-	regionBuildSlot3Transform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42 - 104, (float)m_Resolution.y - 62);
+	regionBuildSlot3Transform.m_Position = Vector2D(iconSlotPositionX - iconSlotPositionOffset * 2, iconSlotPositionY);
 	entityManager->SetEntityActive(regionBuildSlotID3, false);
 
-	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID4, "Assets/Graphics/WallIcon.png", 32, 32, m_AssetHandler);
+	entityManager->AddComponent<UISpriteRenderer>(regionBuildSlotID4, "Assets/Graphics/WallIcon.png", 64, 64, m_AssetHandler);
 	Transform& regionBuildSlot4Transform = entityManager->GetComponent<Transform>(regionBuildSlotID4);
-	regionBuildSlot4Transform.m_Position = Vector2D(regionWindowComponent.m_SizeX - 42 - 156, (float)m_Resolution.y - 62);
+	regionBuildSlot4Transform.m_Position = Vector2D(iconSlotPositionX - iconSlotPositionOffset * 3, iconSlotPositionY);
 	entityManager->SetEntityActive(regionBuildSlotID4, false);
 }
 

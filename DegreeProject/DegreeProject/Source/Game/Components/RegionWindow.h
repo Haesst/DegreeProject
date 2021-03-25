@@ -34,6 +34,7 @@ struct RegionWindow : public Component
 	bool m_Open = false;
 	unsigned int m_CurrentRegionID = 0;
 	unsigned int m_NumberOfBuildingSlots = NUMBER_OF_BUILDING_SLOTS;
+	sf::RectangleShape m_BuildingProgressShape[NUMBER_OF_BUILDING_SLOTS];
 
 #pragma warning(push)
 #pragma warning(disable: 26812)
