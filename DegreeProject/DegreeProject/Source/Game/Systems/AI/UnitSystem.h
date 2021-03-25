@@ -287,17 +287,20 @@ struct UnitSystem : System
 		characterSystem->ConquerRegion(regionID, conqueringID);
 		characterSystem->LoseRegion(regionID, loosingEntity);
 
-		for (auto& war : m_Characters[conqueringID].m_CurrentWars)
-		{
-			if (war.m_AttackerWarscore >= 100 || war.m_DefenderWarscore >= 100)
-			{
-				war.EndWar(conqueringID);
+		//War& currentWar = *m_Characters[m_UnitComponents[conqueringID].m_Owner].GetWarAgainst(m_UnitComponents[loosingEntity].m_Owner);
+		//
+		//currentWar.AddWarscore(50, true);
 
-				
-				m_Characters[conqueringID].MakePeace();
-				m_Characters[loosingEntity].MakePeace();
-			}
-		}
+		//for (auto& war : m_Characters[conqueringID].m_CurrentWars)
+		//{
+		//	if (war.m_AttackerWarscore >= 100 || war.m_DefenderWarscore >= 100)
+		//	{
+		//		//war.EndWar(conqueringID);
+		//		
+		//		m_Characters[conqueringID].MakePeace();
+		//		m_Characters[loosingEntity].MakePeace();
+		//	}
+		//}
 	}
 
 	bool EnemyAtSquare(Vector2DInt square, EntityID opponent)
@@ -342,23 +345,20 @@ struct UnitSystem : System
 		//Very WIP early combat prototype
 		//Todo: Needs more weights and values affecting the outcome than army size
 
+#pragma warning(push)
+#pragma warning(disable: 26815)
+		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
+#pragma warning(pop)
+
 		if (m_UnitComponents[unit].m_CombatTimerAccu > m_UnitComponents[unit].m_CombatTimer)
 		{
 			War& currentWar = *m_Characters[m_UnitComponents[unit].m_Owner].GetWarAgainst(m_UnitComponents[enemyUnit].m_Owner);
 
-			if (m_UnitComponents[unit].m_RepresentedForce > m_UnitComponents[enemyUnit].m_RepresentedForce)
+			if (currentWar.GetAttacker().m_RaisedArmySize > currentWar.GetDefender().m_RaisedArmySize)
 			{
-				if (currentWar.GetAttacker().GetID() == m_UnitComponents[enemyUnit].GetID())
-				{
-					currentWar.AddWarscore(100, true);
-				}
+				currentWar.AddWarscore(50, true);
 
-				else
-				{
-					currentWar.AddWarscore(50, true);
-				}
-
-				KillUnit(enemyUnit);
+				characterSystem->DismissUnit(currentWar.GetAttacker().m_EntityID);
 				m_UnitComponents[unit].m_Moving = true;
 				m_UnitComponents[unit].EnemyArmy = nullptr;
 				m_UnitComponents[enemyUnit].EnemyArmy = nullptr;
@@ -368,18 +368,8 @@ struct UnitSystem : System
 
 			else
 			{
-				if (currentWar.GetAttacker().GetID() == m_UnitComponents[unit].GetID())
-				{
-					currentWar.AddWarscore(100, true);
-				}
-
-				else
-				{
-					currentWar.AddWarscore(50, true);
-				}
-
-				KillUnit(unit);
-				currentWar.AddWarscore(50, true);
+				currentWar.AddWarscore(100, false);
+				characterSystem->DismissUnit(currentWar.GetDefender().m_EntityID);
 
 				m_UnitComponents[unit].m_Moving = true;
 				m_UnitComponents[unit].EnemyArmy = nullptr;
@@ -388,15 +378,6 @@ struct UnitSystem : System
 				m_UnitComponents[enemyUnit].m_InCombat = false;
 			}
 		}
-	}
-
-	void KillUnit(EntityID ID)
-	{
-		m_UnitComponents[ID].m_Moving = false;
-		m_UnitComponents[ID].m_CurrentPath.clear();
-		m_UnitComponents[ID].m_RepresentedForce = 0;
-		m_UnitComponents[ID].m_Raised = false;
-		m_Renderers[ID].m_ShouldRender = false;
 	}
 
 	void ShowPath(Transform& transform, UnitComponent& unit)
