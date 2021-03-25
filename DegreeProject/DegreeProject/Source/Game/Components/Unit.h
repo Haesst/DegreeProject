@@ -1,9 +1,10 @@
 #pragma once
 #include "ECS/Component.h"
-#include "Game/Components/CharacterComponent.h"
 #include <string>
 #include <Engine\AssetHandler.h>
 #include "Game/GameDate.h"
+#include "Game/Components/CharacterComponent.h"
+#include "ECS/EntityManager.h"
 
 struct UnitComponent : public Component
 {

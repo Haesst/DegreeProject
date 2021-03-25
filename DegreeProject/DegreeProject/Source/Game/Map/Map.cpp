@@ -4,6 +4,7 @@
 #include "Map.h"
 #include "Game/HotReloader.h"
 #include "Engine/FileWatcher.h"
+#include <Game/Components/CharacterComponent.h>
 
 const char* Map::m_RegionPath = "Assets/Data/Regions.json";
 const char* Map::m_MapPath = "Assets/Map/RegionMap.txt";
@@ -279,6 +280,9 @@ void Map::StartConstructionOfBuilding(int buildingId, int buildSlot, int regionI
 {
 	// not working -> int maxBuildings = (sizeof(RegionBuilding) / sizeof(*GetRegionById(regionId).m_BuildingSlots));
 	ASSERT(buildSlot >= 0 /*&& buildSlot < maxBuildings */, "Invalid buildslot");
+	int characterGold = EntityManager::Get().GetComponent<CharacterComponent>(GetRegionById(regionId).m_OwnerID).m_CurrentGold;
+	int buildingCost = GameData::m_Buildings[buildingId].m_Cost;
+	ASSERT(characterGold >= buildingCost, "Not enough money to build");
 
 	RegionBuilding& building = GetRegionById(regionId).m_BuildingSlots[buildSlot];
 
