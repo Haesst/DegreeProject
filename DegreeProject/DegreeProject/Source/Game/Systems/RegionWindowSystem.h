@@ -145,7 +145,6 @@ struct RegionWindowSystem : System
 			regionWindow.m_BuildingProgressShape[index].setPosition(regionWindow.m_BuildingSlotShapes[index].getPosition());
 			regionWindow.m_BuildingProgressShape[index].setSize({ progressWidth, regionWindow.m_BuildingSlotShapes[index].getSize().y });
 			regionWindow.m_BuildingProgressShape[index].setFillColor(regionWindow.m_OwnerColor);
-			//regionWindow.m_BuildingSlotColors[index] = m_OuterBuildingProgressColor;
 
 			Window::GetWindow()->draw(regionWindow.m_BuildingProgressShape[index]);
 		}
@@ -159,9 +158,19 @@ struct RegionWindowSystem : System
 			if (!regionWindow.m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				Vector2DInt mouseMapPosition = InputHandler::GetMouseMapPosition();
-				if (Map::m_MapUnitData.find(mouseMapPosition) != Map::m_MapUnitData.end())
+				if (Map::MapSquareDataContainsKey(mouseMapPosition))
 				{
-					EntityID regionID = Map::m_MapUnitData[mouseMapPosition].m_RegionID;
+					EntityID regionID = 0;
+					
+					for (auto& squareData : Map::m_MapUnitData)
+					{
+						if (squareData.m_Position == mouseMapPosition)
+						{
+							regionID = squareData.m_RegionID;
+						}
+					}
+					//Map::m_MapUnitData[mouseMapPosition].m_RegionID;
+
 					if (regionWindow.m_CurrentRegionID != regionID)
 					{
 						regionWindow.m_CurrentRegionID = regionID;

@@ -132,9 +132,17 @@ struct CharacterWindowSystem : System
 			if (!characterWindow.m_Shape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				Vector2DInt mouseMapPosition = InputHandler::GetMouseMapPosition();
-				if (Map::m_MapUnitData.find(mouseMapPosition) != Map::m_MapUnitData.end())
+				if (Map::MapSquareDataContainsKey(mouseMapPosition))
 				{
-					EntityID regionID = Map::m_MapUnitData[mouseMapPosition].m_RegionID;
+					EntityID regionID = 0;
+					for (auto& squareData : Map::m_MapUnitData)
+					{
+						if (squareData.m_Position == mouseMapPosition)
+						{
+							regionID = squareData.m_RegionID;
+						}
+					}
+
 					if (characterWindow.m_CurrentRegionID != regionID)
 					{
 						characterWindow.m_CurrentRegionID = regionID;

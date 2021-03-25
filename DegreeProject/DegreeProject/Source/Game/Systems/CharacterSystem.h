@@ -97,7 +97,16 @@ struct CharacterSystem : System
 		unit.m_HighlightShape.setPosition(screenPosition.x, screenPosition.y);
 		unitTransform.m_Position = screenPosition;
 		renderer.m_Sprite.setPosition(screenPosition.x, screenPosition.y);
-		Map::m_MapUnitData[mapPosition].AddUnique(unit.GetID());
+		
+		for (auto& squareData : Map::m_MapUnitData)
+		{
+			if (squareData.m_Position == mapPosition)
+			{
+				squareData.AddUnique(unit.GetID());
+				break;
+			}
+		}
+
 		unit.m_LastPosition = screenPosition;
 		unit.m_Raised = true;
 		renderer.m_ShouldRender = true;

@@ -170,7 +170,15 @@ struct UnitSystem : System
 				unit.m_LastPosition = unit.m_Target;
 				transform.m_Position = unit.m_Target;
 				Vector2DInt pos = Map::ConvertToMap(unit.m_Target);
-				Map::m_MapUnitData[pos].AddUnique(unit.m_EntityID);
+
+				for (auto& squareData : Map::m_MapUnitData)
+				{
+					if (squareData.m_Position == pos)
+					{
+						squareData.AddUnique(unit.m_EntityID);
+						break;
+					}
+				}
 
 				if (EnemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
 				{
@@ -191,7 +199,15 @@ struct UnitSystem : System
 					unit.m_Direction = (nextPosition - transform.m_Position).Normalized();
 
 					Vector2DInt mapPos = Map::ConvertToMap(unit.m_LastPosition);
-					Map::m_MapUnitData[mapPos].AddUnique(unit.m_EntityID);
+
+					for (auto& squareData : Map::m_MapUnitData)
+					{
+						if (squareData.m_Position == mapPos)
+						{
+							squareData.AddUnique(unit.m_EntityID);
+							break;
+						}
+					}
 					
 					unit.m_CurrentPath.pop_front();
 					if (unit.m_TargetPath.size() > 0) //&& unit.m_PlayerControlled)
@@ -278,12 +294,20 @@ struct UnitSystem : System
 	}
 
 	bool EnemyAtSquare(Vector2DInt square, EntityID opponent)
-	{	
-		for (auto& ID : Map::m_MapUnitData[square].m_EntitiesInSquare)
+	{
+		for (auto& squareData : Map::m_MapUnitData)
 		{
-			if (m_UnitComponents[ID].m_Owner == opponent)
+			if (squareData.m_Position == square)
 			{
- 				return true;
+				for (auto& ID : squareData.m_EntitiesInSquare)
+				{
+					if (m_UnitComponents[ID].m_Owner == opponent)
+					{
+						return true;
+					}
+				}
+
+				break;
 			}
 		}
 

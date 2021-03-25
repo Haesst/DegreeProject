@@ -132,9 +132,18 @@ struct PlayerSystem : System
 	{
 		if (InputHandler::GetLeftMouseClicked() == true && m_Draging == false)
 		{
-			if (Map::m_MapUnitData.find(InputHandler::GetMouseMapPosition()) != Map::m_MapUnitData.end())
+			if (Map::MapSquareDataContainsKey(InputHandler::GetMouseMapPosition()))
 			{
-				std::list unitIDList = Map::m_MapUnitData[InputHandler::GetMouseMapPosition()].m_EntitiesInSquare;
+				std::list<EntityID> unitIDList = {};
+				
+				for (auto& squareData : Map::m_MapUnitData)
+				{
+					if (squareData.m_Position == InputHandler::GetMouseMapPosition())
+					{
+						unitIDList = squareData.m_EntitiesInSquare;
+					}
+				}
+
 				if (unitIDList.size() > 0)
 				{
 					for (EntityID unitID : unitIDList)
@@ -176,7 +185,16 @@ struct PlayerSystem : System
 					Vector2DInt mapPosition = Map::ConvertToMap(position);
 					if (Map::MapSquareDataContainsKey(mapPosition))
 					{
-						std::list unitIDList = Map::m_MapUnitData[mapPosition].m_EntitiesInSquare;
+						std::list<EntityID> unitIDList = {};
+
+						for (auto& squareData : Map::m_MapUnitData)
+						{
+							if (squareData.m_Position == mapPosition)
+							{
+								unitIDList = squareData.m_EntitiesInSquare;
+							}
+						}
+
 						for (EntityID unitID : unitIDList)
 						{
 							UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(unitID);
@@ -220,9 +238,17 @@ struct PlayerSystem : System
 	{
 		Vector2DInt currentMousePosition = InputHandler::GetMouseMapPosition();
 
-		if (Map::m_MapUnitData.find(currentMousePosition) != Map::m_MapUnitData.end())
+		if (Map::MapSquareDataContainsKey(currentMousePosition))
 		{
-			EntityID regionID = Map::m_MapUnitData[currentMousePosition].m_RegionID;
+			EntityID regionID = 0; 
+			
+			for (auto& squareData : Map::m_MapUnitData)
+			{
+				if (squareData.m_Position == currentMousePosition)
+				{
+					regionID = squareData.m_RegionID;
+				}
+			}
 
 			if ((unsigned int)playerComp.m_HighlightedRegion != regionID)
 			{

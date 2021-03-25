@@ -28,6 +28,7 @@ struct SquareData
 {
 	std::list<EntityID> m_EntitiesInSquare = std::list<EntityID>();
 	unsigned int m_RegionID;
+	Vector2DInt m_Position;
 
 	void AddUnique(EntityID entityToAdd)
 	{
@@ -72,7 +73,7 @@ struct Map
 	static std::mutex m_RegionMutex;
 	static std::mutex m_ShaderMutex;
 
-	static std::map<Vector2DInt, SquareData, Vector2DInt::VectorCompare> m_MapUnitData;
+	static std::vector<SquareData> m_MapUnitData;
 
 	Map()
 	{}
