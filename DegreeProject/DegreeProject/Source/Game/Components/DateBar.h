@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "ECS/Component.h"
 
-const static unsigned int NUMBER_OF_SPEEDS = 6;
+const static unsigned int NUMBER_OF_SPEEDS = 5;
 const static unsigned int NUMBER_OF_BUTTONS = 3;
 
 struct DateBar : public Component

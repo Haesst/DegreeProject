@@ -35,8 +35,8 @@ struct DateBarSystem : System
 		{
 			UpdateStats(dateBars[entity]);
 
-			int sizeX = dateBars[entity].m_ButtonThickness * 0.5f;
-			int sizeY = dateBars[entity].m_SizeY * 0.5f;
+			float sizeX = dateBars[entity].m_ButtonThickness * 0.5f;
+			float sizeY = dateBars[entity].m_SizeY * 0.5f;
 
 			dateBars[entity].m_OwnerColor = playerCharacter.m_RegionColor;
 
@@ -92,6 +92,7 @@ struct DateBarSystem : System
 		for (auto entity : m_Entities)
 		{
 			UpdateStats(dateBars[entity]);
+			ClickButton(dateBars[entity]);
 
 			int positionX = m_Window->getSize().x - (int)(dateBars[entity].m_SizeX + dateBars[entity].m_OutlineThickness);
 			int positionY = m_Window->getSize().y - (int)(dateBars[entity].m_SizeY + dateBars[entity].m_OutlineThickness);
@@ -100,28 +101,38 @@ struct DateBarSystem : System
 
 			for (unsigned int index = 0; index < dateBars[entity].m_NumberOfButtons; index++)
 			{
-				dateBars[entity].m_ButtonShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + dateBars[entity].m_ButtonThickness * 1.25f + dateBars[entity].m_ButtonThickness * 4.5f * index, positionY + dateBars[entity].m_SizeY * 0.25f - dateBars[entity].m_ButtonThickness * 0.25f)));
+				dateBars[entity].m_ButtonShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(dateBars[entity].m_ButtonThickness * 1.25f + dateBars[entity].m_ButtonThickness * 4.5f * index), positionY + (int)(dateBars[entity].m_SizeY * 0.25f - dateBars[entity].m_ButtonThickness * 0.25f))));
 			}
 
 			for (unsigned int index = 0; index < dateBars[entity].m_NumberOfSpeeds; index++)
 			{
-				dateBars[entity].m_SpeedShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + dateBars[entity].m_ButtonThickness * 14.5f + dateBars[entity].m_ButtonThickness * 2.5f * index, positionY + dateBars[entity].m_SizeY * 0.25f - dateBars[entity].m_ButtonThickness * 0.25f)));
-				dateBars[entity].m_SpeedShapes[index].setFillColor(sf::Color::Transparent);
-				dateBars[entity].m_SpeedShapes[m_CurrentSpeedLevel - 1].setFillColor(dateBars[entity].m_SpeedColor);
+				dateBars[entity].m_SpeedShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(dateBars[entity].m_ButtonThickness * 14.5f + dateBars[entity].m_ButtonThickness * 2.5f * index), positionY + (int)(dateBars[entity].m_SizeY * 0.25f - dateBars[entity].m_ButtonThickness * 0.25f))));
+				if (index < m_CurrentSpeedLevel && Time::GamePaused())
+				{
+					dateBars[entity].m_SpeedShapes[index].setFillColor(sf::Color::Red);
+				}
+				else if (index < m_CurrentSpeedLevel)
+				{
+					dateBars[entity].m_SpeedShapes[index].setFillColor(dateBars[entity].m_SpeedColor);
+				}
+				else
+				{
+					dateBars[entity].m_SpeedShapes[index].setFillColor(sf::Color::Transparent);
+				}
 			}
 
-			dateBars[entity].m_PauseLeftShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + dateBars[entity].m_ButtonThickness * 2, positionY + dateBars[entity].m_SizeY * 0.25f)));
+			dateBars[entity].m_PauseLeftShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(dateBars[entity].m_ButtonThickness * 2), positionY + (int)(dateBars[entity].m_SizeY * 0.25f))));
 
-			dateBars[entity].m_PauseRightShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + dateBars[entity].m_ButtonThickness * 3, positionY + dateBars[entity].m_SizeY * 0.25f)));
+			dateBars[entity].m_PauseRightShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(dateBars[entity].m_ButtonThickness * 3), positionY + (int)(dateBars[entity].m_SizeY * 0.25f))));
 
-			dateBars[entity].m_DecreaseSpeedShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + dateBars[entity].m_ButtonThickness * 8.5f, positionY + dateBars[entity].m_SizeY * 0.5f - dateBars[entity].m_ButtonThickness * 0.25f)));
+			dateBars[entity].m_DecreaseSpeedShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(dateBars[entity].m_ButtonThickness * 8.5f), positionY + (int)(dateBars[entity].m_SizeY * 0.5f - dateBars[entity].m_ButtonThickness * 0.25f))));
 
-			dateBars[entity].m_IncreaseSpeedHorizontalShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + dateBars[entity].m_ButtonThickness * 13, positionY + dateBars[entity].m_SizeY * 0.5f - dateBars[entity].m_ButtonThickness * 0.25f)));
+			dateBars[entity].m_IncreaseSpeedHorizontalShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(dateBars[entity].m_ButtonThickness * 13), positionY + (int)(dateBars[entity].m_SizeY * 0.5f - dateBars[entity].m_ButtonThickness * 0.25f))));
 			
-			dateBars[entity].m_IncreaseSpeedVerticalShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + dateBars[entity].m_ButtonThickness * 11.5f, positionY + dateBars[entity].m_SizeY * 0.25f)));
+			dateBars[entity].m_IncreaseSpeedVerticalShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(dateBars[entity].m_ButtonThickness * 11.5f), positionY + (int)(dateBars[entity].m_SizeY * 0.25f))));
 
 			dateBars[entity].m_DateText.setString(dateBars[entity].m_Date);
-			dateBars[entity].m_DateText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(dateBars[entity].m_SizeX * 0.5f), positionY + dateBars[entity].m_OutlineThickness * 0.5f)));
+			dateBars[entity].m_DateText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(dateBars[entity].m_SizeX * 0.475f), positionY + (int)(dateBars[entity].m_OutlineThickness * 0.5f))));
 		}
 	}
 	
@@ -153,5 +164,41 @@ struct DateBarSystem : System
 	{
 		dateBar.m_Date = Time::m_GameDate.GetDateString();
 		m_CurrentSpeedLevel = Time::m_CurrentSpeedLevel;
+	}
+
+	void ClickButton(DateBar& dateBar)
+	{
+		if (InputHandler::GetLeftMouseReleased())
+		{
+			Vector2D mousePosition = InputHandler::GetMousePosition();
+			for (unsigned int index = 0; index < dateBar.m_NumberOfButtons; index++)
+			{
+				if (dateBar.m_ButtonShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+				{
+					switch (index)
+					{
+						case 0:
+						{
+							Time::GamePaused() ? Time::UnpauseGame() : Time::PauseGame();
+							break;
+						}
+						case 1:
+						{
+							Time::DecreaseGameSpeed();
+							break;
+						}
+						case 2:
+						{
+							Time::IncreaseGameSpeed();
+							break;
+						}
+						default:
+						{
+							break;
+						}
+					}
+				}
+			}
+		}
 	}
 };

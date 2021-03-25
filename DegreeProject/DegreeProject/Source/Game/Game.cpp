@@ -143,7 +143,7 @@ void Game::AddEntitys()
 	entityManager->AddComponent<WarmindComponent>(char1, 1, char0);
 	entityManager->AddComponent<WarmindComponent>(char0, 4, char1);
 
-	//UI TimeBar
+	//UI DateBar
 	EntityID dateBarID = entityManager->AddNewEntity();
 	entityManager->AddComponent<DateBar>(dateBarID, m_UIFont);
 
