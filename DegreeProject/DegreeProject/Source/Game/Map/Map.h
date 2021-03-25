@@ -110,7 +110,6 @@ struct Map
 	{
 	}
 
-	static SquareData& GetMapSquareData(const Vector2DInt key);
 	static bool MapSquareDataContainsKey(const Vector2DInt& key);
 
 	static void ClearRegionMapTiles();

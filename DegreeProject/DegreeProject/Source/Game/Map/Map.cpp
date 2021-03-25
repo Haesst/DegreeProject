@@ -138,7 +138,7 @@ void Map::LoadMap()
 					Vector2DInt loc = { x,y };
 					SquareData data = { m_Data.m_Regions[regionPosition].m_RegionId };
 					data.m_Position = { x,y };
-					//m_MapUnitData.insert(std::make_pair(loc, data));
+
 					m_MapUnitData.push_back(data);
 				}
 
@@ -198,21 +198,6 @@ void Map::SetRegionColor(int regionId, sf::Color color)
 void Map::ClearRegions()
 {
 	m_Data.m_Regions.clear();
-}
-
-
-
-SquareData& Map::GetMapSquareData(Vector2DInt key)
-{
-	for (auto& p : m_MapUnitData)
-	{
-		if (p.m_Position == key)
-		{
-			return p;
-		}
-	}
-
-	return SquareData(0);
 }
 
 bool Map::MapSquareDataContainsKey(const Vector2DInt& key)

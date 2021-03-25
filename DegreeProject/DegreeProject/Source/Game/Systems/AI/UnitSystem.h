@@ -164,7 +164,14 @@ struct UnitSystem : System
 			{
 				if (Map::MapSquareDataContainsKey(Map::ConvertToMap(unit.m_LastPosition)))
 				{
-					Map::GetMapSquareData(Map::ConvertToMap(unit.m_LastPosition)).Remove(unit.GetID());
+					for (auto& squareData : Map::m_MapUnitData)
+					{
+						if (squareData.m_Position == Map::ConvertToMap(unit.m_LastPosition))
+						{
+							squareData.Remove(unit.GetID());
+							break;
+						}
+					}
 				}
 
 				unit.m_LastPosition = unit.m_Target;
