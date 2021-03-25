@@ -113,6 +113,18 @@ void InputHandler::HandleInputEvents()
 						}
 						break;
 					}
+					case sf::Keyboard::Equal:
+					case sf::Keyboard::Add:
+					{
+						Time::IncreaseGameSpeed();
+						break;
+					}
+					case sf::Keyboard::Hyphen:
+					case sf::Keyboard::Subtract:
+					{
+						Time::DecreaseGameSpeed();
+						break;
+					}
 					case sf::Keyboard::Escape:
 					{
 						inputs[EscapePressed] = true;
