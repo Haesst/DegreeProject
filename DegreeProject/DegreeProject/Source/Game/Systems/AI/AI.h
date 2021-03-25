@@ -63,9 +63,9 @@ struct AISystem : System
 		//AI System update considerations
 		for (auto entity : m_Entities)
 		{
-			if (ExpansionDecision(entity) > .7f) //Add personality weight
+			if (ExpansionDecision(entity) > .2f) //Add personality weight
 			{
-				if (WarDecision(entity) > .7f)
+				if (WarDecision(entity) > .2f)
 				{
 					if (!m_Characters[entity].m_AtWar)
 					{

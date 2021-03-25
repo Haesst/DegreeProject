@@ -78,7 +78,7 @@ struct WarmindSystem : System
 				return;
 			}
 			
-			int randomRegionIndex = rand() % enemyCharacter.m_OwnedRegionIDs.size() + 1;
+			int randomRegionIndex = rand() % enemyCharacter.m_OwnedRegionIDs.size();
 			capitalPosition = Map::GetRegionCapitalLocation(enemyCharacter.m_OwnedRegionIDs[randomRegionIndex]);
 		}
 
