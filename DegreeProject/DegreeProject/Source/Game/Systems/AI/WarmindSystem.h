@@ -87,8 +87,6 @@ struct WarmindSystem : System
 
 	void OrderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
 	{
-		War& currentWar = *m_Warminds[warmindID].m_PrioritizedWar;
-
 		if (m_Warminds[warmindID].m_PrioritizedWar == nullptr)
 		{
 			return;
