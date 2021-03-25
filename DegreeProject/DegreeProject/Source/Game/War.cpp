@@ -16,7 +16,7 @@ War::War(CharacterComponent& attacker, CharacterComponent& defender, int warGoal
 	m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 }
 
-void War::AddWarscore(int warScore, bool attackerWinning)
+void War::AddWarscore(War& war, int warScore, bool attackerWinning)
 {
 	if (attackerWinning)
 	{
@@ -24,7 +24,7 @@ void War::AddWarscore(int warScore, bool attackerWinning)
 
 		if (m_AttackerWarscore > 100)
 		{
-			EndWar(m_Attacker->GetID());
+			EndWar(war, m_Attacker->GetID());
 		}
 	}
 
@@ -34,12 +34,12 @@ void War::AddWarscore(int warScore, bool attackerWinning)
 
 		if (m_DefenderWarscore > 100)
 		{
-			EndWar(m_Defender->GetID());
+			EndWar(war, m_Defender->GetID());
 		}
 	}
 }
 
-void War::EndWar(EntityID winningEntity)
+void War::EndWar(War& warToEnd, EntityID winningEntity)
 {
 	m_Attacker->m_AtWar = false;
 	m_Defender->m_AtWar = false;
@@ -49,22 +49,19 @@ void War::EndWar(EntityID winningEntity)
 
 	if (!m_Attacker->m_IsPlayerControlled)
 	{
-		WarmindComponent& attackerWarmind = m_Warminds[m_Attacker->GetID()]; //switch out to character
-		attackerWarmind.m_Active = false;
-		attackerWarmind.m_AtWar = false;
-		m_Attacker->m_RaisedArmySize = 0;
-
-		m_Units[m_Attacker->m_UnitEntity].m_Raised = false;
+		m_Attacker->MakePeace();
 	}
 
 	if (!m_Defender->m_IsPlayerControlled)
 	{
-		WarmindComponent& defenderWarmind = m_Warminds[m_Defender->GetID()];
-		defenderWarmind.m_Active = false;
-		defenderWarmind.m_AtWar = false;
-		m_Defender->m_RaisedArmySize = 0;
+		m_Defender->MakePeace();
 
-		m_Units[m_Defender->m_UnitEntity].m_Raised = false;
+		//WarmindComponent& defenderWarmind = m_Warminds[m_Defender->GetID()];
+		//defenderWarmind.m_Active = false;
+		//defenderWarmind.m_AtWar = false;
+		//m_Defender->m_RaisedArmySize = 0;
+		//
+		//m_Units[m_Defender->m_UnitEntity].m_Raised = false;
 	}
 }
 
@@ -86,4 +83,14 @@ bool War::IsDefender(EntityID ent)
 	}
 
 	return false;
+}
+
+CharacterComponent& War::GetAttacker(War& war)
+{
+	return *war.m_Attacker;
+}
+
+CharacterComponent& War::GetDefender(War& war)
+{
+	return *war.m_Defender;
 }

@@ -36,7 +36,7 @@ struct CharacterComponent : public Component
 	bool m_AtWar = false;
 	int m_PersonalityIndex = 0;
 	int m_Income = 0;
-	War* m_CurrentWar = nullptr;
+	std::vector<War> m_CurrentWars;
 
 	EntityID m_TextUI = (SIZE_T)INT_MAX;
 
@@ -67,24 +67,69 @@ struct CharacterComponent : public Component
 		Time::m_GameDate.SubscribeToMonthChange(std::bind(&CharacterComponent::OnMonthChange, this, std::placeholders::_1));
 	}
 
+	War& GetWarAgainst(EntityID enemyEntity)
+	{
+		for (auto& war : m_CurrentWars)
+		{
+			if (war.IsDefender(enemyEntity) || war.IsAttacker(enemyEntity))
+			{
+				return war;
+			}
+		}
+	}
+
+
 	void MakePeace()
 	{
+		War* warToEnd = nullptr;
+
+		for (auto& war : m_CurrentWars)
+		{
+			if (war.m_AttackerWarscore >= 100 || war.m_DefenderWarscore >= 100)
+			{
+				warToEnd = &war;
+			}
+		}
+
+		if (warToEnd == nullptr)
+		{
+			return;
+		}
+
 		m_AtWar = false;
 
 		if (!m_IsPlayerControlled)
 		{
-			EntityManager* entityManager = &EntityManager::Get();
-			WarmindComponent& warmind = entityManager->GetComponent<WarmindComponent>(m_EntityID);
-			UnitComponent& unit = entityManager->GetComponent<UnitComponent>(m_UnitEntity);
+			if (m_CurrentWars.empty())
+			{
+				EntityManager* entityManager = &EntityManager::Get();
+				WarmindComponent& warmind = entityManager->GetComponent<WarmindComponent>(m_EntityID);
+				UnitComponent& unit = entityManager->GetComponent<UnitComponent>(m_UnitEntity);
 
-			warmind.m_Active = false;
-			warmind.m_AtWar = false;
-			m_RaisedArmySize = 0;
-			unit.m_Raised = false;
+				warmind.m_Active = false;
+				warmind.m_AtWar = false;
+				m_RaisedArmySize = 0;
+				unit.m_Raised = false;
+			}
+			
+		}
+		War& warToDel = *warToEnd;
+
+		unsigned int warIndex = 0;
+		for (auto& war : m_CurrentWars)
+		{
+			if (war.IsDefender(m_EntityID))
+			{
+				if (war.GetAttacker(war).GetID() == warToDel.GetAttacker(warToDel).GetID())
+				{
+					m_CurrentWars.erase(m_CurrentWars.begin() + warIndex);
+					break;
+				}
+			}
+			warIndex++;
 		}
 
-		delete m_CurrentWar;
-		m_CurrentWar = nullptr;
+		delete &warToEnd;
 	}
 
 	void DeclareWar(EntityID target, int warGoalRegion)
@@ -97,11 +142,11 @@ struct CharacterComponent : public Component
 
 		War* war = new War(characters[m_EntityID], characters[target], warGoalRegion);
 		
-		m_CurrentWar = war;
+		m_CurrentWars.push_back(*war);
 		m_AtWar = true;
 		
 		characters[target].m_RecentlyAtWar = true;
-		characters[target].m_CurrentWar = war;
+		characters[target].m_CurrentWars.push_back(*war);
 		characters[target].m_AtWar = true;
 
 		if (!m_IsPlayerControlled)

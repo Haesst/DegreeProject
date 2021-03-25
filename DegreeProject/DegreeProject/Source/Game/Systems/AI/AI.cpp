@@ -36,8 +36,6 @@ float AISystem::ExpansionDecision(EntityID ent)
 	//Get characters in certain range,
 	std::vector<int> regionIndexes = Map::GetRegionIDs();
 
-	
-
 	for (size_t i = 0; i < regionIndexes.size(); i++)
 	{
 		if (std::find(characterComponents[ent].m_OwnedRegionIDs.begin(), characterComponents[ent].m_OwnedRegionIDs.end(),

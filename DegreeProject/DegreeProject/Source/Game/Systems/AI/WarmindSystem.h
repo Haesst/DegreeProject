@@ -47,6 +47,8 @@ struct WarmindSystem : System
 
 				if (m_Warminds[entity].m_OrderAccu >= m_Warminds[entity].m_OrderTimer)
 				{
+					m_Warminds[entity].m_PrioritizedWar = ConsiderPrioritizedWar(entity);
+
 					m_Warminds[entity].m_OrderAccu = 0.0f;
 					ConsiderOrders(entity, m_Units[m_Characters[entity].m_UnitEntity], m_Warminds[entity].m_Opponent);
 				}
@@ -59,14 +61,35 @@ struct WarmindSystem : System
 		Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Characters[warmindID].m_UnitEntity).m_Position;
 		Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
 
-		Vector2DInt capitalPosition = Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId);
+		Vector2DInt capitalPosition;
+		War& currentWar = *m_Warminds[warmindID].m_PrioritizedWar;
+
+		if (currentWar.IsAttacker(warmindID))
+		{
+			capitalPosition = Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId);
+		}
+
+		else
+		{
+			CharacterComponent& enemyCharacter = m_Warminds[warmindID].m_PrioritizedWar->GetAttacker(currentWar);
+
+			if (m_Units[m_Characters[warmindID].m_UnitEntity].m_DaysSeizing > 0)
+			{
+				return;
+			}
+			
+			int randomRegionIndex = rand() % enemyCharacter.m_OwnedRegionIDs.size() + 1;
+			capitalPosition = Map::GetRegionCapitalLocation(enemyCharacter.m_OwnedRegionIDs[randomRegionIndex]);
+		}
 
 		MoveUnit(unit.m_EntityID, capitalPosition);
 	}
 
 	void OrderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
 	{
-		if (m_Characters[warmindID].m_CurrentWar == nullptr)
+		War& currentWar = *m_Warminds[warmindID].m_PrioritizedWar;
+
+		if (m_Warminds[warmindID].m_PrioritizedWar == nullptr)
 		{
 			return;
 		}
@@ -81,7 +104,7 @@ struct WarmindSystem : System
 
 		Vector2DInt battlefieldIntPosition;
 
-		if (enemyUnit.m_CurrentPath.size() > 0 && !m_Characters[warmindID].m_CurrentWar->IsDefender(warmindID))
+		if (enemyUnit.m_CurrentPath.size() > 0 && !m_Warminds[warmindID].m_PrioritizedWar->IsDefender(warmindID))
 		{
 			LOG_INFO("{0} is chasing the enemy army", m_Characters[warmindID].m_Name);
 			battlefieldIntPosition = enemyUnit.m_CurrentPath.back();
@@ -89,9 +112,7 @@ struct WarmindSystem : System
 
 		else
 		{
-			LOG_INFO("{0} is using a random square", m_Characters[warmindID].m_Name);
-			//int randomSquareIndex = rand() % Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares.size() + 1;
-			battlefieldIntPosition = Map::GetRegionById(m_Warminds[warmindID].m_WargoalRegionId).m_MapSquares[2];
+			battlefieldIntPosition = Map::ConvertToMap(m_Transforms[enemyUnit.GetID()].m_Position);
 		}
 
 		MoveUnit(unit.m_EntityID, battlefieldIntPosition);
@@ -99,6 +120,11 @@ struct WarmindSystem : System
 
 	void ConsiderOrders(EntityID warmind, UnitComponent& unit, EntityID target)
 	{
+		if (m_Warminds[warmind].m_PrioritizedWar == nullptr)
+		{
+			ConsiderPrioritizedWar(warmind);
+		}
+
 		m_Units[m_Characters[warmind].m_UnitEntity].m_Moving = false;
 		auto& enemyUnit = m_Units[m_Characters[target].m_UnitEntity]; //change to character
 
@@ -106,10 +132,10 @@ struct WarmindSystem : System
 		float siegeEval = siegeConsideration.Evaluate(warmind, target);
 		FightEnemyArmyConsideration fightConsideration;
 		float fightEval = fightConsideration.Evaluate(warmind, target);
-		
+
 		if (siegeEval > fightEval || !enemyUnit.m_Raised)
 		{
-			if (!m_Characters[warmind].m_CurrentWar->IsDefender(target))
+			if (!m_Warminds[warmind].m_PrioritizedWar->IsDefender(target))
 			{
 				LOG_INFO("Warmind belonging to {0} decided to siege the enemy capital", m_Characters[warmind].m_Name);
 			}
@@ -122,6 +148,21 @@ struct WarmindSystem : System
 			LOG_INFO("Warmind belonging to {0} decided to fight the enemy army", m_Characters[warmind].m_Name);
 			OrderFightEnemyArmy(warmind, unit);
 		}
+	}
+
+	War* ConsiderPrioritizedWar(EntityID ent) //Will be expanded later
+	{
+		if (m_Characters[ent].m_CurrentWars.front().IsAttacker(ent))
+		{
+			m_Warminds[ent].m_Opponent = m_Characters[ent].m_CurrentWars.front().m_Defender->GetID();
+		}
+
+		else
+		{
+			m_Warminds[ent].m_Opponent = m_Characters[ent].m_CurrentWars.front().m_Attacker->GetID();
+		}
+
+		return &m_Characters[ent].m_CurrentWars.front();
 	}
 
 	void MoveUnit(EntityID unitToMove, Vector2DInt targetPosition)

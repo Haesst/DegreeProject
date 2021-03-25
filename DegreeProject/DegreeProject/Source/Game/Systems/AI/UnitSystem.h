@@ -259,11 +259,16 @@ struct UnitSystem : System
 		characterSystem->ConquerRegion(regionID, conqueringID);
 		characterSystem->LoseRegion(regionID, loosingEntity);
 
-		if (m_Characters[conqueringID].m_CurrentWar != nullptr)
+		for (auto& war : m_Characters[conqueringID].m_CurrentWars)
 		{
-			m_Characters[conqueringID].m_CurrentWar->EndWar(conqueringID);
-			m_Characters[conqueringID].m_CurrentWar = nullptr;
-			m_Characters[loosingEntity].m_CurrentWar = nullptr;
+			if (war.m_AttackerWarscore >= 100 || war.m_DefenderWarscore >= 100)
+			{
+				war.EndWar(war, conqueringID);
+
+				
+				m_Characters[conqueringID].MakePeace();
+				m_Characters[loosingEntity].MakePeace();
+			}
 		}
 	}
 
@@ -283,7 +288,6 @@ struct UnitSystem : System
 	void StartCombatTimer(EntityID unit, EntityID enemyUnit)
 	{
 		LOG_INFO("Battle began between {0}'s army and {1}'s army", m_Characters[m_UnitComponents[unit].m_Owner].m_Name, m_Characters[m_UnitComponents[enemyUnit].m_Owner].m_Name);
-
 
 		if (!m_UnitComponents[unit].m_InCombat && !m_UnitComponents[enemyUnit].m_InCombat)
 		{
@@ -307,7 +311,9 @@ struct UnitSystem : System
 			if (m_UnitComponents[unit].m_RepresentedForce > m_UnitComponents[enemyUnit].m_RepresentedForce)
 			{
 				KillUnit(enemyUnit);
-				m_Characters[m_UnitComponents[unit].m_Owner].m_CurrentWar->AddWarscore(50, true);
+				War& currentWar = m_Characters[m_UnitComponents[unit].m_Owner].GetWarAgainst(m_UnitComponents[enemyUnit].m_Owner);
+				currentWar.AddWarscore(currentWar, 50, true);
+
 				m_UnitComponents[unit].m_Moving = true;
 				m_UnitComponents[unit].EnemyArmy = nullptr;
 				m_UnitComponents[enemyUnit].EnemyArmy = nullptr;
@@ -318,7 +324,9 @@ struct UnitSystem : System
 			else
 			{
 				KillUnit(unit);
-				m_Characters[m_UnitComponents[enemyUnit].m_Owner].m_CurrentWar->AddWarscore(50, false);
+				War& currentWar = m_Characters[m_UnitComponents[unit].m_Owner].GetWarAgainst(m_UnitComponents[enemyUnit].m_Owner);
+				currentWar.AddWarscore(currentWar, 50, true);
+
 				m_UnitComponents[unit].m_Moving = true;
 				m_UnitComponents[unit].EnemyArmy = nullptr;
 				m_UnitComponents[enemyUnit].EnemyArmy = nullptr;
