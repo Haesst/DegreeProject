@@ -134,6 +134,14 @@ struct CharacterComponent : public Component
 
 	void DeclareWar(EntityID target, int warGoalRegion)
 	{
+		for (auto& war : m_CurrentWars)
+		{
+			if (war.m_Defender->GetID() == target)
+			{
+				return;
+			}
+		}
+
 		EntityManager* entityManager = &EntityManager::Get();
 		CharacterComponent* characters = entityManager->GetComponentArray<CharacterComponent>();
 		WarmindComponent* warminds = entityManager->GetComponentArray<WarmindComponent>();
@@ -141,7 +149,7 @@ struct CharacterComponent : public Component
 		LOG_INFO("{0} Declared war with {1} for {2}", m_Name, characters[target].m_Name, Map::GetRegionById(warGoalRegion).m_RegionName);
 
 		War* war = new War(characters[m_EntityID], characters[target], warGoalRegion);
-		
+
 		m_CurrentWars.push_back(*war);
 		m_AtWar = true;
 		

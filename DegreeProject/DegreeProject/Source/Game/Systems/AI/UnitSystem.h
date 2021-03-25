@@ -62,7 +62,12 @@ struct UnitSystem : System
 			if (unit.m_Raised)
 			{
 				MoveUnit(unit, transform);
-				SeizeRegion(unit);
+
+				if (m_Characters[unit.m_Owner].m_AtWar)
+				{
+					SeizeRegion(unit);
+				}
+
 				unit.m_HighlightShape.setFillColor(unit.m_FillColor);
 				unit.m_HighlightShape.setOutlineColor(unit.m_OutlineColor);
 				unit.m_HighlightShape.setOutlineThickness(unit.m_OutlineThickness);
