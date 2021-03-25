@@ -36,7 +36,6 @@ struct CharacterWindowSystem : System
 		{
 			m_CharacterWindows[entity].m_Shape.setFillColor(m_CharacterWindows[entity].m_FillColor);
 			m_CharacterWindows[entity].m_Shape.setOutlineThickness(m_CharacterWindows[entity].m_OutlineThickness);
-			m_CharacterWindows[entity].m_Shape.setSize(sf::Vector2f(m_CharacterWindows[entity].m_SizeX, m_CharacterWindows[entity].m_SizeY));
 
 			m_CharacterWindows[entity].m_DeclareWarShape.setFillColor(m_CharacterWindows[entity].m_DeclareWarColor);
 			m_CharacterWindows[entity].m_DeclareWarShape.setOutlineColor(sf::Color(210, 32, 60));
@@ -191,6 +190,7 @@ struct CharacterWindowSystem : System
 	void OpenWindow(CharacterWindow& characterWindow)
 	{
 		characterWindow.m_Visible = true;
+		characterWindow.m_Shape.setSize(sf::Vector2f(characterWindow.m_SizeX, characterWindow.m_SizeY));
 		m_EntityManager->SetEntityActive(characterWindow.m_TopPortraitID, true);
 		m_EntityManager->SetEntityActive(characterWindow.m_BottomPortraitID, false);
 	}
@@ -199,6 +199,7 @@ struct CharacterWindowSystem : System
 	{
 		characterWindow.m_Open = false;
 		characterWindow.m_Visible = false;
+		characterWindow.m_Shape.setSize(sf::Vector2f());
 		m_EntityManager->SetEntityActive(characterWindow.m_TopPortraitID, false);
 	}
 

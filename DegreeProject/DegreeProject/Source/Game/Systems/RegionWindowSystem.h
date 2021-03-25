@@ -42,7 +42,6 @@ struct RegionWindowSystem : System
 		{
 			m_RegionWindows[entity].m_WindowShape.setFillColor(m_RegionWindows[entity].m_FillColor);
 			m_RegionWindows[entity].m_WindowShape.setOutlineThickness(m_RegionWindows[entity].m_OutlineThickness);
-			m_RegionWindows[entity].m_WindowShape.setSize(sf::Vector2f(m_RegionWindows[entity].m_SizeX, m_RegionWindows[entity].m_SizeY));
 
 			for (unsigned int index = 0; index < m_RegionWindows[entity].m_NumberOfBuildingSlots; index++)
 			{
@@ -169,7 +168,6 @@ struct RegionWindowSystem : System
 							regionID = squareData.m_RegionID;
 						}
 					}
-					//Map::m_MapUnitData[mouseMapPosition].m_RegionID;
 
 					if (regionWindow.m_CurrentRegionID != regionID)
 					{
@@ -181,6 +179,14 @@ struct RegionWindowSystem : System
 						CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(m_CurrentMapRegion->m_OwnerID);
 						regionWindow.m_KingdomName = character.m_KingdomName;
 						regionWindow.m_OwnerColor = character.m_RegionColor;
+						if (character.m_RaisedArmySize > 0)
+						{
+							regionWindow.m_RaiseArmyColor = regionWindow.m_OwnerColor;
+						}
+						else
+						{
+							regionWindow.m_RaiseArmyColor = sf::Color::Transparent;
+						}
 						for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
 						{
 							if (m_CurrentMapRegion->m_BuildingSlots[index].m_Finished)
@@ -230,6 +236,7 @@ struct RegionWindowSystem : System
 	void OpenWindow(RegionWindow& regionWindow)
 	{
 		regionWindow.m_Visible = true;
+		regionWindow.m_WindowShape.setSize(sf::Vector2f(regionWindow.m_SizeX, regionWindow.m_SizeY));
 		m_EntityManager->SetEntityActive(regionWindow.m_RegionPortraitID, true);
 		m_EntityManager->SetEntityActive(regionWindow.m_RaiseArmyID, true);
 		for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
@@ -243,6 +250,7 @@ struct RegionWindowSystem : System
 	{
 		regionWindow.m_Open = false;
 		regionWindow.m_Visible = false;
+		regionWindow.m_WindowShape.setSize(sf::Vector2f());
 		m_EntityManager->SetEntityActive(regionWindow.m_RegionPortraitID, false);
 		m_EntityManager->SetEntityActive(regionWindow.m_RaiseArmyID, false);
 		for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
@@ -260,13 +268,21 @@ struct RegionWindowSystem : System
 			{
 				SpriteRenderer& renderer = m_EntityManager->GetComponent<SpriteRenderer>(playerCharacter->m_UnitEntity);
 				UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(playerCharacter->m_UnitEntity);
-				Vector2DInt capitalPosition = Map::GetRegionCapitalLocation(regionWindow.m_CurrentRegionID);
 #pragma warning(push)
 #pragma warning(disable: 26815)
 				CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
 #pragma warning(pop)
-				characterSystem->RaiseUnit(playerCharacter->m_EntityID, true, unit, renderer, capitalPosition);
-				regionWindow.m_RaiseArmyColor = regionWindow.m_OwnerColor;
+				if (unit.m_Raised)
+				{
+					characterSystem->DismissUnit(playerCharacter->m_EntityID);
+					regionWindow.m_RaiseArmyColor = sf::Color::Transparent;
+				}
+				else
+				{
+					Vector2DInt capitalPosition = Map::GetRegionCapitalLocation(regionWindow.m_CurrentRegionID);
+					characterSystem->RaiseUnit(playerCharacter->m_EntityID, true, unit, renderer, capitalPosition);
+					regionWindow.m_RaiseArmyColor = regionWindow.m_OwnerColor;
+				}
 				return;
 			}
 			for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)

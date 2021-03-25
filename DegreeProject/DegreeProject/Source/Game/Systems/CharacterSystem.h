@@ -115,6 +115,34 @@ struct CharacterSystem : System
 		character.m_RaisedArmySize = character.m_MaxArmySize; //Todo: Army recharge
 	}
 
+	void DismissUnit(EntityID ownerID)
+	{
+		CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(ownerID);
+		UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(character.m_UnitEntity);
+		if (!unit.m_Raised)
+		{
+			return;
+		}
+		unit.m_Moving = false;
+		unit.m_CurrentPath.clear();
+		unit.m_RepresentedForce = 0;
+		unit.m_Raised = false;
+		SpriteRenderer& renderer = m_EntityManager->GetComponent<SpriteRenderer>(character.m_UnitEntity);
+		renderer.m_ShouldRender = false;
+		character.m_RaisedArmySize = 0;
+		Transform& unitTransform = m_EntityManager->GetComponent<Transform>(character.m_UnitEntity);
+		Vector2DInt unitMapPosition = Map::ConvertToMap(unitTransform.m_Position);
+		
+		for (auto& squareData : Map::m_MapSquareData)
+		{
+			if (squareData.m_Position == unitMapPosition)
+			{
+				squareData.Remove(unit.GetID());
+				break;
+			}
+		}
+	}
+
 	void ConquerRegion(unsigned int regionID, unsigned int conqueringEntity)
 	{
 		CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(conqueringEntity);
