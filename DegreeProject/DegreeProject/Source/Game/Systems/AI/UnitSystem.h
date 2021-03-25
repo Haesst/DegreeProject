@@ -268,7 +268,7 @@ struct UnitSystem : System
 		{
 			if (war.m_AttackerWarscore >= 100 || war.m_DefenderWarscore >= 100)
 			{
-				war.EndWar(war, conqueringID);
+				war.EndWar(conqueringID);
 
 				
 				m_Characters[conqueringID].MakePeace();
@@ -313,12 +313,21 @@ struct UnitSystem : System
 
 		if (m_UnitComponents[unit].m_CombatTimerAccu > m_UnitComponents[unit].m_CombatTimer)
 		{
+			War& currentWar = m_Characters[m_UnitComponents[unit].m_Owner].GetWarAgainst(m_UnitComponents[enemyUnit].m_Owner);
+
 			if (m_UnitComponents[unit].m_RepresentedForce > m_UnitComponents[enemyUnit].m_RepresentedForce)
 			{
-				KillUnit(enemyUnit);
-				War& currentWar = m_Characters[m_UnitComponents[unit].m_Owner].GetWarAgainst(m_UnitComponents[enemyUnit].m_Owner);
-				currentWar.AddWarscore(currentWar, 50, true);
+				if (currentWar.GetAttacker().GetID() == m_UnitComponents[enemyUnit].GetID())
+				{
+					currentWar.AddWarscore(100, true);
+				}
 
+				else
+				{
+					currentWar.AddWarscore(50, true);
+				}
+
+				KillUnit(enemyUnit);
 				m_UnitComponents[unit].m_Moving = true;
 				m_UnitComponents[unit].EnemyArmy = nullptr;
 				m_UnitComponents[enemyUnit].EnemyArmy = nullptr;
@@ -328,9 +337,19 @@ struct UnitSystem : System
 
 			else
 			{
+				if (currentWar.GetAttacker().GetID() == m_UnitComponents[unit].GetID())
+				{
+					currentWar.AddWarscore(100, true);
+				}
+
+				else
+				{
+					currentWar.AddWarscore(50, true);
+				}
+
 				KillUnit(unit);
 				War& currentWar = m_Characters[m_UnitComponents[unit].m_Owner].GetWarAgainst(m_UnitComponents[enemyUnit].m_Owner);
-				currentWar.AddWarscore(currentWar, 50, true);
+				currentWar.AddWarscore(50, true);
 
 				m_UnitComponents[unit].m_Moving = true;
 				m_UnitComponents[unit].EnemyArmy = nullptr;

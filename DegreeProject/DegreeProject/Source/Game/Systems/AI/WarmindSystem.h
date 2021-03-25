@@ -71,7 +71,7 @@ struct WarmindSystem : System
 
 		else
 		{
-			CharacterComponent& enemyCharacter = m_Warminds[warmindID].m_PrioritizedWar->GetAttacker(currentWar);
+			CharacterComponent& enemyCharacter = m_Warminds[warmindID].m_PrioritizedWar->GetAttacker();
 
 			if (m_Units[m_Characters[warmindID].m_UnitEntity].m_DaysSeizing > 0)
 			{
@@ -104,7 +104,7 @@ struct WarmindSystem : System
 
 		Vector2DInt battlefieldIntPosition;
 
-		if (enemyUnit.m_CurrentPath.size() > 0 && !m_Warminds[warmindID].m_PrioritizedWar->IsDefender(warmindID))
+		if (enemyUnit.m_CurrentPath.size() > 0) /*&& m_Warminds[warmindID].m_PrioritizedWar->IsAttacker(warmindID))*/
 		{
 			LOG_INFO("{0} is chasing the enemy army", m_Characters[warmindID].m_Name);
 			battlefieldIntPosition = enemyUnit.m_CurrentPath.back();
@@ -132,6 +132,11 @@ struct WarmindSystem : System
 		float siegeEval = siegeConsideration.Evaluate(warmind, target);
 		FightEnemyArmyConsideration fightConsideration;
 		float fightEval = fightConsideration.Evaluate(warmind, target);
+
+		if (m_Warminds[warmind].m_PrioritizedWar->GetDefender().GetID() == warmind)
+		{
+			fightEval += .2f;
+		}
 
 		if (siegeEval > fightEval || !enemyUnit.m_Raised)
 		{

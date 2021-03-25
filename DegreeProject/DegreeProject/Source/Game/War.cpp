@@ -16,7 +16,7 @@ War::War(CharacterComponent& attacker, CharacterComponent& defender, int warGoal
 	m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
 }
 
-void War::AddWarscore(War& war, int warScore, bool attackerWinning)
+void War::AddWarscore(int warScore, bool attackerWinning)
 {
 	if (attackerWinning)
 	{
@@ -24,7 +24,7 @@ void War::AddWarscore(War& war, int warScore, bool attackerWinning)
 
 		if (m_AttackerWarscore > 100)
 		{
-			EndWar(war, m_Attacker->GetID());
+			EndWar(m_Attacker->GetID());
 		}
 	}
 
@@ -34,12 +34,12 @@ void War::AddWarscore(War& war, int warScore, bool attackerWinning)
 
 		if (m_DefenderWarscore > 100)
 		{
-			EndWar(war, m_Defender->GetID());
+			EndWar(m_Defender->GetID());
 		}
 	}
 }
 
-void War::EndWar(War& warToEnd, EntityID winningEntity)
+void War::EndWar(EntityID winningEntity)
 {
 	m_Attacker->m_AtWar = false;
 	m_Defender->m_AtWar = false;
@@ -85,12 +85,12 @@ bool War::IsDefender(EntityID ent)
 	return false;
 }
 
-CharacterComponent& War::GetAttacker(War& war)
+CharacterComponent& War::GetAttacker()
 {
-	return *war.m_Attacker;
+	return *m_Attacker;
 }
 
-CharacterComponent& War::GetDefender(War& war)
+CharacterComponent& War::GetDefender()
 {
-	return *war.m_Defender;
+	return *m_Defender;
 }

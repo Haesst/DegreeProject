@@ -120,7 +120,7 @@ struct CharacterComponent : public Component
 		{
 			if (war.IsDefender(m_EntityID))
 			{
-				if (war.GetAttacker(war).GetID() == warToDel.GetAttacker(warToDel).GetID())
+				if (war.GetAttacker().GetID() == warToDel.GetAttacker().GetID())
 				{
 					m_CurrentWars.erase(m_CurrentWars.begin() + warIndex);
 					break;
