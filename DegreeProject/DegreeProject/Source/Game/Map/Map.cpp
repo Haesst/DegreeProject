@@ -13,7 +13,7 @@ const char* Map::m_VertexShaderPath = "Assets/Shaders/LandShader.vert";
 MapData Map::m_Data;
 std::mutex Map::m_RegionMutex;
 std::mutex Map::m_ShaderMutex;
-std::vector<SquareData> Map::m_MapUnitData;
+std::vector<SquareData> Map::m_MapSquareData;
 
 #pragma region Init
 void Map::Init()
@@ -139,7 +139,7 @@ void Map::LoadMap()
 					SquareData data = { m_Data.m_Regions[regionPosition].m_RegionId };
 					data.m_Position = { x,y };
 
-					m_MapUnitData.push_back(data);
+					m_MapSquareData.push_back(data);
 				}
 
 				x++;
@@ -202,7 +202,7 @@ void Map::ClearRegions()
 
 bool Map::MapSquareDataContainsKey(const Vector2DInt& key)
 {
-	for (auto& p : m_MapUnitData)
+	for (auto& p : m_MapSquareData)
 	{
 		if (p.m_Position == key)
 		{

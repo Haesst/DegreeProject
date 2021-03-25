@@ -136,7 +136,7 @@ struct PlayerSystem : System
 			{
 				std::list<EntityID> unitIDList = {};
 				
-				for (auto& squareData : Map::m_MapUnitData)
+				for (auto& squareData : Map::m_MapSquareData)
 				{
 					if (squareData.m_Position == InputHandler::GetMouseMapPosition())
 					{
@@ -187,7 +187,7 @@ struct PlayerSystem : System
 					{
 						std::list<EntityID> unitIDList = {};
 
-						for (auto& squareData : Map::m_MapUnitData)
+						for (auto& squareData : Map::m_MapSquareData)
 						{
 							if (squareData.m_Position == mapPosition)
 							{
@@ -242,7 +242,7 @@ struct PlayerSystem : System
 		{
 			EntityID regionID = 0; 
 			
-			for (auto& squareData : Map::m_MapUnitData)
+			for (auto& squareData : Map::m_MapSquareData)
 			{
 				if (squareData.m_Position == currentMousePosition)
 				{

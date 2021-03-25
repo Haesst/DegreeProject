@@ -98,7 +98,7 @@ struct CharacterSystem : System
 		unitTransform.m_Position = screenPosition;
 		renderer.m_Sprite.setPosition(screenPosition.x, screenPosition.y);
 		
-		for (auto& squareData : Map::m_MapUnitData)
+		for (auto& squareData : Map::m_MapSquareData)
 		{
 			if (squareData.m_Position == mapPosition)
 			{

@@ -164,7 +164,7 @@ struct UnitSystem : System
 			{
 				if (Map::MapSquareDataContainsKey(Map::ConvertToMap(unit.m_LastPosition)))
 				{
-					for (auto& squareData : Map::m_MapUnitData)
+					for (auto& squareData : Map::m_MapSquareData)
 					{
 						if (squareData.m_Position == Map::ConvertToMap(unit.m_LastPosition))
 						{
@@ -178,7 +178,7 @@ struct UnitSystem : System
 				transform.m_Position = unit.m_Target;
 				Vector2DInt pos = Map::ConvertToMap(unit.m_Target);
 
-				for (auto& squareData : Map::m_MapUnitData)
+				for (auto& squareData : Map::m_MapSquareData)
 				{
 					if (squareData.m_Position == pos)
 					{
@@ -207,7 +207,7 @@ struct UnitSystem : System
 
 					Vector2DInt mapPos = Map::ConvertToMap(unit.m_LastPosition);
 
-					for (auto& squareData : Map::m_MapUnitData)
+					for (auto& squareData : Map::m_MapSquareData)
 					{
 						if (squareData.m_Position == mapPos)
 						{
@@ -302,7 +302,7 @@ struct UnitSystem : System
 
 	bool EnemyAtSquare(Vector2DInt square, EntityID opponent)
 	{
-		for (auto& squareData : Map::m_MapUnitData)
+		for (auto& squareData : Map::m_MapSquareData)
 		{
 			if (squareData.m_Position == square)
 			{

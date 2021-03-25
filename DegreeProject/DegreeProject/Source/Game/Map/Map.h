@@ -73,7 +73,7 @@ struct Map
 	static std::mutex m_RegionMutex;
 	static std::mutex m_ShaderMutex;
 
-	static std::vector<SquareData> m_MapUnitData;
+	static std::vector<SquareData> m_MapSquareData;
 
 	Map()
 	{}

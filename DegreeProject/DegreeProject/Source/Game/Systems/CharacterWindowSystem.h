@@ -135,7 +135,7 @@ struct CharacterWindowSystem : System
 				if (Map::MapSquareDataContainsKey(mouseMapPosition))
 				{
 					EntityID regionID = 0;
-					for (auto& squareData : Map::m_MapUnitData)
+					for (auto& squareData : Map::m_MapSquareData)
 					{
 						if (squareData.m_Position == mouseMapPosition)
 						{
