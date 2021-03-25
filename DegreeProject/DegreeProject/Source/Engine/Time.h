@@ -13,10 +13,10 @@ private:
 	static float m_SpeedModifer;
 	static int m_MinSpeedLevel;
 	static int m_MaxSpeedLevel;
-	static int m_CurrentSpeedLevel;
 
 public:
 	static GameDate m_GameDate;
+	static int m_CurrentSpeedLevel;
 
 public:
 	static float DeltaTime() { return m_DeltaTime;	};
