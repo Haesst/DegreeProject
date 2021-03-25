@@ -67,15 +67,17 @@ struct CharacterComponent : public Component
 		Time::m_GameDate.SubscribeToMonthChange(std::bind(&CharacterComponent::OnMonthChange, this, std::placeholders::_1));
 	}
 
-	War& GetWarAgainst(EntityID enemyEntity)
+	War* GetWarAgainst(EntityID enemyEntity)
 	{
 		for (auto& war : m_CurrentWars)
 		{
 			if (war.IsDefender(enemyEntity) || war.IsAttacker(enemyEntity))
 			{
-				return war;
+				return &war;
 			}
 		}
+
+		return nullptr;
 	}
 
 
