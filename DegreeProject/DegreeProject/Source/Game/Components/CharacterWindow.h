@@ -10,8 +10,8 @@ struct CharacterWindow : public Component
 	sf::RectangleShape m_MakePeaceShape;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
-	sf::Color m_DeclareWarColor = sf::Color::Transparent;
-	sf::Color m_MakePeaceColor = sf::Color::Transparent;
+	sf::Color m_DeclareWarColor = sf::Color(210, 32, 60);
+	sf::Color m_MakePeaceColor = sf::Color(67, 175, 17);
 	float m_SizeX = 600.0f;
 	float m_SizeY = 1060.0f;
 	float m_OutlineThickness = 10.0f;
