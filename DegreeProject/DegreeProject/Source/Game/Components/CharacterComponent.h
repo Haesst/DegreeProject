@@ -201,5 +201,29 @@ struct CharacterComponent : public Component
 		SpriteRenderer& renderer = entityManager->GetComponent<SpriteRenderer>(m_UnitEntity);
 		renderer.m_ShouldRender = false;
 	}
+
+	void ConstructBuilding(int buildingId, int regionId, int buildingSlot)
+	{
+		Building building = GameData::m_Buildings[buildingId];
+		MapRegion& region = Map::GetRegionById(regionId);
+
+		if (building.m_Cost > m_CurrentGold)
+		{
+			return;
+		}
+
+		if (region.m_OwnerID != m_EntityID)
+		{
+			return;
+		}
+
+		if (region.m_BuildingSlots[buildingSlot].m_BuildingId != -1)
+		{
+			return;
+		}
+
+		Map::StartConstructionOfBuilding(buildingId, buildingSlot, regionId);
+		m_CurrentGold -= building.m_Cost;
+	}
 };
 #pragma warning(pop)
