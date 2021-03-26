@@ -287,9 +287,9 @@ struct RegionWindowSystem : System
 			}
 			for (unsigned int index = 0; index < regionWindow.m_NumberOfBuildingSlots; index++)
 			{
-				if (regionWindow.m_BuildingSlotShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y) && GameData::m_Buildings[index + 1].m_Cost <= playerCharacter->m_CurrentGold)
+				if (regionWindow.m_BuildingSlotShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 				{
-					Map::StartConstructionOfBuilding(index + 1, index, regionWindow.m_CurrentRegionID);
+					playerCharacter->ConstructBuilding(index + 1, regionWindow.m_CurrentRegionID, index);
 					break;
 				}
 			}
