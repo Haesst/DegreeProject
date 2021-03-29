@@ -34,7 +34,7 @@ void Game::init()
 	initSystems();
 	addEntitys();
 	initAI();
-	Pathfinding::init(Map::m_Data.m_Regions);
+	Pathfinding::init(Map::get().m_Data.m_Regions);
 }
 
 void Game::run()
@@ -61,7 +61,7 @@ void Game::run()
 		// Render
 		Window::getWindow()->clear(sf::Color::Blue);
 		// Render map
-		Map::render();
+		Map::get().render(); // <- replace w new system
 		EntityManager::get().render();
 		Window::getWindow()->display();
 	}
@@ -114,8 +114,8 @@ void Game::addEntitys()
 {
 	EntityManager* entityManager = &EntityManager::get();
 
-	Map::init();
-	Map::setLandTexture(m_AssetHandler->getTextureAtPath("Assets/Graphics/Checkerboard.png"));
+	Map::get().init();
+	Map::get().setLandTexture(m_AssetHandler->getTextureAtPath("Assets/Graphics/Checkerboard.png"));
 
 	const char* castlePath = "Assets/Graphics/Castle.png";
 	for (unsigned int regionIndex = 0; regionIndex < m_NumberOfRegions; regionIndex++)
@@ -123,7 +123,7 @@ void Game::addEntitys()
 		EntityID castle = entityManager->addNewEntity();
 		entityManager->addComponent<SpriteRenderer>(castle, castlePath, 32, 32, m_AssetHandler);
 		Transform* castleTransform = &entityManager->getComponent<Transform>(castle);
-		castleTransform->m_Position = Map::convertToScreen(Map::m_Data.m_Regions[regionIndex].m_RegionCapital);
+		castleTransform->m_Position = Map::convertToScreen(Map::get().m_Data.m_Regions[regionIndex].m_RegionCapital);
 	}
 
 	m_UIFont = m_AssetHandler->loadFontFromFile("Assets/Fonts/TestFont.ttf");
@@ -255,7 +255,7 @@ EntityID Game::createCharacter(EntityManager& entityManager, std::vector<unsigne
 
 	for (int i : ownedRegions)
 	{
-		Map::setRegionColor(i, color);
+		Map::get().setRegionColor(i, color);
 	}
 
 	EntityID textUI = entityManager.addNewEntity();

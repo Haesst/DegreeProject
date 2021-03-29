@@ -60,7 +60,7 @@ struct UITextSystem : System
 	{
 		if (UIText.m_OwnedRegionIDs.size() > 0)
 		{
-			std::vector<MapRegion> regions = Map::m_Data.m_Regions;
+			std::vector<MapRegion> regions = Map::get().m_Data.m_Regions;
 			Vector2DInt leftMostPosition = { 100, 0 };
 			Vector2DInt rightMostPosition = { 0, 0 };
 			unsigned int regionIndex = 0;

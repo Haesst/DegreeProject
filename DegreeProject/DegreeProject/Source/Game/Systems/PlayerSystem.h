@@ -132,11 +132,11 @@ struct PlayerSystem : System
 	{
 		if (InputHandler::getLeftMouseClicked() == true && m_Draging == false)
 		{
-			if (Map::mapSquareDataContainsKey(InputHandler::getMouseMapPosition()))
+			if (Map::get().mapSquareDataContainsKey(InputHandler::getMouseMapPosition()))
 			{
 				std::list<EntityID> unitIDList = {};
 				
-				for (auto& squareData : Map::m_MapSquareData)
+				for (auto& squareData : Map::get().m_MapSquareData)
 				{
 					if (squareData.m_Position == InputHandler::getMouseMapPosition())
 					{
@@ -183,11 +183,11 @@ struct PlayerSystem : System
 				{
 					Vector2D position = Vector2D(firstPosition.x + x * 32, firstPosition.y + y * 32);
 					Vector2DInt mapPosition = Map::convertToMap(position);
-					if (Map::mapSquareDataContainsKey(mapPosition))
+					if (Map::get().mapSquareDataContainsKey(mapPosition))
 					{
 						std::list<EntityID> unitIDList = {};
 
-						for (auto& squareData : Map::m_MapSquareData)
+						for (auto& squareData : Map::get().m_MapSquareData)
 						{
 							if (squareData.m_Position == mapPosition)
 							{
@@ -238,11 +238,11 @@ struct PlayerSystem : System
 	{
 		Vector2DInt currentMousePosition = InputHandler::getMouseMapPosition();
 
-		if (Map::mapSquareDataContainsKey(currentMousePosition))
+		if (Map::get().mapSquareDataContainsKey(currentMousePosition))
 		{
 			EntityID regionID = 0; 
 			
-			for (auto& squareData : Map::m_MapSquareData)
+			for (auto& squareData : Map::get().m_MapSquareData)
 			{
 				if (squareData.m_Position == currentMousePosition)
 				{
@@ -252,9 +252,9 @@ struct PlayerSystem : System
 
 			if ((unsigned int)playerComp.m_HighlightedRegion != regionID)
 			{
-				Map::getRegionById(playerComp.m_HighlightedRegion).m_Highlighted = false;
+				Map::get().getRegionById(playerComp.m_HighlightedRegion).m_Highlighted = false;
 
-				Map::getRegionById(regionID).m_Highlighted = true;
+				Map::get().getRegionById(regionID).m_Highlighted = true;
 				playerComp.m_HighlightedRegion = regionID;
 			}
 		}
@@ -262,7 +262,7 @@ struct PlayerSystem : System
 		{
 			if (playerComp.m_HighlightedRegion >= 0)
 			{
-				Map::getRegionById(playerComp.m_HighlightedRegion).m_Highlighted = false;
+				Map::get().getRegionById(playerComp.m_HighlightedRegion).m_Highlighted = false;
 				playerComp.m_HighlightedRegion = -1;
 			}
 		}

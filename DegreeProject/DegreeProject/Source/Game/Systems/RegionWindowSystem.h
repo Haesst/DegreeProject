@@ -157,11 +157,11 @@ struct RegionWindowSystem : System
 			if (!regionWindow.m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				Vector2DInt mouseMapPosition = InputHandler::getMouseMapPosition();
-				if (Map::mapSquareDataContainsKey(mouseMapPosition))
+				if (Map::get().mapSquareDataContainsKey(mouseMapPosition))
 				{
 					EntityID regionID = 0;
 					
-					for (auto& squareData : Map::m_MapSquareData)
+					for (auto& squareData : Map::get().m_MapSquareData)
 					{
 						if (squareData.m_Position == mouseMapPosition)
 						{
@@ -173,7 +173,7 @@ struct RegionWindowSystem : System
 					{
 						regionWindow.m_CurrentRegionID = regionID;
 						checkIfPlayerRegion(regionWindow.m_CurrentRegionID);
-						m_CurrentMapRegion = &Map::getRegionById(regionWindow.m_CurrentRegionID);
+						m_CurrentMapRegion = &Map::get().getRegionById(regionWindow.m_CurrentRegionID);
 						regionWindow.m_RegionTax = std::to_string(m_CurrentMapRegion->m_RegionTax);
 						regionWindow.m_RegionName = m_CurrentMapRegion->m_RegionName;
 						CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(m_CurrentMapRegion->m_OwnerID);
@@ -279,7 +279,7 @@ struct RegionWindowSystem : System
 				}
 				else
 				{
-					Vector2DInt capitalPosition = Map::getRegionCapitalLocation(regionWindow.m_CurrentRegionID);
+					Vector2DInt capitalPosition = Map::get().getRegionCapitalLocation(regionWindow.m_CurrentRegionID);
 					characterSystem->raiseUnit(playerCharacter->m_EntityID, true, unit, renderer, capitalPosition);
 					regionWindow.m_RaiseArmyColor = regionWindow.m_OwnerColor;
 				}

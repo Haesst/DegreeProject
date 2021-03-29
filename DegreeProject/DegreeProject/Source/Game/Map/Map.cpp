@@ -6,16 +6,13 @@
 #include "Engine/FileWatcher.h"
 #include <Game/Components/CharacterComponent.h>
 
-const char* Map::m_RegionPath = "Assets/Data/Regions.json";
-const char* Map::m_MapPath = "Assets/Map/RegionMap.txt";
-const char* Map::m_FragmentShaderPath = "Assets/Shaders/LandShader.frag";
-const char* Map::m_VertexShaderPath = "Assets/Shaders/LandShader.vert";
-MapData Map::m_Data;
-std::mutex Map::m_RegionMutex;
-std::mutex Map::m_ShaderMutex;
-std::vector<SquareData> Map::m_MapSquareData;
+const int   Map::m_XOffset = -300;
+const int   Map::m_YOffset = -100;
+const float Map::m_TileSize = 32;
+const float Map::m_HalfTileSize = m_TileSize * 0.5f;
 
-#pragma region Init
+Map* Map::m_Instance = nullptr;
+
 void Map::init()
 {
 	clearRegions();
@@ -26,22 +23,29 @@ void Map::init()
 	createVertexArrays();
 	setupHotReloading();
 }
-#pragma endregion
 
 void Map::setLandTexture(sf::Texture tex)
 {
 	m_Data.m_LandTexture = tex;
 }
 
-#pragma region HotReloading Setup
-
 void Map::setupHotReloading()
 {
-	HotReloader::get()->subscribeToFileChange("Assets\\Data\\Regions.json", std::bind(&Map::regionsChanged, std::placeholders::_1, std::placeholders::_2));
-	HotReloader::get()->subscribeToFileChange("Assets\\Map\\RegionMap.txt", std::bind(&Map::regionsChanged, std::placeholders::_1, std::placeholders::_2));
+	HotReloader::get()->subscribeToFileChange("Assets\\Data\\Regions.json", std::bind(&Map::regionsChanged, this, std::placeholders::_1, std::placeholders::_2));
+	HotReloader::get()->subscribeToFileChange("Assets\\Map\\RegionMap.txt", std::bind(&Map::regionsChanged, this, std::placeholders::_1, std::placeholders::_2));
 
-	HotReloader::get()->subscribeToFileChange("Assets\\Shaders\\LandShader.frag", std::bind(&Map::shadersChanged, std::placeholders::_1, std::placeholders::_2));
-	HotReloader::get()->subscribeToFileChange("Assets\\Shaders\\LandShader.vert", std::bind(&Map::shadersChanged, std::placeholders::_1, std::placeholders::_2));
+	HotReloader::get()->subscribeToFileChange("Assets\\Shaders\\LandShader.frag", std::bind(&Map::shadersChanged, this, std::placeholders::_1, std::placeholders::_2));
+	HotReloader::get()->subscribeToFileChange("Assets\\Shaders\\LandShader.vert", std::bind(&Map::shadersChanged, this, std::placeholders::_1, std::placeholders::_2));
+}
+
+Map& Map::get()
+{
+	if (m_Instance == nullptr)
+	{
+		m_Instance = new Map();
+	}
+
+	return *m_Instance;
 }
 
 void Map::regionsChanged(std::string path, FileStatus fileStatus)
@@ -58,9 +62,6 @@ void Map::regionsChanged(std::string path, FileStatus fileStatus)
 	m_RegionMutex.unlock();
 }
 
-void Map::mapChanged(std::string, FileStatus)
-{}
-
 void Map::shadersChanged(std::string path, FileStatus fileStatus)
 {
 	if (fileStatus != FileStatus::Modified)
@@ -73,10 +74,6 @@ void Map::shadersChanged(std::string path, FileStatus fileStatus)
 	m_ShaderMutex.unlock();
 }
 
-#pragma endregion
-
-#pragma region Region & Map loading
-
 std::ifstream Map::loadFile(const char* path)
 {
 	std::ifstream file(path);
@@ -86,7 +83,7 @@ std::ifstream Map::loadFile(const char* path)
 
 void Map::loadAllRegions()
 {
-	std::ifstream file = loadFile(m_RegionPath);
+	std::ifstream file = loadFile(m_Data.m_RegionPath);
 
 	json j;
 	file >> j;
@@ -119,7 +116,7 @@ void Map::loadMap()
 	ASSERT(m_Data.m_Regions[0].m_MapSquares.size() <= 0, "Mapsquare is empty");
 
 	std::string tempString;
-	std::ifstream inData = loadFile(m_MapPath);
+	std::ifstream inData = loadFile(m_Data.m_MapPath);
 
 	if (inData.is_open())
 	{
@@ -152,7 +149,7 @@ void Map::loadMap()
 
 void Map::updateRegions()
 {
-	std::ifstream file = loadFile(m_RegionPath);
+	std::ifstream file = loadFile(m_Data.m_RegionPath);
 
 	json j;
 	file >> j;
@@ -176,8 +173,6 @@ void Map::updateRegions()
 		}
 	}
 }
-
-#pragma endregion
 
 void Map::render()
 {
@@ -235,15 +230,15 @@ void Map::createVertexArrays()
 			sf::Vertex v3;
 			sf::Vertex v4;
 
-			v1.position = { (square.x * m_Data.m_TileSize) - m_Data.m_HalfTileSize + m_Data.m_XOffset, (square.y * m_Data.m_TileSize) - m_Data.m_HalfTileSize + m_Data.m_YOffset }; // Top left
-			v2.position = { (square.x * m_Data.m_TileSize) + m_Data.m_HalfTileSize + m_Data.m_XOffset, (square.y * m_Data.m_TileSize) - m_Data.m_HalfTileSize + m_Data.m_YOffset }; // Top right
-			v3.position = { (square.x * m_Data.m_TileSize) + m_Data.m_HalfTileSize + m_Data.m_XOffset, (square.y * m_Data.m_TileSize) + m_Data.m_HalfTileSize + m_Data.m_YOffset }; // Bottom right
-			v4.position = { (square.x * m_Data.m_TileSize) - m_Data.m_HalfTileSize + m_Data.m_XOffset, (square.y * m_Data.m_TileSize) + m_Data.m_HalfTileSize + m_Data.m_YOffset }; // Bottom Left
+			v1.position = { (square.x * m_TileSize) -m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top left
+			v2.position = { (square.x * m_TileSize) +m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top right
+			v3.position = { (square.x * m_TileSize) +m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom right
+			v4.position = { (square.x * m_TileSize) -m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom Left
 
-			v1.texCoords = { (square.x * m_Data.m_TileSize), (square.y * m_Data.m_TileSize) };
-			v2.texCoords = { (square.x * m_Data.m_TileSize) + m_Data.m_TileSize, (square.y * m_Data.m_TileSize) };
-			v3.texCoords = { (square.x * m_Data.m_TileSize) + m_Data.m_TileSize, (square.y * m_Data.m_TileSize) + m_Data.m_TileSize };
-			v4.texCoords = { (square.x * m_Data.m_TileSize), (square.y * m_Data.m_TileSize) + m_Data.m_TileSize };
+			v1.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) };
+			v2.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) };
+			v3.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) + m_TileSize };
+			v4.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) + m_TileSize };
 
 			region.m_VertexArray.append(v1);
 			region.m_VertexArray.append(v2);
@@ -257,7 +252,7 @@ void Map::createVertexArrays()
 
 void Map::loadShadersAndCreateRenderStates()
 {
-	m_Data.m_Shader.loadFromFile(m_VertexShaderPath, m_FragmentShaderPath);
+	m_Data.m_Shader.loadFromFile(m_Data.m_VertexShaderPath, m_Data.m_FragmentShaderPath);
 
 	m_Data.m_RenderStates.shader = &m_Data.m_Shader;
 	m_Data.m_RenderStates.texture = &m_Data.m_LandTexture;
@@ -321,12 +316,12 @@ MapRegion& Map::getRegionById(unsigned int regionId)
 
 Vector2DInt Map::convertToMap(Vector2D position)
 {
-	return Vector2DInt((int)(position.x - m_Data.m_XOffset + 16) / 32, (int)(position.y - m_Data.m_YOffset + 16) / 32);
+	return Vector2DInt((int)(position.x - m_XOffset + m_HalfTileSize) / m_TileSize, (int)(position.y - m_YOffset + m_HalfTileSize) / m_TileSize);
 }
 
 Vector2D Map::convertToScreen(Vector2DInt position)
 {
-	return Vector2D((float)position.x * 32 + m_Data.m_XOffset - 16, (float)position.y * 32 + m_Data.m_YOffset - 16);
+	return Vector2D((float)position.x * m_TileSize + m_XOffset - m_HalfTileSize, (float)position.y * m_TileSize + m_YOffset - m_HalfTileSize);
 }
 
 Vector2DInt Map::getRegionCapitalLocation(unsigned int regionId)

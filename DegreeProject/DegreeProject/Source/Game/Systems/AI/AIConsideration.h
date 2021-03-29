@@ -159,12 +159,12 @@ struct ExpansionConsideration : public Consideration
 		//}
 
 		//Consider potential gold gain
-		int wantedRegionTax = Map::getRegionById(regionIndex).m_RegionTax; 
+		int wantedRegionTax = Map::get().getRegionById(regionIndex).m_RegionTax;
 
 		std::vector<int> regionTax;
 		for (int region : characters[context].m_OwnedRegionIDs)
 		{
-			regionTax.push_back(Map::getRegionById(region).m_RegionTax);
+			regionTax.push_back(Map::get().getRegionById(region).m_RegionTax);
 		}
 
 		float avgTax = 1.0f * std::accumulate(regionTax.begin(), regionTax.end(), 0LL) / regionTax.size();

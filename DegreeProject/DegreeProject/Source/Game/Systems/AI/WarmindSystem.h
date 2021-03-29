@@ -68,7 +68,7 @@ struct WarmindSystem : System
 
 		if (currentWar.isAttacker(warmindID))
 		{
-			capitalPosition = Map::getRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId);
+			capitalPosition = Map::get().getRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId);
 		}
 
 		else
@@ -81,7 +81,7 @@ struct WarmindSystem : System
 			}
 			
 			int randomRegionIndex = rand() % enemyCharacter.m_OwnedRegionIDs.size();
-			capitalPosition = Map::getRegionCapitalLocation(enemyCharacter.m_OwnedRegionIDs[randomRegionIndex]);
+			capitalPosition = Map::get().getRegionCapitalLocation(enemyCharacter.m_OwnedRegionIDs[randomRegionIndex]);
 		}
 
 		moveUnit(unit.m_EntityID, capitalPosition);
@@ -148,7 +148,7 @@ struct WarmindSystem : System
 				return;
 			}
 
-			Vector2DInt regionPosition = Map::getRegionById(m_Warminds[warmind].m_PrioritizedWar->m_WargoalRegion).m_RegionCapital;
+			Vector2DInt regionPosition = Map::get().getRegionById(m_Warminds[warmind].m_PrioritizedWar->m_WargoalRegion).m_RegionCapital;
 			moveUnit(unit.getID(), regionPosition);
 			return;
 		}

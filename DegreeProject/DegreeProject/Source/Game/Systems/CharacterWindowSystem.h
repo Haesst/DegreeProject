@@ -146,10 +146,10 @@ struct CharacterWindowSystem : System
 			if (!characterWindow.m_Shape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				Vector2DInt mouseMapPosition = InputHandler::getMouseMapPosition();
-				if (Map::mapSquareDataContainsKey(mouseMapPosition))
+				if (Map::get().mapSquareDataContainsKey(mouseMapPosition))
 				{
 					EntityID regionID = 0;
-					for (auto& squareData : Map::m_MapSquareData)
+					for (auto& squareData : Map::get().m_MapSquareData)
 					{
 						if (squareData.m_Position == mouseMapPosition)
 						{
@@ -161,7 +161,7 @@ struct CharacterWindowSystem : System
 					{
 						characterWindow.m_CurrentRegionID = regionID;
 						checkIfPlayerRegion(characterWindow.m_CurrentRegionID);
-						m_CurrentMapRegion = &Map::getRegionById(characterWindow.m_CurrentRegionID);
+						m_CurrentMapRegion = &Map::get().getRegionById(characterWindow.m_CurrentRegionID);
 						characterWindow.m_RegionTax = m_CurrentMapRegion->m_RegionTax;
 						characterWindow.m_RegionName = m_CurrentMapRegion->m_RegionName;
 						CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(m_CurrentMapRegion->m_OwnerID);

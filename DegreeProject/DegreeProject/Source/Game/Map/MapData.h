@@ -8,8 +8,8 @@ struct MapData
 	sf::RenderStates m_RenderStates;
 	sf::Shader m_Shader;
 
-	const int m_XOffset = -300;
-	const int m_YOffset = -100;
-	const float m_TileSize = 32;
-	const float m_HalfTileSize = m_TileSize * 0.5f;
+	const char* m_RegionPath = "Assets/Data/Regions.json";
+	const char* m_MapPath = "Assets/Map/RegionMap.txt";
+	const char* m_FragmentShaderPath = "Assets/Shaders/LandShader.frag";
+	const char* m_VertexShaderPath = "Assets/Shaders/LandShader.vert";
 };

@@ -120,7 +120,7 @@ struct UnitSystem : System
 
 				if (unit.m_SeizingRegionID > 0)
 				{
-					displayProgressMeter(unit, (float)unit.m_DaysSeizing, (float)Map::getRegionById(unit.m_SeizingRegionID).m_DaysToSeize, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
+					displayProgressMeter(unit, (float)unit.m_DaysSeizing, (float)Map::get().getRegionById(unit.m_SeizingRegionID).m_DaysToSeize, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
 				}
 
 				if (unit.m_InCombat)
@@ -162,9 +162,9 @@ struct UnitSystem : System
 			}
 			else
 			{
-				if (Map::mapSquareDataContainsKey(Map::convertToMap(unit.m_LastPosition)))
+				if (Map::get().mapSquareDataContainsKey(Map::convertToMap(unit.m_LastPosition)))
 				{
-					for (auto& squareData : Map::m_MapSquareData)
+					for (auto& squareData : Map::get().m_MapSquareData)
 					{
 						if (squareData.m_Position == Map::convertToMap(unit.m_LastPosition))
 						{
@@ -178,7 +178,7 @@ struct UnitSystem : System
 				transform.m_Position = unit.m_Target;
 				Vector2DInt pos = Map::convertToMap(unit.m_Target);
 
-				for (auto& squareData : Map::m_MapSquareData)
+				for (auto& squareData : Map::get().m_MapSquareData)
 				{
 					if (squareData.m_Position == pos)
 					{
@@ -207,7 +207,7 @@ struct UnitSystem : System
 
 					Vector2DInt mapPos = Map::convertToMap(unit.m_LastPosition);
 
-					for (auto& squareData : Map::m_MapSquareData)
+					for (auto& squareData : Map::get().m_MapSquareData)
 					{
 						if (squareData.m_Position == mapPos)
 						{
@@ -244,7 +244,7 @@ struct UnitSystem : System
 			unit.m_DaysSeizing++;
 			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
 
-			MapRegion region = Map::getRegionById(unit.m_SeizingRegionID);
+			MapRegion region = Map::get().getRegionById(unit.m_SeizingRegionID);
 
 			if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
 			{
@@ -258,15 +258,15 @@ struct UnitSystem : System
 
 	void startConquerRegion(UnitComponent& unit, Transform& transform)
 	{
-		std::vector<int> regionIDs = Map::getRegionIDs();
+		std::vector<int> regionIDs = Map::get().getRegionIDs();
 		Vector2DInt currentMapPosition = Map::convertToMap(transform.m_Position);
 
 		for each (int regionID in regionIDs)
 		{
-			Vector2DInt capitalPosition = Map::getRegionCapitalLocation(regionID);
+			Vector2DInt capitalPosition = Map::get().getRegionCapitalLocation(regionID);
 			if (currentMapPosition == capitalPosition)
 			{
-				unsigned int ownerID = Map::getRegionById(regionID).m_OwnerID;
+				unsigned int ownerID = Map::get().getRegionById(regionID).m_OwnerID;
 				if (ownerID == unit.m_Owner)
 				{
 					continue;
@@ -293,7 +293,7 @@ struct UnitSystem : System
 
 	bool enemyAtSquare(Vector2DInt square, EntityID opponent)
 	{
-		for (auto& squareData : Map::m_MapSquareData)
+		for (auto& squareData : Map::get().m_MapSquareData)
 		{
 			if (squareData.m_Position == square)
 			{

@@ -11,6 +11,7 @@ using json = nlohmann::json;
 #include "Engine/Log.h"
 #include "Engine/Window.h"
 #include "Engine/AssetHandler.h"
+#include "Engine/SystemManager.h"
 
 #include "MapRegion.h"
 #include "MapData.h"
@@ -61,75 +62,68 @@ struct SquareData
 	}
 };
 
-struct Map
+struct Map : GameSystem
 {
-	static const char* m_RegionPath;
-	static const char* m_MapPath;
 
-	static const char* m_FragmentShaderPath;
-	static const char* m_VertexShaderPath;
-	static MapData m_Data;
+	static const int m_XOffset;
+	static const int m_YOffset;
+	static const float m_TileSize;
+	static const float m_HalfTileSize;
 
-	static std::mutex m_RegionMutex;
-	static std::mutex m_ShaderMutex;
+	static Map* m_Instance;
+	
+	MapData m_Data;
 
-	static std::vector<SquareData> m_MapSquareData;
+	std::mutex m_RegionMutex;
+	std::mutex m_ShaderMutex;
+
+	std::vector<SquareData> m_MapSquareData;
 
 	Map()
-	{}
+	{
+		if (m_Instance == nullptr)
+		{
+			m_Instance = this;
+		}
+	}
 
 	~Map()
 	{}
 
-	static void init();
-	static void setLandTexture(sf::Texture tex);
+	static Map& get();
+	void init();
+	void setLandTexture(sf::Texture tex);
 
-#pragma region Hot Reloading
-	static void setupHotReloading();
-	static void regionsChanged(std::string path, FileStatus fileStatus);
-	static void mapChanged(std::string path, FileStatus fileStatus);
-	static void shadersChanged(std::string path, FileStatus fileStatus);
-#pragma endregion Hot Reloading
+	void setupHotReloading();
+	void regionsChanged(std::string path, FileStatus fileStatus);
+	void shadersChanged(std::string path, FileStatus fileStatus);
 
-#pragma region Map & Region Loading
-	static std::ifstream loadFile(const char* path);
-	static void loadAllRegions();
-	static void loadMap();
-	static void updateRegions();
-#pragma endregion
+	std::ifstream loadFile(const char* path);
+	void loadAllRegions();
+	void loadMap();
+	void updateRegions();
 
-#pragma region Rendering
-	static void render();
-#pragma endregion
+	void render();
 
-	static void setRegionColor(int regionId, sf::Color color);
+	void setRegionColor(int regionId, sf::Color color);
+	void clearRegions();
+	bool mapSquareDataContainsKey(const Vector2DInt& key);
+	void clearRegionMapTiles();
 
-	static void clearRegions();
+	void createVertexArrays();
+	void loadShadersAndCreateRenderStates();
 
-	static bool mapSquareDataContainsKey(const Vector2DInt& key);
+	void startConstructionOfBuilding(int buildingId, int buildSlot, int regionId);
 
-	static void clearRegionMapTiles();
-
-#pragma region Render Data Creation
-	static void createVertexArrays();
-
-	static void loadShadersAndCreateRenderStates();
-
-#pragma endregion
-
-#pragma region Buildings
-	static void startConstructionOfBuilding(int buildingId, int buildSlot, int regionId);
-#pragma endregion
-
-	static int getRegionPositionFromMapCharacter(const char& c);
-	static int getRegionPositionFromRegionId(const unsigned int id);
+	int getRegionPositionFromMapCharacter(const char& c);
+	int getRegionPositionFromRegionId(const unsigned int id);
 
 	// From mapinfo
-	static MapRegion& getRegionById(unsigned int regionId);
+	MapRegion& getRegionById(unsigned int regionId);
 	static Vector2DInt convertToMap(Vector2D position);
 	static Vector2D convertToScreen(Vector2DInt position);
-	static Vector2DInt getRegionCapitalLocation(unsigned int regionId);
-	static std::vector<Vector2DInt> getRegionCapitals();
-	static std::vector<int> getRegionIDs();
+	Vector2DInt getRegionCapitalLocation(unsigned int regionId);
+	std::vector<Vector2DInt> getRegionCapitals();
+	std::vector<int> getRegionIDs();
 };
 #pragma warning(pop)

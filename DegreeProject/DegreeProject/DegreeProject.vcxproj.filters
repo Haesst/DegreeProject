@@ -192,6 +192,7 @@
     <ClInclude Include="Source\Game\War.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\SystemManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -238,5 +239,6 @@
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
     <ClCompile Include="Source\Engine\FileWatcher.cpp" />
+    <ClCompile Include="Source\Engine\SystemManager.cpp" />
   </ItemGroup>
 </Project>

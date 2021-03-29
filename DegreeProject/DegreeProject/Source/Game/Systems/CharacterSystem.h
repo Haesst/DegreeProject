@@ -37,7 +37,7 @@ struct CharacterSystem : System
 		{
 			for (unsigned int ownedID : m_Characters[entity].m_OwnedRegionIDs)
 			{
-				Map::getRegionById(ownedID).m_OwnerID = entity;
+				Map::get().getRegionById(ownedID).m_OwnerID = entity;
 			}
 
 			m_Characters[entity].start();
@@ -68,7 +68,7 @@ struct CharacterSystem : System
 					if (!getPlayerControlled(entity))
 					{
 						int regionIndex = m_Characters[entity].m_OwnedRegionIDs[0];
-						Vector2DInt capitalPos = Map::getRegionCapitalLocation(regionIndex);
+						Vector2DInt capitalPos = Map::get().getRegionCapitalLocation(regionIndex);
 						raiseUnit(entity, false, m_Units[m_Characters[entity].m_UnitEntity], m_Renderers[m_Characters[entity].m_UnitEntity], capitalPos);
 						m_Characters[entity].m_RecentlyAtWar = false;
 					}
@@ -98,7 +98,7 @@ struct CharacterSystem : System
 		unitTransform.m_Position = screenPosition;
 		renderer.m_Sprite.setPosition(screenPosition.x, screenPosition.y);
 		
-		for (auto& squareData : Map::m_MapSquareData)
+		for (auto& squareData : Map::get().m_MapSquareData)
 		{
 			if (squareData.m_Position == mapPosition)
 			{
@@ -133,7 +133,7 @@ struct CharacterSystem : System
 		Transform& unitTransform = m_EntityManager->getComponent<Transform>(character.m_UnitEntity);
 		Vector2DInt unitMapPosition = Map::convertToMap(unitTransform.m_Position);
 		
-		for (auto& squareData : Map::m_MapSquareData)
+		for (auto& squareData : Map::get().m_MapSquareData)
 		{
 			if (squareData.m_Position == unitMapPosition)
 			{
@@ -147,8 +147,8 @@ struct CharacterSystem : System
 	{
 		CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(conqueringEntity);
 		character.m_OwnedRegionIDs.push_back(regionID);
-		Map::setRegionColor(regionID, character.m_RegionColor);
-		Map::getRegionById(regionID).m_OwnerID = conqueringEntity;
+		Map::get().setRegionColor(regionID, character.m_RegionColor);
+		Map::get().getRegionById(regionID).m_OwnerID = conqueringEntity;
 #pragma warning(push)
 #pragma warning(disable: 26815)
 		UITextSystem* textUISystem = (UITextSystem*)m_EntityManager->getSystem<UITextSystem>().get();

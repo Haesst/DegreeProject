@@ -34,7 +34,7 @@ float AISystem::expansionDecision(EntityID ent)
 	expansionConsideration.setContext(ent);
 
 	//Get characters in certain range,
-	std::vector<int> regionIndexes = Map::getRegionIDs();
+	std::vector<int> regionIndexes = Map::get().getRegionIDs();
 
 	for (size_t i = 0; i < regionIndexes.size(); i++)
 	{
@@ -58,7 +58,7 @@ float AISystem::expansionDecision(EntityID ent)
 		{
 			highest = actionScorePerRegion[i].first;
 			warmindComponents[ent].m_WargoalRegionId = actionScorePerRegion[i].second;
-			warmindComponents[ent].m_Opponent = Map::getRegionById(actionScorePerRegion[i].second).m_OwnerID;
+			warmindComponents[ent].m_Opponent = Map::get().getRegionById(actionScorePerRegion[i].second).m_OwnerID;
 			bestIndex = i;
 		}
 	}

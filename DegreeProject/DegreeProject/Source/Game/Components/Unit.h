@@ -71,7 +71,7 @@ struct UnitComponent : public Component
 			m_DaysSeizing = 0;
 		}
 
-		if (!Map::mapSquareDataContainsKey(path.front()))
+		if (!Map::get().mapSquareDataContainsKey(path.front()))
 		{
 			return;
 		}

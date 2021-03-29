@@ -149,7 +149,7 @@ struct CharacterComponent : public Component
 		CharacterComponent* characters = entityManager->getComponentArray<CharacterComponent>();
 		WarmindComponent* warminds = entityManager->getComponentArray<WarmindComponent>();
 
-		LOG_INFO("{0} Declared war with {1} for {2}", m_Name, characters[target].m_Name, Map::getRegionById(warGoalRegion).m_RegionName);
+		LOG_INFO("{0} Declared war with {1} for {2}", m_Name, characters[target].m_Name, Map::get().getRegionById(warGoalRegion).m_RegionName);
 
 		War* war = new War(characters[m_EntityID], characters[target], warGoalRegion);
 
@@ -179,7 +179,7 @@ struct CharacterComponent : public Component
 
 		for (auto& regionId : m_OwnedRegionIDs)
 		{
-			MapRegion region = Map::getRegionById(regionId);
+			MapRegion region = Map::get().getRegionById(regionId);
 
 			incomingGold += region.m_RegionTax;
 		}
@@ -206,7 +206,7 @@ struct CharacterComponent : public Component
 	void constructBuilding(int buildingId, int regionId, int buildingSlot)
 	{
 		Building building = GameData::m_Buildings[buildingId];
-		MapRegion& region = Map::getRegionById(regionId);
+		MapRegion& region = Map::get().getRegionById(regionId);
 
 		if (building.m_Cost > m_CurrentGold)
 		{
@@ -223,7 +223,7 @@ struct CharacterComponent : public Component
 			return;
 		}
 
-		Map::startConstructionOfBuilding(buildingId, buildingSlot, regionId);
+		Map::get().startConstructionOfBuilding(buildingId, buildingSlot, regionId);
 		m_CurrentGold -= building.m_Cost;
 	}
 };
