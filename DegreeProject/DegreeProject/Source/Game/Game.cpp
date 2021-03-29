@@ -56,12 +56,13 @@ void Game::run()
 
 		// Update
 		EntityManager::get().update();
+		SystemManager::get()->update();
 		// Update map
 
 		// Render
 		Window::getWindow()->clear(sf::Color::Blue);
 		// Render map
-		Map::get().render(); // <- replace w new system
+		SystemManager::get()->render();
 		EntityManager::get().render();
 		Window::getWindow()->display();
 	}
@@ -108,6 +109,9 @@ void Game::initSystems()
 	entityManager->registerSystem<CharacterWindowSystem>();
 	entityManager->registerSystem<RegionWindowSystem>();
 	entityManager->registerSystem<UISpriteRenderSystem>();
+
+	SystemManager* systemManager = SystemManager::get();
+	systemManager->registerSystem<Map>();
 }
 
 void Game::addEntitys()
