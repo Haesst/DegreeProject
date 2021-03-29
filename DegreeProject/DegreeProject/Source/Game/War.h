@@ -26,7 +26,9 @@ struct War
 
 	War(CharacterComponent& attacker, CharacterComponent& defender, int warGoalRegion);
 
-	void addWarscore(int warScore, bool attackerWinning);
+	bool isWinning(EntityID ID, EntityID enemyID);
+	int getWarscore(EntityID ID);
+	void addWarscore(EntityID ID, int warScore);
 	void endWar(EntityID winningEntity);
 	bool isAttacker(EntityID ent);
 	bool isDefender(EntityID ent);

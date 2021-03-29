@@ -19,6 +19,9 @@ struct WarmindComponent : Component
 	float m_OrderAccu = 0.0f;
 	float m_OrderTimer = 5.0f;  //timer which the AI will evaluate new orders
 
+	float m_AtWarTickRate = 2.0f;
+	float m_TickAccu = 0.0f;
+
 	War* m_PrioritizedWar = nullptr;
 
 	WarmindComponent()

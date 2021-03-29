@@ -287,20 +287,8 @@ struct UnitSystem : System
 		characterSystem->conquerRegion(regionID, conqueringID);
 		characterSystem->loseRegion(regionID, loosingEntity);
 
-		//War& currentWar = *m_Characters[m_UnitComponents[conqueringID].m_Owner].GetWarAgainst(m_UnitComponents[loosingEntity].m_Owner);
-		//
-		//currentWar.AddWarscore(50, true);
-
-		//for (auto& war : m_Characters[conqueringID].m_CurrentWars)
-		//{
-		//	if (war.m_AttackerWarscore >= 100 || war.m_DefenderWarscore >= 100)
-		//	{
-		//		//war.EndWar(conqueringID);
-		//		
-		//		m_Characters[conqueringID].MakePeace();
-		//		m_Characters[loosingEntity].MakePeace();
-		//	}
-		//}
+		//War& currentWar = *m_Characters[m_UnitComponents[conqueringID].m_Owner].getWarAgainst(m_UnitComponents[loosingEntity].m_Owner);
+		//currentWar.addWarscore(50, true);
 	}
 
 	bool enemyAtSquare(Vector2DInt square, EntityID opponent)

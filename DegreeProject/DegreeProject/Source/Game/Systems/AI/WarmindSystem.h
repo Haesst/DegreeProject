@@ -17,9 +17,6 @@ struct WarmindSystem : System
 	UnitComponent* m_Units = nullptr;
 	SpriteRenderer* m_Renderers = nullptr;
 
-	float m_AtWarTickRate = 2.0f;
-	float m_TickAccu = 0.0f;
-
 	WarmindSystem()
 	{
 		addComponentSignature<WarmindComponent>();
@@ -41,14 +38,19 @@ struct WarmindSystem : System
 				continue;
 			}
 
+			m_Warminds[entity].m_PrioritizedWar = considerPrioritizedWar(entity);
+			
+			if (m_Warminds[entity].m_PrioritizedWar->isWinning(entity, m_Warminds[entity].m_Opponent))
+			{
+				//Send peace offer
+			}
+
 			if (m_Units[m_Characters[entity].m_UnitEntity].m_Raised)
 			{
 				m_Warminds[entity].m_OrderAccu += Time::deltaTime();
 
 				if (m_Warminds[entity].m_OrderAccu >= m_Warminds[entity].m_OrderTimer)
 				{
-					m_Warminds[entity].m_PrioritizedWar = considerPrioritizedWar(entity);
-
 					m_Warminds[entity].m_OrderAccu = 0.0f;
 					considerOrders(entity, m_Units[m_Characters[entity].m_UnitEntity], m_Warminds[entity].m_Opponent);
 				}
@@ -85,6 +87,11 @@ struct WarmindSystem : System
 		moveUnit(unit.m_EntityID, capitalPosition);
 	}
 
+	void orderFlee(EntityID warmindID, UnitComponent& unit)
+	{
+		LOG_INFO("{0} is fleeing from the enemy army", m_Characters[warmindID].m_Name);
+	}
+
 	void orderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
 	{
 		if (m_Warminds[warmindID].m_PrioritizedWar == nullptr)
@@ -118,38 +125,61 @@ struct WarmindSystem : System
 
 	void considerOrders(EntityID warmind, UnitComponent& unit, EntityID target)
 	{
-		if (m_Warminds[warmind].m_PrioritizedWar == nullptr)
+		auto& enemyUnit = m_Units[m_Characters[target].m_UnitEntity];
+
+		if (m_Warminds[warmind].m_PrioritizedWar->isDefender(warmind))	//Very similar to attacker right now, split them in case they get more separate
 		{
-			considerPrioritizedWar(warmind);
-		}
+			FightEnemyArmyConsideration fightConsideration;
+			float fightEval = fightConsideration.evaluate(warmind, target);
 
-		m_Units[m_Characters[warmind].m_UnitEntity].m_Moving = false;
-		auto& enemyUnit = m_Units[m_Characters[target].m_UnitEntity]; //change to character
-
-		SiegeCapitalConsideration siegeConsideration;
-		float siegeEval = siegeConsideration.evaluate(warmind, target);
-		FightEnemyArmyConsideration fightConsideration;
-		float fightEval = fightConsideration.evaluate(warmind, target);
-
-		if (m_Warminds[warmind].m_PrioritizedWar->getDefender().getID() == warmind)
-		{
-			fightEval += .2f;
-		}
-
-		if (siegeEval > fightEval || !enemyUnit.m_Raised)
-		{
-			if (!m_Warminds[warmind].m_PrioritizedWar->isDefender(target))
+			if (fightEval > 0.7)
 			{
-				LOG_INFO("Warmind belonging to {0} decided to siege the enemy capital", m_Characters[warmind].m_Name);
+				orderFightEnemyArmy(warmind, unit);
+				return;
+			}
+			
+			Vector2D unitPosition = m_Transforms[unit.getID()].m_Position;
+			Vector2D enemyUnitPosition = m_Transforms[enemyUnit.getID()].m_Position;
+			
+			float distance = (unitPosition - enemyUnitPosition).getLength();
+			if (distance < 100.0f)
+			{
+				orderFlee(warmind, unit);
+				return;
 			}
 
-			orderSiegeCapital(warmind, m_Units[m_Characters[warmind].m_UnitEntity]);
+			Vector2DInt regionPosition = Map::getRegionById(m_Warminds[warmind].m_PrioritizedWar->m_WargoalRegion).m_RegionCapital;
+			moveUnit(unit.getID(), regionPosition);
+			return;
 		}
 
 		else
 		{
-			LOG_INFO("Warmind belonging to {0} decided to fight the enemy army", m_Characters[warmind].m_Name);
-			orderFightEnemyArmy(warmind, unit);
+			FightEnemyArmyConsideration fightConsideration;
+			float fightEval = fightConsideration.evaluate(warmind, target);
+
+			if (fightEval > .7)
+			{
+				Vector2D unitPosition = m_Transforms[unit.getID()].m_Position;
+				Vector2D enemyUnitPosition = m_Transforms[enemyUnit.getID()].m_Position;
+
+				float distance = (unitPosition - enemyUnitPosition).getLength();
+				if (distance < 100.0f)
+				{
+					//Hunt enemy army
+					LOG_INFO("Warmind belonging to {0} decided to hunt the enemy army", m_Characters[warmind].m_Name);
+					orderFightEnemyArmy(warmind, unit);
+					return;
+				}
+
+				else
+				{
+					//Siege wargoal region
+					LOG_INFO("Warmind belonging to {0} decided to siege the enemy capital", m_Characters[warmind].m_Name);
+					orderSiegeCapital(warmind, unit);
+					return;
+				}
+			}
 		}
 	}
 

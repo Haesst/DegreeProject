@@ -36,7 +36,7 @@ struct CharacterComponent : public Component
 	bool m_AtWar = false;
 	int m_PersonalityIndex = 0;
 	int m_Income = 0;
-	std::vector<War> m_CurrentWars;
+	std::vector<War> m_CurrentWars = std::vector<War>();
 
 	EntityID m_TextUI = (SIZE_T)INT_MAX;
 
@@ -136,6 +136,7 @@ struct CharacterComponent : public Component
 
 	void declareWar(EntityID target, int warGoalRegion)
 	{
+		LOG_INFO("WAR DECLARED");
 		for (auto& war : m_CurrentWars)
 		{
 			if (war.m_Defender->getID() == target)

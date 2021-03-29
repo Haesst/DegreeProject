@@ -16,25 +16,49 @@ War::War(CharacterComponent& attacker, CharacterComponent& defender, int warGoal
 	m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
 }
 
-void War::addWarscore(int warScore, bool attackerWinning)
+bool War::isWinning(EntityID ID, EntityID enemyID)
 {
-	if (attackerWinning)
+	if (getWarscore(ID) > getWarscore(enemyID))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+int War::getWarscore(EntityID ID)
+{
+	if (getAttacker().getID() == ID)
+	{
+		return m_AttackerWarscore;
+	}
+
+	else if (getDefender().getID() == ID)
+	{
+		return m_DefenderWarscore;
+	}
+
+	return -1;
+}
+
+void War::addWarscore(EntityID ID, int warScore)
+{
+	if (getAttacker().getID() == ID)
 	{
 		m_AttackerWarscore += warScore;
-
 		if (m_AttackerWarscore > 100)
 		{
-			endWar(m_Attacker->getID());
+			endWar(ID);
 		}
 	}
 
-	else
-	{
+	else if(getDefender().getID() == ID)
+ 	{
 		m_DefenderWarscore += warScore;
 
 		if (m_DefenderWarscore > 100)
 		{
-			endWar(m_Defender->getID());
+			endWar(ID);
 		}
 	}
 }
