@@ -10,12 +10,6 @@ enum class FileStatus;
 
 class HotReloader
 {
-private:
-	FileWatcher* m_FileWatcher;
-	std::map<std::string, std::vector<std::function<void(std::string, FileStatus)>>> m_Actions;
-	static HotReloader* m_Instance;
-	static const char* ASSET_DIRECTORY;
-
 public:
 	HotReloader(const char* path);
 	~HotReloader();
@@ -26,4 +20,10 @@ public:
 	void onFileChange(std::string path, FileStatus fileStatus);
 
 	void subscribeToFileChange(std::string path, const std::function<void(std::string, FileStatus)> action);
+
+private:
+	FileWatcher* m_FileWatcher;
+	std::map<std::string, std::vector<std::function<void(std::string, FileStatus)>>> m_Actions;
+	static HotReloader* m_Instance;
+	static const char* ASSET_DIRECTORY;
 };

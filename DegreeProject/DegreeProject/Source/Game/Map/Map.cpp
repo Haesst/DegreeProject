@@ -326,11 +326,7 @@ Vector2D Map::convertToScreen(Vector2DInt position)
 
 Vector2DInt Map::getRegionCapitalLocation(unsigned int regionId)
 {
-	int regionArrayLocation = getRegionPositionFromRegionId(regionId);
-
-	ASSERT(regionArrayLocation >= 0, "Region with id: {0} doesn't exist", regionId);
-
-	return m_Data.m_Regions[regionArrayLocation].m_RegionCapital;
+	return getRegionById(regionId).m_RegionCapital;
 }
 
 std::vector<Vector2DInt> Map::getRegionCapitals()

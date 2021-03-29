@@ -5,7 +5,6 @@
 
 struct MapRegion
 {
-public:
 	char m_MapChar = '1';
 	unsigned int m_RegionId = INT_MAX;
 	unsigned int m_RegionTax = 0;
@@ -18,6 +17,4 @@ public:
 	unsigned int m_DaysToSeize = 60;
 	sf::VertexArray m_VertexArray;
 	RegionBuilding m_BuildingSlots[4];
-	MapRegion() {};
-	~MapRegion() { m_MapSquares.clear(); }
 };

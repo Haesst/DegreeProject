@@ -116,7 +116,6 @@ struct Map : GameSystem
 	void startConstructionOfBuilding(int buildingId, int buildSlot, int regionId);
 
 	int getRegionPositionFromMapCharacter(const char& c);
-	int getRegionPositionFromRegionId(const unsigned int id);
 
 	// From mapinfo
 	MapRegion& getRegionById(unsigned int regionId);
@@ -125,5 +124,8 @@ struct Map : GameSystem
 	Vector2DInt getRegionCapitalLocation(unsigned int regionId);
 	std::vector<Vector2DInt> getRegionCapitals();
 	std::vector<int> getRegionIDs();
+
+private:
+	int getRegionPositionFromRegionId(const unsigned int id);
 };
 #pragma warning(pop)
