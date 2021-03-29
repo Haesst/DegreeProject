@@ -19,7 +19,14 @@ float AISystem::warDecision(EntityID ent)
 	float actionScore = goldEvaluation * enemyArmyEvaluation;
 	actionScore += personality.m_DeclareWarModifier;
 
-	return std::clamp(actionScore, 0.0f, 1.0f);
+	if (m_Characters[ent].getWarAgainst(m_Warminds[ent].m_Opponent) == nullptr)
+	{
+		LOG_INFO("VALID WAR");
+		return std::clamp(actionScore, 0.0f, 1.0f);
+	}
+
+	LOG_INFO("Cant declare war against someone you are at war with");
+	return 0.0f;
 }
 
 float AISystem::expansionDecision(EntityID ent)

@@ -40,10 +40,10 @@ struct WarmindSystem : System
 
 			m_Warminds[entity].m_PrioritizedWar = considerPrioritizedWar(entity);
 			
-			if (m_Warminds[entity].m_PrioritizedWar->isWinning(entity, m_Warminds[entity].m_Opponent))
-			{
-				//Send peace offer
-			}
+			//if (m_Warminds[entity].m_PrioritizedWar->isWinning(entity, m_Warminds[entity].m_Opponent))
+			//{
+			//	//Send peace offer
+			//}
 
 			if (m_Units[m_Characters[entity].m_UnitEntity].m_Raised)
 			{
@@ -127,6 +127,11 @@ struct WarmindSystem : System
 	{
 		auto& enemyUnit = m_Units[m_Characters[target].m_UnitEntity];
 
+		if (m_Warminds[warmind].m_PrioritizedWar == nullptr)
+		{
+			return; 
+		}
+
 		if (m_Warminds[warmind].m_PrioritizedWar->isDefender(warmind))	//Very similar to attacker right now, split them in case they get more separate
 		{
 			FightEnemyArmyConsideration fightConsideration;
@@ -185,17 +190,22 @@ struct WarmindSystem : System
 
 	War* considerPrioritizedWar(EntityID ent) //Will be expanded later
 	{
-		if (m_Characters[ent].m_CurrentWars.front().isAttacker(ent))
+		if (!m_Characters[ent].m_CurrentWars.empty())
 		{
-			m_Warminds[ent].m_Opponent = m_Characters[ent].m_CurrentWars.front().m_Defender->getID();
+			if (m_Characters[ent].m_CurrentWars.front().isAttacker(ent))
+			{
+				m_Warminds[ent].m_Opponent = m_Characters[ent].m_CurrentWars.front().m_Defender->getID();
+			}
+
+			else
+			{
+				m_Warminds[ent].m_Opponent = m_Characters[ent].m_CurrentWars.front().m_Attacker->getID();
+			}
+
+			return &m_Characters[ent].m_CurrentWars.front();
 		}
 
-		else
-		{
-			m_Warminds[ent].m_Opponent = m_Characters[ent].m_CurrentWars.front().m_Attacker->getID();
-		}
-
-		return &m_Characters[ent].m_CurrentWars.front();
+		return nullptr;
 	}
 
 	void moveUnit(EntityID unitToMove, Vector2DInt targetPosition)

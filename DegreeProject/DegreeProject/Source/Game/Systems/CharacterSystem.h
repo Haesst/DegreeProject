@@ -81,6 +81,33 @@ struct CharacterSystem : System
 	{
 	}
 
+	void makePeace(CharacterComponent& attacker, CharacterComponent& defender, War* warToEnd)
+	{
+		//unsigned int warIndex = 0;
+		//for (auto& war : attacker.m_CurrentWars)
+		//{
+		//	if (war.isDefender(defender.m_EntityID))
+		//	{
+		//		attacker.m_CurrentWars.erase(attacker.m_CurrentWars.begin() + warIndex);
+		//		break;
+		//	}
+		//	warIndex++;
+		//}
+		//
+		//warIndex = 0;
+		//for (auto& war : defender.m_CurrentWars)
+		//{
+		//	if (war.isAttacker(attacker.m_EntityID))
+		//	{
+		//		defender.m_CurrentWars.erase(defender.m_CurrentWars.begin() + warIndex);
+		//		break;
+		//	}
+		//	warIndex++;
+		//}
+		//
+		//delete warToEnd;
+	}
+
 	void raiseUnit(EntityID ownerID, bool playerControlled, UnitComponent& unit, SpriteRenderer& renderer, const Vector2DInt& mapPosition)
 	{
 		CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(ownerID);

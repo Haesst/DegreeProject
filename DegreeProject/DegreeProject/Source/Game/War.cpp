@@ -1,6 +1,7 @@
 #include "War.h"
 
-#include "Game/Components/CharacterComponent.h"
+#include "ECS/EntityManager.h"
+#include "Game/Systems/CharacterSystem.h"
 #include "Game/Components/Warmind.h"
 #include "Game/Components/Unit.h"
 
@@ -71,11 +72,15 @@ void War::endWar(EntityID winningEntity)
 	m_Defender->m_AtWar = false;
 
 	LOG_INFO("{0}'s war against {1} is over. {2} Won!", m_Attacker->m_Name, m_Defender->m_Name, m_Characters[winningEntity].m_Name);
-
+	EntityManager* entityManager = &EntityManager::get();
 
 	if (!m_Attacker->m_IsPlayerControlled)
 	{
-		m_Attacker->makePeace();
+#pragma warning(push)
+#pragma warning(disable: 26815)
+		CharacterSystem* characterSystem = (CharacterSystem*)entityManager->getSystem<CharacterSystem>().get();
+#pragma warning(pop)
+		characterSystem->makePeace(getAttacker(), getDefender(), this);
 	}
 }
 

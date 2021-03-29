@@ -230,7 +230,14 @@ struct CharacterWindowSystem : System
 			}
 			else if (characterWindow.m_MakePeaceShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				playerCharacter->makePeace();
+				EntityManager* entityManager = &EntityManager::get();
+#pragma warning(push)
+#pragma warning(disable: 26815)
+				CharacterSystem* characterSystem = (CharacterSystem*)entityManager->getSystem<CharacterSystem>().get();
+#pragma warning(pop)
+
+				CharacterComponent& target = entityManager->getComponent<CharacterComponent>(m_CurrentMapRegion->m_OwnerID);
+				characterSystem->makePeace(*playerCharacter, target, playerCharacter->getWarAgainst(target.getID()));
 			}
 		}
 	}

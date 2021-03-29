@@ -80,61 +80,9 @@ struct CharacterComponent : public Component
 		return nullptr;
 	}
 
-	void makePeace()
-	{
-		War* warToEnd = nullptr;
-
-		for (auto& war : m_CurrentWars)
-		{
-			if (war.m_AttackerWarscore >= 100 || war.m_DefenderWarscore >= 100)
-			{
-				warToEnd = &war;
-			}
-		}
-
-		if (warToEnd == nullptr)
-		{
-			return;
-		}
-
-		m_AtWar = false;
-
-		if (!m_IsPlayerControlled)
-		{
-			if (m_CurrentWars.empty())
-			{
-				EntityManager* entityManager = &EntityManager::get();
-				WarmindComponent& warmind = entityManager->getComponent<WarmindComponent>(m_EntityID);
-				UnitComponent& unit = entityManager->getComponent<UnitComponent>(m_UnitEntity);
-
-				warmind.m_Active = false;
-				warmind.m_AtWar = false;
-				m_RaisedArmySize = 0;
-				unit.m_Raised = false;
-			}
-			
-		}
-		War& warToDel = *warToEnd;
-
-		unsigned int warIndex = 0;
-		for (auto& war : m_CurrentWars)
-		{
-			if (war.isDefender(m_EntityID))
-			{
-				if (war.getAttacker().getID() == warToDel.getAttacker().getID())
-				{
-					m_CurrentWars.erase(m_CurrentWars.begin() + warIndex);
-					break;
-				}
-			}
-			warIndex++;
-		}
-
-		delete &warToEnd;
-	}
-
 	void declareWar(EntityID target, int warGoalRegion)
 	{
+		ASSERT(getWarAgainst(target) == nullptr, "Cant declare war with someone you are at war with");
 		LOG_INFO("WAR DECLARED");
 		for (auto& war : m_CurrentWars)
 		{
