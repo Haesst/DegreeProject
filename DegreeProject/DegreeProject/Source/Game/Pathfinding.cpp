@@ -5,7 +5,7 @@ std::vector<Node*> Pathfinding::m_Map;
 std::thread Pathfinding::m_PathThread;
 std::mutex Pathfinding::m_PathMutex;
 
-void Pathfinding::Init(const std::vector<MapRegion>& map)
+void Pathfinding::init(const std::vector<MapRegion>& map)
 {
 	for (const auto& region : map)
 	{
@@ -17,7 +17,7 @@ void Pathfinding::Init(const std::vector<MapRegion>& map)
 	}
 	for (auto* node : m_Map)
 	{
-		CalculateNeighbours(node);
+		calculateNeighbours(node);
 	}
 }
 
@@ -29,12 +29,12 @@ Pathfinding::~Pathfinding()
 	}
 }
 
-float Pathfinding::CalculateHCost(const Node& a, const Node& b)
+float Pathfinding::calculateHCost(const Node& a, const Node& b)
 {
 	return (float)std::abs(a.m_Position.x - b.m_Position.x) + std::abs(a.m_Position.y - b.m_Position.y);
 }
 
-void Pathfinding::CalculateNeighbours(Node* node)
+void Pathfinding::calculateNeighbours(Node* node)
 {
 	std::vector<Vector2DInt> neighbourPos = {
 		{-1, -1},
@@ -51,7 +51,7 @@ void Pathfinding::CalculateNeighbours(Node* node)
 	{
 		Vector2DInt nPos = node->m_Position + n;
 
-		Node* neigbourNode = GetNodeFromKey(nPos);
+		Node* neigbourNode = getNodeFromKey(nPos);
 
 		if (neigbourNode != nullptr)
 		{
@@ -60,7 +60,7 @@ void Pathfinding::CalculateNeighbours(Node* node)
 	}
 }
 
-bool Pathfinding::IsInMap(const Vector2DInt& key)
+bool Pathfinding::isInMap(const Vector2DInt& key)
 {
 	for (auto* n : m_Map)
 	{
@@ -73,7 +73,7 @@ bool Pathfinding::IsInMap(const Vector2DInt& key)
 	return false;
 }
 
-Node* Pathfinding::GetNodeFromKey(const Vector2DInt& key)
+Node* Pathfinding::getNodeFromKey(const Vector2DInt& key)
 {
 	for (auto* n : m_Map)
 	{
@@ -86,7 +86,7 @@ Node* Pathfinding::GetNodeFromKey(const Vector2DInt& key)
 	return nullptr;
 }
 
-void Pathfinding::ClearNodeData()
+void Pathfinding::clearNodeData()
 {
 	for (auto* node : m_Map)
 	{
@@ -98,7 +98,7 @@ void Pathfinding::ClearNodeData()
 	}
 }
 
-void Pathfinding::FindThreadedPath(std::list<Node*> openList, Node* endNode)
+void Pathfinding::findThreadedPath(std::list<Node*> openList, Node* endNode)
 {
 	while (!openList.empty())
 	{
@@ -121,13 +121,13 @@ void Pathfinding::FindThreadedPath(std::list<Node*> openList, Node* endNode)
 		{
 			if (!neighbour->m_Visited)
 			{
-				float possibleLowerCost = node->m_FCost + CalculateHCost(*node, *neighbour);
+				float possibleLowerCost = node->m_FCost + calculateHCost(*node, *neighbour);
 
 				if (possibleLowerCost < neighbour->m_FCost)
 				{
 					neighbour->m_Parent = node;
 					neighbour->m_FCost = possibleLowerCost;
-					neighbour->m_HCost = CalculateHCost(*node, *endNode);
+					neighbour->m_HCost = calculateHCost(*node, *endNode);
 					neighbour->m_GCost = neighbour->m_FCost + neighbour->m_HCost;
 				}
 
@@ -137,7 +137,7 @@ void Pathfinding::FindThreadedPath(std::list<Node*> openList, Node* endNode)
 	}
 }
 
-std::list<Vector2DInt> Pathfinding::FindPath(Vector2DInt start, Vector2DInt end)
+std::list<Vector2DInt> Pathfinding::findPath(Vector2DInt start, Vector2DInt end)
 {
 	//f = start -> current node
 	//h = current node -> goal
@@ -148,8 +148,8 @@ std::list<Vector2DInt> Pathfinding::FindPath(Vector2DInt start, Vector2DInt end)
 		return std::list<Vector2DInt>();
 	}
 
-	Node* startNode = GetNodeFromKey(start);
-	Node* endNode = GetNodeFromKey(end);
+	Node* startNode = getNodeFromKey(start);
+	Node* endNode = getNodeFromKey(end);
 
 	if (startNode == nullptr)
 	{
@@ -169,7 +169,7 @@ std::list<Vector2DInt> Pathfinding::FindPath(Vector2DInt start, Vector2DInt end)
 	startNode->m_Visited = false;
 	startNode->m_FCost = 0;
 
-	m_PathThread = std::thread(&Pathfinding::FindThreadedPath, openList, endNode);
+	m_PathThread = std::thread(&Pathfinding::findThreadedPath, openList, endNode);
 	m_PathThread.join();
 	std::list<Vector2DInt> finalPath;
 
@@ -184,7 +184,7 @@ std::list<Vector2DInt> Pathfinding::FindPath(Vector2DInt start, Vector2DInt end)
 		currentNode = currentNode->m_Parent;
 	}
 
-	ClearNodeData();
+	clearNodeData();
 	std::reverse(finalPath.begin(), finalPath.end());
 	return finalPath;
 }

@@ -22,11 +22,11 @@ struct GameData
 	static char* m_BuildingPath;
 	static std::map<int, Building> m_Buildings;
 
-	static void Initialize();
-	static std::ifstream LoadFile(char* path);
-	static json LoadJsonObject(char* path);
+	static void initialize();
+	static std::ifstream loadFile(char* path);
+	static json loadJsonObject(char* path);
 
-	static void LoadBuildings();
-	static void ClearBuildings();
-	static void BuildingsChanged(std::string path, FileStatus fileStatus);
+	static void loadBuildings();
+	static void clearBuildings();
+	static void buildingsChanged(std::string path, FileStatus fileStatus);
 };

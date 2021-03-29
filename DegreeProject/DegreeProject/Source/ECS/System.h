@@ -10,34 +10,34 @@ public:
 	System() = default;
 	virtual ~System() = default;
 
-	void RemoveEntity(const EntityID entity)
+	void removeEntity(const EntityID entity)
 	{
 		m_Entities.erase(entity);
 	}
 
-	void AddEntity(const EntityID entity)
+	void addEntity(const EntityID entity)
 	{
 		m_Entities.insert(entity);
 	}
 
-	const EntitySignature GetSignature() const
+	const EntitySignature getSignature() const
 	{
 		return m_Signature;
 	}
 
 	template<typename T>
-	void AddComponentSignature()
+	void addComponentSignature()
 	{
-		m_Signature.insert(ComponentType<T>());
+		m_Signature.insert(componentType<T>());
 	}
 
-	const std::set<EntityID> GetEntities()
+	const std::set<EntityID> getEntities()
 	{
 		return m_Entities;
 	}
 
-	virtual void Start() {}
-	virtual void Update() {}
-	virtual void Render() {}
-	virtual void Destroy() {}
+	virtual void start() {}
+	virtual void update() {}
+	virtual void render() {}
+	virtual void destroy() {}
 };

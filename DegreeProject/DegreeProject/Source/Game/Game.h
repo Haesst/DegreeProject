@@ -40,18 +40,18 @@ private:
 
 public:
 	~Game();
-	void Init();
-	void Run();
+	void init();
+	void run();
 
 private:
-	void InitWindow();
-	void InitHotReloading();
-	void InitAssets();
-	void InitSound();
+	void initWindow();
+	void initHotReloading();
+	void initAssets();
+	void initSound();
 
-	void InitSystems();
-	void AddEntitys();
-	void InitAI();
+	void initSystems();
+	void addEntitys();
+	void initAI();
 
-	EntityID CreateCharacter(EntityManager& entityManager, std::vector<unsigned int>& ownedRegions, Title title, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color);
+	EntityID createCharacter(EntityManager& entityManager, std::vector<unsigned int>& ownedRegions, Title title, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color);
 };

@@ -19,28 +19,28 @@ enum Inputs
 class InputHandler
 {
 public:
-	static void HandleInputEvents();
-	static bool GetLeftMouseClicked();
-	static bool GetRightMouseClicked();
-	static bool GetLeftMouseReleased();
-	static bool GetRightMouseReleased();
-	static Vector2D GetMousePosition();
-	static Vector2DInt GetMouseMapPosition();
-	static float GetMouseScrollDirection();
-	static bool GetMouseScrolled();
-	static bool GetPlayerUnitSelected();
-	static bool GetMouseMoved();
-	static bool GetEscapePressed();
-	static bool GetCharacterWindowOpen();
-	static bool GetRegionWindowOpen();
-	static void SetPlayerUnitSelected(bool selected);
-	static void SetCharacterWindowOpen(bool open);
-	static void SetRegionWindowOpen(bool open);
-	static float GetZoomSpeed();
+	static void handleInputEvents();
+	static bool getLeftMouseClicked();
+	static bool getRightMouseClicked();
+	static bool getLeftMouseReleased();
+	static bool getRightMouseReleased();
+	static Vector2D getMousePosition();
+	static Vector2DInt getMouseMapPosition();
+	static float getMouseScrollDirection();
+	static bool getMouseScrolled();
+	static bool getPlayerUnitSelected();
+	static bool getMouseMoved();
+	static bool getEscapePressed();
+	static bool getCharacterWindowOpen();
+	static bool getRegionWindowOpen();
+	static void setPlayerUnitSelected(bool selected);
+	static void setCharacterWindowOpen(bool open);
+	static void setRegionWindowOpen(bool open);
+	static float getZoomSpeed();
 private:
-	static void MoveView(sf::RenderWindow* window, sf::View& view);
-	static void SetMousePosition(int xPosition, int yPosition, sf::RenderWindow* window);
-	static bool AllowedToZoomView(sf::View& view);
-	static void ZoomView(sf::RenderWindow* window, sf::View& view);
-	static bool AllowedToMoveView(sf::View& view);
+	static void moveView(sf::RenderWindow* window, sf::View& view);
+	static void setMousePosition(int xPosition, int yPosition, sf::RenderWindow* window);
+	static bool allowedToZoomView(sf::View& view);
+	static void zoomView(sf::RenderWindow* window, sf::View& view);
+	static bool allowedToMoveView(sf::View& view);
 };

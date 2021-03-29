@@ -24,37 +24,37 @@ struct CharacterSystem : System
 
 	CharacterSystem()
 	{
-		AddComponentSignature<CharacterComponent>();
-		m_EntityManager = &EntityManager::Get();
-		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-		m_Units = m_EntityManager->GetComponentArray<UnitComponent>();
-		m_Renderers = m_EntityManager->GetComponentArray<SpriteRenderer>();
+		addComponentSignature<CharacterComponent>();
+		m_EntityManager = &EntityManager::get();
+		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
+		m_Units = m_EntityManager->getComponentArray<UnitComponent>();
+		m_Renderers = m_EntityManager->getComponentArray<SpriteRenderer>();
 	}
 
-	virtual void Start() override
+	virtual void start() override
 	{
 		for (auto entity : m_Entities)
 		{
 			for (unsigned int ownedID : m_Characters[entity].m_OwnedRegionIDs)
 			{
-				Map::GetRegionById(ownedID).m_OwnerID = entity;
+				Map::getRegionById(ownedID).m_OwnerID = entity;
 			}
 
-			m_Characters[entity].Start();
+			m_Characters[entity].start();
 		}
 	}
 
-	bool GetPlayerControlled(EntityID ent)
+	bool getPlayerControlled(EntityID ent)
 	{
-		EntityManager* entityManager = &EntityManager::Get();
-		CharacterComponent& character = entityManager->GetComponent<CharacterComponent>(ent);
+		EntityManager* entityManager = &EntityManager::get();
+		CharacterComponent& character = entityManager->getComponent<CharacterComponent>(ent);
 
 		return character.m_IsPlayerControlled;
 	}
 
 	// Update gets called every frame and loops through every entity that has the signature that
 	// the system has registered and do the necessary update
-	virtual void Update() override
+	virtual void update() override
 	{
 		//Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
 		//CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
@@ -65,11 +65,11 @@ struct CharacterSystem : System
 			{
 				if (m_Characters[entity].m_RecentlyAtWar)
 				{
-					if (!GetPlayerControlled(entity))
+					if (!getPlayerControlled(entity))
 					{
 						int regionIndex = m_Characters[entity].m_OwnedRegionIDs[0];
-						Vector2DInt capitalPos = Map::GetRegionCapitalLocation(regionIndex);
-						RaiseUnit(entity, false, m_Units[m_Characters[entity].m_UnitEntity], m_Renderers[m_Characters[entity].m_UnitEntity], capitalPos);
+						Vector2DInt capitalPos = Map::getRegionCapitalLocation(regionIndex);
+						raiseUnit(entity, false, m_Units[m_Characters[entity].m_UnitEntity], m_Renderers[m_Characters[entity].m_UnitEntity], capitalPos);
 						m_Characters[entity].m_RecentlyAtWar = false;
 					}
 				}
@@ -77,23 +77,23 @@ struct CharacterSystem : System
 		}
 	}
 
-	virtual void Render() override
+	virtual void render() override
 	{
 	}
 
-	void RaiseUnit(EntityID ownerID, bool playerControlled, UnitComponent& unit, SpriteRenderer& renderer, const Vector2DInt& mapPosition)
+	void raiseUnit(EntityID ownerID, bool playerControlled, UnitComponent& unit, SpriteRenderer& renderer, const Vector2DInt& mapPosition)
 	{
-		CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(ownerID);
+		CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(ownerID);
 
 		if (unit.m_Raised)
 		{
 			return;
 		}
 
-		Transform& unitTransform = m_EntityManager->GetComponent<Transform>(unit.GetID());
+		Transform& unitTransform = m_EntityManager->getComponent<Transform>(unit.getID());
 		unit.m_Owner = ownerID;
 		unit.m_PlayerControlled = playerControlled;
-		Vector2D screenPosition = Map::ConvertToScreen(mapPosition);
+		Vector2D screenPosition = Map::convertToScreen(mapPosition);
 		unit.m_HighlightShape.setPosition(screenPosition.x, screenPosition.y);
 		unitTransform.m_Position = screenPosition;
 		renderer.m_Sprite.setPosition(screenPosition.x, screenPosition.y);
@@ -102,7 +102,7 @@ struct CharacterSystem : System
 		{
 			if (squareData.m_Position == mapPosition)
 			{
-				squareData.AddUnique(unit.GetID());
+				squareData.addUnique(unit.getID());
 				break;
 			}
 		}
@@ -115,10 +115,10 @@ struct CharacterSystem : System
 		character.m_RaisedArmySize = character.m_MaxArmySize; //Todo: Army recharge
 	}
 
-	void DismissUnit(EntityID ownerID)
+	void dismissUnit(EntityID ownerID)
 	{
-		CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(ownerID);
-		UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(character.m_UnitEntity);
+		CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(ownerID);
+		UnitComponent& unit = m_EntityManager->getComponent<UnitComponent>(character.m_UnitEntity);
 		if (!unit.m_Raised)
 		{
 			return;
@@ -127,38 +127,38 @@ struct CharacterSystem : System
 		unit.m_CurrentPath.clear();
 		unit.m_RepresentedForce = 0;
 		unit.m_Raised = false;
-		SpriteRenderer& renderer = m_EntityManager->GetComponent<SpriteRenderer>(character.m_UnitEntity);
+		SpriteRenderer& renderer = m_EntityManager->getComponent<SpriteRenderer>(character.m_UnitEntity);
 		renderer.m_ShouldRender = false;
 		character.m_RaisedArmySize = 0;
-		Transform& unitTransform = m_EntityManager->GetComponent<Transform>(character.m_UnitEntity);
-		Vector2DInt unitMapPosition = Map::ConvertToMap(unitTransform.m_Position);
+		Transform& unitTransform = m_EntityManager->getComponent<Transform>(character.m_UnitEntity);
+		Vector2DInt unitMapPosition = Map::convertToMap(unitTransform.m_Position);
 		
 		for (auto& squareData : Map::m_MapSquareData)
 		{
 			if (squareData.m_Position == unitMapPosition)
 			{
-				squareData.Remove(unit.GetID());
+				squareData.remove(unit.getID());
 				break;
 			}
 		}
 	}
 
-	void ConquerRegion(unsigned int regionID, unsigned int conqueringEntity)
+	void conquerRegion(unsigned int regionID, unsigned int conqueringEntity)
 	{
-		CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(conqueringEntity);
+		CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(conqueringEntity);
 		character.m_OwnedRegionIDs.push_back(regionID);
-		Map::SetRegionColor(regionID, character.m_RegionColor);
-		Map::GetRegionById(regionID).m_OwnerID = conqueringEntity;
+		Map::setRegionColor(regionID, character.m_RegionColor);
+		Map::getRegionById(regionID).m_OwnerID = conqueringEntity;
 #pragma warning(push)
 #pragma warning(disable: 26815)
-		UITextSystem* textUISystem = (UITextSystem*)m_EntityManager->GetSystem<UITextSystem>().get();
+		UITextSystem* textUISystem = (UITextSystem*)m_EntityManager->getSystem<UITextSystem>().get();
 #pragma warning(pop)
-		textUISystem->ConquerRegion(regionID, conqueringEntity);
+		textUISystem->conquerRegion(regionID, conqueringEntity);
 	}
 
-	void LoseRegion(unsigned int regionID, unsigned int losingEntity)
+	void loseRegion(unsigned int regionID, unsigned int losingEntity)
 	{
-		CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(losingEntity);
+		CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(losingEntity);
 		unsigned int regionIndex = 0;
 		for (unsigned int OwnedRegionID : character.m_OwnedRegionIDs)
 		{
@@ -171,20 +171,20 @@ struct CharacterSystem : System
 		}
 #pragma warning(push)
 #pragma warning(disable: 26815)
-		UITextSystem* textUISystem = (UITextSystem*)m_EntityManager->GetSystem<UITextSystem>().get();
+		UITextSystem* textUISystem = (UITextSystem*)m_EntityManager->getSystem<UITextSystem>().get();
 #pragma warning(pop)
-		textUISystem->LoseRegion(regionIndex, losingEntity);
+		textUISystem->loseRegion(regionIndex, losingEntity);
 	}
 
-	EntityID GetPlayerID()
+	EntityID getPlayerID()
 	{
-		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+		CharacterComponent* characters = m_EntityManager->getComponentArray<CharacterComponent>();
 
 		for (auto entity : m_Entities)
 		{
 			if (characters[entity].m_IsPlayerControlled)
 			{
-				return characters[entity].GetID();
+				return characters[entity].getID();
 			}
 		}
 		return 0;

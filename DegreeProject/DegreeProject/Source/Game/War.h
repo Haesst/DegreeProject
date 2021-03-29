@@ -8,7 +8,7 @@ struct UnitComponent;
 
 struct War
 {
-	EntityManager* m_EntityManager = &EntityManager::Get();
+	EntityManager* m_EntityManager = &EntityManager::get();
 
 	int m_AttackerWarscore = 0;
 	int m_DefenderWarscore = 0;
@@ -26,11 +26,11 @@ struct War
 
 	War(CharacterComponent& attacker, CharacterComponent& defender, int warGoalRegion);
 
-	void AddWarscore(int warScore, bool attackerWinning);
-	void EndWar(EntityID winningEntity);
-	bool IsAttacker(EntityID ent);
-	bool IsDefender(EntityID ent);
+	void addWarscore(int warScore, bool attackerWinning);
+	void endWar(EntityID winningEntity);
+	bool isAttacker(EntityID ent);
+	bool isDefender(EntityID ent);
 
-	CharacterComponent& GetAttacker();
-	CharacterComponent& GetDefender();
+	CharacterComponent& getAttacker();
+	CharacterComponent& getDefender();
 };

@@ -13,13 +13,13 @@ struct Consideration
 
 	EntityManager* m_EntityManager = nullptr;
 
-	virtual void SetContext(EntityID context)
+	virtual void setContext(EntityID context)
 	{
 		m_Context = context;
 	}
 
 	//context = Who is making the decision, target is optional if we need to compare values with another character
-	virtual float Evaluate(EntityID, EntityID)
+	virtual float evaluate(EntityID, EntityID)
 	{
 		return 0.0f;
 	}
@@ -33,22 +33,22 @@ struct ArmySizeConsideration : public Consideration
 
 	}
 
-	void SetContext(EntityID context) override
+	void setContext(EntityID context) override
 	{
 		m_Context = context;
 	}
 
-	float Evaluate(EntityID context, EntityID target = MAX_ENTITY_COUNT + 1) override
+	float evaluate(EntityID context, EntityID target = MAX_ENTITY_COUNT + 1) override
 	{
 		if (target > MAX_ENTITY_COUNT)
 		{
 			return 0.0f;
 		}
 
-		m_EntityManager = &EntityManager::Get();
+		m_EntityManager = &EntityManager::get();
 
-		auto contextCharComp = m_EntityManager->GetComponent<CharacterComponent>(context);
-		auto targetCharComp = m_EntityManager->GetComponent<CharacterComponent>(target);
+		auto contextCharComp = m_EntityManager->getComponent<CharacterComponent>(context);
+		auto targetCharComp = m_EntityManager->getComponent<CharacterComponent>(target);
 
 		float armySizeDiff = (float)contextCharComp.m_MaxArmySize - targetCharComp.m_MaxArmySize;
 
@@ -78,13 +78,13 @@ struct GoldConsideration : public Consideration
 
 	GoldConsideration(EntityID context) { m_Context = context; }
 
-	void SetContext(EntityID context) override
+	void setContext(EntityID context) override
 	{
 		m_Context = context;
 	}
 
 
-	float Evaluate(EntityID context, EntityID target = MAX_ENTITY_COUNT + 1) override
+	float evaluate(EntityID context, EntityID target = MAX_ENTITY_COUNT + 1) override
 	{
 		float positiveGoldDiffWeight = 0.2f;
 
@@ -93,10 +93,10 @@ struct GoldConsideration : public Consideration
 			return 0.0f;
 		}
 
-		m_EntityManager = &EntityManager::Get();
+		m_EntityManager = &EntityManager::get();
 
-		auto contextCharComp = m_EntityManager->GetComponent<CharacterComponent>(context);
-		auto targetCharComp = m_EntityManager->GetComponent<CharacterComponent>(target);
+		auto contextCharComp = m_EntityManager->getComponent<CharacterComponent>(context);
+		auto targetCharComp = m_EntityManager->getComponent<CharacterComponent>(target);
 
 		float targetGold = (float)targetCharComp.m_CurrentGold;
 		float contextGold = (float)contextCharComp.m_CurrentGold;
@@ -131,16 +131,16 @@ struct ExpansionConsideration : public Consideration
 
 	ExpansionConsideration(EntityID context) { m_Context = context; }
 
-	void SetContext(EntityID context)
+	void setContext(EntityID context)
 	{
 		m_Context = context;
 	}
 
 
-	float Evaluate(EntityID context, int regionIndex)
+	float evaluate(EntityID context, int regionIndex)
 	{
-		m_EntityManager = &EntityManager::Get();
-		CharacterComponent* characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+		m_EntityManager = &EntityManager::get();
+		CharacterComponent* characters = m_EntityManager->getComponentArray<CharacterComponent>();
 
 		float distanceWeight = 0.0f;
 
@@ -159,12 +159,12 @@ struct ExpansionConsideration : public Consideration
 		//}
 
 		//Consider potential gold gain
-		int wantedRegionTax = Map::GetRegionById(regionIndex).m_RegionTax; 
+		int wantedRegionTax = Map::getRegionById(regionIndex).m_RegionTax; 
 
 		std::vector<int> regionTax;
 		for (int region : characters[context].m_OwnedRegionIDs)
 		{
-			regionTax.push_back(Map::GetRegionById(region).m_RegionTax);
+			regionTax.push_back(Map::getRegionById(region).m_RegionTax);
 		}
 
 		float avgTax = 1.0f * std::accumulate(regionTax.begin(), regionTax.end(), 0LL) / regionTax.size();

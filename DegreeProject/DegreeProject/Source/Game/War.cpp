@@ -9,14 +9,14 @@ War::War(CharacterComponent& attacker, CharacterComponent& defender, int warGoal
 	m_Attacker = &attacker;
 	m_Defender = &defender;
 	m_WargoalRegion = warGoalRegion;
-	m_EntityManager = &EntityManager::Get();
+	m_EntityManager = &EntityManager::get();
 
-	m_Units = m_EntityManager->GetComponentArray<UnitComponent>();
-	m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
-	m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
+	m_Units = m_EntityManager->getComponentArray<UnitComponent>();
+	m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
+	m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
 }
 
-void War::AddWarscore(int warScore, bool attackerWinning)
+void War::addWarscore(int warScore, bool attackerWinning)
 {
 	if (attackerWinning)
 	{
@@ -24,7 +24,7 @@ void War::AddWarscore(int warScore, bool attackerWinning)
 
 		if (m_AttackerWarscore > 100)
 		{
-			EndWar(m_Attacker->GetID());
+			endWar(m_Attacker->getID());
 		}
 	}
 
@@ -34,12 +34,12 @@ void War::AddWarscore(int warScore, bool attackerWinning)
 
 		if (m_DefenderWarscore > 100)
 		{
-			EndWar(m_Defender->GetID());
+			endWar(m_Defender->getID());
 		}
 	}
 }
 
-void War::EndWar(EntityID winningEntity)
+void War::endWar(EntityID winningEntity)
 {
 	m_Attacker->m_AtWar = false;
 	m_Defender->m_AtWar = false;
@@ -49,12 +49,12 @@ void War::EndWar(EntityID winningEntity)
 
 	if (!m_Attacker->m_IsPlayerControlled)
 	{
-		m_Attacker->MakePeace();
+		m_Attacker->makePeace();
 	}
 
 	if (!m_Defender->m_IsPlayerControlled)
 	{
-		m_Defender->MakePeace();
+		m_Defender->makePeace();
 
 		//WarmindComponent& defenderWarmind = m_Warminds[m_Defender->GetID()];
 		//defenderWarmind.m_Active = false;
@@ -65,9 +65,9 @@ void War::EndWar(EntityID winningEntity)
 	}
 }
 
-bool War::IsAttacker(EntityID ent)
+bool War::isAttacker(EntityID ent)
 {
-	if (m_Characters[ent].GetID() == m_Attacker->GetID())
+	if (m_Characters[ent].getID() == m_Attacker->getID())
 	{
 		return true;
 	}
@@ -75,9 +75,9 @@ bool War::IsAttacker(EntityID ent)
 	return false;
 }
 
-bool War::IsDefender(EntityID ent)
+bool War::isDefender(EntityID ent)
 {
-	if (m_Characters[ent].GetID() == m_Defender->GetID())
+	if (m_Characters[ent].getID() == m_Defender->getID())
 	{
 		return true;
 	}
@@ -85,12 +85,12 @@ bool War::IsDefender(EntityID ent)
 	return false;
 }
 
-CharacterComponent& War::GetAttacker()
+CharacterComponent& War::getAttacker()
 {
 	return *m_Attacker;
 }
 
-CharacterComponent& War::GetDefender()
+CharacterComponent& War::getDefender()
 {
 	return *m_Defender;
 }

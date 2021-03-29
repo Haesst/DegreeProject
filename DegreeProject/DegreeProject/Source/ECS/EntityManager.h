@@ -29,37 +29,37 @@ private:
 private:
 
 	template<typename T>
-	void AddComponentList()
+	void addComponentList()
 	{
-		const ComponentTypeID componentType = ComponentType<T>();
+		const ComponentTypeID type = componentType<T>();
 
-		assert(m_ComponentArrays.find(componentType) == m_ComponentArrays.end() && "Component list already registered!");
-		m_ComponentArrays[componentType] = std::move(std::make_shared<DOComponentList<T>>());
+		assert(m_ComponentArrays.find(type) == m_ComponentArrays.end() && "Component list already registered!");
+		m_ComponentArrays[type] = std::move(std::make_shared<DOComponentList<T>>());
 	}
 
-	void AddEntitySignature(const EntityID entity)
+	void addEntitySignature(const EntityID entity)
 	{
 		assert(m_EntitySignatures.find(entity) == m_EntitySignatures.end() && "Entity already has registered signature");
 		m_EntitySignatures[entity] = std::move(std::make_shared<EntitySignature>());
 	}
 
-	std::shared_ptr<EntitySignature> GetEntitySignature(const EntityID entity)
+	std::shared_ptr<EntitySignature> getEntitySignature(const EntityID entity)
 	{
 		assert(m_EntitySignatures.find(entity) != m_EntitySignatures.end() && "Signature for entity not found");
 		return m_EntitySignatures.at(entity);
 	}
 
-	void UpdateEntityTargetSystems(const EntityID entity)
+	void updateEntityTargetSystems(const EntityID entity)
 	{
 		for (auto& system : m_RegisteredSystems)
 		{
-			AddEntityToSystem(entity, system.second.get());
+			addEntityToSystem(entity, system.second.get());
 		}
 	}
 
-	void AddEntityToSystem(const EntityID entity, System* system)
+	void addEntityToSystem(const EntityID entity, System* system)
 	{
-		if (BelongToSystem(entity, system->m_Signature) && IsEntityActive(entity))
+		if (belongToSystem(entity, system->m_Signature) && isEntityActive(entity))
 		{
 			system->m_Entities.insert(entity);
 		}
@@ -69,11 +69,11 @@ private:
 		}
 	}
 
-	bool BelongToSystem(const EntityID entity, const EntitySignature& systemSignature)
+	bool belongToSystem(const EntityID entity, const EntitySignature& systemSignature)
 	{
 		for (const auto componentType : systemSignature)
 		{
-			if (GetEntitySignature(entity)->count(componentType) == (size_t)0)
+			if (getEntitySignature(entity)->count(componentType) == (size_t)0)
 			{
 				return false;
 			}
@@ -97,7 +97,7 @@ public:
 		delete m_Instance;
 	}
 
-	inline static EntityManager& Get()
+	inline static EntityManager& get()
 	{
 		if (m_Instance == nullptr)
 		{
@@ -107,36 +107,36 @@ public:
 		return *m_Instance;
 	}
 
-	void Start()
+	void start()
 	{
 		for (auto& system : m_RegisteredSystems)
 		{
-			system.second->Start();
+			system.second->start();
 		}
 	}
 
-	void Update()
+	void update()
 	{
 		for (auto& system : m_RegisteredSystems)
 		{
-			system.second->Update();
+			system.second->update();
 		}
 	}
 
-	void Render()
+	void render()
 	{
 		for (auto& system : m_RegisteredSystems)
 		{
-			system.second->Render();
+			system.second->render();
 		}
 	}
 
-	const EntityID AddNewEntity()
+	const EntityID addNewEntity()
 	{
 		const EntityID entityID = m_AvailableEntityIDs.front();
-		AddEntitySignature(entityID);
+		addEntitySignature(entityID);
 
-		AddComponent<Transform>(entityID);
+		addComponent<Transform>(entityID);
 
 		m_AvailableEntityIDs.pop();
 		m_EntityCount++;
@@ -147,20 +147,20 @@ public:
 		return entityID;
 	}
 
-	void DestroyEntity(const EntityID entity)
+	void destroyEntity(const EntityID entity)
 	{
-		AssertEntityNotOutOfRange(entity);
+		assertEntityNotOutOfRange(entity);
 
 		m_EntitySignatures.erase(entity);
 
 		for (auto& array : m_ComponentArrays)
 		{
-			array.second->Erase(entity);
+			array.second->erase(entity);
 		}
 
 		for (auto& system : m_RegisteredSystems)
 		{
-			system.second->RemoveEntity(entity);
+			system.second->removeEntity(entity);
 		}
 
 		m_ActiveEntities.erase(entity);
@@ -170,126 +170,126 @@ public:
 		m_AvailableEntityIDs.push(entity);
 	}
 
-	void SetEntityActive(const EntityID entity, const bool active)
+	void setEntityActive(const EntityID entity, const bool active)
 	{
 		m_ActiveEntities[entity] = active;
-		UpdateEntityTargetSystems(entity);
+		updateEntityTargetSystems(entity);
 	}
 
-	bool IsEntityActive(const EntityID entity)
+	bool isEntityActive(const EntityID entity)
 	{
 		return m_ActiveEntities[entity];
 	}
 
-	void SetEntityTag(const EntityID entity, const EntityTag tag)
+	void setEntityTag(const EntityID entity, const EntityTag tag)
 	{
 		m_EntityTags[entity] = tag;
 	}
 
-	EntityTag GetEntityTag(const EntityID entity)
+	EntityTag getEntityTag(const EntityID entity)
 	{
 		return m_EntityTags[entity];
 	}
 
 	template<typename T, typename... Args>
-	void AddComponent(const EntityID entity, Args&&... args)
+	void addComponent(const EntityID entity, Args&&... args)
 	{
-		AssertEntityNotOutOfRange(entity);
+		assertEntityNotOutOfRange(entity);
 		assert(m_EntitySignatures[entity]->size() < MAX_COMPONENT_COUNT && "Component count limit reached!");
 
 		T component(std::forward<Args>(args)...);
 		component.m_EntityID = entity;
-		GetEntitySignature(entity)->insert(ComponentType<T>());
-		GetComponentList<T>()->Insert(component, entity);
+		getEntitySignature(entity)->insert(componentType<T>());
+		getComponentList<T>()->insert(component, entity);
 
-		const ComponentTypeID componentType = ComponentType<T>();
-		m_EntitySignatures.at(entity)->insert(componentType);
-		UpdateEntityTargetSystems(entity);
+		const ComponentTypeID type = componentType<T>();
+		m_EntitySignatures.at(entity)->insert(type);
+		updateEntityTargetSystems(entity);
 	}
 
 	template<typename T>
-	void RemoveComponent(const EntityID entity)
+	void removeComponent(const EntityID entity)
 	{
-		AssertEntityNotOutOfRange(entity);
+		assertEntityNotOutOfRange(entity);
 
-		const ComponentTypeID componentType = ComponentType<T>();
+		const ComponentTypeID componentType = componentType<T>();
 		m_EntitySignatures.at(entity)->erase(componentType);
-		GetComponentList<T>()->Erase(entity);
-		UpdateEntityTargetSystems(entity);
+		getComponentList<T>()->Erase(entity);
+		updateEntityTargetSystems(entity);
 	}
 
 	template<typename T>
-	T& GetComponent(const EntityID entity)
+	T& getComponent(const EntityID entity)
 	{
-		AssertEntityNotOutOfRange(entity);
+		assertEntityNotOutOfRange(entity);
 
-		const ComponentTypeID componentType = ComponentType<T>();
-		return GetComponentList<T>()->Get(entity);
+		const ComponentTypeID type = componentType<T>();
+		return getComponentList<T>()->get(entity);
 	}
 
 	template<typename T>
-	T* GetComponentArray()
+	T* getComponentArray()
 	{
-		const ComponentTypeID componentType = ComponentType<T>();
+		const ComponentTypeID type = componentType<T>();
 		// return nullptr;
-		return GetComponentList<T>()->m_Components;
+		return getComponentList<T>()->m_Components;
 	}
 
 	template<typename T>
-	std::shared_ptr<DOComponentList<T>> GetComponentList()
+	std::shared_ptr<DOComponentList<T>> getComponentList()
 	{
-		const ComponentTypeID componentType = ComponentType<T>();
+		const ComponentTypeID type = componentType<T>();
 
-		if (m_ComponentArrays.count(componentType) == (size_t)0)
+		if (m_ComponentArrays.count(type) == (size_t)0)
 		{
-			AddComponentList<T>();
+			addComponentList<T>();
 		}
 
-		return std::static_pointer_cast<DOComponentList<T>>(m_ComponentArrays.at(componentType));
+		return std::static_pointer_cast<DOComponentList<T>>(m_ComponentArrays.at(type));
 	}
 
 	template<typename T>
-	const bool HasComponent(const EntityID entity)
+	const bool hasComponent(const EntityID entity)
 	{
-		AssertEntityNotOutOfRange(entity);
+		assertEntityNotOutOfRange(entity);
 
-		return (GetEntitySignature(entity)->count(ComponentType<T>()) > 0);
+		return (getEntitySignature(entity)->count(componentType<T>()) > 0);
 	}
 
-	void AssertEntityNotOutOfRange(const EntityID entity)
+	void assertEntityNotOutOfRange(const EntityID entity)
 	{
 		assert(entity < MAX_ENTITY_COUNT && "EntityID out of range");
 	}
 
 	template<typename T>
-	void RegisterSystem()
+	void registerSystem()
 	{
-		const SystemTypeID systemType = SystemType<T>();
-		assert(m_RegisteredSystems.count(systemType) == (size_t)0 && "System already registered");
+		const SystemTypeID type = systemType<T>();
+		assert(m_RegisteredSystems.count(type) == (size_t)0 && "System already registered");
 		auto system = std::make_shared<T>();
 
 		// Add entity to new system
 		for (EntityID entity = 0; entity < m_EntityCount; entity++)
 		{
-			AddEntityToSystem(entity, system.get());
+			addEntityToSystem(entity, system.get());
 		}
 
-		m_RegisteredSystems[systemType] = std::move(system);
+		m_RegisteredSystems[type] = std::move(system);
 	}
 
 	template<typename T>
-	std::shared_ptr<System> GetSystem()
+	std::shared_ptr<System> getSystem()
 	{
-		const SystemTypeID systemType = SystemType<T>();
-		assert(m_RegisteredSystems.count(systemType) != 0 && "System not registered!");
-		return m_RegisteredSystems[systemType];
+		const SystemTypeID type = systemType<T>();
+		assert(m_RegisteredSystems.count(type) != 0 && "System not registered!");
+		return m_RegisteredSystems[type];
 	}
 
 	template<typename T>
-	void UnregisterSystem()
+	void unregisterSystem()
 	{
-		const SystemTypeID systemType = SystemType<T>();
-		assert(m_RegisteredSystems.count(systemType) != 0 && "System not registered!");
-		m_RegisteredSystems.erase(systemType);
+		const SystemTypeID type = systemType<T>();
+		assert(m_RegisteredSystems.count(type) != 0 && "System not registered!");
+		m_RegisteredSystems.erase(type);
 	}
 };

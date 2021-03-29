@@ -17,21 +17,21 @@ struct CharacterWindowSystem : System
 
 	CharacterWindowSystem()
 	{
-		AddComponentSignature<CharacterWindow>();
-		m_EntityManager = &EntityManager::Get();
-		m_Window = Window::GetWindow();
+		addComponentSignature<CharacterWindow>();
+		m_EntityManager = &EntityManager::get();
+		m_Window = Window::getWindow();
 	}
 
 	~CharacterWindowSystem(){}
 
-	virtual void Start() override
+	virtual void start() override
 	{
-		m_CharacterWindows = m_EntityManager->GetComponentArray<CharacterWindow>();
+		m_CharacterWindows = m_EntityManager->getComponentArray<CharacterWindow>();
 #pragma warning(push)
 #pragma warning(disable: 26815)
-		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
+		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
 #pragma warning(pop)
-		playerCharacter = &m_EntityManager->GetComponent<CharacterComponent>(characterSystem->GetPlayerID());
+		playerCharacter = &m_EntityManager->getComponent<CharacterComponent>(characterSystem->getPlayerID());
 		for (auto entity : m_Entities)
 		{
 			m_CharacterWindows[entity].m_Shape.setFillColor(m_CharacterWindows[entity].m_FillColor);
@@ -77,16 +77,16 @@ struct CharacterWindowSystem : System
 		}
 	}
 
-	virtual void Update() override
+	virtual void update() override
 	{
 		for (auto entity : m_Entities)
 		{
-			UpdateInfo(m_CharacterWindows[entity]);
-			HandleWindow(m_CharacterWindows[entity]);
+			updateInfo(m_CharacterWindows[entity]);
+			handleWindow(m_CharacterWindows[entity]);
 
 			if (m_CharacterWindows[entity].m_Visible)
 			{
-				ClickButton(m_CharacterWindows[entity]);
+				clickButton(m_CharacterWindows[entity]);
 
 				m_CharacterWindows[entity].m_Shape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_CharacterWindows[entity].m_OutlineThickness, (int)m_CharacterWindows[entity].m_OutlineThickness)));
 				m_CharacterWindows[entity].m_Shape.setOutlineColor(m_CharacterWindows[entity].m_OwnerColor);
@@ -116,7 +116,7 @@ struct CharacterWindowSystem : System
 		}
 	}
 
-	virtual void Render() override
+	virtual void render() override
 	{
 		for (auto entity : m_Entities)
 		{
@@ -138,15 +138,15 @@ struct CharacterWindowSystem : System
 		}
 	}
 
-	void UpdateInfo(CharacterWindow& characterWindow)
+	void updateInfo(CharacterWindow& characterWindow)
 	{
-		if (InputHandler::GetRightMouseClicked() && !InputHandler::GetPlayerUnitSelected())
+		if (InputHandler::getRightMouseClicked() && !InputHandler::getPlayerUnitSelected())
 		{
-			Vector2D mousePosition = InputHandler::GetMousePosition();
+			Vector2D mousePosition = InputHandler::getMousePosition();
 			if (!characterWindow.m_Shape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				Vector2DInt mouseMapPosition = InputHandler::GetMouseMapPosition();
-				if (Map::MapSquareDataContainsKey(mouseMapPosition))
+				Vector2DInt mouseMapPosition = InputHandler::getMouseMapPosition();
+				if (Map::mapSquareDataContainsKey(mouseMapPosition))
 				{
 					EntityID regionID = 0;
 					for (auto& squareData : Map::m_MapSquareData)
@@ -160,11 +160,11 @@ struct CharacterWindowSystem : System
 					if (characterWindow.m_CurrentRegionID != regionID)
 					{
 						characterWindow.m_CurrentRegionID = regionID;
-						CheckIfPlayerRegion(characterWindow.m_CurrentRegionID);
-						m_CurrentMapRegion = &Map::GetRegionById(characterWindow.m_CurrentRegionID);
+						checkIfPlayerRegion(characterWindow.m_CurrentRegionID);
+						m_CurrentMapRegion = &Map::getRegionById(characterWindow.m_CurrentRegionID);
 						characterWindow.m_RegionTax = m_CurrentMapRegion->m_RegionTax;
 						characterWindow.m_RegionName = m_CurrentMapRegion->m_RegionName;
-						CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(m_CurrentMapRegion->m_OwnerID);
+						CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(m_CurrentMapRegion->m_OwnerID);
 						characterWindow.m_OwnerKingdomName = character.m_KingdomName;
 						characterWindow.m_OwnerCharacterName = character.m_Name;
 						characterWindow.m_OwnerTitle = characterWindow.titles[(unsigned int)character.m_CharacterTitle];
@@ -184,58 +184,58 @@ struct CharacterWindowSystem : System
 		}
 	}
 
-	void HandleWindow(CharacterWindow& characterWindow)
+	void handleWindow(CharacterWindow& characterWindow)
 	{
-		InputHandler::SetCharacterWindowOpen(characterWindow.m_Visible);
-		if (InputHandler::GetRightMouseReleased() && !InputHandler::GetPlayerUnitSelected() && characterWindow.m_Open && !characterWindow.m_Visible)
+		InputHandler::setCharacterWindowOpen(characterWindow.m_Visible);
+		if (InputHandler::getRightMouseReleased() && !InputHandler::getPlayerUnitSelected() && characterWindow.m_Open && !characterWindow.m_Visible)
 		{
-			OpenWindow(characterWindow);
+			openWindow(characterWindow);
 		}
-		else if (characterWindow.m_Visible && (InputHandler::GetPlayerUnitSelected() || InputHandler::GetEscapePressed()))
+		else if (characterWindow.m_Visible && (InputHandler::getPlayerUnitSelected() || InputHandler::getEscapePressed()))
 		{
-			CloseWindow(characterWindow);
-			m_EntityManager->SetEntityActive(characterWindow.m_BottomPortraitID, true);
+			closeWindow(characterWindow);
+			m_EntityManager->setEntityActive(characterWindow.m_BottomPortraitID, true);
 		}
-		else if (InputHandler::GetRegionWindowOpen())
+		else if (InputHandler::getRegionWindowOpen())
 		{
-			CloseWindow(characterWindow);
+			closeWindow(characterWindow);
 		}
 	}
 
-	void OpenWindow(CharacterWindow& characterWindow)
+	void openWindow(CharacterWindow& characterWindow)
 	{
 		characterWindow.m_Visible = true;
 		characterWindow.m_Shape.setSize(sf::Vector2f(characterWindow.m_SizeX, characterWindow.m_SizeY));
-		m_EntityManager->SetEntityActive(characterWindow.m_TopPortraitID, true);
-		m_EntityManager->SetEntityActive(characterWindow.m_BottomPortraitID, false);
+		m_EntityManager->setEntityActive(characterWindow.m_TopPortraitID, true);
+		m_EntityManager->setEntityActive(characterWindow.m_BottomPortraitID, false);
 	}
 
-	void CloseWindow(CharacterWindow& characterWindow)
+	void closeWindow(CharacterWindow& characterWindow)
 	{
 		characterWindow.m_Open = false;
 		characterWindow.m_Visible = false;
 		characterWindow.m_Shape.setSize(sf::Vector2f());
-		m_EntityManager->SetEntityActive(characterWindow.m_TopPortraitID, false);
+		m_EntityManager->setEntityActive(characterWindow.m_TopPortraitID, false);
 	}
 
-	void ClickButton(CharacterWindow& characterWindow)
+	void clickButton(CharacterWindow& characterWindow)
 	{
-		if (InputHandler::GetLeftMouseReleased() && !m_PlayerRegion)
+		if (InputHandler::getLeftMouseReleased() && !m_PlayerRegion)
 		{
-			Vector2D mousePosition = InputHandler::GetMousePosition();
+			Vector2D mousePosition = InputHandler::getMousePosition();
 			if (characterWindow.m_DeclareWarShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				EntityID warTarget = m_CurrentMapRegion->m_OwnerID;
-				playerCharacter->DeclareWar(warTarget, characterWindow.m_CurrentRegionID);
+				playerCharacter->declareWar(warTarget, characterWindow.m_CurrentRegionID);
 			}
 			else if (characterWindow.m_MakePeaceShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				playerCharacter->MakePeace();
+				playerCharacter->makePeace();
 			}
 		}
 	}
 
-	bool CheckIfPlayerRegion(EntityID currentRegionID)
+	bool checkIfPlayerRegion(EntityID currentRegionID)
 	{
 		for (unsigned int ownedRegionID : playerCharacter->m_OwnedRegionIDs)
 		{

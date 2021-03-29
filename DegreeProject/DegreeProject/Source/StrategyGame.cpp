@@ -4,13 +4,13 @@
 int main()
 {
 	// Init log
-	Log::Init();
+	Log::init();
 	LOG_INFO("Initialized Log");
 
 	// Create and run game
 	Game game;
-	game.Init();
-	game.Run();
+	game.init();
+	game.run();
 
 	return 0;
 }

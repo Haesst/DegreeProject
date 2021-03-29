@@ -16,35 +16,35 @@ std::mutex Map::m_ShaderMutex;
 std::vector<SquareData> Map::m_MapSquareData;
 
 #pragma region Init
-void Map::Init()
+void Map::init()
 {
-	ClearRegions();
-	LoadAllRegions();
-	ClearRegionMapTiles();
-	LoadMap();
-	LoadShadersAndCreateRenderStates();
-	CreateVertexArrays();
-	SetupHotReloading();
+	clearRegions();
+	loadAllRegions();
+	clearRegionMapTiles();
+	loadMap();
+	loadShadersAndCreateRenderStates();
+	createVertexArrays();
+	setupHotReloading();
 }
 #pragma endregion
 
-void Map::SetLandTexture(sf::Texture tex)
+void Map::setLandTexture(sf::Texture tex)
 {
 	m_Data.m_LandTexture = tex;
 }
 
 #pragma region HotReloading Setup
 
-void Map::SetupHotReloading()
+void Map::setupHotReloading()
 {
-	HotReloader::Get()->SubscribeToFileChange("Assets\\Data\\Regions.json", std::bind(&Map::RegionsChanged, std::placeholders::_1, std::placeholders::_2));
-	HotReloader::Get()->SubscribeToFileChange("Assets\\Map\\RegionMap.txt", std::bind(&Map::RegionsChanged, std::placeholders::_1, std::placeholders::_2));
+	HotReloader::get()->subscribeToFileChange("Assets\\Data\\Regions.json", std::bind(&Map::regionsChanged, std::placeholders::_1, std::placeholders::_2));
+	HotReloader::get()->subscribeToFileChange("Assets\\Map\\RegionMap.txt", std::bind(&Map::regionsChanged, std::placeholders::_1, std::placeholders::_2));
 
-	HotReloader::Get()->SubscribeToFileChange("Assets\\Shaders\\LandShader.frag", std::bind(&Map::ShadersChanged, std::placeholders::_1, std::placeholders::_2));
-	HotReloader::Get()->SubscribeToFileChange("Assets\\Shaders\\LandShader.vert", std::bind(&Map::ShadersChanged, std::placeholders::_1, std::placeholders::_2));
+	HotReloader::get()->subscribeToFileChange("Assets\\Shaders\\LandShader.frag", std::bind(&Map::shadersChanged, std::placeholders::_1, std::placeholders::_2));
+	HotReloader::get()->subscribeToFileChange("Assets\\Shaders\\LandShader.vert", std::bind(&Map::shadersChanged, std::placeholders::_1, std::placeholders::_2));
 }
 
-void Map::RegionsChanged(std::string path, FileStatus fileStatus)
+void Map::regionsChanged(std::string path, FileStatus fileStatus)
 {
 	if (fileStatus != FileStatus::Modified)
 	{
@@ -54,14 +54,14 @@ void Map::RegionsChanged(std::string path, FileStatus fileStatus)
 	LOG_INFO("Regions changed");
 
 	m_RegionMutex.lock();
-	UpdateRegions();
+	updateRegions();
 	m_RegionMutex.unlock();
 }
 
-void Map::MapChanged(std::string, FileStatus)
+void Map::mapChanged(std::string, FileStatus)
 {}
 
-void Map::ShadersChanged(std::string path, FileStatus fileStatus)
+void Map::shadersChanged(std::string path, FileStatus fileStatus)
 {
 	if (fileStatus != FileStatus::Modified)
 	{
@@ -69,7 +69,7 @@ void Map::ShadersChanged(std::string path, FileStatus fileStatus)
 	}
 
 	m_ShaderMutex.lock();
-	LoadShadersAndCreateRenderStates();
+	loadShadersAndCreateRenderStates();
 	m_ShaderMutex.unlock();
 }
 
@@ -77,16 +77,16 @@ void Map::ShadersChanged(std::string path, FileStatus fileStatus)
 
 #pragma region Region & Map loading
 
-std::ifstream Map::LoadFile(const char* path)
+std::ifstream Map::loadFile(const char* path)
 {
 	std::ifstream file(path);
 
 	return file;
 }
 
-void Map::LoadAllRegions()
+void Map::loadAllRegions()
 {
-	std::ifstream file = LoadFile(m_RegionPath);
+	std::ifstream file = loadFile(m_RegionPath);
 
 	json j;
 	file >> j;
@@ -114,12 +114,12 @@ void Map::LoadAllRegions()
 	}
 }
 
-void Map::LoadMap()
+void Map::loadMap()
 {
 	ASSERT(m_Data.m_Regions[0].m_MapSquares.size() <= 0, "Mapsquare is empty");
 
 	std::string tempString;
-	std::ifstream inData = LoadFile(m_MapPath);
+	std::ifstream inData = loadFile(m_MapPath);
 
 	if (inData.is_open())
 	{
@@ -130,7 +130,7 @@ void Map::LoadMap()
 			int x = 0;
 			for (char character : tempString)
 			{
-				int regionPosition = GetRegionPositionFromMapCharacter(character);
+				int regionPosition = getRegionPositionFromMapCharacter(character);
 
 				if (regionPosition >= 0)
 				{
@@ -150,16 +150,16 @@ void Map::LoadMap()
 	inData.close();
 }
 
-void Map::UpdateRegions()
+void Map::updateRegions()
 {
-	std::ifstream file = LoadFile(m_RegionPath);
+	std::ifstream file = loadFile(m_RegionPath);
 
 	json j;
 	file >> j;
 
 	for (auto& element : j)
 	{
-		int arrayLoc = GetRegionPositionFromRegionId(element["id"]);
+		int arrayLoc = getRegionPositionFromRegionId(element["id"]);
 
 		if (arrayLoc >= 0)
 		{
@@ -179,28 +179,28 @@ void Map::UpdateRegions()
 
 #pragma endregion
 
-void Map::Render()
+void Map::render()
 {
 	for (auto& region : m_Data.m_Regions)
 	{
 		m_Data.m_Shader.setUniform("u_Color", sf::Glsl::Vec4(region.m_HighlightColor));
 		m_Data.m_Shader.setUniform("u_Texture", m_Data.m_LandTexture);
 		m_Data.m_Shader.setUniform("u_Highlighted", region.m_Highlighted);
-		Window::GetWindow()->draw(region.m_VertexArray, m_Data.m_RenderStates);
+		Window::getWindow()->draw(region.m_VertexArray, m_Data.m_RenderStates);
 	}
 }
 
-void Map::SetRegionColor(int regionId, sf::Color color)
+void Map::setRegionColor(int regionId, sf::Color color)
 {
-	GetRegionById(regionId).m_HighlightColor = color;
+	getRegionById(regionId).m_HighlightColor = color;
 }
 
-void Map::ClearRegions()
+void Map::clearRegions()
 {
 	m_Data.m_Regions.clear();
 }
 
-bool Map::MapSquareDataContainsKey(const Vector2DInt& key)
+bool Map::mapSquareDataContainsKey(const Vector2DInt& key)
 {
 	for (auto& p : m_MapSquareData)
 	{
@@ -213,7 +213,7 @@ bool Map::MapSquareDataContainsKey(const Vector2DInt& key)
 	return false;
 }
 
-void Map::ClearRegionMapTiles()
+void Map::clearRegionMapTiles()
 {
 	for (auto& region : m_Data.m_Regions)
 	{
@@ -221,7 +221,7 @@ void Map::ClearRegionMapTiles()
 	}
 }
 
-void Map::CreateVertexArrays()
+void Map::createVertexArrays()
 {
 	for (auto& region : m_Data.m_Regions)
 	{
@@ -255,7 +255,7 @@ void Map::CreateVertexArrays()
 	}
 }
 
-void Map::LoadShadersAndCreateRenderStates()
+void Map::loadShadersAndCreateRenderStates()
 {
 	m_Data.m_Shader.loadFromFile(m_VertexShaderPath, m_FragmentShaderPath);
 
@@ -263,23 +263,23 @@ void Map::LoadShadersAndCreateRenderStates()
 	m_Data.m_RenderStates.texture = &m_Data.m_LandTexture;
 }
 
-void Map::StartConstructionOfBuilding(int buildingId, int buildSlot, int regionId)
+void Map::startConstructionOfBuilding(int buildingId, int buildSlot, int regionId)
 {
 	// not working -> int maxBuildings = (sizeof(RegionBuilding) / sizeof(*GetRegionById(regionId).m_BuildingSlots));
 	ASSERT(buildSlot >= 0 /*&& buildSlot < maxBuildings */, "Invalid buildslot");
-	int characterGold = EntityManager::Get().GetComponent<CharacterComponent>(GetRegionById(regionId).m_OwnerID).m_CurrentGold;
+	int characterGold = EntityManager::get().getComponent<CharacterComponent>(getRegionById(regionId).m_OwnerID).m_CurrentGold;
 	int buildingCost = GameData::m_Buildings[buildingId].m_Cost;
 	ASSERT(characterGold >= buildingCost, "Not enough money to build");
 
-	RegionBuilding& building = GetRegionById(regionId).m_BuildingSlots[buildSlot];
+	RegionBuilding& building = getRegionById(regionId).m_BuildingSlots[buildSlot];
 
 	if (building.m_BuildingId < 0)
 	{
-		building.StartBuild(buildingId);
+		building.startBuild(buildingId);
 	}
 }
 
-int Map::GetRegionPositionFromMapCharacter(const char& c)
+int Map::getRegionPositionFromMapCharacter(const char& c)
 {
 	for (size_t i = 0; i < m_Data.m_Regions.size(); ++i)
 	{
@@ -292,7 +292,7 @@ int Map::GetRegionPositionFromMapCharacter(const char& c)
 	return -1;
 }
 
-int Map::GetRegionPositionFromRegionId(const unsigned int id)
+int Map::getRegionPositionFromRegionId(const unsigned int id)
 {
 	for (size_t i = 0; i < m_Data.m_Regions.size(); ++i)
 	{
@@ -305,7 +305,7 @@ int Map::GetRegionPositionFromRegionId(const unsigned int id)
 	return -1;
 }
 
-MapRegion& Map::GetRegionById(unsigned int regionId)
+MapRegion& Map::getRegionById(unsigned int regionId)
 {
 	for (auto& region : m_Data.m_Regions)
 	{
@@ -319,26 +319,26 @@ MapRegion& Map::GetRegionById(unsigned int regionId)
 	return m_Data.m_Regions[0]; // To remove warning, unreachable code.
 }
 
-Vector2DInt Map::ConvertToMap(Vector2D position)
+Vector2DInt Map::convertToMap(Vector2D position)
 {
 	return Vector2DInt((int)(position.x - m_Data.m_XOffset + 16) / 32, (int)(position.y - m_Data.m_YOffset + 16) / 32);
 }
 
-Vector2D Map::ConvertToScreen(Vector2DInt position)
+Vector2D Map::convertToScreen(Vector2DInt position)
 {
 	return Vector2D((float)position.x * 32 + m_Data.m_XOffset - 16, (float)position.y * 32 + m_Data.m_YOffset - 16);
 }
 
-Vector2DInt Map::GetRegionCapitalLocation(unsigned int regionId)
+Vector2DInt Map::getRegionCapitalLocation(unsigned int regionId)
 {
-	int regionArrayLocation = GetRegionPositionFromRegionId(regionId);
+	int regionArrayLocation = getRegionPositionFromRegionId(regionId);
 
 	ASSERT(regionArrayLocation >= 0, "Region with id: {0} doesn't exist", regionId);
 
 	return m_Data.m_Regions[regionArrayLocation].m_RegionCapital;
 }
 
-std::vector<Vector2DInt> Map::GetRegionCapitals()
+std::vector<Vector2DInt> Map::getRegionCapitals()
 {
 	std::vector<Vector2DInt> capitalLocations;
 
@@ -350,7 +350,7 @@ std::vector<Vector2DInt> Map::GetRegionCapitals()
 	return capitalLocations;
 }
 
-std::vector<int> Map::GetRegionIDs()
+std::vector<int> Map::getRegionIDs()
 {
 	std::vector<int> regionIds;
 

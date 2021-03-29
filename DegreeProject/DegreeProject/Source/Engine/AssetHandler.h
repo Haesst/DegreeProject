@@ -11,13 +11,13 @@ public:
 
 public:
 
-	const sf::Texture LoadImageFromFile(const char* FilePath);
+	const sf::Texture loadImageFromFile(const char* FilePath);
 
-	sf::Font LoadFontFromFile(const char* FilePath);
+	sf::Font loadFontFromFile(const char* FilePath);
 
-	sf::Sound LoadAudioFile(const char* FilePath, sf::SoundBuffer& Buffer);
+	sf::Sound loadAudioFile(const char* FilePath, sf::SoundBuffer& Buffer);
 
-	const sf::Texture GetTextureAtPath(const char* FilePath);
+	const sf::Texture getTextureAtPath(const char* FilePath);
 
 private:
 	std::vector<std::pair<const char*, sf::Texture>> m_LoadedTextures;

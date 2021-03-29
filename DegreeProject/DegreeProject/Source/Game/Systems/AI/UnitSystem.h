@@ -29,21 +29,21 @@ struct UnitSystem : System
 
 	UnitSystem()
 	{
-		AddComponentSignature<UnitComponent>();
-		m_EntityManager = &EntityManager::Get();
-		m_UnitComponents = m_EntityManager->GetComponentArray<UnitComponent>();
-		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
-		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-		m_Renderers = m_EntityManager->GetComponentArray<SpriteRenderer>();
+		addComponentSignature<UnitComponent>();
+		m_EntityManager = &EntityManager::get();
+		m_UnitComponents = m_EntityManager->getComponentArray<UnitComponent>();
+		m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
+		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
+		m_Renderers = m_EntityManager->getComponentArray<SpriteRenderer>();
 		m_ProgressMeterDoubleBorder = m_ProgressMeterBorder * 2;
 	}
 
-	virtual void Start() override
+	virtual void start() override
 	{
 		for (EntityID entity : m_Entities)
 		{
 			UnitComponent& unit = m_UnitComponents[entity];
-			Transform& transform = m_EntityManager->GetComponent<Transform>(entity);
+			Transform& transform = m_EntityManager->getComponent<Transform>(entity);
 			unit.m_HighlightShape.setFillColor(unit.m_FillColor);
 			unit.m_HighlightShape.setOutlineColor(unit.m_OutlineColor);
 			unit.m_HighlightShape.setOutlineThickness(unit.m_OutlineThickness);
@@ -52,20 +52,20 @@ struct UnitSystem : System
 		}
 	}
 
-	virtual void Update() override 
+	virtual void update() override 
 	{
 		for (EntityID ent : m_Entities)
 		{
 			UnitComponent& unit = m_UnitComponents[ent];
-			Transform& transform = m_EntityManager->GetComponent<Transform>(ent);
+			Transform& transform = m_EntityManager->getComponent<Transform>(ent);
 
 			if (unit.m_Raised)
 			{
-				MoveUnit(unit, transform);
+				moveUnit(unit, transform);
 
 				if (m_Characters[unit.m_Owner].m_AtWar)
 				{
-					SeizeRegion(unit);
+					seizeRegion(unit);
 				}
 
 				unit.m_HighlightShape.setFillColor(unit.m_FillColor);
@@ -76,17 +76,17 @@ struct UnitSystem : System
 
 				if (unit.m_PlayerSelected)
 				{
-					InputHandler::SetPlayerUnitSelected(true);
+					InputHandler::setPlayerUnitSelected(true);
 				}
 
 				if (unit.m_InCombat)
 				{
-					unit.m_CombatTimerAccu += Time::DeltaTime();
+					unit.m_CombatTimerAccu += Time::deltaTime();
 					if (unit.m_CombatTimerAccu > unit.m_CombatTimer)
 					{
 						if (unit.EnemyArmy != nullptr)
 						{
-							DetermineCombat(unit.m_EntityID, unit.EnemyArmy->m_EntityID);
+							determineCombat(unit.m_EntityID, unit.EnemyArmy->m_EntityID);
 							unit.m_CombatTimerAccu = 0.0f;
 						}
 					}
@@ -95,12 +95,12 @@ struct UnitSystem : System
 		}
 	}
 
-	virtual void Render() override
+	virtual void render() override
 	{
 		for (EntityID entity : m_Entities)
 		{
 			UnitComponent& unit = m_UnitComponents[entity];
-			Window::GetWindow()->draw(unit.m_HighlightShape);
+			Window::getWindow()->draw(unit.m_HighlightShape);
 
 			if (unit.m_Raised)
 			{
@@ -108,32 +108,32 @@ struct UnitSystem : System
 				{
 					for each (sf::RectangleShape rectangle in unit.m_TargetPath)
 					{
-						Window::GetWindow()->draw(rectangle);
+						Window::getWindow()->draw(rectangle);
 					}
 				}
 
 				unit.m_EndPosition.setSize(sf::Vector2f(32.0f, 32.0f));
 				unit.m_EndPosition.setFillColor(sf::Color::Red);
-				Vector2D pos = Map::ConvertToScreen(unit.m_CurrentPath.back());
+				Vector2D pos = Map::convertToScreen(unit.m_CurrentPath.back());
 				unit.m_EndPosition.setPosition(pos.x, pos.y);
-				Window::GetWindow()->draw(unit.m_EndPosition);
+				Window::getWindow()->draw(unit.m_EndPosition);
 
 				if (unit.m_SeizingRegionID > 0)
 				{
-					DisplayProgressMeter(unit, (float)unit.m_DaysSeizing, (float)Map::GetRegionById(unit.m_SeizingRegionID).m_DaysToSeize, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
+					displayProgressMeter(unit, (float)unit.m_DaysSeizing, (float)Map::getRegionById(unit.m_SeizingRegionID).m_DaysToSeize, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
 				}
 
 				if (unit.m_InCombat)
 				{
-					DisplayProgressMeter(unit, unit.m_CombatTimerAccu, unit.m_CombatTimer, { m_CombatMeterOffset.x, m_CombatMeterOffset.y }, m_CombatMeterFillColor);
+					displayProgressMeter(unit, unit.m_CombatTimerAccu, unit.m_CombatTimer, { m_CombatMeterOffset.x, m_CombatMeterOffset.y }, m_CombatMeterFillColor);
 				}
 			}
 		}
 	}
 
-	void DisplayProgressMeter(UnitComponent& unit, float timeElapsed, float totalTime, sf::Vector2f offset, sf::Color fillColor)
+	void displayProgressMeter(UnitComponent& unit, float timeElapsed, float totalTime, sf::Vector2f offset, sf::Color fillColor)
 	{
-		Transform& transform = EntityManager::Get().GetComponent<Transform>(unit.m_EntityID);
+		Transform& transform = EntityManager::get().getComponent<Transform>(unit.m_EntityID);
 
 		sf::Vector2 innerOffset(m_SeizeMeterInnerOffset.x, m_SeizeMeterInnerOffset.y);
 
@@ -147,28 +147,28 @@ struct UnitSystem : System
 		unit.m_OuterSeizeMeter.setPosition(offset + sf::Vector2(transform.m_Position.x, transform.m_Position.y));
 		unit.m_OuterSeizeMeter.setFillColor(m_ProgressMeterOuterColor);
 
-		Window::GetWindow()->draw(unit.m_OuterSeizeMeter);
-		Window::GetWindow()->draw(unit.m_InnerSeizeMeter);
+		Window::getWindow()->draw(unit.m_OuterSeizeMeter);
+		Window::getWindow()->draw(unit.m_InnerSeizeMeter);
 	}
 
-	void MoveUnit(UnitComponent& unit, Transform& transform)
+	void moveUnit(UnitComponent& unit, Transform& transform)
 	{
 		if (unit.m_Moving)
 		{
-			if (!transform.m_Position.NearlyEqual(unit.m_Target, m_MoveTolerance))
+			if (!transform.m_Position.nearlyEqual(unit.m_Target, m_MoveTolerance))
 			{
-				Vector2D movement = unit.m_Direction * unit.m_Speed * Time::DeltaTime();
-				transform.Translate(movement);
+				Vector2D movement = unit.m_Direction * unit.m_Speed * Time::deltaTime();
+				transform.translate(movement);
 			}
 			else
 			{
-				if (Map::MapSquareDataContainsKey(Map::ConvertToMap(unit.m_LastPosition)))
+				if (Map::mapSquareDataContainsKey(Map::convertToMap(unit.m_LastPosition)))
 				{
 					for (auto& squareData : Map::m_MapSquareData)
 					{
-						if (squareData.m_Position == Map::ConvertToMap(unit.m_LastPosition))
+						if (squareData.m_Position == Map::convertToMap(unit.m_LastPosition))
 						{
-							squareData.Remove(unit.GetID());
+							squareData.remove(unit.getID());
 							break;
 						}
 					}
@@ -176,42 +176,42 @@ struct UnitSystem : System
 
 				unit.m_LastPosition = unit.m_Target;
 				transform.m_Position = unit.m_Target;
-				Vector2DInt pos = Map::ConvertToMap(unit.m_Target);
+				Vector2DInt pos = Map::convertToMap(unit.m_Target);
 
 				for (auto& squareData : Map::m_MapSquareData)
 				{
 					if (squareData.m_Position == pos)
 					{
-						squareData.AddUnique(unit.m_EntityID);
+						squareData.addUnique(unit.m_EntityID);
 						break;
 					}
 				}
 
-				if (EnemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
+				if (enemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
 				{
 					EntityID enemyID = m_Warminds[unit.m_Owner].m_Opponent;
 					UnitComponent& enemyUnit = m_UnitComponents[m_Characters[enemyID].m_UnitEntity];
 
 					if (enemyUnit.m_Raised)
 					{
-						StartCombatTimer(unit.m_EntityID, enemyUnit.m_EntityID);
+						startCombatTimer(unit.m_EntityID, enemyUnit.m_EntityID);
 					}
 				}
 
 				// Check for enemy at square and kill him
 				if (unit.m_CurrentPath.size() > 0)
 				{
-					Vector2D nextPosition = Map::ConvertToScreen(unit.m_CurrentPath.front());
+					Vector2D nextPosition = Map::convertToScreen(unit.m_CurrentPath.front());
 					unit.m_Target = nextPosition;
-					unit.m_Direction = (nextPosition - transform.m_Position).Normalized();
+					unit.m_Direction = (nextPosition - transform.m_Position).normalized();
 
-					Vector2DInt mapPos = Map::ConvertToMap(unit.m_LastPosition);
+					Vector2DInt mapPos = Map::convertToMap(unit.m_LastPosition);
 
 					for (auto& squareData : Map::m_MapSquareData)
 					{
 						if (squareData.m_Position == mapPos)
 						{
-							squareData.AddUnique(unit.m_EntityID);
+							squareData.addUnique(unit.m_EntityID);
 							break;
 						}
 					}
@@ -224,7 +224,7 @@ struct UnitSystem : System
 				}
 				else
 				{
-					StartConquerRegion(unit, transform);
+					startConquerRegion(unit, transform);
 					// Check if at capital
 					unit.m_Moving = false;
 				}
@@ -232,7 +232,7 @@ struct UnitSystem : System
 		}
 	}
 
-	void SeizeRegion(UnitComponent& unit)
+	void seizeRegion(UnitComponent& unit)
 	{
 		if (unit.m_SeizingRegionID <= 0)
 		{
@@ -244,29 +244,29 @@ struct UnitSystem : System
 			unit.m_DaysSeizing++;
 			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
 
-			MapRegion region = Map::GetRegionById(unit.m_SeizingRegionID);
+			MapRegion region = Map::getRegionById(unit.m_SeizingRegionID);
 
 			if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
 			{
 				EntityID loosingEntity = region.m_OwnerID;
-				ConquerRegion(unit.m_Owner, loosingEntity, unit.m_SeizingRegionID);
+				conquerRegion(unit.m_Owner, loosingEntity, unit.m_SeizingRegionID);
 				unit.m_DaysSeizing = 0;
 				unit.m_SeizingRegionID = -1;
 			}
 		}
 	}
 
-	void StartConquerRegion(UnitComponent& unit, Transform& transform)
+	void startConquerRegion(UnitComponent& unit, Transform& transform)
 	{
-		std::vector<int> regionIDs = Map::GetRegionIDs();
-		Vector2DInt currentMapPosition = Map::ConvertToMap(transform.m_Position);
+		std::vector<int> regionIDs = Map::getRegionIDs();
+		Vector2DInt currentMapPosition = Map::convertToMap(transform.m_Position);
 
 		for each (int regionID in regionIDs)
 		{
-			Vector2DInt capitalPosition = Map::GetRegionCapitalLocation(regionID);
+			Vector2DInt capitalPosition = Map::getRegionCapitalLocation(regionID);
 			if (currentMapPosition == capitalPosition)
 			{
-				unsigned int ownerID = Map::GetRegionById(regionID).m_OwnerID;
+				unsigned int ownerID = Map::getRegionById(regionID).m_OwnerID;
 				if (ownerID == unit.m_Owner)
 				{
 					continue;
@@ -278,14 +278,14 @@ struct UnitSystem : System
 		}
 	}
 
-	void ConquerRegion(EntityID conqueringID, EntityID loosingEntity, size_t regionID)
+	void conquerRegion(EntityID conqueringID, EntityID loosingEntity, size_t regionID)
 	{
 #pragma warning(push)
 #pragma warning(disable: 26815)
-		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
+		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
 #pragma warning(pop)
-		characterSystem->ConquerRegion(regionID, conqueringID);
-		characterSystem->LoseRegion(regionID, loosingEntity);
+		characterSystem->conquerRegion(regionID, conqueringID);
+		characterSystem->loseRegion(regionID, loosingEntity);
 
 		//War& currentWar = *m_Characters[m_UnitComponents[conqueringID].m_Owner].GetWarAgainst(m_UnitComponents[loosingEntity].m_Owner);
 		//
@@ -303,7 +303,7 @@ struct UnitSystem : System
 		//}
 	}
 
-	bool EnemyAtSquare(Vector2DInt square, EntityID opponent)
+	bool enemyAtSquare(Vector2DInt square, EntityID opponent)
 	{
 		for (auto& squareData : Map::m_MapSquareData)
 		{
@@ -324,7 +324,7 @@ struct UnitSystem : System
 		return false;
 	}
 
-	void StartCombatTimer(EntityID unit, EntityID enemyUnit)
+	void startCombatTimer(EntityID unit, EntityID enemyUnit)
 	{
 		LOG_INFO("Battle began between {0}'s army and {1}'s army", m_Characters[m_UnitComponents[unit].m_Owner].m_Name, m_Characters[m_UnitComponents[enemyUnit].m_Owner].m_Name);
 
@@ -340,25 +340,25 @@ struct UnitSystem : System
 		}
 	}
 
-	void DetermineCombat(EntityID unit, EntityID enemyUnit)
+	void determineCombat(EntityID unit, EntityID enemyUnit)
 	{
 		//Very WIP early combat prototype
 		//Todo: Needs more weights and values affecting the outcome than army size
 
 #pragma warning(push)
 #pragma warning(disable: 26815)
-		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
+		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
 #pragma warning(pop)
 
 		if (m_UnitComponents[unit].m_CombatTimerAccu > m_UnitComponents[unit].m_CombatTimer)
 		{
-			War& currentWar = *m_Characters[m_UnitComponents[unit].m_Owner].GetWarAgainst(m_UnitComponents[enemyUnit].m_Owner);
+			War& currentWar = *m_Characters[m_UnitComponents[unit].m_Owner].getWarAgainst(m_UnitComponents[enemyUnit].m_Owner);
 
-			if (currentWar.GetAttacker().m_RaisedArmySize > currentWar.GetDefender().m_RaisedArmySize)
+			if (currentWar.getAttacker().m_RaisedArmySize > currentWar.getDefender().m_RaisedArmySize)
 			{
-				currentWar.AddWarscore(50, true);
+				currentWar.addWarscore(50, true);
 
-				characterSystem->DismissUnit(currentWar.GetAttacker().m_EntityID);
+				characterSystem->dismissUnit(currentWar.getAttacker().m_EntityID);
 				m_UnitComponents[unit].m_Moving = true;
 				m_UnitComponents[unit].EnemyArmy = nullptr;
 				m_UnitComponents[enemyUnit].EnemyArmy = nullptr;
@@ -368,8 +368,8 @@ struct UnitSystem : System
 
 			else
 			{
-				currentWar.AddWarscore(100, false);
-				characterSystem->DismissUnit(currentWar.GetDefender().m_EntityID);
+				currentWar.addWarscore(100, false);
+				characterSystem->dismissUnit(currentWar.getDefender().m_EntityID);
 
 				m_UnitComponents[unit].m_Moving = true;
 				m_UnitComponents[unit].EnemyArmy = nullptr;
@@ -380,7 +380,7 @@ struct UnitSystem : System
 		}
 	}
 
-	void ShowPath(Transform& transform, UnitComponent& unit)
+	void showPath(Transform& transform, UnitComponent& unit)
 	{
 		unit.m_TargetPath.clear();
 		std::vector<Vector2DInt> path;
@@ -391,7 +391,7 @@ struct UnitSystem : System
 		unsigned int index = 0;
 		for each (Vector2DInt position in path)
 		{
-			Vector2D screenPosition = Map::ConvertToScreen(position);
+			Vector2D screenPosition = Map::convertToScreen(position);
 			Vector2D rectangleSize = Vector2D(unit.m_HighlightShape.getSize().x * 1.45f, unit.m_HighlightShape.getSize().y * 0.25f);
 			float rotation = 0.0f;
 			Vector2DInt oldPosition = Vector2DInt();
@@ -401,7 +401,7 @@ struct UnitSystem : System
 			}
 			else
 			{
-				oldPosition = Map::ConvertToMap(transform.m_Position);
+				oldPosition = Map::convertToMap(transform.m_Position);
 			}
 			Vector2DInt change = position - oldPosition;
 			if (abs(change.y) == 1 && change.x == 0)

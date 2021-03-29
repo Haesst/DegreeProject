@@ -37,20 +37,20 @@ class Pathfinding
 {
 public:
 	~Pathfinding();
-	static float CalculateHCost(const Node& a, const Node& b);
+	static float calculateHCost(const Node& a, const Node& b);
 
 	static std::vector<Node*> m_Map;
-	static bool IsInMap(const Vector2DInt& key);
-	static Node* GetNodeFromKey(const Vector2DInt& key);
+	static bool isInMap(const Vector2DInt& key);
+	static Node* getNodeFromKey(const Vector2DInt& key);
 
-	static void Init(const std::vector<MapRegion>& map);
+	static void init(const std::vector<MapRegion>& map);
 
-	static void CalculateNeighbours(Node* node);
+	static void calculateNeighbours(Node* node);
 
-	static void ClearNodeData();
+	static void clearNodeData();
 
-	static std::list<Vector2DInt> FindPath(Vector2DInt start, Vector2DInt end);
-	static void FindThreadedPath(std::list<Node*> openList, Node* endNode);
+	static std::list<Vector2DInt> findPath(Vector2DInt start, Vector2DInt end);
+	static void findThreadedPath(std::list<Node*> openList, Node* endNode);
 
 	static std::mutex m_PathMutex;
 	static std::thread m_PathThread;

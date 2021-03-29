@@ -58,18 +58,18 @@ struct GameDate
 	std::vector<Callback> m_DayChangeSubscribers;
 	std::vector<std::function<void(Date)>> m_MonthChangeSubscribers;
 
-	void Update()
+	void update()
 	{
-		addDayTimer -= Time::DeltaTime();
+		addDayTimer -= Time::deltaTime();
 
 		if (addDayTimer <= 0.0f)
 		{
-			ProgressTime();
+			progressTime();
 			addDayTimer = timeBeforeAddingDay;
 		}
 	}
 
-	void ProgressTime()
+	void progressTime()
 	{
 		++m_Date.m_Day;
 
@@ -96,7 +96,7 @@ struct GameDate
 		}
 	}
 
-	char* GetDaySuffix()
+	char* getDaySuffix()
 	{
 		int lastDayDigit = m_Date.m_Day % 10;
 
@@ -110,24 +110,24 @@ struct GameDate
 		}
 	}
 
-	std::string GetDateString()
+	std::string getDateString()
 	{
-		return std::to_string(m_Date.m_Day) + GetDaySuffix() + " of " + m_MonthName[m_Date.m_Month] + ". " + std::to_string(m_Date.m_Year) + " AD";
+		return std::to_string(m_Date.m_Day) + getDaySuffix() + " of " + m_MonthName[m_Date.m_Month] + ". " + std::to_string(m_Date.m_Year) + " AD";
 	}
 
-	void SubscribeToMonthChange(std::function<void(Date)> action)
+	void subscribeToMonthChange(std::function<void(Date)> action)
 	{
 		m_MonthChangeSubscribers.push_back(action);
 	}
 
-	int SubscribeToDayChange(CallbackMember* callback, void* data)
+	int subscribeToDayChange(CallbackMember* callback, void* data)
 	{
 		Callback cb = Callback(callback, data);
 		m_DayChangeSubscribers.push_back(cb);
 		return cb.id;
 	}
 
-	void UnsubscribeToDayChange(unsigned int id)
+	void unsubscribeToDayChange(unsigned int id)
 	{
 		int index = 0;
 		bool found = false;

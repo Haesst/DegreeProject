@@ -11,7 +11,7 @@ struct RegionBuilding
 	bool m_Finished = false;
 	int m_DaysBuilt = 0;
 
-	void StartBuild(int buildId)
+	void startBuild(int buildId)
 	{
 		if (GameData::m_Buildings.find(buildId) == GameData::m_Buildings.end())
 		{
@@ -20,14 +20,12 @@ struct RegionBuilding
 		}
 
 		m_BuildingId = buildId;
-
-		// Subscribe to day change
-		m_DaySubscribeHandle = Time::m_GameDate.SubscribeToDayChange([](void* data) { RegionBuilding& building = *static_cast<RegionBuilding*>(data); building.OnDayChange(Time::m_GameDate.m_Date); }, static_cast<void*>(this));
+		m_DaySubscribeHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { RegionBuilding& building = *static_cast<RegionBuilding*>(data); building.onDayChange(Time::m_GameDate.m_Date); }, static_cast<void*>(this));
 
 		LOG_WARN("Construction Started!");
 	}
 
-	void OnDayChange(Date)
+	void onDayChange(Date)
 	{
 		if (m_Finished)
 		{
@@ -43,7 +41,7 @@ struct RegionBuilding
 		{
 			LOG_WARN("Build successful!! Days constructed: {0}, buildtime: {1}", m_DaysBuilt, GameData::m_Buildings[m_BuildingId].m_DaysToConstruct);
 			m_Finished = true;
-			Time::m_GameDate.UnsubscribeToDayChange(m_DaySubscribeHandle);
+			Time::m_GameDate.unsubscribeToDayChange(m_DaySubscribeHandle);
 		}
 	}
 };

@@ -22,14 +22,14 @@ struct UISpriteRenderer : public Component
 	UISpriteRenderer(const char* path, int width, int height, AssetHandler* assetHandler)
 		: m_Width(width), m_Height(height)
 	{
-		m_Transform = &EntityManager::Get().GetComponent<Transform>(m_EntityID);
-		m_Texture = assetHandler->LoadImageFromFile(path);
+		m_Transform = &EntityManager::get().getComponent<Transform>(m_EntityID);
+		m_Texture = assetHandler->loadImageFromFile(path);
 		m_Sprite.setTexture(m_Texture);
 		m_Sprite.setPosition(m_Transform->m_Position.x, m_Transform->m_Position.y);
-		UpdateSize();
+		updateSize();
 	}
 
-	void UpdateSize()
+	void updateSize()
 	{
 		sf::FloatRect localSize = m_Sprite.getLocalBounds();
 

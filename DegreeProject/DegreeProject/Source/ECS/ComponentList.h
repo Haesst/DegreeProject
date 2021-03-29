@@ -9,7 +9,7 @@ class IComponentList
 public:
 	IComponentList() = default;
 	~IComponentList() = default;
-	virtual void Erase(const EntityID entity) {}
+	virtual void erase(const EntityID entity) {}
 };
 
 template<typename T>
@@ -22,7 +22,7 @@ public:
 	ComponentList() = default;
 	~ComponentList() = default;
 
-	void Insert(const T& component)
+	void insert(const T& component)
 	{
 		for (auto c : m_Components)
 		{
@@ -35,14 +35,14 @@ public:
 		m_Components.push_back(component);
 	}
 
-	T& Get(const EntityID entity)
+	T& get(const EntityID entity)
 	{
 		auto comp = std::find_if(m_Components.begin(), m_Components.end(), [&](const T& c) { return c.GetID() == entity; });
 		assert(comp != m_Components.end() && "Trying to get non-existing component!");
 		return *comp;
 	}
 
-	void Erase(const EntityID entity) override final
+	void erase(const EntityID entity) override final
 	{
 		auto comp = std::find_if(m_Components.begin(), m_Components.end(), [&](const T& c) { return c.GetID() == entity; });
 

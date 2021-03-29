@@ -22,17 +22,17 @@ struct WarmindSystem : System
 
 	WarmindSystem()
 	{
-		AddComponentSignature<WarmindComponent>();
-		AddComponentSignature<CharacterComponent>();
-		m_EntityManager = &EntityManager::Get();
+		addComponentSignature<WarmindComponent>();
+		addComponentSignature<CharacterComponent>();
+		m_EntityManager = &EntityManager::get();
 
-		m_Units = m_EntityManager->GetComponentArray<UnitComponent>();
-		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
-		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-		m_Transforms = m_EntityManager->GetComponentArray<Transform>();
+		m_Units = m_EntityManager->getComponentArray<UnitComponent>();
+		m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
+		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
+		m_Transforms = m_EntityManager->getComponentArray<Transform>();
 	}
 
-	virtual void Update() override
+	virtual void update() override
 	{
 		for (auto entity : m_Entities)
 		{
@@ -43,35 +43,35 @@ struct WarmindSystem : System
 
 			if (m_Units[m_Characters[entity].m_UnitEntity].m_Raised)
 			{
-				m_Warminds[entity].m_OrderAccu += Time::DeltaTime();
+				m_Warminds[entity].m_OrderAccu += Time::deltaTime();
 
 				if (m_Warminds[entity].m_OrderAccu >= m_Warminds[entity].m_OrderTimer)
 				{
-					m_Warminds[entity].m_PrioritizedWar = ConsiderPrioritizedWar(entity);
+					m_Warminds[entity].m_PrioritizedWar = considerPrioritizedWar(entity);
 
 					m_Warminds[entity].m_OrderAccu = 0.0f;
-					ConsiderOrders(entity, m_Units[m_Characters[entity].m_UnitEntity], m_Warminds[entity].m_Opponent);
+					considerOrders(entity, m_Units[m_Characters[entity].m_UnitEntity], m_Warminds[entity].m_Opponent);
 				}
 			}
 		}
 	}
 
-	void OrderSiegeCapital(EntityID warmindID, UnitComponent& unit)
+	void orderSiegeCapital(EntityID warmindID, UnitComponent& unit)
 	{
-		Vector2D unitPosition = m_EntityManager->GetComponent<Transform>(m_Characters[warmindID].m_UnitEntity).m_Position;
-		Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
+		Vector2D unitPosition = m_EntityManager->getComponent<Transform>(m_Characters[warmindID].m_UnitEntity).m_Position;
+		Vector2DInt startingPosition = Map::convertToMap(unitPosition);
 
 		Vector2DInt capitalPosition;
 		War& currentWar = *m_Warminds[warmindID].m_PrioritizedWar;
 
-		if (currentWar.IsAttacker(warmindID))
+		if (currentWar.isAttacker(warmindID))
 		{
-			capitalPosition = Map::GetRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId);
+			capitalPosition = Map::getRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId);
 		}
 
 		else
 		{
-			CharacterComponent& enemyCharacter = m_Warminds[warmindID].m_PrioritizedWar->GetAttacker();
+			CharacterComponent& enemyCharacter = m_Warminds[warmindID].m_PrioritizedWar->getAttacker();
 
 			if (m_Units[m_Characters[warmindID].m_UnitEntity].m_DaysSeizing > 0)
 			{
@@ -79,13 +79,13 @@ struct WarmindSystem : System
 			}
 			
 			int randomRegionIndex = rand() % enemyCharacter.m_OwnedRegionIDs.size();
-			capitalPosition = Map::GetRegionCapitalLocation(enemyCharacter.m_OwnedRegionIDs[randomRegionIndex]);
+			capitalPosition = Map::getRegionCapitalLocation(enemyCharacter.m_OwnedRegionIDs[randomRegionIndex]);
 		}
 
-		MoveUnit(unit.m_EntityID, capitalPosition);
+		moveUnit(unit.m_EntityID, capitalPosition);
 	}
 
-	void OrderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
+	void orderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
 	{
 		if (m_Warminds[warmindID].m_PrioritizedWar == nullptr)
 		{
@@ -110,75 +110,75 @@ struct WarmindSystem : System
 
 		else
 		{
-			battlefieldIntPosition = Map::ConvertToMap(m_Transforms[enemyUnit.GetID()].m_Position);
+			battlefieldIntPosition = Map::convertToMap(m_Transforms[enemyUnit.getID()].m_Position);
 		}
 
-		MoveUnit(unit.m_EntityID, battlefieldIntPosition);
+		moveUnit(unit.m_EntityID, battlefieldIntPosition);
 	}
 
-	void ConsiderOrders(EntityID warmind, UnitComponent& unit, EntityID target)
+	void considerOrders(EntityID warmind, UnitComponent& unit, EntityID target)
 	{
 		if (m_Warminds[warmind].m_PrioritizedWar == nullptr)
 		{
-			ConsiderPrioritizedWar(warmind);
+			considerPrioritizedWar(warmind);
 		}
 
 		m_Units[m_Characters[warmind].m_UnitEntity].m_Moving = false;
 		auto& enemyUnit = m_Units[m_Characters[target].m_UnitEntity]; //change to character
 
 		SiegeCapitalConsideration siegeConsideration;
-		float siegeEval = siegeConsideration.Evaluate(warmind, target);
+		float siegeEval = siegeConsideration.evaluate(warmind, target);
 		FightEnemyArmyConsideration fightConsideration;
-		float fightEval = fightConsideration.Evaluate(warmind, target);
+		float fightEval = fightConsideration.evaluate(warmind, target);
 
-		if (m_Warminds[warmind].m_PrioritizedWar->GetDefender().GetID() == warmind)
+		if (m_Warminds[warmind].m_PrioritizedWar->getDefender().getID() == warmind)
 		{
 			fightEval += .2f;
 		}
 
 		if (siegeEval > fightEval || !enemyUnit.m_Raised)
 		{
-			if (!m_Warminds[warmind].m_PrioritizedWar->IsDefender(target))
+			if (!m_Warminds[warmind].m_PrioritizedWar->isDefender(target))
 			{
 				LOG_INFO("Warmind belonging to {0} decided to siege the enemy capital", m_Characters[warmind].m_Name);
 			}
 
-			OrderSiegeCapital(warmind, m_Units[m_Characters[warmind].m_UnitEntity]);
+			orderSiegeCapital(warmind, m_Units[m_Characters[warmind].m_UnitEntity]);
 		}
 
 		else
 		{
 			LOG_INFO("Warmind belonging to {0} decided to fight the enemy army", m_Characters[warmind].m_Name);
-			OrderFightEnemyArmy(warmind, unit);
+			orderFightEnemyArmy(warmind, unit);
 		}
 	}
 
-	War* ConsiderPrioritizedWar(EntityID ent) //Will be expanded later
+	War* considerPrioritizedWar(EntityID ent) //Will be expanded later
 	{
-		if (m_Characters[ent].m_CurrentWars.front().IsAttacker(ent))
+		if (m_Characters[ent].m_CurrentWars.front().isAttacker(ent))
 		{
-			m_Warminds[ent].m_Opponent = m_Characters[ent].m_CurrentWars.front().m_Defender->GetID();
+			m_Warminds[ent].m_Opponent = m_Characters[ent].m_CurrentWars.front().m_Defender->getID();
 		}
 
 		else
 		{
-			m_Warminds[ent].m_Opponent = m_Characters[ent].m_CurrentWars.front().m_Attacker->GetID();
+			m_Warminds[ent].m_Opponent = m_Characters[ent].m_CurrentWars.front().m_Attacker->getID();
 		}
 
 		return &m_Characters[ent].m_CurrentWars.front();
 	}
 
-	void MoveUnit(EntityID unitToMove, Vector2DInt targetPosition)
+	void moveUnit(EntityID unitToMove, Vector2DInt targetPosition)
 	{
 		UnitComponent& unit = m_Units[unitToMove];
-		Transform& transform = m_EntityManager->GetComponent<Transform>(unitToMove);
+		Transform& transform = m_EntityManager->getComponent<Transform>(unitToMove);
 
 		unit.m_Moving = false;
 		transform.m_Position = unit.m_LastPosition;
 
 		Vector2D unitPosition = transform.m_Position;
-		Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
-		std::list<Vector2DInt> path = Pathfinding::FindPath(startingPosition, targetPosition);
+		Vector2DInt startingPosition = Map::convertToMap(unitPosition);
+		std::list<Vector2DInt> path = Pathfinding::findPath(startingPosition, targetPosition);
 
 		if (path.size() > 0)
 		{
@@ -188,12 +188,12 @@ struct WarmindSystem : System
 				return;
 			}
 
-			unit.SetPath(path, Map::ConvertToScreen(startingPosition));
+			unit.setPath(path, Map::convertToScreen(startingPosition));
 #pragma warning(push)
 #pragma warning(disable: 26815)
-			UnitSystem* unitSystem = (UnitSystem*)m_EntityManager->GetSystem<UnitSystem>().get();
+			UnitSystem* unitSystem = (UnitSystem*)m_EntityManager->getSystem<UnitSystem>().get();
 #pragma warning(pop)
-			unitSystem->ShowPath(transform, unit);
+			unitSystem->showPath(transform, unit);
 		}
 		else
 		{

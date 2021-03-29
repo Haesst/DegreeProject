@@ -4,13 +4,14 @@
 #include <SFML/Graphics.hpp>
 
 template <typename T>
-struct Vec2D
+class Vec2D
 {
+public:
 	struct VectorCompare
 	{
 		bool operator() (const Vec2D<T>& lhs, const Vec2D<T>& rhs) const
 		{
-			return lhs.GetLength() < rhs.GetLength();
+			return lhs.getLength() < rhs.getLength();
 		}
 	};
 
@@ -26,7 +27,7 @@ struct Vec2D
 	{}
 
 	Vec2D(sf::Vector2f sfmlVec)
-		: x(sfmlVec.x), y(sfmlVec.y)
+		: x((T)sfmlVec.x), y((T)sfmlVec.y)
 	{}
 
 	inline Vec2D<T> operator+(const Vec2D<T>& v2) const
@@ -68,42 +69,42 @@ struct Vec2D
 		return (d != 0 ? Vec2D<T>(x / d, y / d) : Vec2D<T>());
 	}
 
-	inline Vec2D<T>& Zero()
+	inline Vec2D<T>& zero()
 	{
 		x = 0;
 		y = 0;
 		return *this;
 	}
 
-	inline Vec2D<T>& One()
+	inline Vec2D<T>& one()
 	{
 		x = 1;
 		y = 1;
 		return *this;
 	}
 
-	inline Vec2D<T>& Right()
+	inline Vec2D<T>& right()
 	{
 		x = 1;
 		y = 0;
 		return *this;
 	}
 
-	inline Vec2D<T>& Left()
+	inline Vec2D<T>& left()
 	{
 		x = -1;
 		y = 0;
 		return *this;
 	}
 
-	inline Vec2D<T>& Up()
+	inline Vec2D<T>& up()
 	{
 		x = 0;
 		y = 1;
 		return *this;
 	}
 
-	inline Vec2D<T>& Down()
+	inline Vec2D<T>& down()
 	{
 		x = 0;
 		y = -1;
@@ -116,7 +117,7 @@ struct Vec2D
 		return stream;
 	}
 
-	inline Vec2D Normalized()
+	inline Vec2D normalized()
 	{
 		float length = sqrtf(x * x + y * y);
 		if (length != 0)
@@ -127,12 +128,12 @@ struct Vec2D
 		return *this;
 	}
 
-	inline float GetLength() const
+	inline float getLength() const
 	{
 		return sqrtf((float)x * (float)x + (float)y * (float)y);
 	}
-
-	inline Vec2D Abs() const
+	
+	inline Vec2D absolute() const
 	{
 		return Vec2D(abs(x), abs(y));
 	}
@@ -182,7 +183,7 @@ struct Vec2D
 		return x >= v2.x && y >= v2.y;
 	}
 
-	inline bool NearlyEqual(const Vec2D<T>& v2, float tolerance = 0.0f, float centerOffsetX = 0.0f, float centerOffsetY = 0.0f)
+	inline bool nearlyEqual(const Vec2D<T>& v2, float tolerance = 0.0f, float centerOffsetX = 0.0f, float centerOffsetY = 0.0f)
 	{
 		if (abs(x + centerOffsetX - v2.x) <= tolerance && abs(y + centerOffsetY - v2.y) <= tolerance)
 		{

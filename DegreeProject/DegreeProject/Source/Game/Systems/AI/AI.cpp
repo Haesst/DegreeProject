@@ -1,20 +1,20 @@
 #include "AI.h"
 
-float AISystem::WarDecision(EntityID ent)
+float AISystem::warDecision(EntityID ent)
 {
-	CharacterComponent* characterComponents = m_EntityManager->GetComponentArray<CharacterComponent>();
-	WarmindComponent* warmindComponents = m_EntityManager->GetComponentArray<WarmindComponent>();
+	CharacterComponent* characterComponents = m_EntityManager->getComponentArray<CharacterComponent>();
+	WarmindComponent* warmindComponents = m_EntityManager->getComponentArray<WarmindComponent>();
 
 	GoldConsideration goldConsideration;
 	ArmySizeConsideration armySizeConsideration;
 
 	Personality personality = m_AIManager->m_Personalities[characterComponents->m_PersonalityIndex];
 
-	goldConsideration.SetContext(ent);
-	armySizeConsideration.SetContext(ent);
+	goldConsideration.setContext(ent);
+	armySizeConsideration.setContext(ent);
 
-	float goldEvaluation = goldConsideration.Evaluate(ent, warmindComponents[ent].m_Opponent);
-	float enemyArmyEvaluation = armySizeConsideration.Evaluate(ent, warmindComponents[ent].m_Opponent);
+	float goldEvaluation = goldConsideration.evaluate(ent, warmindComponents[ent].m_Opponent);
+	float enemyArmyEvaluation = armySizeConsideration.evaluate(ent, warmindComponents[ent].m_Opponent);
 
 	float actionScore = goldEvaluation * enemyArmyEvaluation;
 	actionScore += personality.m_DeclareWarModifier;
@@ -22,19 +22,19 @@ float AISystem::WarDecision(EntityID ent)
 	return std::clamp(actionScore, 0.0f, 1.0f);
 }
 
-float AISystem::ExpansionDecision(EntityID ent)
+float AISystem::expansionDecision(EntityID ent)
 {
 	std::vector<std::pair<float, int>> actionScorePerRegion;
 
-	CharacterComponent* characterComponents = m_EntityManager->GetComponentArray<CharacterComponent>();
-	WarmindComponent* warmindComponents = m_EntityManager->GetComponentArray<WarmindComponent>();
+	CharacterComponent* characterComponents = m_EntityManager->getComponentArray<CharacterComponent>();
+	WarmindComponent* warmindComponents = m_EntityManager->getComponentArray<WarmindComponent>();
 
 	ExpansionConsideration expansionConsideration;
 
-	expansionConsideration.SetContext(ent);
+	expansionConsideration.setContext(ent);
 
 	//Get characters in certain range,
-	std::vector<int> regionIndexes = Map::GetRegionIDs();
+	std::vector<int> regionIndexes = Map::getRegionIDs();
 
 	for (size_t i = 0; i < regionIndexes.size(); i++)
 	{
@@ -44,7 +44,7 @@ float AISystem::ExpansionDecision(EntityID ent)
 			continue;
 		}
 
-		float eval = expansionConsideration.Evaluate(ent, regionIndexes[i]);
+		float eval = expansionConsideration.evaluate(ent, regionIndexes[i]);
 		auto pair = std::make_pair(eval, regionIndexes[i]);
 		actionScorePerRegion.push_back(pair);
 	}
@@ -58,7 +58,7 @@ float AISystem::ExpansionDecision(EntityID ent)
 		{
 			highest = actionScorePerRegion[i].first;
 			warmindComponents[ent].m_WargoalRegionId = actionScorePerRegion[i].second;
-			warmindComponents[ent].m_Opponent = Map::GetRegionById(actionScorePerRegion[i].second).m_OwnerID;
+			warmindComponents[ent].m_Opponent = Map::getRegionById(actionScorePerRegion[i].second).m_OwnerID;
 			bestIndex = i;
 		}
 	}

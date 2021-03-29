@@ -7,17 +7,17 @@ private:
 	static sf::RenderWindow* m_Window;
 
 public:
-	static void Init (sf::VideoMode videoMode, char* title, int styleMode)
+	static void init (sf::VideoMode videoMode, char* title, int styleMode)
 	{
 		m_Window = new sf::RenderWindow(videoMode, title, styleMode);
 	}
 
-	static sf::RenderWindow* GetWindow()
+	static sf::RenderWindow* getWindow()
 	{
 		return m_Window;
 	}
 
-	static void Cleanup()
+	static void cleanup()
 	{
 	}
 

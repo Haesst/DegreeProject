@@ -7,11 +7,11 @@
 #pragma warning(pop)
 
 // Client log macros
-#define LOG_ERROR(...)   ::Log::GetLogger()->error(__VA_ARGS__)
-#define LOG_WARN(...)    ::Log::GetLogger()->warn(__VA_ARGS__)
-#define LOG_INFO(...)    ::Log::GetLogger()->info(__VA_ARGS__)
-#define LOG_TRACE(...)   ::Log::GetLogger()->trace(__VA_ARGS__)
-#define LOG_FATAL(...)   ::Log::GetLogger()->fatal(__VA_ARGS__)
+#define LOG_ERROR(...)   ::Log::getLogger()->error(__VA_ARGS__)
+#define LOG_WARN(...)    ::Log::getLogger()->warn(__VA_ARGS__)
+#define LOG_INFO(...)    ::Log::getLogger()->info(__VA_ARGS__)
+#define LOG_TRACE(...)   ::Log::getLogger()->trace(__VA_ARGS__)
+#define LOG_FATAL(...)   ::Log::getLogger()->fatal(__VA_ARGS__)
 
 #ifdef ENABLE_ASSERTS
 #define ASSERT(x, ...) { if(!(x)) { LOG_ERROR("Assertion failed: {0}", __VA_ARGS__); __debugbreak();}}
@@ -22,9 +22,9 @@
 class Log
 {
 public:
-	static void Init();
+	static void init();
 
-	inline static std::shared_ptr<spdlog::logger>& GetLogger() { return m_Logger; }
+	inline static std::shared_ptr<spdlog::logger>& getLogger() { return m_Logger; }
 
 private:
 	static std::shared_ptr<spdlog::logger> m_Logger;

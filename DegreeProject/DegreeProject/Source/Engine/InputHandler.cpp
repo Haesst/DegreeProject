@@ -14,7 +14,7 @@ static Vector2D m_MousePosition = Vector2D(0.0f, 0.0f);
 static Vector2DInt m_MouseMapPosition = Vector2DInt(0, 0);
 static bool inputs[Inputs::PlayerUnitSelected + 1];
 
-void InputHandler::HandleInputEvents()
+void InputHandler::handleInputEvents()
 {
 	inputs[LeftMouseClicked] = false;
 	inputs[RightMouseClicked] = false;
@@ -27,7 +27,7 @@ void InputHandler::HandleInputEvents()
 	inputs[CharacterWindowOpen] = false;
 	inputs[RegionWindowOpen] = false;
 	inputs[PlayerUnitSelected] = false;
-	sf::RenderWindow* window = Window::GetWindow();
+	sf::RenderWindow* window = Window::getWindow();
 	sf::View view = window->getView();
 	sf::Event event;
 	while (window->pollEvent(event))
@@ -46,85 +46,85 @@ void InputHandler::HandleInputEvents()
 					case sf::Keyboard::W:
 					{
 						m_ViewMoveDirection = Vector2DInt(0, -1);
-						if (AllowedToMoveView(view))
+						if (allowedToMoveView(view))
 						{
-							MoveView(window, view);
+							moveView(window, view);
 						}
 						break;
 					}
 					case sf::Keyboard::A:
 					{
 						m_ViewMoveDirection = Vector2DInt(-1, 0);
-						if (AllowedToMoveView(view))
+						if (allowedToMoveView(view))
 						{
-							MoveView(window, view);
+							moveView(window, view);
 						}
 						break;
 					}
 					case sf::Keyboard::S:
 					{
 						m_ViewMoveDirection = Vector2DInt(0, 1);
-						if (AllowedToMoveView(view))
+						if (allowedToMoveView(view))
 						{
-							MoveView(window, view);
+							moveView(window, view);
 						}
 						break;
 					}
 					case sf::Keyboard::D:
 					{
 						m_ViewMoveDirection = Vector2DInt(1, 0);
-						if (AllowedToMoveView(view))
+						if (allowedToMoveView(view))
 						{
-							MoveView(window, view);
+							moveView(window, view);
 						}
 						break;
 					}
 					case sf::Keyboard::Up:
 					{
 						m_ViewMoveDirection = Vector2DInt(0, -1);
-						if (AllowedToMoveView(view))
+						if (allowedToMoveView(view))
 						{
-							MoveView(window, view);
+							moveView(window, view);
 						}
 						break;
 					}
 					case sf::Keyboard::Left:
 					{
 						m_ViewMoveDirection = Vector2DInt(-1, 0);
-						if (AllowedToMoveView(view))
+						if (allowedToMoveView(view))
 						{
-							MoveView(window, view);
+							moveView(window, view);
 						}
 						break;
 					}
 					case sf::Keyboard::Down:
 					{
 						m_ViewMoveDirection = Vector2DInt(0, 1);
-						if (AllowedToMoveView(view))
+						if (allowedToMoveView(view))
 						{
-							MoveView(window, view);
+							moveView(window, view);
 						}
 						break;
 					}
 					case sf::Keyboard::Right:
 					{
 						m_ViewMoveDirection = Vector2DInt(1, 0);
-						if (AllowedToMoveView(view))
+						if (allowedToMoveView(view))
 						{
-							MoveView(window, view);
+							moveView(window, view);
 						}
 						break;
 					}
 					case sf::Keyboard::Equal:
 					case sf::Keyboard::Add:
 					{
-						Time::IncreaseGameSpeed();
+						Time::increaseGameSpeed();
 						break;
 					}
 					case sf::Keyboard::Hyphen:
 					case sf::Keyboard::Subtract:
 					{
-						Time::DecreaseGameSpeed();
+						Time::decreaseGameSpeed();
 						break;
 					}
 					case sf::Keyboard::Escape:
@@ -134,7 +134,7 @@ void InputHandler::HandleInputEvents()
 					}
 					case sf::Keyboard::Space:
 					{
-						Time::GamePaused() ? Time::UnpauseGame() : Time::PauseGame();
+						Time::gamePaused() ? Time::unpauseGame() : Time::pauseGame();
 						break;
 					}
 					case sf::Keyboard::Delete:
@@ -145,31 +145,31 @@ void InputHandler::HandleInputEvents()
 					case sf::Keyboard::Numpad1:
 					case sf::Keyboard::Num1:
 					{
-						Time::SetGameSpeed(1);
+						Time::setGameSpeed(1);
 						break;
 					}
 					case sf::Keyboard::Numpad2:
 					case sf::Keyboard::Num2:
 					{
-						Time::SetGameSpeed(2);
+						Time::setGameSpeed(2);
 						break;
 					}
 					case sf::Keyboard::Numpad3:
 					case sf::Keyboard::Num3:
 					{
-						Time::SetGameSpeed(3);
+						Time::setGameSpeed(3);
 						break;
 					}
 					case sf::Keyboard::Numpad4:
 					case sf::Keyboard::Num4:
 					{
-						Time::SetGameSpeed(4);
+						Time::setGameSpeed(4);
 						break;
 					}
 					case sf::Keyboard::Numpad5:
 					case sf::Keyboard::Num5:
 					{
-						Time::SetGameSpeed(5);
+						Time::setGameSpeed(5);
 						break;
 					}
 					default:
@@ -185,12 +185,12 @@ void InputHandler::HandleInputEvents()
 			}
 			case sf::Event::GainedFocus:
 			{
-				Time::UnpauseGame();
+				Time::unpauseGame();
 				break;
 			}
 			case sf::Event::LostFocus:
 			{
-				Time::PauseGame();
+				Time::pauseGame();
 				break;
 			}
 			case sf::Event::TextEntered:
@@ -207,13 +207,13 @@ void InputHandler::HandleInputEvents()
 					case sf::Mouse::Left:
 					{
 						inputs[LeftMouseClicked] = true;
-						SetMousePosition(event.mouseButton.x, event.mouseButton.y, window);
+						setMousePosition(event.mouseButton.x, event.mouseButton.y, window);
 						break;
 					}
 					case sf::Mouse::Right:
 					{
 						inputs[RightMouseClicked] = true;
-						SetMousePosition(event.mouseButton.x, event.mouseButton.y, window);
+						setMousePosition(event.mouseButton.x, event.mouseButton.y, window);
 						break;
 					}
 					case sf::Mouse::Middle:
@@ -243,13 +243,13 @@ void InputHandler::HandleInputEvents()
 					case sf::Mouse::Left:
 					{
 						inputs[LeftMouseReleased] = true;
-						SetMousePosition(event.mouseButton.x, event.mouseButton.y, window);
+						setMousePosition(event.mouseButton.x, event.mouseButton.y, window);
 						break;
 					}
 					case sf::Mouse::Right:
 					{
 						inputs[RightMouseReleased] = true;
-						SetMousePosition(event.mouseButton.x, event.mouseButton.y, window);
+						setMousePosition(event.mouseButton.x, event.mouseButton.y, window);
 						break;
 					}
 					case sf::Mouse::Middle:
@@ -276,10 +276,10 @@ void InputHandler::HandleInputEvents()
 				if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
 				{
 					m_MouseScrollDirection = event.mouseWheelScroll.delta;
-					if (AllowedToZoomView(view))
+					if (allowedToZoomView(view))
 					{
 						inputs[MouseScrolled] = true;
-						ZoomView(window, view);
+						zoomView(window, view);
 					}
 				}
 				break;
@@ -287,13 +287,13 @@ void InputHandler::HandleInputEvents()
 			case sf::Event::MouseMoved:
 			{
 				inputs[MouseMoved] = true;
-				Vector2D previousMousePosition = GetMousePosition();
-				SetMousePosition(event.mouseMove.x, event.mouseMove.y, window);
-				if (inputs[MiddleMouseClicked] && AllowedToMoveView(view))
+				Vector2D previousMousePosition = getMousePosition();
+				setMousePosition(event.mouseMove.x, event.mouseMove.y, window);
+				if (inputs[MiddleMouseClicked] && allowedToMoveView(view))
 				{
-					Vector2D direction = (previousMousePosition - GetMousePosition()).Normalized();
+					Vector2D direction = (previousMousePosition - getMousePosition()).normalized();
 					m_ViewMoveDirection = Vector2DInt((int)direction.x, (int)direction.y);
-					MoveView(window, view);
+					moveView(window, view);
 				}
 				break;
 			}
@@ -315,19 +315,19 @@ void InputHandler::HandleInputEvents()
 	}
 }
 
-void InputHandler::ZoomView(sf::RenderWindow* window, sf::View& view)
+void InputHandler::zoomView(sf::RenderWindow* window, sf::View& view)
 {
 	view.zoom(1.0f - m_MouseScrollDirection * ZOOM_SPEED);
 	window->setView(view);
 }
 
-bool InputHandler::AllowedToZoomView(sf::View& view)
+bool InputHandler::allowedToZoomView(sf::View& view)
 {
 	return (m_MouseScrollDirection >= 0.0f && (view.getSize().x > MIN_ZOOM || view.getSize().y > MIN_ZOOM)) 
 		|| (m_MouseScrollDirection <= 0.0f && (view.getSize().x < MAX_ZOOM || view.getSize().y < MAX_ZOOM));
 }
 
-bool InputHandler::AllowedToMoveView(sf::View& view)
+bool InputHandler::allowedToMoveView(sf::View& view)
 {
 	return (m_ViewMoveDirection.y == -1 && view.getCenter().y > sf::VideoMode::getDesktopMode().height * 0.1f)
 		|| (m_ViewMoveDirection.y == 1 && view.getCenter().y < sf::VideoMode::getDesktopMode().height * 0.9f)
@@ -335,100 +335,100 @@ bool InputHandler::AllowedToMoveView(sf::View& view)
 		|| (m_ViewMoveDirection.x == -1 && view.getCenter().x > sf::VideoMode::getDesktopMode().width * 0.1f);
 }
 
-void InputHandler::SetMousePosition(int xPosition, int yPosition, sf::RenderWindow* window)
+void InputHandler::setMousePosition(int xPosition, int yPosition, sf::RenderWindow* window)
 {
 	m_MouseMapPosition = Vector2DInt(xPosition, yPosition);
 	m_MousePosition = window->mapPixelToCoords(sf::Vector2i(m_MouseMapPosition.x, m_MouseMapPosition.y));
-	m_MouseMapPosition = Map::ConvertToMap(m_MousePosition);
+	m_MouseMapPosition = Map::convertToMap(m_MousePosition);
 }
 
-void InputHandler::MoveView(sf::RenderWindow* window, sf::View& view)
+void InputHandler::moveView(sf::RenderWindow* window, sf::View& view)
 {
 	view.move(m_ViewMoveDirection.x * MOVE_SPEED, m_ViewMoveDirection.y * MOVE_SPEED);
 	window->setView(view);
 }
 
-bool InputHandler::GetLeftMouseClicked()
+bool InputHandler::getLeftMouseClicked()
 {
 	return inputs[LeftMouseClicked];
 }
 
-bool InputHandler::GetRightMouseClicked()
+bool InputHandler::getRightMouseClicked()
 {
 	return inputs[RightMouseClicked];
 }
 
-bool InputHandler::GetLeftMouseReleased()
+bool InputHandler::getLeftMouseReleased()
 {
 	return inputs[LeftMouseReleased];
 }
 
-bool InputHandler::GetRightMouseReleased()
+bool InputHandler::getRightMouseReleased()
 {
 	return inputs[RightMouseReleased];
 }
 
-Vector2D InputHandler::GetMousePosition()
+Vector2D InputHandler::getMousePosition()
 {
 	return m_MousePosition;
 }
 
-Vector2DInt InputHandler::GetMouseMapPosition()
+Vector2DInt InputHandler::getMouseMapPosition()
 {
 	return m_MouseMapPosition;
 }
 
-float InputHandler::GetMouseScrollDirection()
+float InputHandler::getMouseScrollDirection()
 {
 	return m_MouseScrollDirection;
 }
 
-bool InputHandler::GetMouseScrolled()
+bool InputHandler::getMouseScrolled()
 {
 	return inputs[MouseScrolled];
 }
 
-bool InputHandler::GetPlayerUnitSelected()
+bool InputHandler::getPlayerUnitSelected()
 {
 	return inputs[PlayerUnitSelected];
 }
 
-bool InputHandler::GetCharacterWindowOpen()
+bool InputHandler::getCharacterWindowOpen()
 {
 	return inputs[CharacterWindowOpen];
 }
 
-bool InputHandler::GetRegionWindowOpen()
+bool InputHandler::getRegionWindowOpen()
 {
 	return inputs[RegionWindowOpen];
 }
 
-bool InputHandler::GetMouseMoved()
+bool InputHandler::getMouseMoved()
 {
 	return inputs[MouseMoved];
 }
 
-bool InputHandler::GetEscapePressed()
+bool InputHandler::getEscapePressed()
 {
 	return inputs[EscapePressed];
 }
 
-void InputHandler::SetPlayerUnitSelected(bool selected)
+void InputHandler::setPlayerUnitSelected(bool selected)
 {
 	inputs[PlayerUnitSelected] = selected;
 }
 
-void InputHandler::SetCharacterWindowOpen(bool open)
+void InputHandler::setCharacterWindowOpen(bool open)
 {
 	inputs[CharacterWindowOpen] = open;
 }
 
-void InputHandler::SetRegionWindowOpen(bool open)
+void InputHandler::setRegionWindowOpen(bool open)
 {
 	inputs[RegionWindowOpen] = open;
 }
 
-float InputHandler::GetZoomSpeed()
+float InputHandler::getZoomSpeed()
 {
 	return ZOOM_SPEED;
 }

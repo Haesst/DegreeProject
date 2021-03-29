@@ -28,11 +28,11 @@ struct AIManager
 
 	AIManager()
 	{
-		LoadPersonalities("Assets\\Data\\AI\\AIPersonalities.json");
-		HotReloader::Get()->SubscribeToFileChange("Assets\\Data\\AI\\AIPersonalities.json", std::bind(&AIManager::OnFileChange, this, std::placeholders::_1, std::placeholders::_2));
+		loadPersonalities("Assets\\Data\\AI\\AIPersonalities.json");
+		HotReloader::get()->subscribeToFileChange("Assets\\Data\\AI\\AIPersonalities.json", std::bind(&AIManager::onFileChange, this, std::placeholders::_1, std::placeholders::_2));
 	}
 
-	void LoadPersonalities(const char* path)
+	void loadPersonalities(const char* path)
 	{
 		std::ifstream file(path);
 		json j;
@@ -51,13 +51,13 @@ struct AIManager
 		m_PersonalityMtx.unlock();
 	}
 
-	void OnFileChange(std::string path, FileStatus status)
+	void onFileChange(std::string path, FileStatus status)
 	{
 		if (status != FileStatus::Modified)
 		{
 			return;
 		}
 
-		LoadPersonalities(path.c_str());
+		loadPersonalities(path.c_str());
 	}
 };

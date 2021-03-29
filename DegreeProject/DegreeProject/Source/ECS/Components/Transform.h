@@ -5,14 +5,14 @@
 
 struct Transform : public Component
 {
-	Vector2D m_Position = Vector2D().Zero();
-	Vector2D m_Scale = Vector2D().One();
+	Vector2D m_Position = Vector2D().zero();
+	Vector2D m_Scale = Vector2D().one();
 	float m_Rotation = 0.0f;
 
 	Transform() = default;
 
 	Transform(float x, float y)
-		: m_Position(Vector2D(x, y)), m_Scale(Vector2D().One())
+		: m_Position(Vector2D(x, y)), m_Scale(Vector2D().one())
 	{}
 
 	Transform(float x, float y, float scaleX, float scaleY)
@@ -23,7 +23,7 @@ struct Transform : public Component
 		: m_Position(Vector2D(x, y)), m_Scale(Vector2D(scaleX, scaleY)), m_Rotation(rotation)
 	{}
 
-	void Translate(Vector2D v)
+	void translate(Vector2D v)
 	{
 		m_Position += v;
 	}

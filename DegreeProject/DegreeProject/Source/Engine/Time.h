@@ -6,15 +6,15 @@ struct GameDate;
 class Time
 {
 public:
-	static float DeltaTime() { return m_DeltaTime;	};
+	static float deltaTime() { return m_DeltaTime;	};
 
-	static void UpdateTime();
-	static void PauseGame();
-	static void UnpauseGame();
-	static void DecreaseGameSpeed();
-	static void IncreaseGameSpeed();
-	static void SetGameSpeed(int speedLevel);
-	static bool GamePaused() { return m_GamePaused; };
+	static void updateTime();
+	static void pauseGame();
+	static void unpauseGame();
+	static void decreaseGameSpeed();
+	static void increaseGameSpeed();
+	static void setGameSpeed(int speedLevel);
+	static bool gamePaused() { return m_GamePaused; };
 
 private:
 	static float m_DeltaTime;

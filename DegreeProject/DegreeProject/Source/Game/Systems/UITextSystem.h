@@ -18,22 +18,22 @@ struct UITextSystem : System
 
 	UITextSystem()
 	{
-		AddComponentSignature<UIText>();
-		m_EntityManager = &EntityManager::Get();
-		m_Window = Window::GetWindow();
+		addComponentSignature<UIText>();
+		m_EntityManager = &EntityManager::get();
+		m_Window = Window::getWindow();
 	}
 
-	virtual void Start() override
+	virtual void start() override
 	{
-		UIText* UITexts = m_EntityManager->GetComponentArray<UIText>();
+		UIText* UITexts = m_EntityManager->getComponentArray<UIText>();
 
 		for (auto entity : m_Entities)
 		{
-			AdjustText(UITexts[entity]);
+			adjustText(UITexts[entity]);
 		}
 	}
 
-	virtual void Update() override
+	virtual void update() override
 	{
 		//UIText* UITexts = m_EntityManager->GetComponentArray<UIText>();
 
@@ -43,9 +43,9 @@ struct UITextSystem : System
 		//}
 	}
 
-	virtual void Render() override
+	virtual void render() override
 	{
-		UIText* UITexts = m_EntityManager->GetComponentArray<UIText>();
+		UIText* UITexts = m_EntityManager->getComponentArray<UIText>();
 
 		for (auto entity : m_Entities)
 		{
@@ -56,7 +56,7 @@ struct UITextSystem : System
 		}
 	}
 
-	void AdjustText(UIText& UIText)
+	void adjustText(UIText& UIText)
 	{
 		if (UIText.m_OwnedRegionIDs.size() > 0)
 		{
@@ -85,8 +85,8 @@ struct UITextSystem : System
 				}
 				regionIndex++;
 			}
-			Vector2D leftMostPositionScreen = Map::ConvertToScreen(leftMostPosition);
-			Vector2D diagonal = Map::ConvertToScreen(rightMostPosition) - leftMostPositionScreen;
+			Vector2D leftMostPositionScreen = Map::convertToScreen(leftMostPosition);
+			Vector2D diagonal = Map::convertToScreen(rightMostPosition) - leftMostPositionScreen;
 			float offsetY = 1.0f;
 			UIText.m_CharacterSize = (unsigned int)(diagonal.x * 0.1f);
 			UIText.m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
@@ -116,22 +116,22 @@ struct UITextSystem : System
 		}
 	}
 
-	void ConquerRegion(unsigned int regionID, unsigned conqueringEntity)
+	void conquerRegion(unsigned int regionID, unsigned conqueringEntity)
 	{
-		CharacterComponent& characterComp = m_EntityManager->GetComponent<CharacterComponent>(conqueringEntity);
+		CharacterComponent& characterComp = m_EntityManager->getComponent<CharacterComponent>(conqueringEntity);
 
-		UIText& text = m_EntityManager->GetComponent<UIText>(characterComp.m_TextUI);
+		UIText& text = m_EntityManager->getComponent<UIText>(characterComp.m_TextUI);
 		text.m_OwnedRegionIDs.push_back(regionID);
-		AdjustText(text);
+		adjustText(text);
 	}
 
-	void LoseRegion(unsigned regionIndex, unsigned int losingEntity)
+	void loseRegion(unsigned regionIndex, unsigned int losingEntity)
 	{
-		CharacterComponent& characterComp = m_EntityManager->GetComponent<CharacterComponent>(losingEntity);
+		CharacterComponent& characterComp = m_EntityManager->getComponent<CharacterComponent>(losingEntity);
 
-		UIText& text = m_EntityManager->GetComponent<UIText>(characterComp.m_TextUI);
+		UIText& text = m_EntityManager->getComponent<UIText>(characterComp.m_TextUI);
 		text.m_OwnedRegionIDs.erase(text.m_OwnedRegionIDs.begin() + regionIndex);
-		AdjustText(text);
+		adjustText(text);
 	}
 };
 

@@ -30,7 +30,7 @@ struct SquareData
 	unsigned int m_RegionID;
 	Vector2DInt m_Position;
 
-	void AddUnique(EntityID entityToAdd)
+	void addUnique(EntityID entityToAdd)
 	{
 		for (auto& entity : m_EntitiesInSquare)
 		{
@@ -43,7 +43,7 @@ struct SquareData
 		m_EntitiesInSquare.push_back(entityToAdd);
 	}
 
-	void Remove(EntityID entityToRemove)
+	void remove(EntityID entityToRemove)
 	{
 		m_EntitiesInSquare.remove(entityToRemove);
 	}
@@ -81,59 +81,55 @@ struct Map
 	~Map()
 	{}
 
-	static void Init();
-	static void SetLandTexture(sf::Texture tex);
+	static void init();
+	static void setLandTexture(sf::Texture tex);
 
 #pragma region Hot Reloading
-	static void SetupHotReloading();
-	static void RegionsChanged(std::string path, FileStatus fileStatus);
-	static void MapChanged(std::string path, FileStatus fileStatus);
-	static void ShadersChanged(std::string path, FileStatus fileStatus);
+	static void setupHotReloading();
+	static void regionsChanged(std::string path, FileStatus fileStatus);
+	static void mapChanged(std::string path, FileStatus fileStatus);
+	static void shadersChanged(std::string path, FileStatus fileStatus);
 #pragma endregion Hot Reloading
 
 #pragma region Map & Region Loading
-	static std::ifstream LoadFile(const char* path);
-	static void LoadAllRegions();
-	static void LoadMap();
-	static void UpdateRegions();
+	static std::ifstream loadFile(const char* path);
+	static void loadAllRegions();
+	static void loadMap();
+	static void updateRegions();
 #pragma endregion
 
 #pragma region Rendering
-	static void Render();
+	static void render();
 #pragma endregion
 
-	static void SetRegionColor(int regionId, sf::Color color);
+	static void setRegionColor(int regionId, sf::Color color);
 
-	static void ClearRegions();
+	static void clearRegions();
 
-	void ColorRegionAfterOwner()
-	{
-	}
+	static bool mapSquareDataContainsKey(const Vector2DInt& key);
 
-	static bool MapSquareDataContainsKey(const Vector2DInt& key);
-
-	static void ClearRegionMapTiles();
+	static void clearRegionMapTiles();
 
 #pragma region Render Data Creation
-	static void CreateVertexArrays();
+	static void createVertexArrays();
 
-	static void LoadShadersAndCreateRenderStates();
+	static void loadShadersAndCreateRenderStates();
 
 #pragma endregion
 
 #pragma region Buildings
-	static void StartConstructionOfBuilding(int buildingId, int buildSlot, int regionId);
+	static void startConstructionOfBuilding(int buildingId, int buildSlot, int regionId);
 #pragma endregion
 
-	static int GetRegionPositionFromMapCharacter(const char& c);
-	static int GetRegionPositionFromRegionId(const unsigned int id);
+	static int getRegionPositionFromMapCharacter(const char& c);
+	static int getRegionPositionFromRegionId(const unsigned int id);
 
 	// From mapinfo
-	static MapRegion& GetRegionById(unsigned int regionId);
-	static Vector2DInt ConvertToMap(Vector2D position);
-	static Vector2D ConvertToScreen(Vector2DInt position);
-	static Vector2DInt GetRegionCapitalLocation(unsigned int regionId);
-	static std::vector<Vector2DInt> GetRegionCapitals();
-	static std::vector<int> GetRegionIDs();
+	static MapRegion& getRegionById(unsigned int regionId);
+	static Vector2DInt convertToMap(Vector2D position);
+	static Vector2D convertToScreen(Vector2DInt position);
+	static Vector2DInt getRegionCapitalLocation(unsigned int regionId);
+	static std::vector<Vector2DInt> getRegionCapitals();
+	static std::vector<int> getRegionIDs();
 };
 #pragma warning(pop)

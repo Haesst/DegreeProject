@@ -8,23 +8,23 @@ char* GameData::m_BuildingPath = "Assets\\Data\\Buildings.json";
 
 std::map<int, Building> GameData::m_Buildings;
 
-void GameData::Initialize()
+void GameData::initialize()
 {
-	ClearBuildings();
-	LoadBuildings();
-	HotReloader::Get()->SubscribeToFileChange(m_BuildingPath, std::bind(&GameData::BuildingsChanged, std::placeholders::_1, std::placeholders::_2));
+	clearBuildings();
+	loadBuildings();
+	HotReloader::get()->subscribeToFileChange(m_BuildingPath, std::bind(&GameData::buildingsChanged, std::placeholders::_1, std::placeholders::_2));
 }
 
-std::ifstream GameData::LoadFile(char* path)
+std::ifstream GameData::loadFile(char* path)
 {
 	std::ifstream file(path);
 
 	return file;
 }
 
-json GameData::LoadJsonObject(char* path)
+json GameData::loadJsonObject(char* path)
 {
-	std::ifstream file = LoadFile(path);
+	std::ifstream file = loadFile(path);
 
 	json j;
 	file >> j;
@@ -32,20 +32,20 @@ json GameData::LoadJsonObject(char* path)
 	return j;
 }
 
-void GameData::BuildingsChanged(std::string path, FileStatus fileStatus)
+void GameData::buildingsChanged(std::string path, FileStatus fileStatus)
 {
 	if (fileStatus != FileStatus::Modified)
 	{
 		return;
 	}
 
-	ClearBuildings();
-	LoadBuildings();
+	clearBuildings();
+	loadBuildings();
 }
 
-void GameData::LoadBuildings()
+void GameData::loadBuildings()
 {
-	json j = LoadJsonObject(m_BuildingPath);
+	json j = loadJsonObject(m_BuildingPath);
 
 	ASSERT(m_Buildings.size() <= 0, "Buildings not cleared before loading");
 
@@ -67,7 +67,7 @@ void GameData::LoadBuildings()
 	LOG_INFO("{0} Buildings Loaded.", m_Buildings.size());
 }
 
-void GameData::ClearBuildings()
+void GameData::clearBuildings()
 {
 	m_Buildings.clear();
 }

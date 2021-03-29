@@ -11,30 +11,30 @@ struct UISpriteRenderSystem : public System
 
 	UISpriteRenderSystem()
 	{
-		AddComponentSignature<UISpriteRenderer>();
+		addComponentSignature<UISpriteRenderer>();
 
-		m_EntityManager = &EntityManager::Get();
+		m_EntityManager = &EntityManager::get();
 	}
 
-	virtual void Update() override
+	virtual void update() override
 	{
-		Transform* transforms = m_EntityManager->GetComponentArray<Transform>();
-		UISpriteRenderer* renderers = m_EntityManager->GetComponentArray<UISpriteRenderer>();
+		Transform* transforms = m_EntityManager->getComponentArray<Transform>();
+		UISpriteRenderer* renderers = m_EntityManager->getComponentArray<UISpriteRenderer>();
 
 		for (auto& entity : m_Entities)
 		{
-			renderers[entity].m_Sprite.setPosition(Window::GetWindow()->mapPixelToCoords(sf::Vector2i((int)transforms[entity].m_Position.x, (int)transforms[entity].m_Position.y)));
+			renderers[entity].m_Sprite.setPosition(Window::getWindow()->mapPixelToCoords(sf::Vector2i((int)transforms[entity].m_Position.x, (int)transforms[entity].m_Position.y)));
 			renderers[entity].m_Sprite.setTexture(renderers[entity].m_Texture);
-			renderers[entity].UpdateSize();
+			renderers[entity].updateSize();
 		}
 	}
 
-	virtual void Render() override
+	virtual void render() override
 	{
-		UISpriteRenderer* renderers = m_EntityManager->GetComponentArray<UISpriteRenderer>();
+		UISpriteRenderer* renderers = m_EntityManager->getComponentArray<UISpriteRenderer>();
 		for (auto& entity : m_Entities)
 		{
-			Window::GetWindow()->draw(renderers[entity].m_Sprite);
+			Window::getWindow()->draw(renderers[entity].m_Sprite);
 		}
 	}
 };

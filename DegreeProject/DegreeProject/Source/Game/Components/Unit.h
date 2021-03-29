@@ -43,7 +43,7 @@ struct UnitComponent : public Component
 
 	UnitComponent()
 	{
-		m_EntityManager = &EntityManager::Get();
+		m_EntityManager = &EntityManager::get();
 	}
 
 	UnitComponent(int representedForce, EntityID owner)
@@ -53,7 +53,7 @@ struct UnitComponent : public Component
 		m_Owner = owner;
 	}
 
-	void SetPath(std::list<Vector2DInt> path, const Vector2D& startingPosition)
+	void setPath(std::list<Vector2DInt> path, const Vector2D& startingPosition)
 	{
 		if (m_InCombat)
 		{
@@ -71,7 +71,7 @@ struct UnitComponent : public Component
 			m_DaysSeizing = 0;
 		}
 
-		if (!Map::MapSquareDataContainsKey(path.front()))
+		if (!Map::mapSquareDataContainsKey(path.front()))
 		{
 			return;
 		}
@@ -80,9 +80,9 @@ struct UnitComponent : public Component
 		m_Moving = true;
 
 		Vector2DInt firstPositionMap = m_CurrentPath.front();
-		m_Target = Map::ConvertToScreen(firstPositionMap);
+		m_Target = Map::convertToScreen(firstPositionMap);
 
-		m_Direction = (m_Target - startingPosition).Normalized();
+		m_Direction = (m_Target - startingPosition).normalized();
 		m_CurrentPath.pop_front();
 	}
 }; 

@@ -9,7 +9,7 @@ const char* HotReloader::ASSET_DIRECTORY = "Assets";
 HotReloader::HotReloader(const char* path)
 {
 	m_FileWatcher = new FileWatcher(path, std::chrono::milliseconds(1000));
-	m_FileWatcher->start(std::bind(&HotReloader::OnFileChange, this, std::placeholders::_1, std::placeholders::_2));
+	m_FileWatcher->start(std::bind(&HotReloader::onFileChange, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 HotReloader::~HotReloader()
@@ -17,7 +17,7 @@ HotReloader::~HotReloader()
 	delete m_FileWatcher;
 }
 
-void HotReloader::OnFileChange(std::string path, FileStatus fileStatus)
+void HotReloader::onFileChange(std::string path, FileStatus fileStatus)
 {
 	if (!std::filesystem::is_regular_file(std::filesystem::path(path)) && fileStatus != FileStatus::Erased) {
 		return;
@@ -36,7 +36,7 @@ void HotReloader::OnFileChange(std::string path, FileStatus fileStatus)
 	}
 }
 
-void HotReloader::SubscribeToFileChange(std::string path, const std::function<void(std::string, FileStatus)> action)
+void HotReloader::subscribeToFileChange(std::string path, const std::function<void(std::string, FileStatus)> action)
 {
 	if (m_Actions.find(path) != m_Actions.end())
 	{
@@ -48,7 +48,7 @@ void HotReloader::SubscribeToFileChange(std::string path, const std::function<vo
 	}
 }
 
-HotReloader* HotReloader::Get()
+HotReloader* HotReloader::get()
 {
 	if (m_Instance == nullptr)
 	{
@@ -58,7 +58,7 @@ HotReloader* HotReloader::Get()
 	return m_Instance;
 }
 
-void HotReloader::Close()
+void HotReloader::close()
 {
 	delete m_Instance;
 }

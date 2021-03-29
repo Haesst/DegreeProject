@@ -11,24 +11,24 @@ bool Time::m_GamePaused = false;
 sf::Clock Time::m_DeltaClock;
 GameDate Time::m_GameDate;
 
-void Time::UpdateTime()
+void Time::updateTime()
 {
 	m_DeltaTime = m_GamePaused ? 0 : m_DeltaClock.restart().asSeconds() * m_CurrentSpeedMultiplier;
-	m_GameDate.Update();
+	m_GameDate.update();
 }
 
-void Time::PauseGame()
+void Time::pauseGame()
 {
 	m_GamePaused = true;
 }
 
-void Time::UnpauseGame()
+void Time::unpauseGame()
 {
 	m_DeltaClock.restart().asSeconds();
 	m_GamePaused = false;
 }
 
-void Time::DecreaseGameSpeed()
+void Time::decreaseGameSpeed()
 {
 	if (m_CurrentSpeedLevel <= m_MinSpeedLevel)
 	{
@@ -39,7 +39,7 @@ void Time::DecreaseGameSpeed()
 	m_CurrentSpeedMultiplier -= m_SpeedModifer;
 }
 
-void Time::IncreaseGameSpeed()
+void Time::increaseGameSpeed()
 {
 	if (m_CurrentSpeedLevel >= m_MaxSpeedLevel)
 	{
@@ -50,7 +50,7 @@ void Time::IncreaseGameSpeed()
 	m_CurrentSpeedMultiplier += m_SpeedModifer;
 }
 
-void Time::SetGameSpeed(int speedLevel)
+void Time::setGameSpeed(int speedLevel)
 {
 	if (speedLevel < m_MinSpeedLevel)
 	{

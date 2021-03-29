@@ -14,26 +14,26 @@ struct StatBarSystem : System
 
 	StatBarSystem()
 	{
-		AddComponentSignature<StatBar>();
-		m_EntityManager = &EntityManager::Get();
-		m_Window = Window::GetWindow();
+		addComponentSignature<StatBar>();
+		m_EntityManager = &EntityManager::get();
+		m_Window = Window::getWindow();
 	}
 
 	~StatBarSystem(){}
 
-	virtual void Start() override
+	virtual void start() override
 	{
 #pragma warning(push)
 #pragma warning(disable: 26815)
-		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
+		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
 #pragma warning(pop)
 
-		m_PlayerCharacter = &m_EntityManager->GetComponent<CharacterComponent>(characterSystem->GetPlayerID());
+		m_PlayerCharacter = &m_EntityManager->getComponent<CharacterComponent>(characterSystem->getPlayerID());
 
-		StatBar* statBars = m_EntityManager->GetComponentArray<StatBar>();
+		StatBar* statBars = m_EntityManager->getComponentArray<StatBar>();
 		for (auto entity : m_Entities)
 		{
-			UpdateStats(statBars[entity]);
+			updateStats(statBars[entity]);
 
 			int positionX = m_Window->getSize().x - (int)(statBars[entity].m_SizeX + statBars[entity].m_OutlineThickness);
 			int positionY = (int)statBars[entity].m_OutlineThickness;
@@ -74,13 +74,13 @@ struct StatBarSystem : System
 		}
 	}
 
-	virtual void Update() override
+	virtual void update() override
 	{
-		StatBar* statBars = m_EntityManager->GetComponentArray<StatBar>();
+		StatBar* statBars = m_EntityManager->getComponentArray<StatBar>();
 
 		for (auto entity : m_Entities)
 		{
-			UpdateStats(statBars[entity]);
+			updateStats(statBars[entity]);
 
 			int positionX = m_Window->getSize().x - (int)(statBars[entity].m_SizeX + statBars[entity].m_OutlineThickness);
 			int positionY = (int)statBars[entity].m_OutlineThickness;
@@ -101,9 +101,9 @@ struct StatBarSystem : System
 		}
 	}
 
-	virtual void Render() override
+	virtual void render() override
 	{
-		StatBar* statBars = m_EntityManager->GetComponentArray<StatBar>();
+		StatBar* statBars = m_EntityManager->getComponentArray<StatBar>();
 
 		for (auto entity : m_Entities)
 		{
@@ -115,7 +115,7 @@ struct StatBarSystem : System
 		}
 	}
 
-	void UpdateStats(StatBar& statBar)
+	void updateStats(StatBar& statBar)
 	{
 		statBar.m_CurrentGold = std::to_string(m_PlayerCharacter->m_CurrentGold);
 		int income = m_PlayerCharacter->m_Income;

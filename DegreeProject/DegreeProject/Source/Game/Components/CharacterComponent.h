@@ -59,19 +59,19 @@ struct CharacterComponent : public Component
 		m_RegionColor = regionColor;
 		m_PersonalityIndex = personalityIndex;
 
-		InitUnit();
+		initUnit();
 	}
 
-	void Start()
+	void start()
 	{
-		Time::m_GameDate.SubscribeToMonthChange(std::bind(&CharacterComponent::OnMonthChange, this, std::placeholders::_1));
+		Time::m_GameDate.subscribeToMonthChange(std::bind(&CharacterComponent::onMonthChange, this, std::placeholders::_1));
 	}
 
-	War* GetWarAgainst(EntityID enemyEntity)
+	War* getWarAgainst(EntityID enemyEntity)
 	{
 		for (auto& war : m_CurrentWars)
 		{
-			if (war.IsDefender(enemyEntity) || war.IsAttacker(enemyEntity))
+			if (war.isDefender(enemyEntity) || war.isAttacker(enemyEntity))
 			{
 				return &war;
 			}
@@ -81,7 +81,7 @@ struct CharacterComponent : public Component
 	}
 
 
-	void MakePeace()
+	void makePeace()
 	{
 		War* warToEnd = nullptr;
 
@@ -104,9 +104,9 @@ struct CharacterComponent : public Component
 		{
 			if (m_CurrentWars.empty())
 			{
-				EntityManager* entityManager = &EntityManager::Get();
-				WarmindComponent& warmind = entityManager->GetComponent<WarmindComponent>(m_EntityID);
-				UnitComponent& unit = entityManager->GetComponent<UnitComponent>(m_UnitEntity);
+				EntityManager* entityManager = &EntityManager::get();
+				WarmindComponent& warmind = entityManager->getComponent<WarmindComponent>(m_EntityID);
+				UnitComponent& unit = entityManager->getComponent<UnitComponent>(m_UnitEntity);
 
 				warmind.m_Active = false;
 				warmind.m_AtWar = false;
@@ -120,9 +120,9 @@ struct CharacterComponent : public Component
 		unsigned int warIndex = 0;
 		for (auto& war : m_CurrentWars)
 		{
-			if (war.IsDefender(m_EntityID))
+			if (war.isDefender(m_EntityID))
 			{
-				if (war.GetAttacker().GetID() == warToDel.GetAttacker().GetID())
+				if (war.getAttacker().getID() == warToDel.getAttacker().getID())
 				{
 					m_CurrentWars.erase(m_CurrentWars.begin() + warIndex);
 					break;
@@ -134,21 +134,21 @@ struct CharacterComponent : public Component
 		delete &warToEnd;
 	}
 
-	void DeclareWar(EntityID target, int warGoalRegion)
+	void declareWar(EntityID target, int warGoalRegion)
 	{
 		for (auto& war : m_CurrentWars)
 		{
-			if (war.m_Defender->GetID() == target)
+			if (war.m_Defender->getID() == target)
 			{
 				return;
 			}
 		}
 
-		EntityManager* entityManager = &EntityManager::Get();
-		CharacterComponent* characters = entityManager->GetComponentArray<CharacterComponent>();
-		WarmindComponent* warminds = entityManager->GetComponentArray<WarmindComponent>();
+		EntityManager* entityManager = &EntityManager::get();
+		CharacterComponent* characters = entityManager->getComponentArray<CharacterComponent>();
+		WarmindComponent* warminds = entityManager->getComponentArray<WarmindComponent>();
 
-		LOG_INFO("{0} Declared war with {1} for {2}", m_Name, characters[target].m_Name, Map::GetRegionById(warGoalRegion).m_RegionName);
+		LOG_INFO("{0} Declared war with {1} for {2}", m_Name, characters[target].m_Name, Map::getRegionById(warGoalRegion).m_RegionName);
 
 		War* war = new War(characters[m_EntityID], characters[target], warGoalRegion);
 
@@ -172,13 +172,13 @@ struct CharacterComponent : public Component
 		}
 	}
 
-	void OnMonthChange(Date)
+	void onMonthChange(Date)
 	{
 		int incomingGold = 0;
 
 		for (auto& regionId : m_OwnedRegionIDs)
 		{
-			MapRegion region = Map::GetRegionById(regionId);
+			MapRegion region = Map::getRegionById(regionId);
 
 			incomingGold += region.m_RegionTax;
 		}
@@ -188,24 +188,24 @@ struct CharacterComponent : public Component
 		m_CurrentGold += incomingGold;
 	}
 
-	void InitUnit()
+	void initUnit()
 	{
-		EntityManager* entityManager = &EntityManager::Get();
-		CharacterComponent& character = entityManager->GetComponent<CharacterComponent>(m_EntityID);
+		EntityManager* entityManager = &EntityManager::get();
+		CharacterComponent& character = entityManager->getComponent<CharacterComponent>(m_EntityID);
 
-		m_UnitEntity = entityManager->AddNewEntity();
-		entityManager->AddComponent<UnitComponent>(m_UnitEntity, character.m_MaxArmySize, m_EntityID);
+		m_UnitEntity = entityManager->addNewEntity();
+		entityManager->addComponent<UnitComponent>(m_UnitEntity, character.m_MaxArmySize, m_EntityID);
 
 		AssetHandler handler;
-		entityManager->AddComponent<SpriteRenderer>(m_UnitEntity, "Assets/Graphics/soldier unit.png", 32, 32, &handler);
-		SpriteRenderer& renderer = entityManager->GetComponent<SpriteRenderer>(m_UnitEntity);
+		entityManager->addComponent<SpriteRenderer>(m_UnitEntity, "Assets/Graphics/soldier unit.png", 32, 32, &handler);
+		SpriteRenderer& renderer = entityManager->getComponent<SpriteRenderer>(m_UnitEntity);
 		renderer.m_ShouldRender = false;
 	}
 
-	void ConstructBuilding(int buildingId, int regionId, int buildingSlot)
+	void constructBuilding(int buildingId, int regionId, int buildingSlot)
 	{
 		Building building = GameData::m_Buildings[buildingId];
-		MapRegion& region = Map::GetRegionById(regionId);
+		MapRegion& region = Map::getRegionById(regionId);
 
 		if (building.m_Cost > m_CurrentGold)
 		{
@@ -222,7 +222,7 @@ struct CharacterComponent : public Component
 			return;
 		}
 
-		Map::StartConstructionOfBuilding(buildingId, buildingSlot, regionId);
+		Map::startConstructionOfBuilding(buildingId, buildingSlot, regionId);
 		m_CurrentGold -= building.m_Cost;
 	}
 };

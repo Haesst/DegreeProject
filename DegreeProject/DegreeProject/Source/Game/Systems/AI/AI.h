@@ -30,15 +30,15 @@ struct AISystem : System
 
 	AISystem()
 	{
-		AddComponentSignature<CharacterComponent>();
-		AddComponentSignature<WarmindComponent>();
+		addComponentSignature<CharacterComponent>();
+		addComponentSignature<WarmindComponent>();
 
-		m_EntityManager = &EntityManager::Get();
-		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
+		m_EntityManager = &EntityManager::get();
+		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
+		m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
 	}
 
-	void Init(AIManager* manager)
+	void init(AIManager* manager)
 	{
 		m_AIManager = manager;
 
@@ -49,11 +49,11 @@ struct AISystem : System
 		}
 	}
 
-	virtual void Update() override
+	virtual void update() override
 	{
-		m_Characters = m_EntityManager->GetComponentArray<CharacterComponent>();
-		m_Warminds = m_EntityManager->GetComponentArray<WarmindComponent>();
-		m_TickAccu += Time::DeltaTime();
+		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
+		m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
+		m_TickAccu += Time::deltaTime();
 
 		if (m_TickAccu <= m_AIUpdateTickRate)
 		{
@@ -63,13 +63,13 @@ struct AISystem : System
 		//AI System update considerations
 		for (auto entity : m_Entities)
 		{
-			if (ExpansionDecision(entity) > .2f) //Add personality weight
+			if (expansionDecision(entity) > .2f) //Add personality weight
 			{
-				if (WarDecision(entity) > .2f)
+				if (warDecision(entity) > .2f)
 				{
 					if (!m_Characters[entity].m_AtWar)
 					{
-						m_Characters[entity].DeclareWar(m_Warminds[entity].m_Opponent, m_Warminds[entity].m_WargoalRegionId);
+						m_Characters[entity].declareWar(m_Warminds[entity].m_Opponent, m_Warminds[entity].m_WargoalRegionId);
 					}
 				}
 			}
@@ -78,7 +78,7 @@ struct AISystem : System
 		}
 	}
 
-	float WarDecision(EntityID ent);
+	float warDecision(EntityID ent);
 
-	float ExpansionDecision(EntityID ent);
+	float expansionDecision(EntityID ent);
 };

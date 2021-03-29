@@ -20,10 +20,10 @@ public:
 	HotReloader(const char* path);
 	~HotReloader();
 
-	static HotReloader* Get();
-	static void Close();
+	static HotReloader* get();
+	static void close();
 
-	void OnFileChange(std::string path, FileStatus fileStatus);
+	void onFileChange(std::string path, FileStatus fileStatus);
 
-	void SubscribeToFileChange(std::string path, const std::function<void(std::string, FileStatus)> action);
+	void subscribeToFileChange(std::string path, const std::function<void(std::string, FileStatus)> action);
 };

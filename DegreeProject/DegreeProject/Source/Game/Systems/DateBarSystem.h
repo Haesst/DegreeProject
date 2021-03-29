@@ -14,26 +14,26 @@ struct DateBarSystem : System
 
 	DateBarSystem()
 	{
-		AddComponentSignature<DateBar>();
-		m_EntityManager = &EntityManager::Get();
-		m_Window = Window::GetWindow();
+		addComponentSignature<DateBar>();
+		m_EntityManager = &EntityManager::get();
+		m_Window = Window::getWindow();
 	}
 
 	~DateBarSystem() {}
 
-	virtual void Start() override
+	virtual void start() override
 	{
 #pragma warning(push)
 #pragma warning(disable: 26815)
-		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->GetSystem<CharacterSystem>().get();
+		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
 #pragma warning(pop)
 
-		CharacterComponent& playerCharacter = m_EntityManager->GetComponent<CharacterComponent>(characterSystem->GetPlayerID());
+		CharacterComponent& playerCharacter = m_EntityManager->getComponent<CharacterComponent>(characterSystem->getPlayerID());
 
-		DateBar* dateBars = m_EntityManager->GetComponentArray<DateBar>();
+		DateBar* dateBars = m_EntityManager->getComponentArray<DateBar>();
 		for (auto entity : m_Entities)
 		{
-			UpdateStats(dateBars[entity]);
+			updateStats(dateBars[entity]);
 
 			float sizeX = dateBars[entity].m_ButtonThickness * 0.5f;
 			float sizeY = dateBars[entity].m_SizeY * 0.5f;
@@ -85,14 +85,14 @@ struct DateBarSystem : System
 		}
 	}
 
-	virtual void Update() override
+	virtual void update() override
 	{
-		DateBar* dateBars = m_EntityManager->GetComponentArray<DateBar>();
+		DateBar* dateBars = m_EntityManager->getComponentArray<DateBar>();
 
 		for (auto entity : m_Entities)
 		{
-			UpdateStats(dateBars[entity]);
-			ClickButton(dateBars[entity]);
+			updateStats(dateBars[entity]);
+			clickButton(dateBars[entity]);
 
 			int positionX = m_Window->getSize().x - (int)(dateBars[entity].m_SizeX + dateBars[entity].m_OutlineThickness);
 			int positionY = m_Window->getSize().y - (int)(dateBars[entity].m_SizeY + dateBars[entity].m_OutlineThickness);
@@ -107,7 +107,7 @@ struct DateBarSystem : System
 			for (unsigned int index = 0; index < dateBars[entity].m_NumberOfSpeeds; index++)
 			{
 				dateBars[entity].m_SpeedShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(dateBars[entity].m_ButtonThickness * 14.5f + dateBars[entity].m_ButtonThickness * 2.5f * index), positionY + (int)(dateBars[entity].m_SizeY * 0.25f - dateBars[entity].m_ButtonThickness * 0.25f))));
-				if (index < m_CurrentSpeedLevel && Time::GamePaused())
+				if (index < m_CurrentSpeedLevel && Time::gamePaused())
 				{
 					dateBars[entity].m_SpeedShapes[index].setFillColor(sf::Color::Red);
 				}
@@ -136,9 +136,9 @@ struct DateBarSystem : System
 		}
 	}
 	
-	virtual void Render() override
+	virtual void render() override
 	{
-		DateBar* dateBars = m_EntityManager->GetComponentArray<DateBar>();
+		DateBar* dateBars = m_EntityManager->getComponentArray<DateBar>();
 
 		for (auto entity : m_Entities)
 		{
@@ -160,17 +160,17 @@ struct DateBarSystem : System
 		}
 	}
 
-	void UpdateStats(DateBar& dateBar)
+	void updateStats(DateBar& dateBar)
 	{
-		dateBar.m_Date = Time::m_GameDate.GetDateString();
+		dateBar.m_Date = Time::m_GameDate.getDateString();
 		m_CurrentSpeedLevel = Time::m_CurrentSpeedLevel;
 	}
 
-	void ClickButton(DateBar& dateBar)
+	void clickButton(DateBar& dateBar)
 	{
-		if (InputHandler::GetLeftMouseReleased())
+		if (InputHandler::getLeftMouseReleased())
 		{
-			Vector2D mousePosition = InputHandler::GetMousePosition();
+			Vector2D mousePosition = InputHandler::getMousePosition();
 			for (unsigned int index = 0; index < dateBar.m_NumberOfButtons; index++)
 			{
 				if (dateBar.m_ButtonShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
@@ -179,17 +179,17 @@ struct DateBarSystem : System
 					{
 						case 0:
 						{
-							Time::GamePaused() ? Time::UnpauseGame() : Time::PauseGame();
+							Time::gamePaused() ? Time::unpauseGame() : Time::pauseGame();
 							break;
 						}
 						case 1:
 						{
-							Time::DecreaseGameSpeed();
+							Time::decreaseGameSpeed();
 							break;
 						}
 						case 2:
 						{
-							Time::IncreaseGameSpeed();
+							Time::increaseGameSpeed();
 							break;
 						}
 						default:

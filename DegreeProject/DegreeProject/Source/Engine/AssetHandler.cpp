@@ -1,12 +1,12 @@
 #include "AssetHandler.h"
 
-const sf::Texture AssetHandler::LoadImageFromFile(const char* FilePath)
+const sf::Texture AssetHandler::loadImageFromFile(const char* FilePath)
 {
 	for(const auto& Pair : m_LoadedTextures)
 	{
 		if (0 == strcmp(Pair.first, FilePath))
 		{
-			return GetTextureAtPath(FilePath);
+			return getTextureAtPath(FilePath);
 		}
 	}
 
@@ -26,7 +26,7 @@ const sf::Texture AssetHandler::LoadImageFromFile(const char* FilePath)
 	return Texture;
 }
 
-sf::Font AssetHandler::LoadFontFromFile(const char* FilePath)
+sf::Font AssetHandler::loadFontFromFile(const char* FilePath)
 {
 	sf::Font Font;
 
@@ -38,7 +38,7 @@ sf::Font AssetHandler::LoadFontFromFile(const char* FilePath)
 	return Font;
 }
 
-sf::Sound AssetHandler::LoadAudioFile(const char* FilePath, sf::SoundBuffer& Buffer)
+sf::Sound AssetHandler::loadAudioFile(const char* FilePath, sf::SoundBuffer& Buffer)
 {
 	if (Buffer.loadFromFile(FilePath))
 	{
@@ -50,7 +50,7 @@ sf::Sound AssetHandler::LoadAudioFile(const char* FilePath, sf::SoundBuffer& Buf
 	return sf::Sound();
 }
 
-const sf::Texture AssetHandler::GetTextureAtPath(const char* FilePath)
+const sf::Texture AssetHandler::getTextureAtPath(const char* FilePath)
 {
 	for (const auto& Pair : m_LoadedTextures)
 	{
@@ -60,7 +60,7 @@ const sf::Texture AssetHandler::GetTextureAtPath(const char* FilePath)
 		}
 	}
 
-	sf::Texture TextureToLoad = LoadImageFromFile(FilePath);
+	sf::Texture TextureToLoad = loadImageFromFile(FilePath);
 
 	auto LoadedData = std::make_pair(FilePath, TextureToLoad);
 	m_LoadedTextures.push_back(LoadedData);

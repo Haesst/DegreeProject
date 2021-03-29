@@ -19,66 +19,66 @@ struct PlayerSystem : System
 
 	PlayerSystem()
 	{
-		AddComponentSignature<Player>();
-		m_EntityManager = &EntityManager::Get();
+		addComponentSignature<Player>();
+		m_EntityManager = &EntityManager::get();
 	}
 
-	virtual void Start() override
+	virtual void start() override
 	{
-		Player* playerComponents = m_EntityManager->GetComponentArray<Player>();
+		Player* playerComponents = m_EntityManager->getComponentArray<Player>();
 
 		for (auto& entity : m_Entities)
 		{
-			CharacterComponent& character = m_EntityManager->GetComponent<CharacterComponent>(playerComponents[entity].m_OwnedCharacter);
-			character.InitUnit();
+			CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(playerComponents[entity].m_OwnedCharacter);
+			character.initUnit();
 		}
 	}
 
-	virtual void Update() override
+	virtual void update() override
 	{
-		Player* playerComponents = m_EntityManager->GetComponentArray<Player>();
+		Player* playerComponents = m_EntityManager->getComponentArray<Player>();
 
-		ClickDrag();
+		clickDrag();
 
 		for (auto& entity : m_Entities)
 		{
-			SelectUnit(entity, playerComponents[entity].m_OwnedCharacter);
-			MoveUnit(playerComponents[entity].m_SelectedUnitID);
-			HoverOverRegion(playerComponents[entity]);
+			selectUnit(entity, playerComponents[entity].m_OwnedCharacter);
+			moveUnit(playerComponents[entity].m_SelectedUnitID);
+			hoverOverRegion(playerComponents[entity]);
 		}
 	}
 
-	virtual void Render() override
+	virtual void render() override
 	{
 		if (m_Draging)
 		{
-			Window::GetWindow()->draw(m_DragWindow);
+			Window::getWindow()->draw(m_DragWindow);
 
 			//Debug
 			if (m_Debug)
 			{
 				for each (sf::RectangleShape rectangle in m_DragPositions)
 				{
-					Window::GetWindow()->draw(rectangle);
+					Window::getWindow()->draw(rectangle);
 				}
 			}
 		}
 	}
 
-	void MoveUnit(EntityID unitID)
+	void moveUnit(EntityID unitID)
 	{
-		if (InputHandler::GetRightMouseReleased() == true && InputHandler::GetPlayerUnitSelected() == true)
+		if (InputHandler::getRightMouseReleased() == true && InputHandler::getPlayerUnitSelected() == true)
 		{
-			Vector2DInt mousePosition = InputHandler::GetMouseMapPosition();
-			UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(unitID);
-			Transform& transform = m_EntityManager->GetComponent<Transform>(unitID);
+			Vector2DInt mousePosition = InputHandler::getMouseMapPosition();
+			UnitComponent& unit = m_EntityManager->getComponent<UnitComponent>(unitID);
+			Transform& transform = m_EntityManager->getComponent<Transform>(unitID);
 
 			unit.m_Moving = false;
 			transform.m_Position = unit.m_LastPosition;
 			
 			Vector2D unitPosition = transform.m_Position;
-			Vector2DInt startingPosition = Map::ConvertToMap(unitPosition);
-			std::list<Vector2DInt> path = Pathfinding::FindPath(startingPosition, mousePosition);
+			Vector2DInt startingPosition = Map::convertToMap(unitPosition);
+			std::list<Vector2DInt> path = Pathfinding::findPath(startingPosition, mousePosition);
 
 			if (path.size() > 0)
 			{
@@ -88,12 +88,12 @@ struct PlayerSystem : System
 					return;
 				}
 
-				unit.SetPath(path, Map::ConvertToScreen(startingPosition));
+				unit.setPath(path, Map::convertToScreen(startingPosition));
 #pragma warning(push)
 #pragma warning(disable: 26815)
-				UnitSystem* unitSystem = (UnitSystem*)m_EntityManager->GetSystem<UnitSystem>().get();
+				UnitSystem* unitSystem = (UnitSystem*)m_EntityManager->getSystem<UnitSystem>().get();
 #pragma warning(pop)
-				unitSystem->ShowPath(transform, unit);
+				unitSystem->showPath(transform, unit);
 			}
 			else
 			{
@@ -102,12 +102,12 @@ struct PlayerSystem : System
 		}
 	}
 
-	void ClickDrag()
+	void clickDrag()
 	{
-		if (InputHandler::GetLeftMouseClicked() == true && m_Draging == false)
+		if (InputHandler::getLeftMouseClicked() == true && m_Draging == false)
 		{
-			m_MousePosition = InputHandler::GetMousePosition();
-			if (InputHandler::GetMouseMoved() == true)
+			m_MousePosition = InputHandler::getMousePosition();
+			if (InputHandler::getMouseMoved() == true)
 			{
 				m_Draging = true;
 				m_DragWindow.setSize(sf::Vector2f(10.0f, 10.0f));
@@ -118,27 +118,27 @@ struct PlayerSystem : System
 		}
 		if (m_Draging == true)
 		{
-			Vector2D mousePosition = InputHandler::GetMousePosition();
+			Vector2D mousePosition = InputHandler::getMousePosition();
 			Vector2D distance = mousePosition - m_MousePosition;
 			m_DragWindow.setSize(sf::Vector2f(distance.x, distance.y));
-			if (InputHandler::GetLeftMouseReleased() == true)
+			if (InputHandler::getLeftMouseReleased() == true)
 			{
 				m_Draging = false;
 			}
 		}
 	}
 
-	void SelectUnit(EntityID playerID, EntityID ownerID)
+	void selectUnit(EntityID playerID, EntityID ownerID)
 	{
-		if (InputHandler::GetLeftMouseClicked() == true && m_Draging == false)
+		if (InputHandler::getLeftMouseClicked() == true && m_Draging == false)
 		{
-			if (Map::MapSquareDataContainsKey(InputHandler::GetMouseMapPosition()))
+			if (Map::mapSquareDataContainsKey(InputHandler::getMouseMapPosition()))
 			{
 				std::list<EntityID> unitIDList = {};
 				
 				for (auto& squareData : Map::m_MapSquareData)
 				{
-					if (squareData.m_Position == InputHandler::GetMouseMapPosition())
+					if (squareData.m_Position == InputHandler::getMouseMapPosition())
 					{
 						unitIDList = squareData.m_EntitiesInSquare;
 					}
@@ -148,26 +148,26 @@ struct PlayerSystem : System
 				{
 					for (EntityID unitID : unitIDList)
 					{
-						UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(unitID);
-						Player& player = m_EntityManager->GetComponent<Player>(playerID);
+						UnitComponent& unit = m_EntityManager->getComponent<UnitComponent>(unitID);
+						Player& player = m_EntityManager->getComponent<Player>(playerID);
 						if (unit.m_Owner == ownerID)
 						{
 							unit.m_PlayerSelected = true;
 							unit.m_OutlineThickness = 1.0f;
 							player.m_SelectedUnitID = unitID;
-							InputHandler::SetPlayerUnitSelected(true);
+							InputHandler::setPlayerUnitSelected(true);
 							break;
 						}
 					}
 				}
 				else
 				{
-					DeselectUnit(playerID);
+					deselectUnit(playerID);
 				}
 			}
 			else
 			{
-				DeselectUnit(playerID);
+				deselectUnit(playerID);
 			}
 		}
 		if (m_Draging == true)
@@ -182,8 +182,8 @@ struct PlayerSystem : System
 				for (unsigned int x = 0; x < xPositions; x++)
 				{
 					Vector2D position = Vector2D(firstPosition.x + x * 32, firstPosition.y + y * 32);
-					Vector2DInt mapPosition = Map::ConvertToMap(position);
-					if (Map::MapSquareDataContainsKey(mapPosition))
+					Vector2DInt mapPosition = Map::convertToMap(position);
+					if (Map::mapSquareDataContainsKey(mapPosition))
 					{
 						std::list<EntityID> unitIDList = {};
 
@@ -197,7 +197,7 @@ struct PlayerSystem : System
 
 						for (EntityID unitID : unitIDList)
 						{
-							UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(unitID);
+							UnitComponent& unit = m_EntityManager->getComponent<UnitComponent>(unitID);
 							if (unit.m_Owner == ownerID)
 							{
 								unit.m_PlayerSelected = true;
@@ -211,34 +211,34 @@ struct PlayerSystem : System
 		}
 	}
 
-	void DeselectUnit(EntityID playerID)
+	void deselectUnit(EntityID playerID)
 	{
-		Player& player = m_EntityManager->GetComponent<Player>(playerID);
-		UnitComponent& unit = m_EntityManager->GetComponent<UnitComponent>(player.m_SelectedUnitID);
+		Player& player = m_EntityManager->getComponent<Player>(playerID);
+		UnitComponent& unit = m_EntityManager->getComponent<UnitComponent>(player.m_SelectedUnitID);
 		unit.m_PlayerSelected = false;
 		unit.m_OutlineThickness = 0.0f;
 		player.m_SelectedUnitID = 0;
-		InputHandler::SetPlayerUnitSelected(false);
+		InputHandler::setPlayerUnitSelected(false);
 	}
 
-	void SetDebugPositions(std::vector<Vector2DInt> dragPositions)
+	void setDebugPositions(std::vector<Vector2DInt> dragPositions)
 	{
 		m_DragPositions.clear();
 		for (Vector2DInt mapPosition : dragPositions)
 		{
 			sf::RectangleShape rectangle(sf::Vector2f(30.0f, 30.0f));
-			Vector2D screenPosition = Map::ConvertToScreen(mapPosition);
+			Vector2D screenPosition = Map::convertToScreen(mapPosition);
 			rectangle.setPosition(screenPosition.x + 2, screenPosition.y + 2);
 			rectangle.setFillColor(sf::Color::Magenta);
 			m_DragPositions.push_back(rectangle);
 		}
 	}
 
-	void HoverOverRegion(Player& playerComp)
+	void hoverOverRegion(Player& playerComp)
 	{
-		Vector2DInt currentMousePosition = InputHandler::GetMouseMapPosition();
+		Vector2DInt currentMousePosition = InputHandler::getMouseMapPosition();
 
-		if (Map::MapSquareDataContainsKey(currentMousePosition))
+		if (Map::mapSquareDataContainsKey(currentMousePosition))
 		{
 			EntityID regionID = 0; 
 			
@@ -252,9 +252,9 @@ struct PlayerSystem : System
 
 			if ((unsigned int)playerComp.m_HighlightedRegion != regionID)
 			{
-				Map::GetRegionById(playerComp.m_HighlightedRegion).m_Highlighted = false;
+				Map::getRegionById(playerComp.m_HighlightedRegion).m_Highlighted = false;
 
-				Map::GetRegionById(regionID).m_Highlighted = true;
+				Map::getRegionById(regionID).m_Highlighted = true;
 				playerComp.m_HighlightedRegion = regionID;
 			}
 		}
@@ -262,7 +262,7 @@ struct PlayerSystem : System
 		{
 			if (playerComp.m_HighlightedRegion >= 0)
 			{
-				Map::GetRegionById(playerComp.m_HighlightedRegion).m_Highlighted = false;
+				Map::getRegionById(playerComp.m_HighlightedRegion).m_Highlighted = false;
 				playerComp.m_HighlightedRegion = -1;
 			}
 		}
