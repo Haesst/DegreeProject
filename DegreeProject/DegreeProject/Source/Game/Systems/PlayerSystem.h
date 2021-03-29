@@ -8,6 +8,7 @@ struct PlayerSystem : System
 {
 	EntityManager* m_EntityManager;
 
+	bool m_MouseDownLastFrame = false;
 	bool m_Draging = false;
 	Vector2D m_MousePosition;
 	sf::RectangleShape m_DragWindow;
@@ -16,6 +17,8 @@ struct PlayerSystem : System
 	//Debug
 	std::vector<sf::RectangleShape> m_DragPositions;
 	bool m_Debug = false;
+
+	Vector2D m_DragDirection = { 0.0f, 0.0f };
 
 	PlayerSystem()
 	{
@@ -53,7 +56,6 @@ struct PlayerSystem : System
 		if (m_Draging)
 		{
 			Window::getWindow()->draw(m_DragWindow);
-
 			//Debug
 			if (m_Debug)
 			{
@@ -104,20 +106,21 @@ struct PlayerSystem : System
 
 	void clickDrag()
 	{
-		if (InputHandler::getLeftMouseClicked() == true && m_Draging == false)
+		/*if (InputHandler::getLeftMouseClicked() == true && m_Draging == false)
 		{
 			m_MousePosition = InputHandler::getMousePosition();
-			if (InputHandler::getMouseMoved() == true)
+			if (m_MouseDownLastFrame)
 			{
 				m_Draging = true;
 				m_DragWindow.setSize(sf::Vector2f(10.0f, 10.0f));
 				m_DragWindow.setPosition(m_MousePosition.x, m_MousePosition.y);
-				m_DragWindow.setFillColor(sf::Color::Transparent);
+				m_DragWindow.setFillColor(sf::Color::White);
 				m_DragWindow.setOutlineThickness(1.0f);
 			}
 		}
 		if (m_Draging == true)
 		{
+			LOG_INFO("T");
 			Vector2D mousePosition = InputHandler::getMousePosition();
 			Vector2D distance = mousePosition - m_MousePosition;
 			m_DragWindow.setSize(sf::Vector2f(distance.x, distance.y));
@@ -125,6 +128,37 @@ struct PlayerSystem : System
 			{
 				m_Draging = false;
 			}
+		}*/
+
+		if (m_MouseDownLastFrame && m_Draging == false)
+		{
+			m_Draging = true;
+			m_DragWindow.setSize(sf::Vector2f(10.0f, 10.0f));
+			m_DragWindow.setPosition(m_MousePosition.x, m_MousePosition.y);
+			m_DragWindow.setFillColor(sf::Color::Transparent);
+			m_DragWindow.setOutlineThickness(1.0f);
+		}
+
+		if (m_Draging)
+		{
+			Vector2D mousePosition = InputHandler::getMousePosition();
+			Vector2D distance = mousePosition - m_MousePosition;
+			m_DragWindow.setSize(sf::Vector2f(distance.x, distance.y));
+
+			Vector2D normDistance = distance.normalized();
+			m_DragDirection.x = normDistance.x;
+			m_DragDirection.y = normDistance.y;
+		}
+
+		if (InputHandler::getLeftMouseClicked())
+		{
+			m_MouseDownLastFrame = true;
+			m_MousePosition = InputHandler::getMousePosition();
+		}
+		else if (InputHandler::getLeftMouseReleased())
+		{
+			m_MouseDownLastFrame = false;
+			m_Draging = false;
 		}
 	}
 
@@ -170,18 +204,35 @@ struct PlayerSystem : System
 				deselectUnit(playerID);
 			}
 		}
+
 		if (m_Draging == true)
 		{
-			Vector2D firstPosition = m_DragWindow.getPosition();
+			Vector2D startPosition = m_DragWindow.getPosition();
 			float width = m_DragWindow.getGlobalBounds().width;
 			float height = m_DragWindow.getGlobalBounds().height;
-			unsigned int xPositions = (unsigned int)width / 32;
-			unsigned int yPositions = (unsigned int)height / 32;
+
+			float firstX = startPosition.x;
+			float firstY = startPosition.y;
+
+			if (m_DragDirection.x < 0.0f)
+			{
+				firstX -= width;
+			}
+
+			if (m_DragDirection.y < 0.0f)
+			{
+				firstY -= height;
+			}
+
+			sf::Vector2f topLeftPosition = { firstX, firstY };
+
+			unsigned int xPositions = (unsigned int)width / Map::m_TileSize;
+			unsigned int yPositions = (unsigned int)height / Map::m_TileSize;
 			for (unsigned int y = 0; y < yPositions; y++)
 			{
 				for (unsigned int x = 0; x < xPositions; x++)
 				{
-					Vector2D position = Vector2D(firstPosition.x + x * 32, firstPosition.y + y * 32);
+					Vector2D position = Vector2D(topLeftPosition.x + x * Map::m_TileSize, topLeftPosition.y + y * Map::m_TileSize);
 					Vector2DInt mapPosition = Map::convertToMap(position);
 					if (Map::get().mapSquareDataContainsKey(mapPosition))
 					{
@@ -197,11 +248,14 @@ struct PlayerSystem : System
 
 						for (EntityID unitID : unitIDList)
 						{
+							Player& player = m_EntityManager->getComponent<Player>(playerID);
 							UnitComponent& unit = m_EntityManager->getComponent<UnitComponent>(unitID);
 							if (unit.m_Owner == ownerID)
 							{
 								unit.m_PlayerSelected = true;
 								unit.m_OutlineThickness = 1.0f;
+								player.m_SelectedUnitID = unitID;
+								InputHandler::setPlayerUnitSelected(true);
 								break;
 							}
 						}
@@ -247,6 +301,7 @@ struct PlayerSystem : System
 				if (squareData.m_Position == currentMousePosition)
 				{
 					regionID = squareData.m_RegionID;
+					break;
 				}
 			}
 
