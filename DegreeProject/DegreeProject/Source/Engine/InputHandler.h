@@ -7,7 +7,9 @@ enum Inputs
 	RightMouseClicked,
 	LeftMouseReleased,
 	RightMouseReleased,
+	MiddleMouseClicked,
 	MouseMoved,
+	MouseScrolled,
 	EscapePressed,
 	CharacterWindowOpen,
 	RegionWindowOpen,
@@ -25,6 +27,7 @@ public:
 	static Vector2D GetMousePosition();
 	static Vector2DInt GetMouseMapPosition();
 	static float GetMouseScrollDirection();
+	static bool GetMouseScrolled();
 	static bool GetPlayerUnitSelected();
 	static bool GetMouseMoved();
 	static bool GetEscapePressed();
