@@ -46,19 +46,21 @@ void War::addWarscore(EntityID ID, int warScore)
 	if (getAttacker().getID() == ID)
 	{
 		m_AttackerWarscore += warScore;
-		if (m_AttackerWarscore > 100)
+		m_DefenderWarscore -= warScore;
+		if (m_AttackerWarscore >= 100)
 		{
-			endWar(ID);
+			//endWar(ID);
 		}
 	}
 
 	else if(getDefender().getID() == ID)
  	{
 		m_DefenderWarscore += warScore;
+		m_AttackerWarscore -= warScore;
 
-		if (m_DefenderWarscore > 100)
+		if (m_DefenderWarscore >= 100)
 		{
-			endWar(ID);
+			//endWar(ID);
 		}
 	}
 }
@@ -74,18 +76,6 @@ void War::endWar(EntityID winningEntity)
 	if (!m_Attacker->m_IsPlayerControlled)
 	{
 		m_Attacker->makePeace();
-	}
-
-	if (!m_Defender->m_IsPlayerControlled)
-	{
-		m_Defender->makePeace();
-
-		//WarmindComponent& defenderWarmind = m_Warminds[m_Defender->GetID()];
-		//defenderWarmind.m_Active = false;
-		//defenderWarmind.m_AtWar = false;
-		//m_Defender->m_RaisedArmySize = 0;
-		//
-		//m_Units[m_Defender->m_UnitEntity].m_Raised = false;
 	}
 }
 

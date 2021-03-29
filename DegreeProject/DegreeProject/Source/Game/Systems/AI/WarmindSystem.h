@@ -87,7 +87,7 @@ struct WarmindSystem : System
 		moveUnit(unit.m_EntityID, capitalPosition);
 	}
 
-	void orderFlee(EntityID warmindID, UnitComponent& unit)
+	void orderFlee(EntityID warmindID, UnitComponent&)
 	{
 		LOG_INFO("{0} is fleeing from the enemy army", m_Characters[warmindID].m_Name);
 	}
@@ -99,8 +99,8 @@ struct WarmindSystem : System
 			return;
 		}
 
-		auto& enemyChar = m_Characters[m_Warminds[warmindID].m_Opponent];
-		auto& enemyUnit = m_Units[enemyChar.m_UnitEntity];
+		auto& enemyCharacter = m_Characters[m_Warminds[warmindID].m_Opponent];
+		auto& enemyUnit = m_Units[enemyCharacter.m_UnitEntity];
 
 		if (!enemyUnit.m_Raised)
 		{
@@ -109,7 +109,7 @@ struct WarmindSystem : System
 
 		Vector2DInt battlefieldIntPosition;
 
-		if (enemyUnit.m_CurrentPath.size() > 0) /*&& m_Warminds[warmindID].m_PrioritizedWar->IsAttacker(warmindID))*/
+		if (enemyUnit.m_CurrentPath.size() > 0)
 		{
 			LOG_INFO("{0} is chasing the enemy army", m_Characters[warmindID].m_Name);
 			battlefieldIntPosition = enemyUnit.m_CurrentPath.back();

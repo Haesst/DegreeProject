@@ -288,7 +288,7 @@ struct UnitSystem : System
 		characterSystem->loseRegion(regionID, loosingCharacterEntity);
 
 		War& currentWar = *m_Characters[conqueringCharacterID].getWarAgainst(loosingCharacterEntity);
-		currentWar.addWarscore(50, true);
+		currentWar.addWarscore(conqueringCharacterID, 50);
 	}
 
 	bool enemyAtSquare(Vector2DInt square, EntityID opponent)
@@ -344,7 +344,7 @@ struct UnitSystem : System
 
 			if (currentWar.getAttacker().m_RaisedArmySize > currentWar.getDefender().m_RaisedArmySize)
 			{
-				currentWar.addWarscore(50, true);
+				currentWar.addWarscore(m_Characters[m_UnitComponents[unit].m_Owner].getID(), 50);
 
 				characterSystem->dismissUnit(currentWar.getAttacker().m_EntityID);
 				m_UnitComponents[unit].m_Moving = true;
@@ -356,7 +356,8 @@ struct UnitSystem : System
 
 			else
 			{
-				currentWar.addWarscore(100, false);
+				currentWar.addWarscore(m_Characters[m_UnitComponents[enemyUnit].m_Owner].getID(), 100);
+
 				characterSystem->dismissUnit(currentWar.getDefender().m_EntityID);
 
 				m_UnitComponents[unit].m_Moving = true;
