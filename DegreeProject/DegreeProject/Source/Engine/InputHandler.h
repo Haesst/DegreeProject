@@ -8,6 +8,7 @@ enum Inputs
 	LeftMouseReleased,
 	RightMouseReleased,
 	MiddleMouseClicked,
+	MiddleMouseReleased,
 	MouseMoved,
 	MouseScrolled,
 	EscapePressed,
