@@ -278,17 +278,17 @@ struct UnitSystem : System
 		}
 	}
 
-	void conquerRegion(EntityID conqueringID, EntityID loosingEntity, size_t regionID)
+	void conquerRegion(EntityID conqueringCharacterID, EntityID loosingCharacterEntity, size_t regionID)
 	{
 #pragma warning(push)
 #pragma warning(disable: 26815)
 		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
 #pragma warning(pop)
-		characterSystem->conquerRegion(regionID, conqueringID);
-		characterSystem->loseRegion(regionID, loosingEntity);
+		characterSystem->conquerRegion(regionID, conqueringCharacterID);
+		characterSystem->loseRegion(regionID, loosingCharacterEntity);
 
-		//War& currentWar = *m_Characters[m_UnitComponents[conqueringID].m_Owner].getWarAgainst(m_UnitComponents[loosingEntity].m_Owner);
-		//currentWar.addWarscore(50, true);
+		War& currentWar = *m_Characters[conqueringCharacterID].getWarAgainst(loosingCharacterEntity);
+		currentWar.addWarscore(50, true);
 	}
 
 	bool enemyAtSquare(Vector2DInt square, EntityID opponent)
