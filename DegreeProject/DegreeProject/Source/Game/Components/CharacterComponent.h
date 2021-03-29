@@ -80,7 +80,6 @@ struct CharacterComponent : public Component
 		return nullptr;
 	}
 
-
 	void makePeace()
 	{
 		War* warToEnd = nullptr;
@@ -151,13 +150,12 @@ struct CharacterComponent : public Component
 
 		LOG_INFO("{0} Declared war with {1} for {2}", m_Name, characters[target].m_Name, Map::get().getRegionById(warGoalRegion).m_RegionName);
 
-		War* war = new War(characters[m_EntityID], characters[target], warGoalRegion);
 
-		m_CurrentWars.push_back(*war);
+		m_CurrentWars.push_back(War(characters[m_EntityID], characters[target], warGoalRegion));
 		m_AtWar = true;
 		
 		characters[target].m_RecentlyAtWar = true;
-		characters[target].m_CurrentWars.push_back(*war);
+		characters[target].m_CurrentWars.push_back(War(characters[m_EntityID], characters[target], warGoalRegion));
 		characters[target].m_AtWar = true;
 
 		if (!m_IsPlayerControlled)
