@@ -156,6 +156,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp" />
     <ClCompile Include="Source\Engine\AssetHandler.cpp" />
+    <ClCompile Include="Source\Engine\FileWatcher.cpp" />
     <ClCompile Include="Source\Engine\InputHandler.cpp" />
     <ClCompile Include="Source\Engine\Log.cpp" />
     <ClCompile Include="Source\Engine\Time.cpp" />

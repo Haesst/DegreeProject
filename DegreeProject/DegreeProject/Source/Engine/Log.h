@@ -6,17 +6,6 @@
 #include "spdlog/fmt/ostr.h"
 #pragma warning(pop)
 
-class Log
-{
-public:
-	static void Init();
-
-	inline static std::shared_ptr<spdlog::logger>& GetLogger() { return m_Logger; }
-
-private:
-	static std::shared_ptr<spdlog::logger> m_Logger;
-};
-
 // Client log macros
 #define LOG_ERROR(...)   ::Log::GetLogger()->error(__VA_ARGS__)
 #define LOG_WARN(...)    ::Log::GetLogger()->warn(__VA_ARGS__)
@@ -29,3 +18,14 @@ private:
 #else
 #define ASSERT(x, ...) {}
 #endif
+
+class Log
+{
+public:
+	static void Init();
+
+	inline static std::shared_ptr<spdlog::logger>& GetLogger() { return m_Logger; }
+
+private:
+	static std::shared_ptr<spdlog::logger> m_Logger;
+};

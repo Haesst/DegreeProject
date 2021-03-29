@@ -17,14 +17,6 @@ enum class FileStatus
 
 class FileWatcher
 {
-
-private:
-	std::unordered_map<std::string, std::filesystem::file_time_type> m_Paths;
-	bool m_Running = true;
-	std::thread m_RunThread;
-	const char* m_Path;
-	std::chrono::duration<int, std::milli> delay; // Time interval at which we check the base folder for changes
-
 public:
 	// Keep a record of files from the base directory and their last modification time
 	FileWatcher(const char* path, std::chrono::duration<int, std::milli> delay)
@@ -33,11 +25,6 @@ public:
 			m_Paths[file.path().string()] = std::filesystem::last_write_time(file);
 		}
 	};
-
-	void start(const std::function<void(std::string, FileStatus)>& action)
-	{
-		m_RunThread = std::thread(&FileWatcher::RunThread, this, action);
-	}
 
 	~FileWatcher()
 	{
@@ -49,57 +36,25 @@ public:
 		}
 	}
 
+	void start(const std::function<void(std::string, FileStatus)>& action)
+	{
+		m_RunThread = std::thread(&FileWatcher::runThread, this, action);
+	}
+
 private:
-	// Check if "m_Paths" contains a given key
-	bool contains(const std::string& key)
+	bool contains(const std::string& key) const
 	{
 		auto el = m_Paths.find(key);
 		return el != m_Paths.end();
 	}
 
-	void RunThread(const std::function<void(std::string, FileStatus)>& action)
-	{
-		while (m_Running)
-		{
-			std::this_thread::sleep_for(delay);
+	void runThread(const std::function<void(std::string, FileStatus)>& action);
 
-			auto it = m_Paths.begin();
-			while (it != m_Paths.end())
-			{
-				if (!std::filesystem::exists(it->first))
-				{
-					action(it->first, FileStatus::Erased);
+private:
+	std::unordered_map<std::string, std::filesystem::file_time_type> m_Paths;
+	bool m_Running = true;
+	std::thread m_RunThread;
+	const char* m_Path;
+	std::chrono::duration<int, std::milli> delay;
 
-					it = m_Paths.erase(it);
-				}
-				else
-				{
-					it++;
-				}
-			}
-
-			// Check if a file was created or modified
-			for (auto& file : std::filesystem::recursive_directory_iterator(m_Path))
-			{
-				auto currentFileLastWriteTime = std::filesystem::last_write_time(file);
-
-				// File creation
-				if (!contains(file.path().string()))
-				{
-					m_Paths[file.path().string()] = currentFileLastWriteTime;
-
-					action(file.path().string(), FileStatus::Created);
-				}
-				else
-				{
-					if (m_Paths[file.path().string()] != currentFileLastWriteTime)
-					{
-						m_Paths[file.path().string()] = currentFileLastWriteTime;
-
-						action(file.path().string(), FileStatus::Modified);
-					}
-				}
-			}
-		}
-	}
 };

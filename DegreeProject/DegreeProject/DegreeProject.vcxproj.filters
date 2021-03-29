@@ -237,5 +237,6 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
+    <ClCompile Include="Source\Engine\FileWatcher.cpp" />
   </ItemGroup>
 </Project>
