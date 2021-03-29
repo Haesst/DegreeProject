@@ -16,6 +16,7 @@ struct WarmindSystem : System
 	Transform* m_Transforms = nullptr;
 	UnitComponent* m_Units = nullptr;
 	SpriteRenderer* m_Renderers = nullptr;
+	WarManager* m_WarManager = nullptr;
 
 	WarmindSystem()
 	{
@@ -27,6 +28,8 @@ struct WarmindSystem : System
 		m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
 		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
 		m_Transforms = m_EntityManager->getComponentArray<Transform>();
+
+		m_WarManager = &WarManager::get();
 	}
 
 	virtual void update() override
@@ -38,7 +41,7 @@ struct WarmindSystem : System
 				continue;
 			}
 
-			m_Warminds[entity].m_PrioritizedWar = considerPrioritizedWar(entity);
+			m_Warminds[entity].m_PrioritizedWarHandle = considerPrioritizedWar(entity);
 			
 			//if (m_Warminds[entity].m_PrioritizedWar->isWinning(entity, m_Warminds[entity].m_Opponent))
 			//{
@@ -64,7 +67,7 @@ struct WarmindSystem : System
 		Vector2DInt startingPosition = Map::convertToMap(unitPosition);
 
 		Vector2DInt capitalPosition;
-		War& currentWar = *m_Warminds[warmindID].m_PrioritizedWar;
+		War& currentWar = *m_WarManager->getWar(m_Warminds[warmindID].m_PrioritizedWarHandle);
 
 		if (currentWar.isAttacker(warmindID))
 		{
@@ -73,7 +76,7 @@ struct WarmindSystem : System
 
 		else
 		{
-			CharacterComponent& enemyCharacter = m_Warminds[warmindID].m_PrioritizedWar->getAttacker();
+			CharacterComponent& enemyCharacter = currentWar.getAttacker();
 
 			if (m_Units[m_Characters[warmindID].m_UnitEntity].m_DaysSeizing > 0)
 			{
@@ -94,7 +97,7 @@ struct WarmindSystem : System
 
 	void orderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
 	{
-		if (m_Warminds[warmindID].m_PrioritizedWar == nullptr)
+		if (m_Warminds[warmindID].m_PrioritizedWarHandle == -1)
 		{
 			return;
 		}
@@ -127,12 +130,12 @@ struct WarmindSystem : System
 	{
 		auto& enemyUnit = m_Units[m_Characters[target].m_UnitEntity];
 
-		if (m_Warminds[warmind].m_PrioritizedWar == nullptr)
+		if (m_Warminds[warmind].m_PrioritizedWarHandle == -1)
 		{
 			return; 
 		}
 
-		if (m_Warminds[warmind].m_PrioritizedWar->isDefender(warmind))	//Very similar to attacker right now, split them in case they get more separate
+		if (m_WarManager->getWar(m_Warminds[warmind].m_PrioritizedWarHandle)->isDefender(warmind))
 		{
 			FightEnemyArmyConsideration fightConsideration;
 			float fightEval = fightConsideration.evaluate(warmind, target);
@@ -142,10 +145,10 @@ struct WarmindSystem : System
 				orderFightEnemyArmy(warmind, unit);
 				return;
 			}
-			
+
 			Vector2D unitPosition = m_Transforms[unit.getID()].m_Position;
 			Vector2D enemyUnitPosition = m_Transforms[enemyUnit.getID()].m_Position;
-			
+
 			float distance = (unitPosition - enemyUnitPosition).getLength();
 			if (distance < 100.0f)
 			{
@@ -153,7 +156,9 @@ struct WarmindSystem : System
 				return;
 			}
 
-			Vector2DInt regionPosition = Map::get().getRegionById(m_Warminds[warmind].m_PrioritizedWar->m_WargoalRegion).m_RegionCapital;
+			int regionID = m_WarManager->getWar(m_Warminds[warmind].m_PrioritizedWarHandle)->m_WargoalRegion;
+
+			Vector2DInt regionPosition = Map::get().getRegionById(regionID).m_RegionCapital;
 			moveUnit(unit.getID(), regionPosition);
 			return;
 		}
@@ -188,24 +193,17 @@ struct WarmindSystem : System
 		}
 	}
 
-	War* considerPrioritizedWar(EntityID ent) //Will be expanded later
+	int considerPrioritizedWar(EntityID ent) //Will be expanded later
 	{
+		WarManager* warManager = &WarManager::get();
+
 		if (!m_Characters[ent].m_CurrentWars.empty())
 		{
-			if (m_Characters[ent].m_CurrentWars.front().isAttacker(ent))
-			{
-				m_Warminds[ent].m_Opponent = m_Characters[ent].m_CurrentWars.front().m_Defender->getID();
-			}
-
-			else
-			{
-				m_Warminds[ent].m_Opponent = m_Characters[ent].m_CurrentWars.front().m_Attacker->getID();
-			}
-
-			return &m_Characters[ent].m_CurrentWars.front();
+			m_Warminds[ent].m_PrioritizedWarHandle = m_Characters[ent].m_CurrentWars.front();
+			return m_Warminds[ent].m_PrioritizedWarHandle;
 		}
 
-		return nullptr;
+		return -1;
 	}
 
 	void moveUnit(EntityID unitToMove, Vector2DInt targetPosition)

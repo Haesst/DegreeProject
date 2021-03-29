@@ -22,7 +22,7 @@ struct WarmindComponent : Component
 	float m_AtWarTickRate = 2.0f;
 	float m_TickAccu = 0.0f;
 
-	War* m_PrioritizedWar = nullptr;
+	int m_PrioritizedWarHandle = -1;
 
 	WarmindComponent()
 	{

@@ -12,7 +12,10 @@ using json = nlohmann::json;
 #include <Game\Components\CharacterComponent.h>
 #include <Game\Systems\AI\AIConsideration.h>
 #include <Game\Components\Warmind.h>
+#include "Game/WarManager.h"
 #include "Game/AI/AIManager.h"
+
+class CharacterSystem;
 
 struct AISystem : System
 {
@@ -25,8 +28,9 @@ struct AISystem : System
 
 	float m_AIUpdateTickRate = 10.0f;
 
-	CharacterComponent* m_Characters;
-	WarmindComponent* m_Warminds;
+	CharacterComponent* m_Characters = nullptr;
+	WarmindComponent* m_Warminds = nullptr;
+	WarManager* m_WarManager = nullptr;
 
 	AISystem()
 	{
@@ -35,6 +39,7 @@ struct AISystem : System
 
 		m_EntityManager = &EntityManager::get();
 		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
+		m_WarManager = &WarManager::get();
 		m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
 	}
 
@@ -44,39 +49,12 @@ struct AISystem : System
 
 		for (auto entity : m_Entities)
 		{
-			auto hello = std::make_pair(entity, m_Warminds[entity]);
-			m_EntityToWarminds.push_back(hello);
+			auto pair = std::make_pair(entity, m_Warminds[entity]);
+			m_EntityToWarminds.push_back(pair);
 		}
 	}
 
-	virtual void update() override
-	{
-		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
-		m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
-		m_TickAccu += Time::deltaTime();
-
-		if (m_TickAccu <= m_AIUpdateTickRate)
-		{
-			return;
-		}
-
-		//AI System update considerations
-		for (auto entity : m_Entities)
-		{
-			if (expansionDecision(entity) > .2f) //Add personality weight
-			{
-				if (warDecision(entity) > .2f)
-				{
-					if (!m_Characters[entity].m_AtWar)
-					{
-						m_Characters[entity].declareWar(m_Warminds[entity].m_Opponent, m_Warminds[entity].m_WargoalRegionId);
-					}
-				}
-			}
-
-			m_TickAccu = 0.0f;
-		}
-	}
+	virtual void update() override;
 
 	float warDecision(EntityID ent);
 

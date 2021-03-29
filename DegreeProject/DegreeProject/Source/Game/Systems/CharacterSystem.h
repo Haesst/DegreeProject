@@ -9,6 +9,7 @@
 #include "Game/Components/Unit.h"
 #include "Game/Components/SpriteRenderer.h"
 #include "Game/Systems/UITextSystem.h"
+#include "Game/WarManager.h"
 
 struct CharacterSystem : System
 {
@@ -29,6 +30,8 @@ struct CharacterSystem : System
 		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
 		m_Units = m_EntityManager->getComponentArray<UnitComponent>();
 		m_Renderers = m_EntityManager->getComponentArray<SpriteRenderer>();
+
+		WarManager* warManager = &WarManager::get(); 
 	}
 
 	virtual void start() override
@@ -79,6 +82,45 @@ struct CharacterSystem : System
 
 	virtual void render() override
 	{
+	}
+
+	void declareWar(EntityID character, EntityID target, int warGoalRegion)
+	{
+		auto* warManager = &WarManager::get();
+
+		for (auto& war : m_Characters[character].m_CurrentWars)
+		{
+			if (warManager->getWar(war)->m_Defender->getID() == target)
+			{
+				LOG_INFO("Tried to declare war against current opponent");
+				return;
+			}
+		}
+
+		EntityManager* entityManager = &EntityManager::get();
+		CharacterComponent* characters = entityManager->getComponentArray<CharacterComponent>();
+		WarmindComponent* warminds = entityManager->getComponentArray<WarmindComponent>();
+
+		LOG_INFO("{0} Declared war with {1} for {2}", m_Characters[character].m_Name, characters[target].m_Name, Map::get().getRegionById(warGoalRegion).m_RegionName);
+		int war = warManager->createWar(characters[character], characters[target], warGoalRegion);
+		m_Characters[character].m_CurrentWars.push_back(war);
+		m_Characters[character].m_AtWar = true;
+
+		characters[target].m_RecentlyAtWar = true;
+		characters[target].m_CurrentWars.push_back(war);
+		characters[target].m_AtWar = true;
+
+		if (!m_Characters[character].m_IsPlayerControlled)
+		{
+			warminds[character].m_Active = true;
+			m_Characters[character].m_RecentlyAtWar = true;
+		}
+
+		if (!characters[target].m_IsPlayerControlled)
+		{
+			warminds[target].m_Opponent = character;
+			warminds[target].m_Active = true;
+		}
 	}
 
 	void makePeace(CharacterComponent& attacker, CharacterComponent& defender, War* warToEnd)

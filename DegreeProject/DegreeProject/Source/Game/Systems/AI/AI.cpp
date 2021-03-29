@@ -1,4 +1,38 @@
 #include "AI.h"
+#include "Game/Systems/CharacterSystem.h"
+
+void AISystem::update()
+{
+	m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
+	m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
+	m_TickAccu += Time::deltaTime();
+
+	if (m_TickAccu <= m_AIUpdateTickRate)
+	{
+		return;
+	}
+
+	//AI System update considerations
+	for (auto entity : m_Entities)
+	{
+		if (expansionDecision(entity) > .2f) //Add personality weight
+		{
+			if (warDecision(entity) > .2f)
+			{
+				if (!m_Characters[entity].m_AtWar)
+				{
+#pragma warning(push)
+#pragma warning(disable: 26815)
+					CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
+#pragma warning(pop)
+					characterSystem->declareWar(m_Characters[entity].getID(), m_Warminds[entity].m_Opponent, m_Warminds[entity].m_WargoalRegionId);
+				}
+			}
+		}
+
+		m_TickAccu = 0.0f;
+	}
+}
 
 float AISystem::warDecision(EntityID ent)
 {
@@ -19,7 +53,9 @@ float AISystem::warDecision(EntityID ent)
 	float actionScore = goldEvaluation * enemyArmyEvaluation;
 	actionScore += personality.m_DeclareWarModifier;
 
-	if (m_Characters[ent].getWarAgainst(m_Warminds[ent].m_Opponent) == nullptr)
+	War* war = m_WarManager->getWarAgainst(m_Characters[ent], m_Characters[m_Warminds[ent].m_Opponent]);
+
+	if (war == nullptr)
 	{
 		LOG_INFO("VALID WAR");
 		return std::clamp(actionScore, 0.0f, 1.0f);

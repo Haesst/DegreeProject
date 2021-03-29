@@ -237,7 +237,10 @@ struct CharacterWindowSystem : System
 #pragma warning(pop)
 
 				CharacterComponent& target = entityManager->getComponent<CharacterComponent>(m_CurrentMapRegion->m_OwnerID);
-				characterSystem->makePeace(*playerCharacter, target, playerCharacter->getWarAgainst(target.getID()));
+				WarManager* warManager = &WarManager::get();
+				War* war = warManager->getWarAgainst(*playerCharacter, target);
+
+				characterSystem->makePeace(*playerCharacter, target, war);
 			}
 		}
 	}

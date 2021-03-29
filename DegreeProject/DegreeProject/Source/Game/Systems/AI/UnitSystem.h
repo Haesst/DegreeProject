@@ -2,6 +2,7 @@
 #include "ECS/System.h"
 #include <Game\Components\Unit.h>
 #include <Engine\AssetHandler.h>
+#include "Game/WarManager.h"
 #include "Game\Components\Player.h"
 
 struct UnitSystem : System
@@ -11,6 +12,7 @@ struct UnitSystem : System
 	CharacterComponent* m_Characters = nullptr;
 	WarmindComponent* m_Warminds = nullptr;
 	SpriteRenderer* m_Renderers = nullptr;
+	WarManager* m_WarManager = nullptr;
 
 	float m_MoveTolerance = 0.3f;
 
@@ -31,6 +33,7 @@ struct UnitSystem : System
 	{
 		addComponentSignature<UnitComponent>();
 		m_EntityManager = &EntityManager::get();
+		m_WarManager = &WarManager::get();
 		m_UnitComponents = m_EntityManager->getComponentArray<UnitComponent>();
 		m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
 		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
@@ -287,7 +290,7 @@ struct UnitSystem : System
 		characterSystem->conquerRegion(regionID, conqueringCharacterID);
 		characterSystem->loseRegion(regionID, loosingCharacterEntity);
 
-		War& currentWar = *m_Characters[conqueringCharacterID].getWarAgainst(loosingCharacterEntity);
+		War& currentWar = *m_WarManager->getWarAgainst(m_Characters[conqueringCharacterID], m_Characters[loosingCharacterEntity]);
 		currentWar.addWarscore(conqueringCharacterID, 50);
 	}
 
@@ -338,15 +341,22 @@ struct UnitSystem : System
 		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
 #pragma warning(pop)
 
+		WarManager* warManager = &WarManager::get();
+
 		if (m_UnitComponents[unit].m_CombatTimerAccu > m_UnitComponents[unit].m_CombatTimer)
 		{
-			War& currentWar = *m_Characters[m_UnitComponents[unit].m_Owner].getWarAgainst(m_UnitComponents[enemyUnit].m_Owner);
-
-			if (currentWar.getAttacker().m_RaisedArmySize > currentWar.getDefender().m_RaisedArmySize)
+			War* currentWar = warManager->getWarAgainst(m_Characters[m_UnitComponents[unit].m_Owner], m_Characters[m_UnitComponents[enemyUnit].m_Owner]);
+			
+			if (currentWar == nullptr)
 			{
-				currentWar.addWarscore(m_Characters[m_UnitComponents[unit].m_Owner].getID(), 50);
+				return;
+			}
 
-				characterSystem->dismissUnit(currentWar.getAttacker().m_EntityID);
+			if (currentWar->getAttacker().m_RaisedArmySize > currentWar->getDefender().m_RaisedArmySize)
+			{
+				currentWar->addWarscore(m_Characters[m_UnitComponents[unit].m_Owner].getID(), 50);
+
+				characterSystem->dismissUnit(currentWar->getAttacker().m_EntityID);
 				m_UnitComponents[unit].m_Moving = true;
 				m_UnitComponents[unit].EnemyArmy = nullptr;
 				m_UnitComponents[enemyUnit].EnemyArmy = nullptr;
@@ -356,9 +366,9 @@ struct UnitSystem : System
 
 			else
 			{
-				currentWar.addWarscore(m_Characters[m_UnitComponents[enemyUnit].m_Owner].getID(), 100);
+				currentWar->addWarscore(m_Characters[m_UnitComponents[enemyUnit].m_Owner].getID(), 100);
 
-				characterSystem->dismissUnit(currentWar.getDefender().m_EntityID);
+				characterSystem->dismissUnit(currentWar->getDefender().m_EntityID);
 
 				m_UnitComponents[unit].m_Moving = true;
 				m_UnitComponents[unit].EnemyArmy = nullptr;

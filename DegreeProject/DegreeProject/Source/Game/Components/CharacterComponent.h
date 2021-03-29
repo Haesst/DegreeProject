@@ -7,7 +7,6 @@
 #include "Game/Components/Unit.h"
 #include "Game/Components/SpriteRenderer.h"
 #include "Game/Components/Warmind.h"
-#include "Game/War.h"
 
 enum class Title
 {
@@ -36,7 +35,7 @@ struct CharacterComponent : public Component
 	bool m_AtWar = false;
 	int m_PersonalityIndex = 0;
 	int m_Income = 0;
-	std::vector<War> m_CurrentWars = std::vector<War>();
+	std::vector<int> m_CurrentWars = std::vector<int>();
 
 	EntityID m_TextUI = (SIZE_T)INT_MAX;
 
@@ -58,7 +57,6 @@ struct CharacterComponent : public Component
 		m_IsPlayerControlled = isPlayerControlled;
 		m_RegionColor = regionColor;
 		m_PersonalityIndex = personalityIndex;
-
 		initUnit();
 	}
 
@@ -67,56 +65,16 @@ struct CharacterComponent : public Component
 		Time::m_GameDate.subscribeToMonthChange(std::bind(&CharacterComponent::onMonthChange, this, std::placeholders::_1));
 	}
 
-	War* getWarAgainst(EntityID enemyEntity)
-	{
-		for (auto& war : m_CurrentWars)
-		{
-			if (war.isDefender(enemyEntity) || war.isAttacker(enemyEntity))
-			{
-				return &war;
-			}
-		}
-
-		return nullptr;
-	}
-
 	void declareWar(EntityID target, int warGoalRegion)
 	{
-		ASSERT(getWarAgainst(target) == nullptr, "Cant declare war with someone you are at war with");
-		LOG_INFO("WAR DECLARED");
-		for (auto& war : m_CurrentWars)
-		{
-			if (war.m_Defender->getID() == target)
-			{
-				return;
-			}
-		}
-
-		EntityManager* entityManager = &EntityManager::get();
-		CharacterComponent* characters = entityManager->getComponentArray<CharacterComponent>();
-		WarmindComponent* warminds = entityManager->getComponentArray<WarmindComponent>();
-
-		LOG_INFO("{0} Declared war with {1} for {2}", m_Name, characters[target].m_Name, Map::get().getRegionById(warGoalRegion).m_RegionName);
-
-
-		m_CurrentWars.push_back(War(characters[m_EntityID], characters[target], warGoalRegion));
-		m_AtWar = true;
-		
-		characters[target].m_RecentlyAtWar = true;
-		characters[target].m_CurrentWars.push_back(War(characters[m_EntityID], characters[target], warGoalRegion));
-		characters[target].m_AtWar = true;
-
-		if (!m_IsPlayerControlled)
-		{
-			warminds[m_EntityID].m_Active = true;
-			m_RecentlyAtWar = true;
-		}
-
-		if (!characters[target].m_IsPlayerControlled)
-		{
-			warminds[target].m_Opponent = m_EntityID;
-			warminds[target].m_Active = true;
-		}
+//		EntityManager* entityManager = &EntityManager::get();
+//
+//#pragma warning(push)
+//#pragma warning(disable: 26815)
+//		CharacterSystem* characterSystem = (CharacterSystem*)entityManager->getSystem<CharacterSystem>().get();
+//#pragma warning(pop)
+//
+//		characterSystem->declareWar(m_EntityID, target, warGoalRegion);
 	}
 
 	void onMonthChange(Date)
