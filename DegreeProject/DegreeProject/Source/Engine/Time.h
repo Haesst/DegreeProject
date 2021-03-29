@@ -26,5 +26,6 @@ public:
 	static void UnpauseGame();
 	static void DecreaseGameSpeed();
 	static void IncreaseGameSpeed();
+	static void SetGameSpeed(int speedLevel);
 	static bool GamePaused() { return m_GamePaused; };
 };

@@ -49,3 +49,23 @@ void Time::IncreaseGameSpeed()
 	++m_CurrentSpeedLevel;
 	m_CurrentSpeedMultiplier += m_SpeedModifer;
 }
+
+void Time::SetGameSpeed(int speedLevel)
+{
+	if (speedLevel < m_MinSpeedLevel)
+	{
+		speedLevel = m_MinSpeedLevel;
+	}
+
+	if (speedLevel > m_MaxSpeedLevel)
+	{
+		speedLevel = m_MaxSpeedLevel;
+	}
+
+	int differenceToCurrentSpeed = speedLevel - m_CurrentSpeedLevel;
+
+	float modifier = m_SpeedModifer * differenceToCurrentSpeed;
+
+	m_CurrentSpeedLevel = speedLevel;
+	m_CurrentSpeedMultiplier += modifier;
+}
