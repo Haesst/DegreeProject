@@ -4,15 +4,15 @@
 #include <Engine/Log.h>
 #include "Game/Map/Map.h"
 
-float m_MouseScrollDirection = 0.0f;
-Vector2DInt m_ViewMoveDirection = Vector2DInt();
-const float MAX_ZOOM = 1000.0f;
-const float MIN_ZOOM = 100.0f;
-const float MOVE_SPEED = 25.0f;
-const float ZOOM_SPEED = 0.1f;
-Vector2D m_MousePosition = Vector2D(0.0f, 0.0f);
-Vector2DInt m_MouseMapPosition = Vector2DInt(0, 0);
-bool inputs[Inputs::PlayerUnitSelected + 1];
+static float m_MouseScrollDirection = 0.0f;
+static Vector2DInt m_ViewMoveDirection = Vector2DInt();
+static const float MAX_ZOOM = 1000.0f;
+static const float MIN_ZOOM = 100.0f;
+static const float MOVE_SPEED = 25.0f;
+static const float ZOOM_SPEED = 0.1f;
+static Vector2D m_MousePosition = Vector2D(0.0f, 0.0f);
+static Vector2DInt m_MouseMapPosition = Vector2DInt(0, 0);
+static bool inputs[Inputs::PlayerUnitSelected + 1];
 
 void InputHandler::HandleInputEvents()
 {
@@ -20,7 +20,9 @@ void InputHandler::HandleInputEvents()
 	inputs[RightMouseClicked] = false;
 	inputs[LeftMouseReleased] = false;
 	inputs[RightMouseReleased] = false;
+	inputs[MiddleMouseClicked] = false;
 	inputs[MouseMoved] = false;
+	inputs[MouseScrolled] = false;
 	inputs[EscapePressed] = false;
 	inputs[CharacterWindowOpen] = false;
 	inputs[RegionWindowOpen] = false;
@@ -140,6 +142,36 @@ void InputHandler::HandleInputEvents()
 						window->close();
 						break;
 					}
+					case sf::Keyboard::Numpad1:
+					case sf::Keyboard::Num1:
+					{
+						Time::SetGameSpeed(1);
+						break;
+					}
+					case sf::Keyboard::Numpad2:
+					case sf::Keyboard::Num2:
+					{
+						Time::SetGameSpeed(2);
+						break;
+					}
+					case sf::Keyboard::Numpad3:
+					case sf::Keyboard::Num3:
+					{
+						Time::SetGameSpeed(3);
+						break;
+					}
+					case sf::Keyboard::Numpad4:
+					case sf::Keyboard::Num4:
+					{
+						Time::SetGameSpeed(4);
+						break;
+					}
+					case sf::Keyboard::Numpad5:
+					case sf::Keyboard::Num5:
+					{
+						Time::SetGameSpeed(5);
+						break;
+					}
 					default:
 					{
 						break;
@@ -186,6 +218,7 @@ void InputHandler::HandleInputEvents()
 					}
 					case sf::Mouse::Middle:
 					{
+						inputs[MiddleMouseClicked] = true;
 						break;
 					}
 					case sf::Mouse::XButton1:
@@ -245,6 +278,7 @@ void InputHandler::HandleInputEvents()
 					m_MouseScrollDirection = event.mouseWheelScroll.delta;
 					if (AllowedToZoomView(view))
 					{
+						inputs[MouseScrolled] = true;
 						ZoomView(window, view);
 					}
 				}
@@ -253,7 +287,14 @@ void InputHandler::HandleInputEvents()
 			case sf::Event::MouseMoved:
 			{
 				inputs[MouseMoved] = true;
+				Vector2D previousMousePosition = GetMousePosition();
 				SetMousePosition(event.mouseMove.x, event.mouseMove.y, window);
+				if (inputs[MiddleMouseClicked] && AllowedToMoveView(view))
+				{
+					Vector2D direction = (previousMousePosition - GetMousePosition()).Normalized();
+					m_ViewMoveDirection = Vector2DInt((int)direction.x, (int)direction.y);
+					MoveView(window, view);
+				}
 				break;
 			}
 			case sf::Event::MouseEntered:
@@ -340,6 +381,11 @@ Vector2DInt InputHandler::GetMouseMapPosition()
 float InputHandler::GetMouseScrollDirection()
 {
 	return m_MouseScrollDirection;
+}
+
+bool InputHandler::GetMouseScrolled()
+{
+	return inputs[MouseScrolled];
 }
 
 bool InputHandler::GetPlayerUnitSelected()
