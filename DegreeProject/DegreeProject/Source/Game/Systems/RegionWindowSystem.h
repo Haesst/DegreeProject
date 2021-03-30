@@ -205,12 +205,20 @@ struct RegionWindowSystem : System
 				}
 				else
 				{
-					regionWindow.m_Open = false;
+					closeWindow(regionWindow);
 				}
 			}
 			else
 			{
 				regionWindow.m_Open = false;
+			}
+		}
+		else if (InputHandler::getRightMouseClicked() && !InputHandler::getPlayerUnitSelected() && regionWindow.m_Visible)
+		{
+			Vector2D mousePosition = InputHandler::getMousePosition();
+			if (!regionWindow.m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				closeWindow(regionWindow);
 			}
 		}
 	}

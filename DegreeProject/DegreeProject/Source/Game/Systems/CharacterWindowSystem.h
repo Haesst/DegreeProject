@@ -174,12 +174,20 @@ struct CharacterWindowSystem : System
 				}
 				else
 				{
-					characterWindow.m_Open = false;
+					closeWindow(characterWindow);
 				}
 			}
 			else
 			{
 				characterWindow.m_Open = false;
+			}
+		}
+		else if (InputHandler::getLeftMouseClicked() && !InputHandler::getPlayerUnitSelected() && characterWindow.m_Visible)
+		{
+			Vector2D mousePosition = InputHandler::getMousePosition();
+			if (!characterWindow.m_Shape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				closeWindow(characterWindow);
 			}
 		}
 	}

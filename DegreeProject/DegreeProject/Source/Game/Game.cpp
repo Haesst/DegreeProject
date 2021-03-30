@@ -106,8 +106,8 @@ void Game::initSystems()
 	entityManager->registerSystem<PlayerSystem>();
 	entityManager->registerSystem<DateBarSystem>();
 	entityManager->registerSystem<StatBarSystem>();
-	entityManager->registerSystem<CharacterWindowSystem>();
 	entityManager->registerSystem<RegionWindowSystem>();
+	entityManager->registerSystem<CharacterWindowSystem>();
 	entityManager->registerSystem<UISpriteRenderSystem>();
 
 	SystemManager* systemManager = SystemManager::get();
