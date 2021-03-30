@@ -6,7 +6,7 @@ int WarManager::createWar(CharacterComponent& attacker, CharacterComponent& defe
 {
 	static int handle = m_Warhandle++;
 
-	War war(attacker, defender, warGoalRegion);
+	War war(attacker, defender, warGoalRegion, handle);
 	m_Wars.push_back(std::make_pair(handle, war));
 	return handle;
 }

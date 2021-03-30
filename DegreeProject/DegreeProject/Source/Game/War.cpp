@@ -5,7 +5,7 @@
 #include "Game/Components/Warmind.h"
 #include "Game/Components/Unit.h"
 
-War::War(CharacterComponent& attacker, CharacterComponent& defender, int warGoalRegion)
+War::War(CharacterComponent& attacker, CharacterComponent& defender, int warGoalRegion, int handle)
 {
 	m_Attacker = &attacker;
 	m_Defender = &defender;
@@ -15,6 +15,7 @@ War::War(CharacterComponent& attacker, CharacterComponent& defender, int warGoal
 	m_Units = m_EntityManager->getComponentArray<UnitComponent>();
 	m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
 	m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
+	m_Handle = handle;
 }
 
 bool War::isWinning(EntityID ID, EntityID enemyID)
@@ -50,7 +51,7 @@ void War::addWarscore(EntityID ID, int warScore)
 		m_DefenderWarscore -= warScore;
 		if (m_AttackerWarscore >= 100)
 		{
-			//endWar(ID);
+			endWar(ID);
 		}
 	}
 
@@ -61,7 +62,7 @@ void War::addWarscore(EntityID ID, int warScore)
 
 		if (m_DefenderWarscore >= 100)
 		{
-			//endWar(ID);
+			endWar(ID);
 		}
 	}
 }
@@ -80,7 +81,7 @@ void War::endWar(EntityID winningEntity)
 #pragma warning(disable: 26815)
 		CharacterSystem* characterSystem = (CharacterSystem*)entityManager->getSystem<CharacterSystem>().get();
 #pragma warning(pop)
-		characterSystem->makePeace(getAttacker(), getDefender(), this);
+		characterSystem->makePeace(getAttacker(), getDefender(), m_Handle);
 	}
 }
 
@@ -102,6 +103,11 @@ bool War::isDefender(EntityID ent)
 	}
 
 	return false;
+}
+
+int War::getHandle()
+{
+	return m_Handle;
 }
 
 CharacterComponent& War::getAttacker()

@@ -123,29 +123,40 @@ struct CharacterSystem : System
 		}
 	}
 
-	void makePeace(CharacterComponent& attacker, CharacterComponent& defender, War* warToEnd)
+	void makePeace(CharacterComponent& attacker, CharacterComponent& defender, int warToEnd)
 	{
-		//unsigned int warIndex = 0;
-		//for (auto& handle : attacker.m_CurrentWars)
-		//{
-		//	if (handle.isDefender(defender.m_EntityID))
-		//	{
-		//		attacker.m_CurrentWars.erase(attacker.m_CurrentWars.begin() + warIndex);
-		//		break;
-		//	}
-		//	warIndex++;
-		//}
-		//
-		//warIndex = 0;
-		//for (auto& war : defender.m_CurrentWars)
-		//{
-		//	if (war.isAttacker(attacker.m_EntityID))
-		//	{
-		//		defender.m_CurrentWars.erase(defender.m_CurrentWars.begin() + warIndex);
-		//		break;
-		//	}
-		//	warIndex++;
-		//}
+		unsigned int warIndex = 0;
+
+		WarManager* warManager = &WarManager::get();
+
+		for (auto& handle : attacker.m_CurrentWars)
+		{
+			if (handle == warToEnd)
+			{
+				if (warManager->getWar(handle) != nullptr)
+				{
+					warManager->endWar(warToEnd);
+				}
+
+				attacker.m_CurrentWars.erase(attacker.m_CurrentWars.begin() + warIndex);
+				break;
+			}
+			warIndex++;
+		}
+
+		warIndex = 0;
+
+		for (auto& handle : defender.m_CurrentWars)
+		{
+			if (handle == warToEnd)
+			{
+				defender.m_CurrentWars.erase(defender.m_CurrentWars.begin() + warIndex);
+				break;
+			}
+			warIndex++;
+		}
+
+		LOG_INFO("{0} Made peace with {1}", attacker.m_Name, defender.m_Name);
 	}
 
 	void raiseUnit(EntityID ownerID, bool playerControlled, UnitComponent& unit, SpriteRenderer& renderer, const Vector2DInt& mapPosition)

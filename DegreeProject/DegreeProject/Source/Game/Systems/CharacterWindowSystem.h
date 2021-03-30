@@ -248,7 +248,10 @@ struct CharacterWindowSystem : System
 				WarManager* warManager = &WarManager::get();
 				War* war = warManager->getWarAgainst(*playerCharacter, target);
 
-				characterSystem->makePeace(*playerCharacter, target, war);
+				if (war->getHandle() != -1)
+				{
+					characterSystem->makePeace(*playerCharacter, target, war->getHandle());
+				}
 			}
 		}
 	}
