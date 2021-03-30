@@ -64,11 +64,13 @@ struct SquareData
 
 struct Map : GameSystem
 {
-
 	static const int m_XOffset;
 	static const int m_YOffset;
 	static const float m_TileSize;
 	static const float m_HalfTileSize;
+
+	int width;
+	int height;
 
 	static Map* m_Instance;
 	
@@ -124,6 +126,7 @@ struct Map : GameSystem
 	Vector2DInt getRegionCapitalLocation(unsigned int regionId);
 	std::vector<Vector2DInt> getRegionCapitals();
 	std::vector<int> getRegionIDs();
+	Vector2DInt getMapSize();
 
 private:
 	int getRegionPositionFromRegionId(const unsigned int id);

@@ -216,14 +216,17 @@ struct WarmindSystem : System
 
 		Vector2D unitPosition = transform.m_Position;
 		Vector2DInt startingPosition = Map::convertToMap(unitPosition);
-		std::list<Vector2DInt> path = Pathfinding::findPath(startingPosition, targetPosition);
+		std::vector<Vector2DInt> path = Pathfinding::get().findPath(startingPosition, targetPosition);
 
 		if (path.size() > 0)
 		{
-			if (path.back() == unit.m_CurrentPath.back())
+			if (unit.m_CurrentPath.size() > 0)
 			{
-				unit.m_Moving = true;
-				return;
+				if (path.back() == unit.m_CurrentPath.back())
+				{
+					unit.m_Moving = true;
+					return;
+				}
 			}
 
 			unit.setPath(path, Map::convertToScreen(startingPosition));

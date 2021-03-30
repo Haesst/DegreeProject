@@ -126,9 +126,9 @@ struct CharacterSystem : System
 	void makePeace(CharacterComponent& attacker, CharacterComponent& defender, War* warToEnd)
 	{
 		//unsigned int warIndex = 0;
-		//for (auto& war : attacker.m_CurrentWars)
+		//for (auto& handle : attacker.m_CurrentWars)
 		//{
-		//	if (war.isDefender(defender.m_EntityID))
+		//	if (handle.isDefender(defender.m_EntityID))
 		//	{
 		//		attacker.m_CurrentWars.erase(attacker.m_CurrentWars.begin() + warIndex);
 		//		break;
@@ -146,8 +146,6 @@ struct CharacterSystem : System
 		//	}
 		//	warIndex++;
 		//}
-		//
-		//delete warToEnd;
 	}
 
 	void raiseUnit(EntityID ownerID, bool playerControlled, UnitComponent& unit, SpriteRenderer& renderer, const Vector2DInt& mapPosition)

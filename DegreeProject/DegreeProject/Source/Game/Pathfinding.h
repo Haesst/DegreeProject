@@ -5,53 +5,46 @@
 
 struct Node
 {
-	std::vector<Node*> m_Neighbours = std::vector<Node*>();
-
 	float m_GCost = FLT_MAX;
-	float m_HCost = FLT_MAX;
 	float m_FCost = FLT_MAX;
 
-	Node* m_Parent = nullptr;
+	bool m_Blocker = false;
 
-	bool m_Visited = false;
-
-	Vector2DInt m_Position;
-
-	Node()
-	{
-		m_Position = { 0, 0 };
-	}
-
-	Node(Vector2DInt position)
-	{
-		m_Position = position;
-	}
-
-	bool operator== (const Node& other)
-	{
-		return other.m_Position.x == m_Position.x && other.m_Position.y == m_Position.y;
-	}
+	int x;
+	int y;
 };
 
 class Pathfinding
 {
 public:
+	Pathfinding();
 	~Pathfinding();
-	static float calculateHCost(const Node& a, const Node& b);
+	float calculateHCost(const Vector2DInt a, const Vector2DInt b);
 
-	static std::vector<Node*> m_Map;
-	static bool isInMap(const Vector2DInt& key);
-	static Node* getNodeFromKey(const Vector2DInt& key);
+	static Pathfinding* m_Instance;
+	static Pathfinding& get();
 
-	static void init(const std::vector<MapRegion>& map);
+	std::vector<Node*> m_Map;
+	bool isInMap(const Vector2DInt& key);
+	Node* getNodeFromKey(const Vector2DInt& key);
 
-	static void calculateNeighbours(Node* node);
+	void init();
 
-	static void clearNodeData();
+	bool endMet(Node current, Node end);
 
-	static std::list<Vector2DInt> findPath(Vector2DInt start, Vector2DInt end);
-	static void findThreadedPath(std::list<Node*> openList, Node* endNode);
+	void calculateNeighbours(Node* node);
 
-	static std::mutex m_PathMutex;
-	static std::thread m_PathThread;
+	int indexOf(Node node) const;
+
+	void clearNodeData();
+
+	std::vector<Vector2DInt> findPath(Vector2DInt start, Vector2DInt end);
+	void findThreadedPath(std::list<Node*> openList, Node* endNode);
+
+	std::mutex m_PathMutex;
+	std::thread m_PathThread;
+
+
+	int m_MapWidth = 0;
+	int m_MapHeight = 0;
 };

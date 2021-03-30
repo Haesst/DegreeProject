@@ -10,7 +10,7 @@ struct UnitComponent : public Component
 {
 	int m_RepresentedForce = 0;
 	bool m_Raised = false;
-	std::list<Vector2DInt> m_CurrentPath = std::list<Vector2DInt>();
+	std::vector<Vector2DInt> m_CurrentPath = std::vector<Vector2DInt>();
 	std::list<sf::RectangleShape> m_TargetPath = std::list<sf::RectangleShape>();
 	sf::RectangleShape m_EndPosition;
 	Vector2D m_Target;
@@ -53,7 +53,7 @@ struct UnitComponent : public Component
 		m_Owner = owner;
 	}
 
-	void setPath(std::list<Vector2DInt> path, const Vector2D& startingPosition)
+	void setPath(std::vector<Vector2DInt> path, const Vector2D& startingPosition)
 	{
 		if (m_InCombat)
 		{
@@ -83,6 +83,6 @@ struct UnitComponent : public Component
 		m_Target = Map::convertToScreen(firstPositionMap);
 
 		m_Direction = (m_Target - startingPosition).normalized();
-		m_CurrentPath.pop_front();
+		m_CurrentPath.erase(m_CurrentPath.begin());
 	}
 }; 

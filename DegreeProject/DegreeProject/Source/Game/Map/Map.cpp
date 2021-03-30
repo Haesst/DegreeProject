@@ -118,12 +118,21 @@ void Map::loadMap()
 	std::string tempString;
 	std::ifstream inData = loadFile(m_Data.m_MapPath);
 
+	int maxWidth = 0;
+	int maxHeight = 0;
+
 	if (inData.is_open())
 	{
 		int y = 0;
 		while (!inData.eof())
 		{
 			getline(inData, tempString);
+
+			if (tempString.empty())
+			{
+				break;
+			}
+
 			int x = 0;
 			for (char character : tempString)
 			{
@@ -141,9 +150,23 @@ void Map::loadMap()
 
 				x++;
 			}
+
 			y++;
+
+			if (x > maxWidth)
+			{
+				maxWidth = x;
+			}
+
+			if (y > maxHeight)
+			{
+				maxHeight = y;
+			}
 		}
 	}
+	width = maxWidth;
+	height = maxHeight;
+
 	inData.close();
 }
 
@@ -351,5 +374,9 @@ std::vector<int> Map::getRegionIDs()
 	}
 
 	return regionIds;
+}
+Vector2DInt Map::getMapSize()
+{
+	return Vector2DInt(width, height);
 }
 #pragma warning(pop)

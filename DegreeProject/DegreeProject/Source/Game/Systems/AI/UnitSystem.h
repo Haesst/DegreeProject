@@ -117,9 +117,13 @@ struct UnitSystem : System
 
 				unit.m_EndPosition.setSize(sf::Vector2f(32.0f, 32.0f));
 				unit.m_EndPosition.setFillColor(sf::Color::Red);
-				Vector2D pos = Map::convertToScreen(unit.m_CurrentPath.back());
-				unit.m_EndPosition.setPosition(pos.x, pos.y);
-				Window::getWindow()->draw(unit.m_EndPosition);
+
+				if (unit.m_CurrentPath.size() > 0)
+				{
+					Vector2D pos = Map::convertToScreen(unit.m_CurrentPath.back());
+					unit.m_EndPosition.setPosition(pos.x, pos.y);
+					Window::getWindow()->draw(unit.m_EndPosition);
+				}
 
 				if (unit.m_SeizingRegionID > 0)
 				{
@@ -219,7 +223,7 @@ struct UnitSystem : System
 						}
 					}
 					
-					unit.m_CurrentPath.pop_front();
+					unit.m_CurrentPath.erase(unit.m_CurrentPath.begin());
 					if (unit.m_TargetPath.size() > 0) //&& unit.m_PlayerControlled)
 					{
 						unit.m_TargetPath.pop_front();
