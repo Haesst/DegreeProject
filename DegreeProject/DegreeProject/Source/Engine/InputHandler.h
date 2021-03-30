@@ -39,9 +39,9 @@ public:
 	static void setRegionWindowOpen(bool open);
 	static float getZoomSpeed();
 private:
-	static void moveView(sf::RenderWindow* window, sf::View& view);
-	static void setMousePosition(int xPosition, int yPosition, sf::RenderWindow* window);
-	static bool allowedToZoomView(sf::View& view);
-	static void zoomView(sf::RenderWindow* window, sf::View& view);
-	static bool allowedToMoveView(sf::View& view);
+	static void moveView(sf::RenderWindow& window, sf::View& view);
+	static void setMousePosition(int xPosition, int yPosition, const sf::RenderWindow& window);
+	static bool allowedToZoomView(const sf::View& view);
+	static void zoomView(sf::RenderWindow& window, sf::View& view);
+	static bool allowedToMoveView(const sf::View& view);
 };

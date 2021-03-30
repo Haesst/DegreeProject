@@ -29,18 +29,14 @@ struct UITextSystem : System
 
 		for (auto entity : m_Entities)
 		{
+			UITexts[entity].m_CountryNameText.setFont(UITexts[entity].m_Font);
+			UITexts[entity].m_CountryNameText.setStyle(UITexts[entity].m_Style);
+			UITexts[entity].m_CountryNameText.setString(UITexts[entity].m_CountryName);
+			UITexts[entity].m_CountryNameText.setFillColor(UITexts[entity].m_FillColor);
+			UITexts[entity].m_CountryNameText.setOutlineColor(UITexts[entity].m_OutlineColor);
+			UITexts[entity].m_CountryNameText.setOutlineThickness(UITexts[entity].m_OutlineThickness);
 			adjustText(UITexts[entity]);
 		}
-	}
-
-	virtual void update() override
-	{
-		//UIText* UITexts = m_EntityManager->GetComponentArray<UIText>();
-
-		//for (auto entity : m_Entities)
-		//{
-
-		//}
 	}
 
 	virtual void render() override
@@ -100,14 +96,8 @@ struct UITextSystem : System
 			}
 			UIText.m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - UIText.m_CharacterSize * 3;
 			UIText.m_PositionY = diagonal.y * 0.5f + leftMostPositionScreen.y - UIText.m_CharacterSize * offsetY;
-			UIText.m_CountryNameText.setFont(UIText.m_Font);
 			UIText.m_CountryNameText.setCharacterSize(UIText.m_CharacterSize);
-			UIText.m_CountryNameText.setStyle(UIText.m_Style);
-			UIText.m_CountryNameText.setString(UIText.m_CountryName);
 			UIText.m_CountryNameText.setPosition(UIText.m_PositionX, UIText.m_PositionY);
-			UIText.m_CountryNameText.setFillColor(UIText.m_FillColor);
-			UIText.m_CountryNameText.setOutlineColor(UIText.m_OutlineColor);
-			UIText.m_CountryNameText.setOutlineThickness(UIText.m_OutlineThickness);
 			UIText.m_CountryNameText.setRotation(UIText.m_Rotation);
 		}
 		else

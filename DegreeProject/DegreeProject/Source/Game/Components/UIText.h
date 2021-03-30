@@ -5,7 +5,7 @@
 
 struct UIText : public Component
 {
-	sf::Color m_FillColor = sf::Color(255, 252, 240);
+	sf::Color m_FillColor = sf::Color(255, 252, 240, 200);
 	sf::Color m_OutlineColor = sf::Color::Black;
 	float m_OutlineThickness = 1.0f;
 	float m_PositionX = 960.0f;

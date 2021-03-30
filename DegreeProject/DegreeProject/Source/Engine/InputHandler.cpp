@@ -4,14 +4,14 @@
 #include <Engine/Log.h>
 #include "Game/Map/Map.h"
 
-static float m_MouseScrollDirection = 0.0f;
-static Vector2DInt m_ViewMoveDirection = Vector2DInt();
+static float mouseScrollDirection = 0.0f;
+static Vector2DInt viewMoveDirection = Vector2DInt();
 static const float MAX_ZOOM = 1000.0f;
 static const float MIN_ZOOM = 100.0f;
 static const float MOVE_SPEED = 25.0f;
 static const float ZOOM_SPEED = 0.1f;
-static Vector2D m_MousePosition = Vector2D(0.0f, 0.0f);
-static Vector2DInt m_MouseMapPosition = Vector2DInt(0, 0);
+static Vector2D mousePosition = Vector2D(0.0f, 0.0f);
+static Vector2DInt mouseMapPosition = Vector2DInt(0, 0);
 static bool inputs[Inputs::PlayerUnitSelected + 1];
 
 void InputHandler::handleInputEvents()
@@ -25,16 +25,16 @@ void InputHandler::handleInputEvents()
 	inputs[MouseScrolled] = false;
 	inputs[EscapePressed] = false;
 	inputs[PlayerUnitSelected] = false;
-	sf::RenderWindow* window = Window::getWindow();
-	sf::View view = window->getView();
+	sf::RenderWindow& window = *Window::getWindow();
+	sf::View view = window.getView();
 	sf::Event event;
-	while (window->pollEvent(event))
+	while (window.pollEvent(event))
 	{
 		switch (event.type)
 		{
 		case sf::Event::Closed:
 		{
-			window->close();
+			window.close();
 			break;
 		}
 		case sf::Event::KeyPressed:
@@ -44,7 +44,7 @@ void InputHandler::handleInputEvents()
 			case sf::Keyboard::Up:
 			case sf::Keyboard::W:
 			{
-				m_ViewMoveDirection = Vector2DInt(0, -1);
+				viewMoveDirection = Vector2DInt(0, -1);
 				if (allowedToMoveView(view))
 				{
 					moveView(window, view);
@@ -54,7 +54,7 @@ void InputHandler::handleInputEvents()
 			case sf::Keyboard::Left:
 			case sf::Keyboard::A:
 			{
-				m_ViewMoveDirection = Vector2DInt(-1, 0);
+				viewMoveDirection = Vector2DInt(-1, 0);
 				if (allowedToMoveView(view))
 				{
 					moveView(window, view);
@@ -64,7 +64,7 @@ void InputHandler::handleInputEvents()
 			case sf::Keyboard::Down:
 			case sf::Keyboard::S:
 			{
-				m_ViewMoveDirection = Vector2DInt(0, 1);
+				viewMoveDirection = Vector2DInt(0, 1);
 				if (allowedToMoveView(view))
 				{
 					moveView(window, view);
@@ -74,7 +74,7 @@ void InputHandler::handleInputEvents()
 			case sf::Keyboard::Right:
 			case sf::Keyboard::D:
 			{
-				m_ViewMoveDirection = Vector2DInt(1, 0);
+				viewMoveDirection = Vector2DInt(1, 0);
 				if (allowedToMoveView(view))
 				{
 					moveView(window, view);
@@ -98,7 +98,7 @@ void InputHandler::handleInputEvents()
 				inputs[EscapePressed] = true;
 				if (!inputs[RegionWindowOpen] && !inputs[CharacterWindowOpen])
 				{
-					window->close();
+					window.close();
 				}
 				break;
 			}
@@ -109,7 +109,7 @@ void InputHandler::handleInputEvents()
 			}
 			case sf::Keyboard::Delete:
 			{
-				window->close();
+				window.close();
 				break;
 			}
 			case sf::Keyboard::Numpad1:
@@ -247,7 +247,7 @@ void InputHandler::handleInputEvents()
 		{
 			if (event.mouseWheelScroll.wheel == sf::Mouse::VerticalWheel)
 			{
-				m_MouseScrollDirection = event.mouseWheelScroll.delta;
+				mouseScrollDirection = event.mouseWheelScroll.delta;
 				if (allowedToZoomView(view))
 				{
 					inputs[MouseScrolled] = true;
@@ -269,7 +269,7 @@ void InputHandler::handleInputEvents()
 				{
 					Vector2D direction = distance.normalized();
 					view.move(-direction.x, -direction.y);
-					window->setView(view);
+					window.setView(view);
 				}
 			}
 			break;
@@ -292,37 +292,37 @@ void InputHandler::handleInputEvents()
 	}
 }
 
-void InputHandler::zoomView(sf::RenderWindow* window, sf::View& view)
+void InputHandler::zoomView(sf::RenderWindow& window, sf::View& view)
 {
-	view.zoom(1.0f - m_MouseScrollDirection * ZOOM_SPEED);
-	window->setView(view);
+	view.zoom(1.0f - mouseScrollDirection * ZOOM_SPEED);
+	window.setView(view);
 }
 
-bool InputHandler::allowedToZoomView(sf::View& view)
+bool InputHandler::allowedToZoomView(const sf::View& view)
 {
-	return (m_MouseScrollDirection >= 0.0f && (view.getSize().x > MIN_ZOOM || view.getSize().y > MIN_ZOOM))
-		|| (m_MouseScrollDirection <= 0.0f && (view.getSize().x < MAX_ZOOM || view.getSize().y < MAX_ZOOM));
+	return (mouseScrollDirection >= 0.0f && (view.getSize().x > MIN_ZOOM || view.getSize().y > MIN_ZOOM))
+		|| (mouseScrollDirection <= 0.0f && (view.getSize().x < MAX_ZOOM || view.getSize().y < MAX_ZOOM));
 }
 
-bool InputHandler::allowedToMoveView(sf::View& view)
+bool InputHandler::allowedToMoveView(const sf::View& view)
 {
-	return (m_ViewMoveDirection.y == -1 && view.getCenter().y > sf::VideoMode::getDesktopMode().height * 0.1f)
-		|| (m_ViewMoveDirection.y == 1 && view.getCenter().y < sf::VideoMode::getDesktopMode().height * 0.9f)
-		|| (m_ViewMoveDirection.x == 1 && view.getCenter().x < sf::VideoMode::getDesktopMode().width * 0.9f)
-		|| (m_ViewMoveDirection.x == -1 && view.getCenter().x > sf::VideoMode::getDesktopMode().width * 0.1f);
+	return (viewMoveDirection.y == -1 && view.getCenter().y > sf::VideoMode::getDesktopMode().height * 0.1f)
+		|| (viewMoveDirection.y == 1 && view.getCenter().y < sf::VideoMode::getDesktopMode().height * 0.9f)
+		|| (viewMoveDirection.x == 1 && view.getCenter().x < sf::VideoMode::getDesktopMode().width * 0.9f)
+		|| (viewMoveDirection.x == -1 && view.getCenter().x > sf::VideoMode::getDesktopMode().width * 0.1f);
 }
 
-void InputHandler::setMousePosition(int xPosition, int yPosition, sf::RenderWindow* window)
+void InputHandler::setMousePosition(int xPosition, int yPosition, const sf::RenderWindow& window)
 {
-	m_MouseMapPosition = Vector2DInt(xPosition, yPosition);
-	m_MousePosition = window->mapPixelToCoords(sf::Vector2i(m_MouseMapPosition.x, m_MouseMapPosition.y));
-	m_MouseMapPosition = Map::convertToMap(m_MousePosition);
+	mouseMapPosition = Vector2DInt(xPosition, yPosition);
+	mousePosition = window.mapPixelToCoords(sf::Vector2i(mouseMapPosition.x, mouseMapPosition.y));
+	mouseMapPosition = Map::convertToMap(mousePosition);
 }
 
-void InputHandler::moveView(sf::RenderWindow* window, sf::View& view)
+void InputHandler::moveView(sf::RenderWindow& window, sf::View& view)
 {
-	view.move(m_ViewMoveDirection.x * MOVE_SPEED, m_ViewMoveDirection.y * MOVE_SPEED);
-	window->setView(view);
+	view.move(viewMoveDirection.x * MOVE_SPEED, viewMoveDirection.y * MOVE_SPEED);
+	window.setView(view);
 }
 
 bool InputHandler::getLeftMouseClicked()
@@ -347,17 +347,17 @@ bool InputHandler::getRightMouseReleased()
 
 Vector2D InputHandler::getMousePosition()
 {
-	return m_MousePosition;
+	return mousePosition;
 }
 
 Vector2DInt InputHandler::getMouseMapPosition()
 {
-	return m_MouseMapPosition;
+	return mouseMapPosition;
 }
 
 float InputHandler::getMouseScrollDirection()
 {
-	return m_MouseScrollDirection;
+	return mouseScrollDirection;
 }
 
 bool InputHandler::getMouseScrolled()
