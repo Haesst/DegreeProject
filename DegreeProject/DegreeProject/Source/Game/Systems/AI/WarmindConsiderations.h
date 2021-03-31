@@ -18,7 +18,6 @@ struct SiegeCapitalConsideration : public Consideration
 	SiegeCapitalConsideration() : Consideration()
 	{
 		m_EntityManager = &EntityManager::get();
-		m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
 		m_Units = m_EntityManager->getComponentArray<UnitComponent>();
 		m_Transforms = m_EntityManager->getComponentArray<Transform>();
 		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
@@ -56,7 +55,7 @@ struct FightEnemyArmyConsideration : public Consideration
 	FightEnemyArmyConsideration() : Consideration()
 	{
 		m_EntityManager = &EntityManager::get();
-		m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
+		m_Warminds = nullptr; // m_EntityManager->getComponentArray<WarmindComponent>();
 		m_Units = m_EntityManager->getComponentArray<UnitComponent>();
 		m_Transforms = m_EntityManager->getComponentArray<Transform>();
 		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();

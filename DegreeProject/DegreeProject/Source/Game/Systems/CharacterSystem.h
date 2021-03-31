@@ -99,7 +99,7 @@ struct CharacterSystem : System
 
 		EntityManager* entityManager = &EntityManager::get();
 		CharacterComponent* characters = entityManager->getComponentArray<CharacterComponent>();
-		WarmindComponent* warminds = entityManager->getComponentArray<WarmindComponent>();
+		WarmindComponent* warminds = nullptr;//entityManager->getComponentArray<WarmindComponent>();
 
 		LOG_INFO("{0} Declared war with {1} for {2}", m_Characters[character].m_Name, characters[target].m_Name, Map::get().getRegionById(warGoalRegion).m_RegionName);
 		int war = warManager->createWar(characters[character], characters[target], warGoalRegion);
@@ -112,14 +112,14 @@ struct CharacterSystem : System
 
 		if (!m_Characters[character].m_IsPlayerControlled)
 		{
-			warminds[character].m_Active = true;
+			//warminds[character].m_Active = true;
 			m_Characters[character].m_RecentlyAtWar = true;
 		}
 
 		if (!characters[target].m_IsPlayerControlled)
 		{
-			warminds[target].m_Opponent = character;
-			warminds[target].m_Active = true;
+			//warminds[target].m_Opponent = character;
+			//warminds[target].m_Active = true;
 		}
 	}
 

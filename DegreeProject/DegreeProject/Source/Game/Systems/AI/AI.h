@@ -35,12 +35,12 @@ struct AISystem : System
 	AISystem()
 	{
 		addComponentSignature<CharacterComponent>();
-		addComponentSignature<WarmindComponent>();
+		//addComponentSignature<WarmindComponent>();
 
 		m_EntityManager = &EntityManager::get();
 		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
 		m_WarManager = &WarManager::get();
-		m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
+		//m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
 	}
 
 	void init(AIManager* manager)

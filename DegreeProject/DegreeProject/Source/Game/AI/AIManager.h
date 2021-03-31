@@ -8,6 +8,11 @@ using json = nlohmann::json;
 #include "Engine/FileWatcher.h"
 #include "Game/HotReloader.h"
 #include "Engine/Log.h"
+#include <Game\Components\Warmind.h>
+#include "WarOrders.h"
+
+class UnitManager;
+class WarManager;
 
 struct Personality
 {
@@ -21,43 +26,30 @@ struct Personality
 	}
 };
 
-struct AIManager
+class AIManager
 {
+public:
+	AIManager();
+	void onFileChange(std::string path, FileStatus status);
+	void loadPersonalities(const char* path);
+	WarmindComponent& GetWarmindOfCharacter(int handle);
+	void AddWarmind(CharacterID ID);
+	void Update();
+
+private:
+	float warDecision(CharacterID ID);
+	float expansionDecision(CharacterID ID);
+
+	int considerPrioritizedWar(WarmindComponent& warmind);
+	void considerOrders(WarmindComponent& warmind, Unit& unit, CharacterID target);
+	void GiveAttackerOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit);
+	void GiveDefenderOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit);
+
+private:
+	WarOrders m_Orders;
+	std::vector<WarmindComponent> m_Warminds;
 	std::vector<Personality> m_Personalities;
 	mutable std::mutex m_PersonalityMtx;
-
-	AIManager()
-	{
-		loadPersonalities("Assets\\Data\\AI\\AIPersonalities.json");
-		HotReloader::get()->subscribeToFileChange("Assets\\Data\\AI\\AIPersonalities.json", std::bind(&AIManager::onFileChange, this, std::placeholders::_1, std::placeholders::_2));
-	}
-
-	void loadPersonalities(const char* path)
-	{
-		std::ifstream file(path);
-		json j;
-		file >> j;
-
-		m_PersonalityMtx.lock();
-		m_Personalities.clear();
-
-		for (auto& element : j)
-		{
-			std::string personalityName = element["debugName"].get<std::string>();
-			float declareWarModifier = element["declareWarMod"].get<float>();
-
-			m_Personalities.push_back({ personalityName.c_str(), declareWarModifier });
-		}
-		m_PersonalityMtx.unlock();
-	}
-
-	void onFileChange(std::string path, FileStatus status)
-	{
-		if (status != FileStatus::Modified)
-		{
-			return;
-		}
-
-		loadPersonalities(path.c_str());
-	}
+	WarManager* m_WarManager = nullptr;
+	UnitManager* m_UnitManager = nullptr;
 };

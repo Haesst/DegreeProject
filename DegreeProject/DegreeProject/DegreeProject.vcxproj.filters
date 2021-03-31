@@ -66,6 +66,9 @@
     <ClInclude Include="Source\Engine\AssetHandler.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Engine\CharacterManager.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Engine\FileWatcher.h">
       <Filter>Engine</Filter>
     </ClInclude>
@@ -75,10 +78,10 @@
     <ClInclude Include="Source\Engine\Log.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\CharacterManager.h">
+    <ClInclude Include="Source\Engine\Time.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\Time.h">
+    <ClInclude Include="Source\Engine\UnitManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Vector2D.h">
@@ -88,6 +91,9 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\AI\AIManager.h">
+      <Filter>Game\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\AI\WarOrders.h">
       <Filter>Game\AI</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Callback.h">
@@ -133,6 +139,12 @@
       <Filter>Game\Data</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Data\Titles.h">
+      <Filter>Game\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Data\Types.h">
+      <Filter>Game\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Data\Unit.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Game.h">
@@ -213,15 +225,15 @@
     <ClInclude Include="Source\Game\WarManager.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Data\Types.h" />
-    <ClInclude Include="Source\Engine\UnitManager.h" />
-    <ClInclude Include="Source\Game\Data\Unit.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
       <Filter>ECS</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\CharacterManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\FileWatcher.cpp">
@@ -233,14 +245,20 @@
     <ClCompile Include="Source\Engine\Log.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\CharacterManager.cpp">
+    <ClCompile Include="Source\Engine\Time.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\Time.cpp">
+    <ClCompile Include="Source\Engine\UnitManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Window.cpp">
       <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\AI\AIManager.cpp">
+      <Filter>Game\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\AI\WarOrders.cpp">
+      <Filter>Game\AI</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\Callback.cpp">
       <Filter>Game</Filter>
@@ -270,6 +288,5 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Engine\UnitManager.cpp" />
   </ItemGroup>
 </Project>

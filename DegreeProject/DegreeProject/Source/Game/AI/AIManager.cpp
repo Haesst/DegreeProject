@@ -1,0 +1,249 @@
+#include "AIManager.h"
+#include "Game/WarManager.h"
+#include <Game\Systems\AI\WarmindConsiderations.h>
+#include "Engine/UnitManager.h"
+#include "Game/Data/Unit.h"
+
+AIManager::AIManager()
+{
+	loadPersonalities("Assets\\Data\\AI\\AIPersonalities.json");
+	HotReloader::get()->subscribeToFileChange("Assets\\Data\\AI\\AIPersonalities.json", std::bind(&AIManager::onFileChange, this, std::placeholders::_1, std::placeholders::_2));
+	m_WarManager = &WarManager::get();
+	m_UnitManager = &UnitManager::get();
+}
+
+void AIManager::loadPersonalities(const char* path)
+{
+	std::ifstream file(path);
+	json j;
+	file >> j;
+
+	m_PersonalityMtx.lock();
+	m_Personalities.clear();
+
+	for (auto& element : j)
+	{
+		std::string personalityName = element["debugName"].get<std::string>();
+		float declareWarModifier = element["declareWarMod"].get<float>();
+
+		m_Personalities.push_back({ personalityName.c_str(), declareWarModifier });
+	}
+	m_PersonalityMtx.unlock();
+}
+
+WarmindComponent& AIManager::GetWarmindOfCharacter(int handle)
+{
+	for (auto& warmind : m_Warminds)
+	{
+		if (warmind.m_OwnerID == handle)
+		{
+			return warmind;
+		}
+	}
+
+	ASSERT(false, "No warmind belonging to that handle");
+	return WarmindComponent();
+}
+
+void AIManager::AddWarmind(CharacterID ID)
+{
+	WarmindComponent warmind;
+	warmind.m_OwnerID = ID;
+	m_Warminds.push_back(warmind);
+}
+
+void AIManager::Update()
+{
+	for (auto& warmind : m_Warminds)
+	{
+		if (!warmind.m_Active)
+		{
+			continue;
+		}
+
+		warmind.m_PrioritizedWarHandle = considerPrioritizedWar(warmind);
+
+		if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised) //TODO: Fix when units are using new system
+		{
+			warmind.m_OrderAccu += Time::deltaTime();
+		
+			if (warmind.m_OrderAccu >= warmind.m_OrderTimer)
+			{
+				warmind.m_OrderAccu = 0.0f;
+				considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warmind.m_Opponent);
+			}
+		}
+	}
+}
+
+float AIManager::warDecision(CharacterID ID)
+{
+	GoldConsideration goldConsideration;
+	ArmySizeConsideration armySizeConsideration;
+
+	//Personality personality = m_AIManager->m_Personalities[characterComponents->m_PersonalityIndex];
+
+	goldConsideration.setContext(ID);
+	armySizeConsideration.setContext(ID);
+
+	float goldEvaluation = goldConsideration.evaluate(ID, GetWarmindOfCharacter(ID).m_Opponent);
+	float enemyArmyEvaluation = armySizeConsideration.evaluate(ID, GetWarmindOfCharacter(ID).m_Opponent);
+
+	float actionScore = goldEvaluation * enemyArmyEvaluation;
+	//actionScore += personality.m_DeclareWarModifier;
+
+	War* war = nullptr; //m_WarManager->getWarAgainst(m_Characters[ent], m_Characters[m_Warminds[ent].m_Opponent]);
+
+	if (war == nullptr)
+	{
+		LOG_INFO("VALID WAR");
+		return std::clamp(actionScore, 0.0f, 1.0f);
+	}
+
+	LOG_INFO("Cant declare war against someone you are at war with");
+	return 0.0f;
+}
+
+float AIManager::expansionDecision(CharacterID ID)
+{
+	std::vector<std::pair<float, int>> actionScorePerRegion;
+
+	ExpansionConsideration expansionConsideration;
+
+	expansionConsideration.setContext(ID);
+
+	//Get characters in certain range,
+	std::vector<int> regionIndexes = Map::get().getRegionIDs();
+
+	for (size_t i = 0; i < regionIndexes.size(); i++)
+	{
+		//if (std::find(characterComponents[ent].m_OwnedRegionIDs.begin(), characterComponents[ent].m_OwnedRegionIDs.end(),
+		//	(size_t)regionIndexes[i]) != characterComponents[ent].m_OwnedRegionIDs.end())
+		//{
+		//	continue;
+		//}
+
+		float eval = expansionConsideration.evaluate(ID, regionIndexes[i]);
+		auto pair = std::make_pair(eval, regionIndexes[i]);
+		actionScorePerRegion.push_back(pair);
+	}
+
+	float highest = -1.0f;
+	int bestIndex = -1;
+
+	for (unsigned int i = 0; i < actionScorePerRegion.size(); i++)
+	{
+		if (actionScorePerRegion[i].first > highest)
+		{
+			highest = actionScorePerRegion[i].first;
+			GetWarmindOfCharacter(ID).m_WargoalRegionId = actionScorePerRegion[i].second;
+			GetWarmindOfCharacter(ID).m_Opponent = Map::get().getRegionById(actionScorePerRegion[i].second).m_OwnerID;
+			bestIndex = i;
+		}
+	}
+
+	if (bestIndex == -1)
+	{
+		return 0.0f;
+	}
+
+	return actionScorePerRegion[bestIndex].first;
+}
+
+void AIManager::GiveAttackerOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit)
+{
+	FightEnemyArmyConsideration fightConsideration;
+	float fightEval = fightConsideration.evaluate(warmind.m_OwnerID, target);
+
+	if (fightEval > .7)
+	{
+		Vector2D unitPosition = unit.m_Position; //NEEDS TO CHANGE
+		Vector2D enemyUnitPosition = enemyUnit.m_Position;
+
+		float distance = (unitPosition - enemyUnitPosition).getLength();
+		if (distance < 100.0f)
+		{
+			//Hunt enemy army
+			//LOG_INFO("Warmind belonging to {0} decided to hunt the enemy army", m_Characters[warmind.m_OwnerID].m_Name);
+			m_Orders.orderFightEnemyArmy(warmind, unit);
+			return;
+		}
+
+		else
+		{
+			//Siege wargoal region
+			//LOG_INFO("Warmind belonging to {0} decided to siege the enemy capital", m_Characters[warmind].m_Name);
+			m_Orders.orderSiegeCapital(warmind, unit);
+			return;
+		}
+	}
+}
+
+void AIManager::GiveDefenderOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit)
+{
+	FightEnemyArmyConsideration fightConsideration;
+	float fightEval = fightConsideration.evaluate(warmind.m_OwnerID, target);
+
+	if (fightEval > 0.7)
+	{
+		m_Orders.orderFightEnemyArmy(warmind, unit);
+		return;
+	}
+
+	Vector2D unitPosition = unit.m_Position; //NEEDS TO CHANGE
+	Vector2D enemyUnitPosition = enemyUnit.m_Position; //NEEDS TO CHANGe
+
+	float distance = (unitPosition - enemyUnitPosition).getLength();
+	if (distance < 100.0f)
+	{
+		m_Orders.orderFlee(warmind, unit);
+		return;
+	}
+
+	int regionID = m_WarManager->getWar(warmind.m_PrioritizedWarHandle)->m_WargoalRegion;
+	Vector2DInt regionPosition = Map::get().getRegionById(regionID).m_RegionCapital;
+	//Order unit to move
+}
+
+int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
+{
+	//WarManager* warManager = &WarManager::get();
+	//
+	//if (!warmind.m_CurrentWars.empty())
+	//{
+	//	m_Warminds[ent].m_PrioritizedWarHandle = m_Characters[ent].m_CurrentWars.front();
+	//	return m_Warminds[ent].m_PrioritizedWarHandle;
+	//}
+	//
+	return -1;
+}
+
+void AIManager::considerOrders(WarmindComponent& warmind, Unit& unit, CharacterID target)
+{
+	if (warmind.m_PrioritizedWarHandle == -1)
+	{
+		return;
+	}
+
+	Unit* enemyUnit = nullptr; //m_UnitManager->getUnitOfCharacter(warmind.m_Opponent); // m_Units[m_Characters[target].m_UnitEntity];
+
+	if (m_WarManager->getWar(warmind.m_PrioritizedWarHandle)->isDefender(warmind.m_OwnerID))
+	{
+		GiveDefenderOrders(warmind, target, unit, *enemyUnit);
+	}
+
+	else if (m_WarManager->getWar(warmind.m_PrioritizedWarHandle)->isAttacker(warmind.m_OwnerID))
+	{
+		GiveAttackerOrders(warmind, target, unit, *enemyUnit);
+	}
+}
+
+void AIManager::onFileChange(std::string path, FileStatus status)
+{
+	if (status != FileStatus::Modified)
+	{
+		return;
+	}
+
+	loadPersonalities(path.c_str());
+}

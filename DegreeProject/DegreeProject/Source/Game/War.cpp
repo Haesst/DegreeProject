@@ -13,7 +13,7 @@ War::War(CharacterComponent& attacker, CharacterComponent& defender, int warGoal
 	m_EntityManager = &EntityManager::get();
 
 	m_Units = m_EntityManager->getComponentArray<UnitComponent>();
-	m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
+	m_Warminds = nullptr; // m_EntityManager->getComponentArray<WarmindComponent>();
 	m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
 	m_Handle = handle;
 }

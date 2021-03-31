@@ -127,7 +127,7 @@ public:
 	{
 		for (auto& system : m_RegisteredSystems)
 		{
-			system.second->render();
+ 			system.second->render();
 		}
 	}
 

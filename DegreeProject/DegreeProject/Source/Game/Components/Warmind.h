@@ -6,7 +6,7 @@
 #include "Game\Components\SpriteRenderer.h"
 
 
-struct WarmindComponent : Component
+struct WarmindComponent
 {
 	int m_WargoalRegionId = 0;
 
@@ -23,6 +23,8 @@ struct WarmindComponent : Component
 	float m_TickAccu = 0.0f;
 
 	int m_PrioritizedWarHandle = -1;
+
+	CharacterID m_OwnerID = INVALID_CHARACTER_ID;
 
 	WarmindComponent()
 	{

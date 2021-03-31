@@ -19,12 +19,11 @@ struct WarmindSystem : System
 
 	WarmindSystem()
 	{
-		addComponentSignature<WarmindComponent>();
 		addComponentSignature<CharacterComponent>();
 		m_EntityManager = &EntityManager::get();
 
 		m_Units = m_EntityManager->getComponentArray<UnitComponent>();
-		m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
+		m_Warminds = nullptr;//m_EntityManager->getComponentArray<WarmindComponent>();
 		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
 		m_Transforms = m_EntityManager->getComponentArray<Transform>();
 		m_WarManager = &WarManager::get();
@@ -39,8 +38,6 @@ struct WarmindSystem : System
 				continue;
 			}
 
-			m_Warminds[entity].m_PrioritizedWarHandle = considerPrioritizedWar(entity);
-			
 			if (m_Units[m_Characters[entity].m_UnitEntity].m_Raised)
 			{
 				m_Warminds[entity].m_OrderAccu += Time::deltaTime();
@@ -48,163 +45,10 @@ struct WarmindSystem : System
 				if (m_Warminds[entity].m_OrderAccu >= m_Warminds[entity].m_OrderTimer)
 				{
 					m_Warminds[entity].m_OrderAccu = 0.0f;
-					considerOrders(entity, m_Units[m_Characters[entity].m_UnitEntity], m_Warminds[entity].m_Opponent);
+					//considerOrders(entity, m_Units[m_Characters[entity].m_UnitEntity], m_Warminds[entity].m_Opponent);
 				}
 			}
 		}
-	}
-
-	void considerOrders(EntityID warmind, UnitComponent& unit, EntityID target)
-	{
-		if (m_Warminds[warmind].m_PrioritizedWarHandle == -1)
-		{
-			return; 
-		}
-
-		auto& enemyUnit = m_Units[m_Characters[target].m_UnitEntity];
-
-		if (m_WarManager->getWar(m_Warminds[warmind].m_PrioritizedWarHandle)->isDefender(warmind))
-		{
-			GiveDefenderOrders(warmind, target, unit, enemyUnit);
-		}
-
-		else if(m_WarManager->getWar(m_Warminds[warmind].m_PrioritizedWarHandle)->isAttacker(warmind))
-		{
-			GiveAttackerOrders(warmind, target, unit, enemyUnit);
-		}
-	}
-
-	void GiveAttackerOrders(EntityID warmind, EntityID target, UnitComponent& unit, UnitComponent& enemyUnit)
-	{
-		FightEnemyArmyConsideration fightConsideration;
-		float fightEval = fightConsideration.evaluate(warmind, target);
-
-		if (fightEval > .7)
-		{
-			Vector2D unitPosition = m_Transforms[unit.getID()].m_Position;
-			Vector2D enemyUnitPosition = m_Transforms[enemyUnit.getID()].m_Position;
-
-			float distance = (unitPosition - enemyUnitPosition).getLength();
-			if (distance < 100.0f)
-			{
-				//Hunt enemy army
-				LOG_INFO("Warmind belonging to {0} decided to hunt the enemy army", m_Characters[warmind].m_Name);
-				orderFightEnemyArmy(warmind, unit);
-				return;
-			}
-
-			else
-			{
-				//Siege wargoal region
-				LOG_INFO("Warmind belonging to {0} decided to siege the enemy capital", m_Characters[warmind].m_Name);
-				orderSiegeCapital(warmind, unit);
-				return;
-			}
-		}
-	}
-
-	void GiveDefenderOrders(EntityID warmind, EntityID target, UnitComponent& unit, UnitComponent& enemyUnit)
-	{
-		FightEnemyArmyConsideration fightConsideration;
-		float fightEval = fightConsideration.evaluate(warmind, target);
-
-		if (fightEval > 0.7)
-		{
-			orderFightEnemyArmy(warmind, unit);
-			return;
-		}
-
-		Vector2D unitPosition = m_Transforms[unit.getID()].m_Position;
-		Vector2D enemyUnitPosition = m_Transforms[enemyUnit.getID()].m_Position;
-
-		float distance = (unitPosition - enemyUnitPosition).getLength();
-		if (distance < 100.0f)
-		{
-			orderFlee(warmind, unit);
-			return;
-		}
-
-		int regionID = m_WarManager->getWar(m_Warminds[warmind].m_PrioritizedWarHandle)->m_WargoalRegion;
-		Vector2DInt regionPosition = Map::get().getRegionById(regionID).m_RegionCapital;
-		moveUnit(unit.getID(), regionPosition);
-	}
-
-	void orderFightEnemyArmy(EntityID warmindID, UnitComponent& unit)
-	{
-		if (m_Warminds[warmindID].m_PrioritizedWarHandle == -1)
-		{
-			return;
-		}
-
-		auto& enemyCharacter = m_Characters[m_Warminds[warmindID].m_Opponent];
-		auto& enemyUnit = m_Units[enemyCharacter.m_UnitEntity];
-
-		if (!enemyUnit.m_Raised)
-		{
-			return;
-		}
-
-		Vector2DInt battlefieldIntPosition;
-
-		if (enemyUnit.m_CurrentPath.size() > 0)
-		{
-			LOG_INFO("{0} is chasing the enemy army", m_Characters[warmindID].m_Name);
-			battlefieldIntPosition = enemyUnit.m_CurrentPath.back();
-		}
-
-		else
-		{
-			battlefieldIntPosition = Map::convertToMap(m_Transforms[enemyUnit.getID()].m_Position);
-		}
-
-		moveUnit(unit.m_EntityID, battlefieldIntPosition);
-	}
-
-	void orderSiegeCapital(EntityID warmindID, UnitComponent& unit)
-	{
-		Vector2D unitPosition = m_EntityManager->getComponent<Transform>(m_Characters[warmindID].m_UnitEntity).m_Position;
-		Vector2DInt startingPosition = Map::convertToMap(unitPosition);
-
-		Vector2DInt capitalPosition;
-		War& currentWar = *m_WarManager->getWar(m_Warminds[warmindID].m_PrioritizedWarHandle);
-
-		if (currentWar.isAttacker(warmindID))
-		{
-			capitalPosition = Map::get().getRegionCapitalLocation(m_Warminds[warmindID].m_WargoalRegionId);
-		}
-
-		else
-		{
-			CharacterComponent& enemyCharacter = currentWar.getAttacker();
-
-			if (m_Units[m_Characters[warmindID].m_UnitEntity].m_DaysSeizing > 0)
-			{
-				return;
-			}
-
-			int randomRegionIndex = rand() % enemyCharacter.m_OwnedRegionIDs.size();
-			capitalPosition = Map::get().getRegionCapitalLocation(enemyCharacter.m_OwnedRegionIDs[randomRegionIndex]);
-		}
-
-		moveUnit(unit.m_EntityID, capitalPosition);
-	}
-
-	void orderFlee(EntityID warmindID, UnitComponent&)
-	{
-		LOG_INFO("{0} is fleeing from the enemy army", m_Characters[warmindID].m_Name);
-	}
-
-	int considerPrioritizedWar(EntityID ent) //Will be expanded later
-	{
-		WarManager* warManager = &WarManager::get();
-
-		if (!m_Characters[ent].m_CurrentWars.empty())
-		{
-			m_Warminds[ent].m_PrioritizedWarHandle = m_Characters[ent].m_CurrentWars.front();
-			return m_Warminds[ent].m_PrioritizedWarHandle;
-		}
-
-		return -1;
 	}
 
 	void moveUnit(EntityID unitToMove, Vector2DInt targetPosition)

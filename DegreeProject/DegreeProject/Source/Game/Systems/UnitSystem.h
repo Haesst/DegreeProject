@@ -37,7 +37,7 @@ struct UnitSystem : System
 		m_EntityManager = &EntityManager::get();
 		m_WarManager = &WarManager::get();
 		m_UnitComponents = m_EntityManager->getComponentArray<UnitComponent>();
-		m_Warminds = m_EntityManager->getComponentArray<WarmindComponent>();
+		//m_Warminds = nullptr; //m_EntityManager->getComponentArray<WarmindComponent>();
 		m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
 		m_Renderers = m_EntityManager->getComponentArray<SpriteRenderer>();
 		m_ProgressMeterDoubleBorder = m_ProgressMeterBorder * 2;
@@ -102,42 +102,42 @@ struct UnitSystem : System
 
 	virtual void render() override
 	{
-		for (EntityID entity : m_Entities)
-		{
-			UnitComponent& unit = m_UnitComponents[entity];
-			Window::getWindow()->draw(unit.m_HighlightShape);
-
-			if (unit.m_Raised)
-			{
-				if (unit.m_Moving)
-				{
-					for each (sf::RectangleShape rectangle in unit.m_TargetPath)
-					{
-						Window::getWindow()->draw(rectangle);
-					}
-				}
-
-				unit.m_EndPosition.setSize(sf::Vector2f(32.0f, 32.0f));
-				unit.m_EndPosition.setFillColor(sf::Color::Red);
-
-				if (unit.m_CurrentPath.size() > 0)
-				{
-					Vector2D pos = Map::convertToScreen(unit.m_CurrentPath.back());
-					unit.m_EndPosition.setPosition(pos.x, pos.y);
-					Window::getWindow()->draw(unit.m_EndPosition);
-				}
-
-				if (unit.m_SeizingRegionID > 0)
-				{
-					displayProgressMeter(unit, (float)unit.m_DaysSeizing, (float)Map::get().getRegionById(unit.m_SeizingRegionID).m_DaysToSeize, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
-				}
-
-				if (unit.m_InCombat)
-				{
-					displayProgressMeter(unit, unit.m_CombatTimerAccu, unit.m_CombatTimer, { m_CombatMeterOffset.x, m_CombatMeterOffset.y }, m_CombatMeterFillColor);
-				}
-			}
-		}
+		//for (EntityID entity : m_Entities)
+		//{
+		//	UnitComponent& unit = m_UnitComponents[entity];
+		//	Window::getWindow()->draw(unit.m_HighlightShape);
+		//
+		//	if (unit.m_Raised)
+		//	{
+		//		if (unit.m_Moving)
+		//		{
+		//			for each (sf::RectangleShape rectangle in unit.m_TargetPath)
+		//			{
+		//				Window::getWindow()->draw(rectangle);
+		//			}
+		//		}
+		//
+		//		unit.m_EndPosition.setSize(sf::Vector2f(32.0f, 32.0f));
+		//		unit.m_EndPosition.setFillColor(sf::Color::Red);
+		//
+		//		if (unit.m_CurrentPath.size() > 0)
+		//		{
+		//			Vector2D pos = Map::convertToScreen(unit.m_CurrentPath.back());
+		//			unit.m_EndPosition.setPosition(pos.x, pos.y);
+		//			Window::getWindow()->draw(unit.m_EndPosition);
+		//		}
+		//
+		//		if (unit.m_SeizingRegionID > 0)
+		//		{
+		//			displayProgressMeter(unit, (float)unit.m_DaysSeizing, (float)Map::get().getRegionById(unit.m_SeizingRegionID).m_DaysToSeize, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
+		//		}
+		//
+		//		if (unit.m_InCombat)
+		//		{
+		//			displayProgressMeter(unit, unit.m_CombatTimerAccu, unit.m_CombatTimer, { m_CombatMeterOffset.x, m_CombatMeterOffset.y }, m_CombatMeterFillColor);
+		//		}
+		//	}
+		//}
 	}
 
 	void displayProgressMeter(UnitComponent& unit, float timeElapsed, float totalTime, sf::Vector2f offset, sf::Color fillColor)
@@ -201,10 +201,11 @@ struct UnitSystem : System
 				}
 			}
 
-			if (enemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
+			EntityID enemy;
+			if (enemyAtSquare(pos, enemy))
 			{
-				EntityID enemyID = m_Warminds[unit.m_Owner].m_Opponent;
-				UnitComponent& enemyUnit = m_UnitComponents[m_Characters[enemyID].m_UnitEntity];
+				EntityID enemyID = 15;// = m_Warminds[unit.m_Owner].m_Opponent;
+				UnitComponent& enemyUnit = UnitComponent();// = m_UnitComponents[m_Characters[enemyID].m_UnitEntity];
 
 				if (enemyUnit.m_Raised)
 				{
@@ -237,7 +238,7 @@ struct UnitSystem : System
 			}
 			else
 			{
-				startConquerRegion(unit, transform);
+				//startConquerRegion(unit, transform);
 				unit.m_Moving = false;
 			}
 		}
