@@ -285,7 +285,7 @@ void Map::startConstructionOfBuilding(int buildingId, int buildSlot, int regionI
 {
 	// not working -> int maxBuildings = (sizeof(RegionBuilding) / sizeof(*GetRegionById(regionId).m_BuildingSlots));
 	ASSERT(buildSlot >= 0 /*&& buildSlot < maxBuildings */, "Invalid buildslot");
-	int characterGold = EntityManager::get().getComponent<CharacterComponent>(getRegionById(regionId).m_OwnerID).m_CurrentGold;
+	int characterGold = CharacterManager::get()->getCharacter(getRegionById(regionId).m_OwnerID).m_CurrentGold; // EntityManager::get().getComponent<CharacterComponent>(getRegionById(regionId).m_OwnerID).m_CurrentGold;
 	int buildingCost = GameData::m_Buildings[buildingId].m_Cost;
 	ASSERT(characterGold >= buildingCost, "Not enough money to build");
 

@@ -40,9 +40,9 @@ private:
 	static CharacterManager* m_Instance;
 	static CharacterID m_CharacterIDs;
 
-	Player m_Player;
+	Player* m_Player;
 	CharacterID m_PlayerCharacterID = INVALID_CHARACTER_ID;
-	Character m_PlayerCharacter;
+	Character* m_PlayerCharacter;
 
 	std::vector<Character> m_Characters;
 };

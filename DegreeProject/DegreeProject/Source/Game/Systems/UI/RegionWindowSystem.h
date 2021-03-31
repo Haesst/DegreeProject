@@ -12,7 +12,7 @@ struct RegionWindowSystem : System
 	EntityManager* m_EntityManager = nullptr;
 	sf::RenderWindow* m_Window = nullptr;
 	RegionWindow* m_RegionWindows = nullptr;
-	CharacterComponent* playerCharacter = nullptr;
+	Character* m_PlayerCharacter = nullptr;
 	MapRegion* m_CurrentMapRegion = nullptr;
 	bool m_PlayerRegion = false;
 
@@ -36,11 +36,9 @@ struct RegionWindowSystem : System
 	virtual void start() override
 	{
 		m_RegionWindows = m_EntityManager->getComponentArray<RegionWindow>();
-#pragma warning(push)
-#pragma warning(disable: 26815)
-		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
-#pragma warning(pop)
-		playerCharacter = &m_EntityManager->getComponent<CharacterComponent>(characterSystem->getPlayerID());
+
+		m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
+
 		for (auto entity : m_Entities)
 		{
 			m_RegionWindows[entity].m_WindowShape.setFillColor(m_RegionWindows[entity].m_FillColor);
@@ -179,7 +177,8 @@ struct RegionWindowSystem : System
 						m_CurrentMapRegion = &Map::get().getRegionById(regionWindow.m_CurrentRegionID);
 						regionWindow.m_RegionTax = std::to_string(m_CurrentMapRegion->m_RegionTax);
 						regionWindow.m_RegionName = m_CurrentMapRegion->m_RegionName;
-						CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(m_CurrentMapRegion->m_OwnerID);
+						// CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(m_CurrentMapRegion->m_OwnerID);
+						Character character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
 						regionWindow.m_KingdomName = character.m_KingdomName;
 						regionWindow.m_OwnerColor = character.m_RegionColor;
 						if (character.m_RaisedArmySize > 0)
@@ -277,21 +276,18 @@ struct RegionWindowSystem : System
 			Vector2D mousePosition = InputHandler::getMousePosition();
 			if (regionWindow.m_RaiseArmyShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				SpriteRenderer& renderer = m_EntityManager->getComponent<SpriteRenderer>(playerCharacter->m_UnitEntity);
-				UnitComponent& unit = m_EntityManager->getComponent<UnitComponent>(playerCharacter->m_UnitEntity);
-#pragma warning(push)
-#pragma warning(disable: 26815)
-				CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
-#pragma warning(pop)
+				SpriteRenderer& renderer = m_EntityManager->getComponent<SpriteRenderer>(m_PlayerCharacter->m_UnitEntity);
+				UnitComponent& unit = m_EntityManager->getComponent<UnitComponent>(m_PlayerCharacter->m_UnitEntity);
+
 				if (unit.m_Raised)
 				{
-					characterSystem->dismissUnit(playerCharacter->m_EntityID);
+					//characterSystem->dismissUnit(m_PlayerCharacter->m_EntityID);
 					regionWindow.m_RaiseArmyColor = sf::Color::Transparent;
 				}
 				else
 				{
 					Vector2DInt capitalPosition = Map::get().getRegionCapitalLocation(regionWindow.m_CurrentRegionID);
-					characterSystem->raiseUnit(playerCharacter->m_EntityID, true, unit, renderer, capitalPosition);
+					//characterSystem->raiseUnit(m_PlayerCharacter->m_EntityID, true, unit, renderer, capitalPosition);
 					regionWindow.m_RaiseArmyColor = regionWindow.m_OwnerColor;
 				}
 				return;
@@ -300,7 +296,8 @@ struct RegionWindowSystem : System
 			{
 				if (regionWindow.m_BuildingSlotShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 				{
-					playerCharacter->constructBuilding(index + 1, regionWindow.m_CurrentRegionID, index);
+					CharacterManager::get()->constructBuilding(m_PlayerCharacter->m_CharacterID, index + 1, regionWindow.m_CurrentRegionID, index);
+					//m_PlayerCharacter->constructBuilding(index + 1, regionWindow.m_CurrentRegionID, index);
 					break;
 				}
 			}
@@ -309,7 +306,7 @@ struct RegionWindowSystem : System
 
 	bool checkIfPlayerRegion(EntityID currentRegionID)
 	{
-		for (unsigned int ownedRegionID : playerCharacter->m_OwnedRegionIDs)
+		for (unsigned int ownedRegionID : m_PlayerCharacter->m_OwnedRegionIDs)
 		{
 			if (currentRegionID == ownedRegionID)
 			{

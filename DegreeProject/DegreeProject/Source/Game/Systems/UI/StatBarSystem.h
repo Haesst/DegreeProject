@@ -10,7 +10,7 @@ struct StatBarSystem : System
 {
 	EntityManager* m_EntityManager = nullptr;
 	sf::RenderWindow* m_Window = nullptr;
-	CharacterComponent* m_PlayerCharacter = nullptr;
+	CharacterID m_PlayerCharacterID = INVALID_CHARACTER_ID;
 
 	const std::string positiveSign = "+";
 
@@ -25,12 +25,7 @@ struct StatBarSystem : System
 
 	virtual void start() override
 	{
-#pragma warning(push)
-#pragma warning(disable: 26815)
-		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
-#pragma warning(pop)
-
-		m_PlayerCharacter = &m_EntityManager->getComponent<CharacterComponent>(characterSystem->getPlayerID());
+		m_PlayerCharacterID = CharacterManager::get()->getPlayerCharacterID();
 
 		StatBar* statBars = m_EntityManager->getComponentArray<StatBar>();
 		for (auto entity : m_Entities)
@@ -119,18 +114,19 @@ struct StatBarSystem : System
 
 	void updateStats(StatBar& statBar)
 	{
-		statBar.m_CurrentGold = std::to_string(m_PlayerCharacter->m_CurrentGold);
-		int income = m_PlayerCharacter->m_Income;
-		if (income >= 0)
+		Character& character = CharacterManager::get()->getPlayerCharacter();
+		statBar.m_CurrentGold = std::to_string(character.m_CurrentGold);
+		float income = character.m_Income;
+		if (income >= 0.0f)
 		{
-			statBar.m_CurrentIncome = positiveSign + std::to_string(m_PlayerCharacter->m_Income);
+			statBar.m_CurrentIncome = positiveSign + std::to_string(character.m_Income);
 		}
 		else
 		{
-			statBar.m_CurrentIncome = std::to_string(m_PlayerCharacter->m_Income);
+			statBar.m_CurrentIncome = std::to_string(character.m_Income);
 		}
-		statBar.m_MaxArmy = std::to_string(m_PlayerCharacter->m_MaxArmySize);
-		statBar.m_CurrentMaxArmy = std::to_string(m_PlayerCharacter->m_CurrentMaxArmySize);
-		statBar.m_OwnerColor = m_PlayerCharacter->m_RegionColor;
+		statBar.m_MaxArmy = std::to_string(character.m_MaxArmySize);
+		statBar.m_CurrentMaxArmy = std::to_string(character.m_CurrentMaxArmySize);
+		statBar.m_OwnerColor = character.m_RegionColor;
 	}
 };

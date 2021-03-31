@@ -11,7 +11,7 @@ struct CharacterWindowSystem : System
 	EntityManager* m_EntityManager = nullptr;
 	sf::RenderWindow* m_Window = nullptr;
 	CharacterWindow* m_CharacterWindows = nullptr;
-	CharacterComponent* playerCharacter = nullptr;
+	Character* m_PlayerCharacter = nullptr;
 	MapRegion* m_CurrentMapRegion = nullptr;
 	bool m_PlayerRegion = false;
 
@@ -30,11 +30,9 @@ struct CharacterWindowSystem : System
 	virtual void start() override
 	{
 		m_CharacterWindows = m_EntityManager->getComponentArray<CharacterWindow>();
-#pragma warning(push)
-#pragma warning(disable: 26815)
-		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
-#pragma warning(pop)
-		playerCharacter = &m_EntityManager->getComponent<CharacterComponent>(characterSystem->getPlayerID());
+
+		m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
+
 		for (auto entity : m_Entities)
 		{
 			m_CharacterWindows[entity].m_Shape.setFillColor(m_CharacterWindows[entity].m_FillColor);
@@ -167,7 +165,7 @@ struct CharacterWindowSystem : System
 						m_CurrentMapRegion = &Map::get().getRegionById(characterWindow.m_CurrentRegionID);
 						characterWindow.m_RegionTax = m_CurrentMapRegion->m_RegionTax;
 						characterWindow.m_RegionName = m_CurrentMapRegion->m_RegionName;
-						CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(m_CurrentMapRegion->m_OwnerID);
+						Character& character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
 						characterWindow.m_OwnerKingdomName = character.m_KingdomName;
 						characterWindow.m_OwnerCharacterName = character.m_Name;
 						characterWindow.m_OwnerTitle = characterWindow.titles[(unsigned int)character.m_CharacterTitle];
@@ -237,31 +235,26 @@ struct CharacterWindowSystem : System
 			if (characterWindow.m_DeclareWarShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				EntityID warTarget = m_CurrentMapRegion->m_OwnerID;
-				playerCharacter->declareWar(warTarget, characterWindow.m_CurrentRegionID);
+				// m_PlayerCharacter->declareWar(warTarget, characterWindow.m_CurrentRegionID);
 			}
 			else if (characterWindow.m_MakePeaceShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				EntityManager* entityManager = &EntityManager::get();
-#pragma warning(push)
-#pragma warning(disable: 26815)
-				CharacterSystem* characterSystem = (CharacterSystem*)entityManager->getSystem<CharacterSystem>().get();
-#pragma warning(pop)
 
-				CharacterComponent& target = entityManager->getComponent<CharacterComponent>(m_CurrentMapRegion->m_OwnerID);
 				WarManager* warManager = &WarManager::get();
-				War* war = warManager->getWarAgainst(*playerCharacter, target);
-
-				if (war->getHandle() != -1)
-				{
-					characterSystem->makePeace(*playerCharacter, target, war->getHandle());
-				}
+				// War* war = warManager->getWarAgainst(*m_PlayerCharacter, target);
+				// 
+				// if (war->getHandle() != -1)
+				// {
+				// 	characterSystem->makePeace(*m_PlayerCharacter, target, war->getHandle());
+				// }
 			}
 		}
 	}
 
 	bool checkIfPlayerRegion(EntityID currentRegionID)
 	{
-		for (unsigned int ownedRegionID : playerCharacter->m_OwnedRegionIDs)
+		for (unsigned int ownedRegionID : m_PlayerCharacter->m_OwnedRegionIDs)
 		{
 			if (currentRegionID == ownedRegionID)
 			{

@@ -26,6 +26,7 @@ void CharacterManager::start()
 		for (int id : character.m_OwnedRegionIDs)
 		{
 			Map::get().setRegionColor(id, character.m_RegionColor);
+			Map::get().getRegionById(id).m_OwnerID = character.m_CharacterID;
 		}
 	}
 }
@@ -41,7 +42,7 @@ void CharacterManager::render()
 Character& CharacterManager::getPlayerCharacter()
 {
 	ASSERT(m_PlayerCharacterID != INVALID_CHARACTER_ID, "Player not set");
-	return m_PlayerCharacter;
+	return *m_PlayerCharacter;
 }
 
 CharacterID CharacterManager::getPlayerCharacterID()
@@ -149,15 +150,15 @@ CharacterID CharacterManager::createCharacter(const char* characterName, Title t
 
 	newChar.m_Name = characterName;
 
+	m_Characters.push_back(newChar);
+
 	if (playerControlled)
 	{
-		ASSERT(m_PlayerCharacter.m_CharacterID == INVALID_CHARACTER_ID, "No multiplayer game yet, only one player controlled character allowed.");
+		ASSERT(m_PlayerCharacter == nullptr, "No multiplayer game yet, only one player controlled character allowed.");
 
-		m_PlayerCharacter = newChar;
+		m_PlayerCharacter = &m_Characters.back();
 		m_PlayerCharacterID = id;
 	}
-
-	m_Characters.push_back(newChar);
 
 	return id;
 }

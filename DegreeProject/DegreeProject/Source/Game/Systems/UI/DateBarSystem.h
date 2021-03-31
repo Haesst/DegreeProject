@@ -23,13 +23,6 @@ struct DateBarSystem : System
 
 	virtual void start() override
 	{
-#pragma warning(push)
-#pragma warning(disable: 26815)
-		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
-#pragma warning(pop)
-
-		CharacterComponent& playerCharacter = m_EntityManager->getComponent<CharacterComponent>(characterSystem->getPlayerID());
-
 		DateBar* dateBars = m_EntityManager->getComponentArray<DateBar>();
 		for (auto entity : m_Entities)
 		{
@@ -38,7 +31,7 @@ struct DateBarSystem : System
 			float sizeX = dateBars[entity].m_ButtonThickness * 0.5f;
 			float sizeY = dateBars[entity].m_SizeY * 0.5f;
 
-			dateBars[entity].m_OwnerColor = playerCharacter.m_RegionColor;
+			dateBars[entity].m_OwnerColor = CharacterManager::get()->getPlayerCharacter().m_RegionColor;
 
 			dateBars[entity].m_Shape.setFillColor(dateBars[entity].m_FillColor);
 			dateBars[entity].m_Shape.setOutlineColor(dateBars[entity].m_OwnerColor);
