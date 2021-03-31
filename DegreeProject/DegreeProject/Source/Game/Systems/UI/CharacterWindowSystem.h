@@ -18,17 +18,30 @@ struct CharacterWindowSystem : System
 	const std::string region = "Region: ";
 	const std::string tax = "Tax: ";
 
+	sf::Sound m_Sound;
+	sf::SoundBuffer m_SoundBuffer;
+	float volume = 5.0f;
+	AssetHandler* m_AssetHandler = nullptr;
+
 	CharacterWindowSystem()
 	{
 		addComponentSignature<CharacterWindow>();
 		m_EntityManager = &EntityManager::get();
 		m_Window = Window::getWindow();
+		m_AssetHandler = new AssetHandler();
 	}
 
-	~CharacterWindowSystem(){}
+	~CharacterWindowSystem()
+	{ 
+		delete m_AssetHandler;
+	}
 
 	virtual void start() override
 	{
+		m_Sound = m_AssetHandler->loadAudioFile("Assets/Audio/battle.wav", m_SoundBuffer);
+		m_Sound.setLoop(true);
+		m_Sound.setVolume(volume);
+
 		m_CharacterWindows = m_EntityManager->getComponentArray<CharacterWindow>();
 
 		m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
@@ -234,20 +247,25 @@ struct CharacterWindowSystem : System
 			Vector2D mousePosition = InputHandler::getMousePosition();
 			if (characterWindow.m_DeclareWarShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				EntityID warTarget = m_CurrentMapRegion->m_OwnerID;
+				//EntityID warTarget = m_CurrentMapRegion->m_OwnerID;
 				// m_PlayerCharacter->declareWar(warTarget, characterWindow.m_CurrentRegionID);
+
+				Game::m_Sound.pause();
+				m_Sound.play();
 			}
 			else if (characterWindow.m_MakePeaceShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				EntityManager* entityManager = &EntityManager::get();
+				//EntityManager* entityManager = &EntityManager::get();
 
-				WarManager* warManager = &WarManager::get();
+				//WarManager* warManager = &WarManager::get();
 				// War* war = warManager->getWarAgainst(*m_PlayerCharacter, target);
 				// 
 				// if (war->getHandle() != -1)
 				// {
 				// 	characterSystem->makePeace(*m_PlayerCharacter, target, war->getHandle());
 				// }
+				m_Sound.stop();
+				Game::m_Sound.play();
 			}
 		}
 	}
