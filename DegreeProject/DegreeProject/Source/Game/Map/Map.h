@@ -62,7 +62,7 @@ struct SquareData
 	}
 };
 
-struct Map : GameSystem
+struct Map
 {
 	static const int m_XOffset;
 	static const int m_YOffset;

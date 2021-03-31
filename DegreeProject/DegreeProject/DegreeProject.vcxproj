@@ -128,6 +128,8 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Components\UIText.h" />
     <ClInclude Include="Source\Game\Components\Unit.h" />
     <ClInclude Include="Source\Game\Components\Warmind.h" />
+    <ClInclude Include="Source\Game\Data\Character.h" />
+    <ClInclude Include="Source\Game\Data\Titles.h" />
     <ClInclude Include="Source\Game\Game.h" />
     <ClInclude Include="Source\Game\GameData.h" />
     <ClInclude Include="Source\Game\GameDate.h" />

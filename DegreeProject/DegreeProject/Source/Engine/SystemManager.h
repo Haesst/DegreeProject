@@ -1,16 +1,16 @@
 #pragma once
 #include <map>
 #include <memory>
+#include <SFML/Graphics.hpp>
 
-using GameSystemID = size_t;
+#include "Game/Components/Player.h"
+#include "Game/Data/Character.h"
 
-class GameSystem
-{
-public:
-	virtual void start() {};
-	virtual void update() {};
-	virtual void render() {};
-};
+
+using CharacterID = size_t;
+#define INVALID_CHARACTER_ID = 0;
+
+enum class Title;
 
 class SystemManager
 {
@@ -21,40 +21,14 @@ public:
 
 	static SystemManager* get();
 
-	template<typename T>
-	void registerSystem()
-	{
-		const GameSystemID type = getSystemType<T>();
-		assert(m_RegisteredSystems.count(type) == (size_t)0 && "System already registered");
-		auto system = std::make_shared<T>();
-
-		m_RegisteredSystems[type] = std::move(system);
-	}
-
-	inline static const GameSystemID getRuntimeGameSystemID()
-	{
-		static GameSystemID typeID = 0u;
-		return typeID++;
-	}
-
-	// Attach typeid to system class and return it
-	template<typename T>
-	inline static const GameSystemID getSystemType() noexcept
-	{
-		ASSERT((std::is_base_of<GameSystem, T>::value && !std::is_same<GameSystem, T>::value), "INVALID TEMPLATE TYPE");
-		static const SystemTypeID typeID = getRuntimeGameSystemID();
-
-		return typeID;
-	}
-
-	template<typename T>
-	GameSystem& getSystem() const
-	{
-		const GameSystemID systemType = getSystemType<T>();
-		return m_RegisteredSystems.at(systemType).second;
-	}
+	CharacterID createCharacter(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, int gold, sf::Color color, bool playerControlled);
 
 private:
 	static SystemManager* m_Instance;
-	std::map<GameSystemID, std::shared_ptr<GameSystem>> m_RegisteredSystems;
+	static CharacterID m_CharacterIDs;
+
+	Player m_Player;
+	Character m_PlayerCharacter;
+
+	std::vector<Character> m_Characters;
 };

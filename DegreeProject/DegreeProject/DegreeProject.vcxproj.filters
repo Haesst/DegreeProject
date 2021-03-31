@@ -19,6 +19,9 @@
     <Filter Include="Game\Components">
       <UniqueIdentifier>{3441F2CD-A0CC-5F92-A9DD-E28615E8BB92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Data">
+      <UniqueIdentifier>{48E62F7B-B450-E4F1-FD8E-95976938C246}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Game\Map">
       <UniqueIdentifier>{4C6B4732-3838-A23D-6151-90E54D7DD7CB}</UniqueIdentifier>
     </Filter>
@@ -64,6 +67,9 @@
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Log.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Engine\SystemManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Time.h">
@@ -116,6 +122,9 @@
     </ClInclude>
     <ClInclude Include="Source\Game\Components\Warmind.h">
       <Filter>Game\Components</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Data\Character.h">
+      <Filter>Game\Data</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Game.h">
       <Filter>Game</Filter>
@@ -192,8 +201,10 @@
     <ClInclude Include="Source\Game\War.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\SystemManager.h" />
-    <ClInclude Include="Source\Game\WarManager.h" />
+    <ClInclude Include="Source\Game\WarManager.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Data\Titles.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -202,10 +213,16 @@
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Engine\FileWatcher.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Engine\InputHandler.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Log.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Engine\SystemManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Time.cpp">
@@ -238,9 +255,9 @@
     <ClCompile Include="Source\Game\War.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\WarManager.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Engine\FileWatcher.cpp" />
-    <ClCompile Include="Source\Engine\SystemManager.cpp" />
-    <ClCompile Include="Source\Game\WarManager.cpp" />
   </ItemGroup>
 </Project>

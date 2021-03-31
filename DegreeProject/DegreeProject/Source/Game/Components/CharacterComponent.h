@@ -7,15 +7,7 @@
 #include "Game/Components/Unit.h"
 #include "Game/Components/SpriteRenderer.h"
 #include "Game/Components/Warmind.h"
-
-enum class Title
-{
-	Emperor,
-	King,
-	Duke,
-	Count,
-	Baron
-};
+#include "Game/Data/Titles.h"
 
 #pragma warning(push)
 #pragma warning(disable: 26812)
