@@ -3,6 +3,8 @@
 #include "ECS/System.h"
 #include "Game/Components/Player.h"
 #include "Game/Components/Unit.h"
+#include "Game/Pathfinding.h"
+#include "Game/Systems/UnitSystem.h"
 
 struct PlayerSystem : System
 {

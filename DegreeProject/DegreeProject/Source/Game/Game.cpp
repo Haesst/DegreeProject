@@ -10,16 +10,16 @@
 #include "Game/Components/MovingSprite.h"
 #include "Game/Components/SpriteRenderer.h"
 #include "Game/Systems/SpriteRenderSystem.h"
-#include "Game/Systems/CharacterWindowSystem.h"
-#include "Game/Systems/UITextSystem.h"
-#include "Game/Systems/UISpriteRenderSystem.h"	
-#include "Game/Systems/AI/WarmindSystem.h"
-#include "Game/Systems/AI/UnitSystem.h"
+#include "Game/Systems/UnitSystem.h"
 #include "Game/Systems/PlayerSystem.h"
 #include <Game/Systems/AI/AI.h>
-#include "Game/Systems/StatBarSystem.h"
-#include "Game/Systems/DateBarSystem.h"
-#include "Game/Systems/RegionWindowSystem.h"
+#include "Game/Systems/AI/WarmindSystem.h"
+#include "Game/Systems/UI/StatBarSystem.h"
+#include "Game/Systems/UI/DateBarSystem.h"
+#include "Game/Systems/UI/RegionWindowSystem.h"
+#include "Game/Systems/UI/CharacterWindowSystem.h"
+#include "Game/Systems/UI/UITextSystem.h"
+#include "Game/Systems/UI/UISpriteRenderSystem.h"	
 
 Game::~Game()
 {

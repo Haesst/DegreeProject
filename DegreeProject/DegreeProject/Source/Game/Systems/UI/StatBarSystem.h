@@ -3,7 +3,7 @@
 #include "ECS/EntityManager.h"
 #include "ECS/System.h"
 #include "Engine/Window.h"
-#include "Game/Components/StatBar.h"
+#include "Game/Components/UI/StatBar.h"
 #include "Game/Systems/CharacterSystem.h"
 
 struct StatBarSystem : System

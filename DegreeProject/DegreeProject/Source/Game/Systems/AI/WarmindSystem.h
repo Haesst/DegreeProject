@@ -6,7 +6,7 @@
 #include "WarmindConsiderations.h"
 #include "Game/Components/CharacterComponent.h"
 #include "Game/Pathfinding.h"
-#include "UnitSystem.h"
+#include "Game/Systems/UnitSystem.h"
 
 struct WarmindSystem : System
 {

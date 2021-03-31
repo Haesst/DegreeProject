@@ -5,7 +5,7 @@
 #include "Engine/Time.h"
 #include "Engine/Window.h"
 #include "ECS/Components/Transform.h"
-#include "Game/Components/UIText.h"
+#include "Game/Components/UI/UIText.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
 
