@@ -18,9 +18,11 @@ public:
 
 	void addUnit(CharacterID owner);
 	Unit getUnitOfCharacter(CharacterID character);
+	Unit getUnitWithId(UnitID id);
 	void giveUnitPath(std::vector<Vector2DInt> path);
 
 private:
+	static UnitID m_UnitIDs;
 	static UnitManager* m_Instance;
 	std::vector<Unit> m_Units;
 };

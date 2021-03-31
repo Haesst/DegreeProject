@@ -4,6 +4,7 @@
 #include "Engine/Log.h"
 
 UnitManager* UnitManager::m_Instance = nullptr;
+UnitID UnitManager::m_UnitIDs = INVALID_UNIT_ID + 1;
 
 void UnitManager::start()
 {
@@ -11,7 +12,12 @@ void UnitManager::start()
 
 void UnitManager::update()
 {
-	// Move unit
+	for (auto& unit : m_Units)
+	{
+		// Move unit
+		// Engage enemy
+		// Siege
+	}
 }
 
 void UnitManager::render()
@@ -33,6 +39,7 @@ void UnitManager::addUnit(CharacterID owner)
 {
 	Unit newUnit;
 	newUnit.m_Owner = owner;
+	newUnit.m_UnitID = m_UnitIDs++;
 
 	m_Units.push_back(newUnit);
 }
@@ -48,6 +55,20 @@ Unit UnitManager::getUnitOfCharacter(CharacterID character)
 	}
 
 	ASSERT(false, "Given character doesn't have any units.");
+	return Unit();
+}
+
+Unit UnitManager::getUnitWithId(UnitID id)
+{
+	for (auto& unit : m_Units)
+	{
+		if (unit.m_UnitID == id)
+		{
+			return unit;
+		}
+	}
+
+	ASSERT(false, "No unit with given ID exists");
 	return Unit();
 }
 

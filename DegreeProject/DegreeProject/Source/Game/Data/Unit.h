@@ -9,6 +9,7 @@ class RectangleShape;
 
 struct Unit
 {
+	UnitID m_UnitID = INVALID_UNIT_ID;
 	CharacterID m_Owner = INVALID_CHARACTER_ID;
 	bool m_Raised = false;
 	int m_RepresentedForce = 0;
