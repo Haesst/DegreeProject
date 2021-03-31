@@ -34,7 +34,6 @@ void Game::init()
 	initSystems();
 	addEntitys();
 	initAI();
-	//Pathfinding::init(Map::get().m_Data.m_Regions);
 }
 
 void Game::run()
