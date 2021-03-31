@@ -11,20 +11,23 @@ using CharacterID = size_t;
 #define INVALID_CHARACTER_ID = 0;
 
 enum class Title;
+struct Date;
 
-class SystemManager
+class CharacterManager
 {
 public:
 	void start();
 	void update();
 	void render();
+	
+	void onMonthChange(Date date);
 
-	static SystemManager* get();
+	static CharacterManager* get();
 
-	CharacterID createCharacter(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, int gold, sf::Color color, bool playerControlled);
+	CharacterID createCharacter(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
 
 private:
-	static SystemManager* m_Instance;
+	static CharacterManager* m_Instance;
 	static CharacterID m_CharacterIDs;
 
 	Player m_Player;

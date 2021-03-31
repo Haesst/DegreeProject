@@ -110,7 +110,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Engine\FileWatcher.h" />
     <ClInclude Include="Source\Engine\InputHandler.h" />
     <ClInclude Include="Source\Engine\Log.h" />
-    <ClInclude Include="Source\Engine\SystemManager.h" />
+    <ClInclude Include="Source\Engine\CharacterManager.h" />
     <ClInclude Include="Source\Engine\Time.h" />
     <ClInclude Include="Source\Engine\Vector2D.h" />
     <ClInclude Include="Source\Engine\Window.h" />
@@ -163,7 +163,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\Engine\FileWatcher.cpp" />
     <ClCompile Include="Source\Engine\InputHandler.cpp" />
     <ClCompile Include="Source\Engine\Log.cpp" />
-    <ClCompile Include="Source\Engine\SystemManager.cpp" />
+    <ClCompile Include="Source\Engine\CharacterManager.cpp" />
     <ClCompile Include="Source\Engine\Time.cpp" />
     <ClCompile Include="Source\Engine\Window.cpp" />
     <ClCompile Include="Source\Game\Callback.cpp" />
