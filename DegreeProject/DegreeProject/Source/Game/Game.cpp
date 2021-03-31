@@ -43,6 +43,7 @@ void Game::run()
 	sf::View view(floatResolution * 0.5f, floatResolution);
 	internalWindow->setView(view);
 
+	CharacterManager::get()->start();
 	EntityManager::get().start();
 
 	while (internalWindow->isOpen())
@@ -96,7 +97,7 @@ void Game::initSound()
 void Game::initSystems()
 {
 	EntityManager* entityManager = &EntityManager::get();
-	entityManager->registerSystem<CharacterSystem>();
+	// entityManager->registerSystem<CharacterSystem>();
 	entityManager->registerSystem<UITextSystem>();
 	entityManager->registerSystem<UnitSystem>();
 	entityManager->registerSystem<WarmindSystem>();
@@ -128,19 +129,22 @@ void Game::addEntitys()
 	m_UIFont = m_AssetHandler->loadFontFromFile("Assets/Fonts/TestFont.ttf");
 
 	std::vector<unsigned int> id0{ 1, 2, 3, 4, 5, 6, 7 };
-	EntityID char0 = createCharacter(*entityManager, id0, Title::King, "Kingdom of Milano", "Erik", 50, 5, false, sf::Color(181, 54, 107));
+	CharacterManager::get()->createCharacter("Erik", Title::King, id0, "Kingdom of Milano", 50, 5.0f, sf::Color(181, 54, 107), false);
+	//EntityID char0 = createCharacter(*entityManager, id0, Title::King, "Kingdom of Milano", "Erik", 50, 5, false, sf::Color(181, 54, 107));
 
 	std::vector<unsigned int> id1{ 8, 9, 10, 11, 12 };
-	EntityID char1 = createCharacter(*entityManager, id1, Title::Emperor, "Roman Empire", "Robin", 100, 10, false, sf::Color(54, 181, 105));
+	CharacterManager::get()->createCharacter("Robin", Title::Emperor, id1, "Roman Empire", 100, 10.0f, sf::Color(54, 181, 105), false);
+	//EntityID char1 = createCharacter(*entityManager, id1, Title::Emperor, "Roman Empire", "Robin", 100, 10, false, sf::Color(54, 181, 105));
 
 	std::vector<unsigned int> id2{ 13, 14, 15, 16, 17 };
-	EntityID char2 = createCharacter(*entityManager, id2, Title::King, "Kingdom of Sicilies", "Fredrik", 150, 10, true, sf::Color(200, 181, 105));
+	//EntityID char2 = createCharacter(*entityManager, id2, Title::King, "Kingdom of Sicilies", "Fredrik", 150, 10, true, sf::Color(200, 181, 105));
+	CharacterManager::get()->createCharacter("Fredrik", Title::Emperor, id2, "Kingdom of Sicilies", 150, 10.0f, sf::Color(200, 181, 105), true);
 
-	EntityID playerID = entityManager->addNewEntity();
-	entityManager->addComponent<Player>(playerID, char2);
+	//EntityID playerID = entityManager->addNewEntity();
+	//entityManager->addComponent<Player>(playerID, char2);
 
-	entityManager->addComponent<WarmindComponent>(char1, 1, char0);
-	entityManager->addComponent<WarmindComponent>(char0, 4, char1);
+	//entityManager->addComponent<WarmindComponent>(char1, 1, char0);
+	//entityManager->addComponent<WarmindComponent>(char0, 4, char1);
 
 	//UI DateBar
 	EntityID dateBarID = entityManager->addNewEntity();

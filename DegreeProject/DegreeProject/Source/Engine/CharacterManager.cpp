@@ -20,6 +20,14 @@ CharacterManager* CharacterManager::get()
 void CharacterManager::start()
 {
 	Time::m_GameDate.subscribeToMonthChange(std::bind(&CharacterManager::onMonthChange, this, std::placeholders::_1));
+
+	for (auto& character : m_Characters)
+	{
+		for (int id : character.m_OwnedRegionIDs)
+		{
+			Map::get().setRegionColor(id, character.m_RegionColor);
+		}
+	}
 }
 
 void CharacterManager::update()
@@ -30,22 +38,35 @@ void CharacterManager::render()
 {
 }
 
+Character& CharacterManager::getPlayerCharacter()
+{
+	ASSERT(m_PlayerCharacterID != INVALID_CHARACTER_ID, "Player not set");
+	return m_PlayerCharacter;
+}
+
+CharacterID CharacterManager::getPlayerCharacterID()
+{
+	ASSERT(m_PlayerCharacterID != INVALID_CHARACTER_ID, "Player not set");
+	return m_PlayerCharacterID;
+}
+
+Character& CharacterManager::getCharacter(CharacterID id)
+{
+	ASSERT(id != INVALID_CHARACTER_ID, "Invalid character id requested");
+
+	for (auto& character : m_Characters)
+	{
+		if (character.m_CharacterID == id)
+		{
+			return character;
+		}
+	}
+
+	ASSERT(false, "Character id not found");
+}
+
 void CharacterManager::onMonthChange(Date)
 {
-
-	//int incomingGold = 0;
-
-	//for (auto& regionId : m_OwnedRegionIDs)
-	//{
-	//	MapRegion region = Map::get().getRegionById(regionId);
-
-	//	incomingGold += region.m_RegionTax;
-	//}
-
-	//incomingGold -= (int)(m_RaisedArmySize * 0.1f);
-	//m_Income = incomingGold;
-	//m_CurrentGold += incomingGold;
-
 	for (auto& character : m_Characters)
 	{
 		int incomingGold = 0;
@@ -53,6 +74,54 @@ void CharacterManager::onMonthChange(Date)
 		for (unsigned int id : character.m_OwnedRegionIDs)
 		{
 			incomingGold += Map::get().getRegionById(id).m_RegionTax;
+		}
+
+		incomingGold -= (character.m_RaisedArmySize * 0.1f); // Todo: Declare armycost somewhere
+		character.m_Income = incomingGold; // Todo: Change to prediction for upcoming month instead of showing last month.
+		character.m_CurrentGold += incomingGold;
+	}
+}
+
+void CharacterManager::constructBuilding(CharacterID characterId, int buildingId, int regionId, int buildingSlot)
+{
+	Character character = getCharacter(characterId);
+	Building building = GameData::m_Buildings[buildingId];
+	MapRegion& region = Map::get().getRegionById(regionId);
+
+	if (building.m_Cost > character.m_CurrentGold)
+	{
+		return;
+	}
+
+	if (region.m_OwnerID != characterId)
+	{
+		return;
+	}
+
+	if (region.m_BuildingSlots[buildingSlot].m_BuildingId != -1)
+	{
+		return;
+	}
+
+	Map::get().startConstructionOfBuilding(buildingId, buildingSlot, regionId);
+	character.m_CurrentGold -= building.m_Cost;
+}
+
+void CharacterManager::addRegion(CharacterID characterId, unsigned int regionId)
+{
+	getCharacter(characterId).m_OwnedRegionIDs.push_back(regionId);
+}
+
+void CharacterManager::removeRegion(CharacterID characterId, unsigned int regionId)
+{
+	Character character = getCharacter(characterId);
+
+	for (size_t i = 0; i < character.m_OwnedRegionIDs.size(); ++i)
+	{
+		if (character.m_OwnedRegionIDs[i] == regionId)
+		{
+			character.m_OwnedRegionIDs.erase(character.m_OwnedRegionIDs.begin() + i);
+			break;
 		}
 	}
 }
@@ -82,8 +151,10 @@ CharacterID CharacterManager::createCharacter(const char* characterName, Title t
 
 	if (playerControlled)
 	{
-		ASSERT(m_PlayerCharacter.m_CharacterID == 0, "No multiplayer game yet, only one player controlled character allowed.");
+		ASSERT(m_PlayerCharacter.m_CharacterID == INVALID_CHARACTER_ID, "No multiplayer game yet, only one player controlled character allowed.");
+
 		m_PlayerCharacter = newChar;
+		m_PlayerCharacterID = id;
 	}
 
 	m_Characters.push_back(newChar);
