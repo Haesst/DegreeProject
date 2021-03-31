@@ -287,6 +287,9 @@ struct RegionWindowSystem : System
 				else
 				{
 					Vector2DInt capitalPosition = Map::get().getRegionCapitalLocation(regionWindow.m_CurrentRegionID);
+					//Character& character = CharacterManager::get()->getPlayerCharacter();
+					UnitManager::get().raiseUnit(CharacterManager::get()->getPlayerCharacter().m_UnitEntity, capitalPosition);
+
 					//characterSystem->raiseUnit(m_PlayerCharacter->m_EntityID, true, unit, renderer, capitalPosition);
 					regionWindow.m_RaiseArmyColor = regionWindow.m_OwnerColor;
 				}

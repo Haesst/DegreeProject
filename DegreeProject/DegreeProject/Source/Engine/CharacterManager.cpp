@@ -1,6 +1,8 @@
 #include "CharacterManager.h"
 
 #include "Engine/Log.h"
+#include "Engine/UnitManager.h"
+
 #include "Game/GameDate.h"
 #include "Game/Map/Map.h"
 #include "Game/Components/Player.h"
@@ -157,6 +159,7 @@ CharacterID CharacterManager::createCharacter(const char* characterName, Title t
 	newChar.m_RegionColor = color;
 
 	newChar.m_Name = characterName;
+	newChar.m_UnitEntity = UnitManager::get().addUnit(id);
 
 	m_Characters.push_back(newChar);
 

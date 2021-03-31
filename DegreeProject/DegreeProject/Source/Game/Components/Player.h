@@ -4,10 +4,13 @@
 
 #include "Game/Map/Map.h"
 #include "Game/Data/Types.h"
+#include "Game/Data/Unit.h"
+#include "Game/Pathfinding.h"
 
 #include "Engine/Vector2D.h"
 #include "Engine/InputHandler.h"
 #include "Engine/Window.h"
+#include "Engine/UnitManager.h"
 
 class Player
 {
@@ -21,8 +24,8 @@ public:
 	{
 		clickDrag();
 
-		selectUnit();
-		//moveUnit(playerComponents[entity].m_SelectedUnitID);
+		tryToSelectUnit();
+		moveUnit();
 		hoverOverRegion();
 	}
 
@@ -104,10 +107,50 @@ private:
 		}
 	}
 
-	void selectUnit()
+	void selectUnit(UnitID id)
+	{
+		Unit& unit = UnitManager::get().getUnitWithId(id);
+
+		unit.m_Selected = true;
+		InputHandler::setPlayerUnitSelected(true);
+		m_SelectedUnitID = id;
+	}
+
+	void tryToSelectUnit()
 	{
 		if (InputHandler::getLeftMouseClicked() && !m_Draging)
 		{
+			Vector2DInt mousePosition = InputHandler::getMouseMapPosition();
+
+			bool foundUnit = false;
+
+			if (Map::get().mapSquareDataContainsKey(mousePosition))
+			{
+				for (auto& squareData : Map::get().m_MapSquareData)
+				{
+					if (squareData.m_Position != mousePosition)
+					{
+						continue;
+					}
+
+					CharacterID playerCharacter = CharacterManager::get()->getPlayerCharacterID();
+
+					for (auto& unitID : squareData.m_EntitiesInSquare)
+					{
+						if (UnitManager::get().getUnitWithId(unitID).m_Owner == playerCharacter)
+						{
+							selectUnit(unitID);
+							foundUnit = true;
+						}
+					}
+				}
+			}
+
+			if (!foundUnit)
+			{
+				deselectUnits();
+			}
+
 			//CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(player.m_OwnedCharacter);
 			//UnitComponent& unit = m_EntityManager->getComponent<UnitComponent>(character.m_UnitEntity);
 			//Transform& unitTransform = m_EntityManager->getComponent<Transform>(character.m_UnitEntity);
@@ -146,48 +189,63 @@ private:
 			sf::Vector2f topLeftPosition = { firstX, firstY };
 		
 			bool foundUnit = false;
+
 			unsigned int xPositions = (unsigned int)width;
 			unsigned int yPositions = (unsigned int)height;
 			for (unsigned int y = 0; y < yPositions; y += (int)Map::m_TileSize)
 			{
 				for (unsigned int x = 0; x < xPositions; x += (int)Map::m_TileSize)
 				{
-					/*Vector2D position = Vector2D(topLeftPosition.x + x, topLeftPosition.y + y);
+					Vector2D position = Vector2D(topLeftPosition.x + x, topLeftPosition.y + y);
 					Vector2DInt mapPosition = Map::convertToMap(position);
-					Player& player = m_EntityManager->getComponent<Player>(playerID);
-					CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(player.m_OwnedCharacter);
-					UnitComponent& unit = m_EntityManager->getComponent<UnitComponent>(character.m_UnitEntity);
-					Transform& unitTransform = m_EntityManager->getComponent<Transform>(character.m_UnitEntity);
-					if (Map::convertToMap(unitTransform.m_Position) == mapPosition)
+					//Player& player = m_EntityManager->getComponent<Player>(playerID);
+					//CharacterComponent& character = m_EntityManager->getComponent<CharacterComponent>(player.m_OwnedCharacter);
+					//UnitComponent& unit = m_EntityManager->getComponent<UnitComponent>(character.m_UnitEntity);
+					//Transform& unitTransform = m_EntityManager->getComponent<Transform>(character.m_UnitEntity);
+
+					// check if it contains key
+
+					if (Map::get().mapSquareDataContainsKey(mapPosition))
 					{
-						unit.m_PlayerSelected = true;
-						unit.m_OutlineThickness = 1.0f;
-						player.m_SelectedUnitID = character.m_UnitEntity;
-						InputHandler::setPlayerUnitSelected(true);
-						foundUnit = true;
-						break;
+						for (auto& squareData : Map::get().m_MapSquareData)
+						{
+							if (squareData.m_Position != mapPosition)
+							{
+								continue;
+							}
+
+							CharacterID playerCharacter = CharacterManager::get()->getPlayerCharacterID();
+
+							for (auto& unitID : squareData.m_EntitiesInSquare)
+							{
+								if (UnitManager::get().getUnitWithId(unitID).m_Owner == playerCharacter)
+								{
+									selectUnit(unitID);
+									foundUnit = true;
+									break;
+								}
+							}
+						}
 					}
-					else
-					{
-						deselectUnit(playerID);
-					}*/
 				}
-				if (foundUnit)
-				{
-					break;
-				}
-				else
-				{
-					//deselectUnit(playerID);
-				}
+			}
+
+			if (!foundUnit)
+			{
+				deselectUnits();
 			}
 		}
 	}
 
-	void moveUnit(EntityID unitID)
+	void moveUnit()
 	{
-		if (InputHandler::getRightMouseReleased() == true && InputHandler::getPlayerUnitSelected() == true)
+		if (InputHandler::getRightMouseReleased() == true && m_SelectedUnitID != INVALID_UNIT_ID)
 		{
+			Vector2DInt mousePosition = InputHandler::getMouseMapPosition();
+			Vector2DInt unitPosition = Map::get().convertToMap(UnitManager::get().getUnitWithId(m_SelectedUnitID).m_Position);
+
+			UnitManager::get().giveUnitPath(m_SelectedUnitID, Pathfinding::get().findPath(unitPosition, mousePosition));
+
 			/*Vector2DInt mousePosition = InputHandler::getMouseMapPosition();
 			UnitComponent& unit = m_EntityManager->getComponent<UnitComponent>(unitID);
 			Transform& transform = m_EntityManager->getComponent<Transform>(unitID);
@@ -224,8 +282,17 @@ private:
 		}
 	}
 
-	void deselectUnit(EntityID playerID)
+	void deselectUnits()
 	{
+		if (m_SelectedUnitID == INVALID_UNIT_ID)
+		{
+			return;
+		}
+
+		Unit& unit = UnitManager::get().getUnitWithId(m_SelectedUnitID);
+		unit.m_Selected = false;
+		InputHandler::setPlayerUnitSelected(false);
+		m_SelectedUnitID = INVALID_UNIT_ID;
 		/*Player& player = m_EntityManager->getComponent<Player>(playerID);
 		UnitComponent& unit = m_EntityManager->getComponent<UnitComponent>(player.m_SelectedUnitID);
 		unit.m_PlayerSelected = false;
@@ -243,6 +310,6 @@ private:
 	Vector2D m_DragDirection = { 0.0f, 0.0f };
 
 	int m_HighlightedRegion = -1;
-	unsigned int m_SelectedUnitID = 0;
+	unsigned int m_SelectedUnitID = INVALID_UNIT_ID;
 	unsigned int m_OwnedCharacter = INVALID_CHARACTER_ID;
 };

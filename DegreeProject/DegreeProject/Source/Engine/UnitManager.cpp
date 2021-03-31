@@ -1,28 +1,72 @@
 #include "UnitManager.h"
 
+#include "Game/Map/Map.h"
 #include "Game/Data/Unit.h"
+#include "Engine/AssetHandler.h"
 #include "Engine/Log.h"
+#include "Engine/Time.h"
 
 UnitManager* UnitManager::m_Instance = nullptr;
 UnitID UnitManager::m_UnitIDs = INVALID_UNIT_ID + 1;
 
 void UnitManager::start()
 {
+	AssetHandler ah;
+	m_UnitTexture = ah.getTextureAtPath("Assets/Graphics/soldier unit.png");
+	m_UnitSprite.setTexture(m_UnitTexture);
 }
 
 void UnitManager::update()
 {
 	for (auto& unit : m_Units)
 	{
+		if (!unit.m_Raised)
+		{
+			continue;
+		}
+
 		// Move unit
+		moveUnit(unit);
 		// Engage enemy
+		unitCombat(unit);
 		// Siege
+		unitSiege(unit);
+
+		updateSprite(unit);
 	}
 }
 
 void UnitManager::render()
 {
-	// Render unit
+	for (auto& unit : m_Units)
+	{
+		if (!unit.m_Raised)
+		{
+			continue;
+		}
+
+		Window::getWindow()->draw(unit.m_Sprite);
+		sf::RectangleShape rect;
+		rect.setSize({ 32.0f, 32.0f });
+		rect.setFillColor(sf::Color::Black);
+		rect.setPosition(unit.m_Position.x, unit.m_Position.y);
+		Window::getWindow()->draw(rect);
+
+		if (unit.m_Selected)
+		{
+			unit.m_HighlightShape.setPosition({ unit.m_Position.x, unit.m_Position.y });
+			unit.m_HighlightShape.setOutlineThickness(1.0f);
+			unit.m_HighlightShape.setFillColor(unit.m_FillColor); // Rename fillcolor to highlight fill
+			unit.m_HighlightShape.setOutlineColor(unit.m_OutlineColor); // Rename outline color to highlight border
+			unit.m_HighlightShape.setSize(unit.m_HighlightShapeSize);
+			Window::getWindow()->draw(unit.m_HighlightShape);
+		}
+
+		if (unit.m_SeizingRegionID > 0)
+		{
+			displayProgressMeter(unit, (float)unit.m_DaysSeizing, (float)Map::get().getRegionById(unit.m_SeizingRegionID).m_DaysToSeize, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
+		}
+	}
 }
 
 UnitManager& UnitManager::get()
@@ -35,16 +79,18 @@ UnitManager& UnitManager::get()
 	return *m_Instance;
 }
 
-void UnitManager::addUnit(CharacterID owner)
+UnitID UnitManager::addUnit(CharacterID owner)
 {
 	Unit newUnit;
 	newUnit.m_Owner = owner;
 	newUnit.m_UnitID = m_UnitIDs++;
 
 	m_Units.push_back(newUnit);
+
+	return newUnit.m_UnitID;
 }
 
-Unit UnitManager::getUnitOfCharacter(CharacterID character)
+Unit& UnitManager::getUnitOfCharacter(CharacterID character)
 {
 	for (auto& unit : m_Units)
 	{
@@ -58,7 +104,7 @@ Unit UnitManager::getUnitOfCharacter(CharacterID character)
 	return Unit();
 }
 
-Unit UnitManager::getUnitWithId(UnitID id)
+Unit& UnitManager::getUnitWithId(UnitID id)
 {
 	for (auto& unit : m_Units)
 	{
@@ -72,6 +118,246 @@ Unit UnitManager::getUnitWithId(UnitID id)
 	return Unit();
 }
 
-void UnitManager::giveUnitPath(std::vector<Vector2DInt> path)
+void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 {
+	if (!Map::get().mapSquareDataContainsKey(location))
+	{
+		return;
+	}
+
+	Unit& unit = getUnitWithId(unitID);
+
+	unit.m_Position = Map::get().convertToScreen(location);
+	unit.m_Raised = true;
+
+	for (auto& squareData : Map::get().m_MapSquareData)
+	{
+		if (squareData.m_Position != location)
+		{
+			continue;
+		}
+
+		squareData.addUnique(unitID);
+	}
+}
+
+void UnitManager::giveUnitPath(UnitID unitID, std::vector<Vector2DInt> path)
+{
+	if (path.size() <= 0)
+	{
+		return;
+	}
+
+	Unit& unit = getUnitWithId(unitID);
+
+	if (unit.m_CurrentPath.size() > 0)
+	{
+		if (unit.m_CurrentPath.back() == path.back())
+		{
+			return;
+		}
+	}
+
+	if (path.back() == Map::convertToMap(unit.m_Position))
+	{
+		if (unit.m_Moving)
+		{
+			unit.m_Moving = false;
+			unit.m_CurrentPath.clear();
+		}
+		return;
+	}
+
+	Vector2D nextPosition = Map::convertToScreen(path.front());
+	unit.m_Target = nextPosition;
+	unit.m_Direction = (nextPosition - unit.m_Position).normalized();
+
+	unit.m_CurrentPath = path;
+	unit.m_Moving = true;
+
+	if (unit.m_SeizingRegionID > 0)
+	{
+		unit.m_SeizingRegionID = -1;
+		unit.m_DaysSeizing = 0;
+	}
+}
+
+void UnitManager::displayProgressMeter(Unit& unit, float timeElapsed, float totalTime, sf::Vector2f offset, sf::Color fillColor)
+{
+	sf::Vector2 innerOffset(m_SeizeMeterInnerOffset.x, m_SeizeMeterInnerOffset.y);
+
+	float innerWidth = m_ProgressMeterWidth - m_ProgressMeterDoubleBorder;
+	innerWidth *= timeElapsed / totalTime;
+
+	unit.m_InnerSeizeMeter.setPosition(offset + innerOffset + sf::Vector2(unit.m_Position.x, unit.m_Position.y));
+	unit.m_InnerSeizeMeter.setSize({ innerWidth, m_ProgressMeterHeight - m_ProgressMeterDoubleBorder });
+	unit.m_InnerSeizeMeter.setFillColor(fillColor);
+	unit.m_OuterSeizeMeter.setSize({ m_ProgressMeterWidth, m_ProgressMeterHeight });
+	unit.m_OuterSeizeMeter.setPosition(offset + sf::Vector2(unit.m_Position.x, unit.m_Position.y));
+	unit.m_OuterSeizeMeter.setFillColor(m_ProgressMeterOuterColor);
+
+	Window::getWindow()->draw(unit.m_OuterSeizeMeter);
+	Window::getWindow()->draw(unit.m_InnerSeizeMeter);
+}
+
+void UnitManager::moveUnit(Unit& unit)
+{
+	if (!unit.m_Moving)
+	{
+		return;
+	}
+
+	// showPath(transform, unit); <- debug. add functionality
+
+	if (!unit.m_Position.nearlyEqual(unit.m_Target, m_MoveTolerance))
+	{
+		unit.m_Position += unit.m_Direction * unit.m_Speed * Time::deltaTime();
+	}
+	else
+	{
+		if (Map::get().mapSquareDataContainsKey(Map::convertToMap(unit.m_LastPosition)))
+		{
+			for (auto& squareData : Map::get().m_MapSquareData)
+			{
+				if (squareData.m_Position == Map::convertToMap(unit.m_LastPosition))
+				{
+					squareData.remove(unit.m_UnitID);
+					break;
+				}
+			}
+		}
+
+		unit.m_LastPosition = unit.m_Target;
+		unit.m_Position = unit.m_Target;
+		Vector2DInt pos = Map::convertToMap(unit.m_Target);
+
+		for (auto& squareData : Map::get().m_MapSquareData)
+		{
+			if (squareData.m_Position == pos)
+			{
+				squareData.addUnique(unit.m_UnitID);
+				break;
+			}
+		}
+
+		/*if (enemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
+		{
+			EntityID enemyID = m_Warminds[unit.m_Owner].m_Opponent;
+			UnitComponent& enemyUnit = m_UnitComponents[m_Characters[enemyID].m_UnitEntity];
+
+			if (enemyUnit.m_Raised)
+			{
+				startCombatTimer(unit.m_EntityID, enemyUnit.m_EntityID);
+			}
+		}*/
+		// Combat could probably be moved to it's own function
+
+		if (unit.m_CurrentPath.size() > 0)
+		{
+			Vector2D nextPosition = Map::convertToScreen(unit.m_CurrentPath.front());
+			unit.m_Target = nextPosition;
+			unit.m_Direction = (nextPosition - unit.m_Position).normalized();
+
+			Vector2DInt mapPos = Map::convertToMap(unit.m_LastPosition);
+
+			for (auto& squareData : Map::get().m_MapSquareData)
+			{
+				if (squareData.m_Position == mapPos)
+				{
+					squareData.addUnique(unit.m_UnitID);
+					break;
+				}
+			}
+
+			unit.m_CurrentPath.erase(unit.m_CurrentPath.begin());
+			/*if (unit.m_TargetPath.size() > 0)
+			{
+				unit.m_TargetPath.pop_front();
+			}*/
+		}
+		else
+		{
+			startConquerRegion(unit);
+			unit.m_Moving = false;
+		}
+	}
+}
+
+void UnitManager::unitCombat(Unit& unit)
+{
+	/*if (enemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
+	{
+		EntityID enemyID = m_Warminds[unit.m_Owner].m_Opponent;
+		UnitComponent& enemyUnit = m_UnitComponents[m_Characters[enemyID].m_UnitEntity];
+
+		if (enemyUnit.m_Raised)
+		{
+			startCombatTimer(unit.m_EntityID, enemyUnit.m_EntityID);
+		}
+	}*/
+}
+
+void UnitManager::unitSiege(Unit& unit)
+{
+	if (unit.m_SeizingRegionID <= 0)
+	{
+		return;
+	}
+
+	if (unit.m_LastSeizeDate < Time::m_GameDate.m_Date)
+	{
+		if (!unit.m_InCombat)
+		{
+			unit.m_DaysSeizing++;
+			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
+
+			MapRegion region = Map::get().getRegionById(unit.m_SeizingRegionID);
+
+			if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
+			{				
+				CharacterManager::get()->removeRegion(region.m_OwnerID, region.m_RegionId);
+				CharacterManager::get()->addRegion(unit.m_Owner, region.m_RegionId);
+
+				Map::get().setRegionColor(region.m_RegionId, CharacterManager::get()->getCharacter(unit.m_Owner).m_RegionColor);
+
+				unit.m_DaysSeizing = 0;
+				unit.m_SeizingRegionID = -1;
+			}
+		}
+	}
+}
+
+void UnitManager::startConquerRegion(Unit& unit)
+{
+	std::vector<int> regionIDs = Map::get().getRegionIDs();
+	Vector2DInt currentMapPosition = Map::convertToMap(unit.m_Position);
+
+	for each (int regionID in regionIDs)
+	{
+		Vector2DInt capitalPosition = Map::get().getRegionCapitalLocation(regionID);
+		if (currentMapPosition == capitalPosition)
+		{
+			unsigned int ownerID = Map::get().getRegionById(regionID).m_OwnerID;
+			if (ownerID == unit.m_Owner)
+			{
+				continue;
+			}
+
+			unit.m_SeizingRegionID = regionID;
+			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
+		}
+	}
+}
+
+void UnitManager::updateSprite(Unit& unit)
+{
+	unit.m_Sprite.setTexture(m_UnitTexture);
+	unit.m_Sprite.setPosition({ unit.m_Position.x, unit.m_Position.y });
+
+	sf::FloatRect localSize = unit.m_Sprite.getLocalBounds();
+
+	unit.m_Sprite.setScale(
+		32 / localSize.width, // Todo: Remove magic number
+		32 / localSize.height
+	);
 }
