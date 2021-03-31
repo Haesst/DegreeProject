@@ -3,6 +3,7 @@
 #include "Engine/Log.h"
 #include "Game/GameDate.h"
 #include "Game/Map/Map.h"
+#include "Game/Components/Player.h"
 
 CharacterManager* CharacterManager::m_Instance = nullptr;
 CharacterID CharacterManager::m_CharacterIDs = 1;
@@ -33,10 +34,17 @@ void CharacterManager::start()
 
 void CharacterManager::update()
 {
+	m_Player->update();
 }
 
 void CharacterManager::render()
 {
+	m_Player->render();
+}
+
+CharacterManager::~CharacterManager()
+{
+	delete m_Player;
 }
 
 Character& CharacterManager::getPlayerCharacter()
@@ -158,6 +166,8 @@ CharacterID CharacterManager::createCharacter(const char* characterName, Title t
 
 		m_PlayerCharacter = &m_Characters.back();
 		m_PlayerCharacterID = id;
+
+		m_Player = new Player(id);
 	}
 
 	return id;

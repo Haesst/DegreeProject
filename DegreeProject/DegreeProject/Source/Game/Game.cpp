@@ -3,6 +3,7 @@
 #include "Engine/Time.h"
 #include "Engine/InputHandler.h"
 #include "ECS/EntityManager.h"
+#include "Engine/UnitManager.h"
 #include "Game/Systems/CharacterSystem.h"
 #include "Game/HotReloader.h"
 #include "Game/GameData.h"
@@ -56,13 +57,17 @@ void Game::run()
 
 		// Update
 		EntityManager::get().update();
+		UnitManager::get().update();
+		CharacterManager::get()->update();
 		// Update map
 
 		// Render
 		Window::getWindow()->clear(sf::Color::Blue);
 		// Render map
 		Map::get().render();
+		UnitManager::get().render();
 		EntityManager::get().render();
+		CharacterManager::get()->render();
 		Window::getWindow()->display();
 	}
 
@@ -103,7 +108,7 @@ void Game::initSystems()
 	entityManager->registerSystem<UnitSystem>();
 	entityManager->registerSystem<WarmindSystem>();
 	entityManager->registerSystem<SpriteRenderSystem>();
-	entityManager->registerSystem<PlayerSystem>();
+	//entityManager->registerSystem<PlayerSystem>();
 	entityManager->registerSystem<DateBarSystem>();
 	entityManager->registerSystem<StatBarSystem>();
 	entityManager->registerSystem<RegionWindowSystem>();

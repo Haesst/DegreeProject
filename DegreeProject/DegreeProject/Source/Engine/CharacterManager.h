@@ -3,14 +3,12 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 
-#include "Game/Components/Player.h"
 #include "Game/Data/Character.h"
+#include "Game/Data/Types.h"
 
 enum class Title;
 struct Date;
-
-using CharacterID = size_t;
-const int INVALID_CHARACTER_ID = 0;
+class Player;
 
 
 class CharacterManager
@@ -19,6 +17,8 @@ public:
 	void start();
 	void update();
 	void render();
+
+	~CharacterManager();
 
 	Character& getPlayerCharacter();
 	CharacterID getPlayerCharacterID();
