@@ -56,30 +56,25 @@ struct UITextSystem : System
 	{
 		if (UIText.m_OwnedRegionIDs.size() > 0)
 		{
-			std::vector<MapRegion> regions = Map::get().m_Data.m_Regions;
-			Vector2DInt leftMostPosition = { 100, 0 };
+			std::vector<SquareData> mapData = Map::get().m_MapSquareData;
+			Vector2DInt leftMostPosition = { Map::get().width, 0 };
 			Vector2DInt rightMostPosition = { 0, 0 };
-			unsigned int regionIndex = 0;
-			for each (MapRegion region in regions)
+			for (SquareData square : mapData)
 			{
-				for each (unsigned int regionId in UIText.m_OwnedRegionIDs)
+				for (unsigned int regionId : UIText.m_OwnedRegionIDs)
 				{
-					if (regionId == regions[regionIndex].m_RegionId)
+					if (regionId == square.m_RegionID)
 					{
-						for each (Vector2DInt position in region.m_MapSquares)
+						if (square.m_Position.x < leftMostPosition.x)
 						{
-							if (position.x < leftMostPosition.x)
-							{
-								leftMostPosition = position;
-							}
-							if (position.x >= rightMostPosition.x)
-							{
-								rightMostPosition = position;
-							}
+							leftMostPosition = square.m_Position;
+						}
+						if (square.m_Position.x >= rightMostPosition.x)
+						{
+							rightMostPosition = square.m_Position;
 						}
 					}
 				}
-				regionIndex++;
 			}
 			Vector2D leftMostPositionScreen = Map::convertToScreen(leftMostPosition);
 			Vector2D diagonal = Map::convertToScreen(rightMostPosition) - leftMostPositionScreen;
@@ -108,18 +103,18 @@ struct UITextSystem : System
 
 	void conquerRegion(unsigned int regionID, unsigned conqueringEntity)
 	{
-		CharacterComponent& characterComp = m_EntityManager->getComponent<CharacterComponent>(conqueringEntity);
+		Character& character = CharacterManager::get()->getCharacter(conqueringEntity);
 
-		UIText& text = m_EntityManager->getComponent<UIText>(characterComp.m_TextUI);
+		UIText& text = m_EntityManager->getComponent<UIText>(character.m_TextUI);
 		text.m_OwnedRegionIDs.push_back(regionID);
 		adjustText(text);
 	}
 
 	void loseRegion(unsigned regionIndex, unsigned int losingEntity)
 	{
-		CharacterComponent& characterComp = m_EntityManager->getComponent<CharacterComponent>(losingEntity);
+		Character& character = CharacterManager::get()->getCharacter(losingEntity);
 
-		UIText& text = m_EntityManager->getComponent<UIText>(characterComp.m_TextUI);
+		UIText& text = m_EntityManager->getComponent<UIText>(character.m_TextUI);
 		text.m_OwnedRegionIDs.erase(text.m_OwnedRegionIDs.begin() + regionIndex);
 		adjustText(text);
 	}

@@ -89,8 +89,9 @@ void Game::initAssets()
 
 void Game::initSound()
 {
-	m_Sound = m_AssetHandler->loadAudioFile("Assets/Audio/MenuMusic.wav", m_SoundBuffer);
-	m_Sound.setVolume(1);
+	m_Sound = m_AssetHandler->loadAudioFile("Assets/Audio/Minstrel_Dance.wav", m_SoundBuffer);
+	m_Sound.setLoop(true);
+	m_Sound.setVolume(5);
 	m_Sound.play();
 }
 
