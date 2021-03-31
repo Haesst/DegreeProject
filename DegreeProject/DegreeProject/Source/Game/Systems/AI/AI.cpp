@@ -15,9 +15,9 @@ void AISystem::update()
 	//AI System update considerations
 	for (auto entity : m_Entities)
 	{
-		if (expansionDecision(entity) > .2f) //Add personality weight
+		if (expansionDecision(entity) > .8f) //Add personality weight
 		{
-			if (warDecision(entity) > .2f)
+			if (warDecision(entity) > .7f)
 			{
 				if (!m_Characters[entity].m_AtWar)
 				{

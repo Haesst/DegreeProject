@@ -57,7 +57,7 @@ struct UnitSystem : System
 		}
 	}
 
-	virtual void update() override 
+	virtual void update() override
 	{
 		for (EntityID ent : m_Entities)
 		{
@@ -109,7 +109,7 @@ struct UnitSystem : System
 
 			if (unit.m_Raised)
 			{
-				if (unit.m_Moving)//&& unit.m_PlayerSelected)
+				if (unit.m_Moving)
 				{
 					for each (sf::RectangleShape rectangle in unit.m_TargetPath)
 					{
@@ -162,81 +162,83 @@ struct UnitSystem : System
 
 	void moveUnit(UnitComponent& unit, Transform& transform)
 	{
-		if (unit.m_Moving)
+		if (!unit.m_Moving)
 		{
-			if (!transform.m_Position.nearlyEqual(unit.m_Target, m_MoveTolerance))
+			return;
+		}
+
+		showPath(transform, unit);
+
+		if (!transform.m_Position.nearlyEqual(unit.m_Target, m_MoveTolerance))
+		{
+			Vector2D movement = unit.m_Direction * unit.m_Speed * Time::deltaTime();
+			transform.translate(movement);
+		}
+		else
+		{
+			if (Map::get().mapSquareDataContainsKey(Map::convertToMap(unit.m_LastPosition)))
 			{
-				Vector2D movement = unit.m_Direction * unit.m_Speed * Time::deltaTime();
-				transform.translate(movement);
-			}
-			else
-			{
-				if (Map::get().mapSquareDataContainsKey(Map::convertToMap(unit.m_LastPosition)))
+				for (auto& squareData : Map::get().m_MapSquareData)
 				{
-					for (auto& squareData : Map::get().m_MapSquareData)
+					if (squareData.m_Position == Map::convertToMap(unit.m_LastPosition))
 					{
-						if (squareData.m_Position == Map::convertToMap(unit.m_LastPosition))
-						{
-							squareData.remove(unit.getID());
-							break;
-						}
+						squareData.remove(unit.getID());
+						break;
 					}
 				}
+			}
 
-				unit.m_LastPosition = unit.m_Target;
-				transform.m_Position = unit.m_Target;
-				Vector2DInt pos = Map::convertToMap(unit.m_Target);
+			unit.m_LastPosition = unit.m_Target;
+			transform.m_Position = unit.m_Target;
+			Vector2DInt pos = Map::convertToMap(unit.m_Target);
+
+			for (auto& squareData : Map::get().m_MapSquareData)
+			{
+				if (squareData.m_Position == pos)
+				{
+					squareData.addUnique(unit.m_EntityID);
+					break;
+				}
+			}
+
+			if (enemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
+			{
+				EntityID enemyID = m_Warminds[unit.m_Owner].m_Opponent;
+				UnitComponent& enemyUnit = m_UnitComponents[m_Characters[enemyID].m_UnitEntity];
+
+				if (enemyUnit.m_Raised)
+				{
+					startCombatTimer(unit.m_EntityID, enemyUnit.m_EntityID);
+				}
+			}
+
+			if (unit.m_CurrentPath.size() > 0)
+			{
+				Vector2D nextPosition = Map::convertToScreen(unit.m_CurrentPath.front());
+				unit.m_Target = nextPosition;
+				unit.m_Direction = (nextPosition - transform.m_Position).normalized();
+
+				Vector2DInt mapPos = Map::convertToMap(unit.m_LastPosition);
 
 				for (auto& squareData : Map::get().m_MapSquareData)
 				{
-					if (squareData.m_Position == pos)
+					if (squareData.m_Position == mapPos)
 					{
 						squareData.addUnique(unit.m_EntityID);
 						break;
 					}
 				}
 
-				if (enemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
+				unit.m_CurrentPath.erase(unit.m_CurrentPath.begin());
+				if (unit.m_TargetPath.size() > 0)
 				{
-					EntityID enemyID = m_Warminds[unit.m_Owner].m_Opponent;
-					UnitComponent& enemyUnit = m_UnitComponents[m_Characters[enemyID].m_UnitEntity];
-
-					if (enemyUnit.m_Raised)
-					{
-						startCombatTimer(unit.m_EntityID, enemyUnit.m_EntityID);
-					}
+					unit.m_TargetPath.pop_front();
 				}
-
-				// Check for enemy at square and kill him
-				if (unit.m_CurrentPath.size() > 0)
-				{
-					Vector2D nextPosition = Map::convertToScreen(unit.m_CurrentPath.front());
-					unit.m_Target = nextPosition;
-					unit.m_Direction = (nextPosition - transform.m_Position).normalized();
-
-					Vector2DInt mapPos = Map::convertToMap(unit.m_LastPosition);
-
-					for (auto& squareData : Map::get().m_MapSquareData)
-					{
-						if (squareData.m_Position == mapPos)
-						{
-							squareData.addUnique(unit.m_EntityID);
-							break;
-						}
-					}
-					
-					unit.m_CurrentPath.erase(unit.m_CurrentPath.begin());
-					if (unit.m_TargetPath.size() > 0) //&& unit.m_PlayerControlled)
-					{
-						unit.m_TargetPath.pop_front();
-					}
-				}
-				else
-				{
-					startConquerRegion(unit, transform);
-					// Check if at capital
-					unit.m_Moving = false;
-				}
+			}
+			else
+			{
+				startConquerRegion(unit, transform);
+				unit.m_Moving = false;
 			}
 		}
 	}
@@ -250,17 +252,20 @@ struct UnitSystem : System
 
 		if (unit.m_LastSeizeDate < Time::m_GameDate.m_Date)
 		{
-			unit.m_DaysSeizing++;
-			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
-
-			MapRegion region = Map::get().getRegionById(unit.m_SeizingRegionID);
-
-			if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
+			if (!unit.m_InCombat)
 			{
-				EntityID loosingEntity = region.m_OwnerID;
-				conquerRegion(unit.m_Owner, loosingEntity, unit.m_SeizingRegionID);
-				unit.m_DaysSeizing = 0;
-				unit.m_SeizingRegionID = -1;
+				unit.m_DaysSeizing++;
+				unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
+
+				MapRegion region = Map::get().getRegionById(unit.m_SeizingRegionID);
+
+				if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
+				{
+					EntityID loosingEntity = region.m_OwnerID;
+					conquerRegion(unit.m_Owner, loosingEntity, unit.m_SeizingRegionID);
+					unit.m_DaysSeizing = 0;
+					unit.m_SeizingRegionID = -1;
+				}
 			}
 		}
 	}
@@ -339,50 +344,45 @@ struct UnitSystem : System
 
 	void determineCombat(EntityID unit, EntityID enemyUnit)
 	{
-		//Very WIP early combat prototype
-		//Todo: Needs more weights and values affecting the outcome than army size
-
-#pragma warning(push)
-#pragma warning(disable: 26815)
-		CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
-#pragma warning(pop)
-
 		WarManager* warManager = &WarManager::get();
 
 		if (m_UnitComponents[unit].m_CombatTimerAccu > m_UnitComponents[unit].m_CombatTimer)
 		{
 			War* currentWar = warManager->getWarAgainst(m_Characters[m_UnitComponents[unit].m_Owner], m_Characters[m_UnitComponents[enemyUnit].m_Owner]);
-			
+
 			if (currentWar == nullptr)
 			{
 				return;
 			}
 
+#pragma warning(push)
+#pragma warning(disable: 26815)
+			CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
+#pragma warning(pop)
+
 			if (currentWar->getAttacker().m_RaisedArmySize > currentWar->getDefender().m_RaisedArmySize)
 			{
 				currentWar->addWarscore(m_Characters[m_UnitComponents[unit].m_Owner].getID(), 50);
-
-				characterSystem->dismissUnit(currentWar->getAttacker().m_EntityID);
-				m_UnitComponents[unit].m_Moving = true;
-				m_UnitComponents[unit].EnemyArmy = nullptr;
-				m_UnitComponents[enemyUnit].EnemyArmy = nullptr;
-				m_UnitComponents[unit].m_InCombat = false;
-				m_UnitComponents[enemyUnit].m_InCombat = false;
+				characterSystem->dismissUnit(currentWar->getDefender().m_EntityID);
+				OnCombatEnded(unit, enemyUnit);
 			}
 
 			else
 			{
 				currentWar->addWarscore(m_Characters[m_UnitComponents[enemyUnit].m_Owner].getID(), 100);
-
-				characterSystem->dismissUnit(currentWar->getDefender().m_EntityID);
-
-				m_UnitComponents[unit].m_Moving = true;
-				m_UnitComponents[unit].EnemyArmy = nullptr;
-				m_UnitComponents[enemyUnit].EnemyArmy = nullptr;
-				m_UnitComponents[unit].m_InCombat = false;
-				m_UnitComponents[enemyUnit].m_InCombat = false;
+				characterSystem->dismissUnit(currentWar->getAttacker().m_EntityID);
+				OnCombatEnded(unit, enemyUnit);
 			}
 		}
+	}
+
+	void OnCombatEnded(EntityID unit, EntityID enemyUnit)
+	{
+		m_UnitComponents[unit].m_Moving = true;
+		m_UnitComponents[unit].EnemyArmy = nullptr;
+		m_UnitComponents[enemyUnit].EnemyArmy = nullptr;
+		m_UnitComponents[unit].m_InCombat = false;
+		m_UnitComponents[enemyUnit].m_InCombat = false;
 	}
 
 	void showPath(Transform& transform, UnitComponent& unit)
@@ -450,6 +450,7 @@ struct UnitSystem : System
 					screenPosition.y += unit.m_HighlightShape.getSize().y;
 				}
 			}
+
 			sf::RectangleShape rectangle = sf::RectangleShape(sf::Vector2f(rectangleSize.x, rectangleSize.y));
 			rectangle.setFillColor(sf::Color::White);
 			rectangle.setRotation(rotation);
