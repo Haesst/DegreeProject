@@ -75,7 +75,7 @@
     <ClInclude Include="Source\Engine\Log.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\SystemManager.h">
+    <ClInclude Include="Source\Engine\CharacterManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Time.h">
@@ -230,7 +230,7 @@
     <ClCompile Include="Source\Engine\Log.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\SystemManager.cpp">
+    <ClCompile Include="Source\Engine\CharacterManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Time.cpp">

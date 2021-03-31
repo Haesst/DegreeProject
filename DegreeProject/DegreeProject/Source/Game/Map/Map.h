@@ -11,7 +11,7 @@ using json = nlohmann::json;
 #include "Engine/Log.h"
 #include "Engine/Window.h"
 #include "Engine/AssetHandler.h"
-#include "Engine/SystemManager.h"
+#include "Engine/CharacterManager.h"
 
 #include "MapRegion.h"
 #include "MapData.h"

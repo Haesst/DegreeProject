@@ -20,8 +20,8 @@ struct Character
 
 	const char* m_KingdomName = "";
 
-	int m_Income = 0;
-	int m_CurrentGold = 0;
+	float m_Income = 0.0f;
+	float m_CurrentGold = 0.0f;
 
 	std::vector<unsigned int> m_OwnedRegionIDs;
 

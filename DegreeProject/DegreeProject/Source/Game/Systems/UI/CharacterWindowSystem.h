@@ -15,6 +15,9 @@ struct CharacterWindowSystem : System
 	MapRegion* m_CurrentMapRegion = nullptr;
 	bool m_PlayerRegion = false;
 
+	const std::string region = "Region: ";
+	const std::string tax = "Tax: ";
+
 	CharacterWindowSystem()
 	{
 		addComponentSignature<CharacterWindow>();
@@ -106,11 +109,11 @@ struct CharacterWindowSystem : System
 				m_CharacterWindows[entity].m_OwnerNameText.setFillColor(m_CharacterWindows[entity].m_OwnerColor);
 
 				m_CharacterWindows[entity].m_RegionNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_CharacterWindows[entity].m_SizeX * 0.1f), (int)(m_CharacterWindows[entity].m_SizeY * 0.2f))));
-				m_CharacterWindows[entity].m_RegionNameText.setString("Region: " + m_CharacterWindows[entity].m_RegionName);
+				m_CharacterWindows[entity].m_RegionNameText.setString(region + m_CharacterWindows[entity].m_RegionName);
 				m_CharacterWindows[entity].m_RegionNameText.setFillColor(m_CharacterWindows[entity].m_OwnerColor);
 
 				m_CharacterWindows[entity].m_TaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_CharacterWindows[entity].m_SizeX * 0.1f), (int)(m_CharacterWindows[entity].m_SizeY * 0.3f))));
-				m_CharacterWindows[entity].m_TaxText.setString("Tax: " + std::to_string(m_CharacterWindows[entity].m_RegionTax));
+				m_CharacterWindows[entity].m_TaxText.setString(tax + std::to_string(m_CharacterWindows[entity].m_RegionTax));
 				m_CharacterWindows[entity].m_TaxText.setFillColor(m_CharacterWindows[entity].m_OwnerColor);
 			}
 		}
