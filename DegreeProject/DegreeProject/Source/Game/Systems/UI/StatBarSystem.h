@@ -12,6 +12,8 @@ struct StatBarSystem : System
 	sf::RenderWindow* m_Window = nullptr;
 	CharacterComponent* m_PlayerCharacter = nullptr;
 
+	const std::string positiveSign = "+";
+
 	StatBarSystem()
 	{
 		addComponentSignature<StatBar>();
@@ -121,8 +123,7 @@ struct StatBarSystem : System
 		int income = m_PlayerCharacter->m_Income;
 		if (income >= 0)
 		{
-			std::string sign = "+";
-			statBar.m_CurrentIncome = sign + std::to_string(m_PlayerCharacter->m_Income);
+			statBar.m_CurrentIncome = positiveSign + std::to_string(m_PlayerCharacter->m_Income);
 		}
 		else
 		{

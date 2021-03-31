@@ -16,6 +16,8 @@ struct RegionWindowSystem : System
 	MapRegion* m_CurrentMapRegion = nullptr;
 	bool m_PlayerRegion = false;
 
+	const std::string tax = "Tax: ";
+
 	float m_ProgressMeterWidth = 64.0f;
 	float m_ProgressMeterBorder = 1.0f;
 	float m_ProgressMeterDoubleBorder;
@@ -103,7 +105,7 @@ struct RegionWindowSystem : System
 				m_RegionWindows[entity].m_RegionNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_RegionWindows[entity].m_SizeX * 0.1f), positionY)));
 				m_RegionWindows[entity].m_RegionNameText.setFillColor(m_RegionWindows[entity].m_OwnerColor);
 
-				m_RegionWindows[entity].m_RegionTaxText.setString("Tax: " + m_RegionWindows[entity].m_RegionTax);
+				m_RegionWindows[entity].m_RegionTaxText.setString(tax + m_RegionWindows[entity].m_RegionTax);
 				m_RegionWindows[entity].m_RegionTaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_RegionWindows[entity].m_SizeX * 0.7f), positionY + (int)(m_RegionWindows[entity].m_SizeY * 0.4f))));
 				m_RegionWindows[entity].m_RegionTaxText.setFillColor(m_RegionWindows[entity].m_OwnerColor);
 
