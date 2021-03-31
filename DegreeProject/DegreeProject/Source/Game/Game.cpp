@@ -21,6 +21,8 @@
 #include "Game/Systems/UI/UITextSystem.h"
 #include "Game/Systems/UI/UISpriteRenderSystem.h"	
 
+sf::Sound Game::m_Sound;
+
 Game::~Game()
 {
 	delete m_AssetHandler;
@@ -91,7 +93,7 @@ void Game::initSound()
 {
 	m_Sound = m_AssetHandler->loadAudioFile("Assets/Audio/Minstrel_Dance.wav", m_SoundBuffer);
 	m_Sound.setLoop(true);
-	m_Sound.setVolume(5);
+	m_Sound.setVolume(volume);
 	m_Sound.play();
 }
 

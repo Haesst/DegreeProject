@@ -35,8 +35,11 @@ private:
 	HotReloader* m_HotReloader = nullptr;
 	AIManager* m_AIManager = nullptr;
 	sf::SoundBuffer m_SoundBuffer;
-	sf::Sound m_Sound;
 	sf::Font m_UIFont;
+	float volume = 5.0f;
+
+public:
+	static sf::Sound m_Sound;
 
 public:
 	~Game();
