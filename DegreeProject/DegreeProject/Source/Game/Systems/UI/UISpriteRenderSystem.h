@@ -2,7 +2,7 @@
 
 #include "Engine/Window.h"
 #include "ECS/System.h"
-#include "Game/Components/UISpriteRenderer.h"
+#include "Game/Components/UI/UISpriteRenderer.h"
 #include "ECS/Components/Transform.h"
 
 struct UISpriteRenderSystem : public System

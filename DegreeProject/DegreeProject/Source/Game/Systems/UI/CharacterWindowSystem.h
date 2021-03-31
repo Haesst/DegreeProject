@@ -3,7 +3,7 @@
 #include "ECS/EntityManager.h"
 #include "ECS/System.h"
 #include "Engine/Window.h"
-#include "Game/Components/CharacterWindow.h"
+#include "Game/Components/UI/CharacterWindow.h"
 #include "Engine/InputHandler.h"
 
 struct CharacterWindowSystem : System

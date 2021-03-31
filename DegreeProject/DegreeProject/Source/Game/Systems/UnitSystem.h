@@ -4,6 +4,8 @@
 #include <Engine\AssetHandler.h>
 #include "Game/WarManager.h"
 #include "Game\Components\Player.h"
+#include "Engine/InputHandler.h"
+#include "Game/Systems/CharacterSystem.h"
 
 struct UnitSystem : System
 {

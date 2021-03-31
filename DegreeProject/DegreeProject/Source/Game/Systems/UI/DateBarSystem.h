@@ -4,7 +4,7 @@
 #include "ECS/System.h"
 #include "Engine/Window.h"
 #include "Engine/Time.h"
-#include "Game/Components/DateBar.h"
+#include "Game/Components/UI/DateBar.h"
 
 struct DateBarSystem : System
 {

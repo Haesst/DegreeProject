@@ -3,7 +3,8 @@
 #include "ECS/EntityManager.h"
 #include "ECS/System.h"
 #include "Engine/Window.h"
-#include "Game/Components/RegionWindow.h"
+#include "Game/Components/UI/RegionWindow.h"
+#include "Game/Components/UI/UISpriteRenderer.h"
 #include "Engine/InputHandler.h"
 
 struct RegionWindowSystem : System

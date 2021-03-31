@@ -8,7 +8,7 @@
 #include "Game/Components/CharacterComponent.h"
 #include "Game/Components/Unit.h"
 #include "Game/Components/SpriteRenderer.h"
-#include "Game/Systems/UITextSystem.h"
+#include "Game/Systems/UI/UITextSystem.h"
 #include "Game/WarManager.h"
 
 struct CharacterSystem : System
