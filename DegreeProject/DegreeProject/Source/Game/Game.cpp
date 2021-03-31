@@ -267,7 +267,6 @@ EntityID Game::createCharacter(EntityManager& entityManager, std::vector<unsigne
 
 	EntityID textUI = entityManager.addNewEntity();
 	//entityManager.addComponent<UIText>(textUI, m_UIFont, realmName, ownedRegions);
-	entityManager.addComponent<UIText>(textUI, m_UIFont, realmName, ownedRegions);
 
 	//CharacterManager::get()->getCharacter(character).m_TextUI = textUI;
 
