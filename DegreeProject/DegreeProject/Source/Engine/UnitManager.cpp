@@ -11,8 +11,8 @@ UnitID UnitManager::m_UnitIDs = INVALID_UNIT_ID + 1;
 
 void UnitManager::start()
 {
-	AssetHandler ah;
-	m_UnitTexture = ah.getTextureAtPath("Assets/Graphics/soldier unit.png");
+	ASSERT(m_AssetHandler != nullptr, "No assethandler set");
+	m_UnitTexture = m_AssetHandler->getTextureAtPath("Assets/Graphics/soldier unit.png");
 	m_UnitSprite.setTexture(m_UnitTexture);
 }
 
@@ -46,11 +46,6 @@ void UnitManager::render()
 		}
 
 		Window::getWindow()->draw(unit.m_Sprite);
-		sf::RectangleShape rect;
-		rect.setSize({ 32.0f, 32.0f });
-		rect.setFillColor(sf::Color::Black);
-		rect.setPosition(unit.m_Position.x, unit.m_Position.y);
-		Window::getWindow()->draw(rect);
 
 		if (unit.m_Selected)
 		{
@@ -85,6 +80,10 @@ UnitID UnitManager::addUnit(CharacterID owner)
 	newUnit.m_Owner = owner;
 	newUnit.m_UnitID = m_UnitIDs++;
 
+	newUnit.m_Sprite.setTexture(m_UnitTexture);
+	newUnit.m_Sprite.setPosition({ newUnit.m_Position.x, newUnit.m_Position.y });
+	updateSprite(newUnit);
+
 	m_Units.push_back(newUnit);
 
 	return newUnit.m_UnitID;
@@ -116,6 +115,11 @@ Unit& UnitManager::getUnitWithId(UnitID id)
 
 	ASSERT(false, "No unit with given ID exists");
 	return Unit();
+}
+
+void UnitManager::setAssetHandler(AssetHandler* assetHandler)
+{
+	m_AssetHandler = assetHandler;
 }
 
 void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
@@ -351,7 +355,7 @@ void UnitManager::startConquerRegion(Unit& unit)
 
 void UnitManager::updateSprite(Unit& unit)
 {
-	unit.m_Sprite.setTexture(m_UnitTexture);
+	unit.m_Sprite.setTexture(m_UnitTexture, true);
 	unit.m_Sprite.setPosition({ unit.m_Position.x, unit.m_Position.y });
 
 	sf::FloatRect localSize = unit.m_Sprite.getLocalBounds();

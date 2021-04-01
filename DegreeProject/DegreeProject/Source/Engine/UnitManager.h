@@ -5,6 +5,7 @@
 #include "Game/Data/Types.h"
 
 struct Unit;
+class AssetHandler;
 
 class UnitManager
 {
@@ -19,6 +20,8 @@ public:
 	UnitID addUnit(CharacterID owner);
 	Unit& getUnitOfCharacter(CharacterID character);
 	Unit& getUnitWithId(UnitID id);
+
+	void setAssetHandler(AssetHandler* assetHandler);
 
 	void raiseUnit(UnitID unitID, Vector2DInt location);
 	void giveUnitPath(UnitID unitID, std::vector<Vector2DInt> path);
@@ -37,6 +40,8 @@ private:
 	static UnitID m_UnitIDs;
 	static UnitManager* m_Instance;
 	std::vector<Unit> m_Units;
+
+	AssetHandler* m_AssetHandler; // Todo: Change asset handler to be static or singleton
 
 	float m_MoveTolerance = 0.3f;
 

@@ -34,6 +34,7 @@ void Game::init()
 	initWindow();
 	initHotReloading();
 	initAssets();
+	UnitManager::get().setAssetHandler(m_AssetHandler);
 	initSystems();
 	addEntitys();
 	initAI();
@@ -48,6 +49,7 @@ void Game::run()
 
 	CharacterManager::get()->start();
 	EntityManager::get().start();
+	UnitManager::get().start();
 
 	while (internalWindow->isOpen())
 	{
@@ -68,8 +70,8 @@ void Game::run()
 		// Render map
 		Map::get().render();
 		CharacterManager::get()->render();
-		UnitManager::get().render();
 		EntityManager::get().render();
+		UnitManager::get().render();
 		Window::getWindow()->display();
 	}
 
@@ -266,7 +268,7 @@ EntityID Game::createCharacter(EntityManager& entityManager, std::vector<unsigne
 	}
 
 	EntityID textUI = entityManager.addNewEntity();
-	//entityManager.addComponent<UIText>(textUI, m_UIFont, realmName, ownedRegions);
+	// entityManager.addComponent<UIText>(textUI, m_UIFont, realmName, ownedRegions);
 
 	//CharacterManager::get()->getCharacter(character).m_TextUI = textUI;
 
