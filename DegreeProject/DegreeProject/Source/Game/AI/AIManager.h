@@ -13,6 +13,7 @@ using json = nlohmann::json;
 
 class UnitManager;
 class WarManager;
+struct AIData;
 
 struct Personality
 {
@@ -30,11 +31,16 @@ class AIManager
 {
 public:
 	AIManager();
+	~AIManager();
+	static AIManager& get();
+	void start();
 	void onFileChange(std::string path, FileStatus status);
 	void loadPersonalities(const char* path);
 	WarmindComponent& GetWarmindOfCharacter(int handle);
-	void AddWarmind(CharacterID ID);
-	void Update();
+	AIData& getAIDataofCharacter(int handle);
+	void addWarmind(CharacterID ID);
+	void initAI(CharacterID ID);
+	void update();
 
 private:
 	float warDecision(CharacterID ID);
@@ -46,8 +52,10 @@ private:
 	void GiveDefenderOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit);
 
 private:
+	static AIManager* m_Instance;
 	WarOrders m_Orders;
 	std::vector<WarmindComponent> m_Warminds;
+	std::vector<AIData> m_AIDatas;
 	std::vector<Personality> m_Personalities;
 	mutable std::mutex m_PersonalityMtx;
 	WarManager* m_WarManager = nullptr;

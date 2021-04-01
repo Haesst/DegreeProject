@@ -50,6 +50,7 @@ void Game::run()
 	CharacterManager::get()->start();
 	EntityManager::get().start();
 	UnitManager::get().start();
+	AIManager::get().start();
 
 	while (internalWindow->isOpen())
 	{
@@ -63,6 +64,7 @@ void Game::run()
 		EntityManager::get().update();
 		UnitManager::get().update();
 		CharacterManager::get()->update();
+		AIManager::get().update();
 		// Update map
 
 		// Render
@@ -140,9 +142,11 @@ void Game::addEntitys()
 
 	std::vector<unsigned int> id0{ 1, 2, 3, 4, 5, 6, 7 };
 	CharacterID char0 = createCharacter(*entityManager, id0, Title::King, "Kingdom of Milano", "Erik", 50, 5, false, sf::Color(181, 54, 107));
+	AIManager::get().initAI(char0);
 
 	std::vector<unsigned int> id1{ 8, 9, 10, 11, 12 };
 	CharacterID char1 = createCharacter(*entityManager, id1, Title::Emperor, "Roman Empire", "Robin", 100, 10, false, sf::Color(54, 181, 105));
+	AIManager::get().initAI(char1);
 
 	std::vector<unsigned int> id2{ 13, 14, 15, 16, 17 };
 	CharacterID char2 = createCharacter(*entityManager, id2, Title::King, "Kingdom of Sicilies", "Fredrik", 150, 10, true, sf::Color(200, 181, 105));

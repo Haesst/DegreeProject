@@ -50,15 +50,15 @@ void WarOrders::orderSiegeCapital(WarmindComponent& warmind, Unit& unit)
 
 	else
 	{
-		CharacterComponent& enemyCharacter = currentWar.getAttacker();
+		CharacterID enemyCharacter = currentWar.getAttacker();
 
 		if (unit.m_DaysSeizing > 0)
 		{
 			return;
 		}
 
-		int randomRegionIndex = rand() % enemyCharacter.m_OwnedRegionIDs.size();
-		capitalPosition = Map::get().getRegionCapitalLocation(enemyCharacter.m_OwnedRegionIDs[randomRegionIndex]);
+		int randomRegionIndex = rand() % CharacterManager::get()->getCharacter(enemyCharacter).m_OwnedRegionIDs.size();
+		capitalPosition = Map::get().getRegionCapitalLocation(CharacterManager::get()->getCharacter(enemyCharacter).m_OwnedRegionIDs[randomRegionIndex]);
 	}
 
 	//Order unit to move

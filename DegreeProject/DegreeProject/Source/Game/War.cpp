@@ -1,24 +1,16 @@
 #include "War.h"
+#include <Engine\Log.h>
 
-#include "ECS/EntityManager.h"
-#include "Game/Systems/CharacterSystem.h"
-#include "Game/Components/Warmind.h"
-#include "Game/Components/Unit.h"
 
-War::War(CharacterComponent& attacker, CharacterComponent& defender, int warGoalRegion, int handle)
+War::War(CharacterID attacker, CharacterID defender, int warGoalRegion, int handle)
 {
-	m_Attacker = &attacker;
-	m_Defender = &defender;
+	m_Attacker = attacker;
+	m_Defender = defender;
 	m_WargoalRegion = warGoalRegion;
-	m_EntityManager = &EntityManager::get();
-
-	m_Units = m_EntityManager->getComponentArray<UnitComponent>();
-	m_Warminds = nullptr; // m_EntityManager->getComponentArray<WarmindComponent>();
-	m_Characters = m_EntityManager->getComponentArray<CharacterComponent>();
 	m_Handle = handle;
 }
 
-bool War::isWinning(EntityID ID, EntityID enemyID)
+bool War::isWinning(CharacterID ID, CharacterID enemyID)
 {
 	if (getWarscore(ID) > getWarscore(enemyID))
 	{
@@ -28,14 +20,14 @@ bool War::isWinning(EntityID ID, EntityID enemyID)
 	return false;
 }
 
-int War::getWarscore(EntityID ID)
+int War::getWarscore(CharacterID ID)
 {
-	if (getAttacker().getID() == ID)
+	if (getAttacker() == ID)
 	{
 		return m_AttackerWarscore;
 	}
 
-	else if (getDefender().getID() == ID)
+	else if (getDefender() == ID)
 	{
 		return m_DefenderWarscore;
 	}
@@ -43,9 +35,9 @@ int War::getWarscore(EntityID ID)
 	return -1;
 }
 
-void War::addWarscore(EntityID ID, int warScore)
+void War::addWarscore(CharacterID ID, int warScore)
 {
-	if (getAttacker().getID() == ID)
+	if (getAttacker() == ID)
 	{
 		m_AttackerWarscore += warScore;
 		m_DefenderWarscore -= warScore;
@@ -55,7 +47,7 @@ void War::addWarscore(EntityID ID, int warScore)
 		}
 	}
 
-	else if(getDefender().getID() == ID)
+	else if(getDefender() == ID)
  	{
 		m_DefenderWarscore += warScore;
 		m_AttackerWarscore -= warScore;
@@ -67,27 +59,22 @@ void War::addWarscore(EntityID ID, int warScore)
 	}
 }
 
-void War::endWar(EntityID winningEntity)
+void War::endWar(CharacterID winningEntity)
 {
-	m_Attacker->m_AtWar = false;
-	m_Defender->m_AtWar = false;
+	//CharacterManager::get()->getCharacter(m_Attacker).m_AtWar = false;
+	//CharacterManager::get()->getCharacter(m_Defender).m_AtWar = false;
 
-	LOG_INFO("{0}'s war against {1} is over. {2} Won!", m_Attacker->m_Name, m_Defender->m_Name, m_Characters[winningEntity].m_Name);
-	EntityManager* entityManager = &EntityManager::get();
-
-	if (!m_Attacker->m_IsPlayerControlled)
+	//LOG_INFO("{0}'s war against {1} is over. {2} Won!", CharacterManager::get()->getCharacter(m_Attacker), CharacterManager::get()->getCharacter(m_Defender), CharacterManager::get()->getCharacter(winningEntity));
+	
+	if (!CharacterManager::get()->getCharacter(m_Attacker).m_IsPlayerControlled)
 	{
-#pragma warning(push)
-#pragma warning(disable: 26815)
-		CharacterSystem* characterSystem = (CharacterSystem*)entityManager->getSystem<CharacterSystem>().get();
-#pragma warning(pop)
-		characterSystem->makePeace(getAttacker(), getDefender(), m_Handle);
+		//Peace
 	}
 }
 
-bool War::isAttacker(EntityID ent)
+bool War::isAttacker(CharacterID ent)
 {
-	if (m_Characters[ent].getID() == m_Attacker->getID())
+	if (ent == m_Attacker)
 	{
 		return true;
 	}
@@ -95,9 +82,9 @@ bool War::isAttacker(EntityID ent)
 	return false;
 }
 
-bool War::isDefender(EntityID ent)
+bool War::isDefender(CharacterID ent)
 {
-	if (m_Characters[ent].getID() == m_Defender->getID())
+	if (ent == m_Defender)
 	{
 		return true;
 	}
@@ -110,12 +97,12 @@ int War::getHandle()
 	return m_Handle;
 }
 
-CharacterComponent& War::getAttacker()
+CharacterID War::getAttacker()
 {
-	return *m_Attacker;
+	return m_Attacker;
 }
 
-CharacterComponent& War::getDefender()
+CharacterID War::getDefender()
 {
-	return *m_Defender;
+	return m_Defender;
 }

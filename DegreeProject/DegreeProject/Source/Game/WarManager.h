@@ -9,10 +9,11 @@ public:
 	WarManager() {};
 
 	//Returns handle to war
-	int createWar(CharacterComponent& attacker, CharacterComponent& defender, int warGoalRegion);
+	int createWar(CharacterID attacker, CharacterID defender, int warGoalRegion);
 	void endWar(int warHandle);
 	War* getWar(int handle);
-	War* getWarAgainst(CharacterComponent& character, CharacterComponent& enemy);
+	War* getWarAgainst(CharacterID character, CharacterID enemy);
+	bool atWarWith(CharacterID character, CharacterID enemy); 
 
 	inline static WarManager& get()
 	{
