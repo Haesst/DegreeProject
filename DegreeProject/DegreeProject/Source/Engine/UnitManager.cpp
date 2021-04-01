@@ -12,8 +12,7 @@ UnitID UnitManager::m_UnitIDs = INVALID_UNIT_ID + 1;
 
 void UnitManager::start()
 {
-	ASSERT(m_AssetHandler != nullptr, "No assethandler set");
-	m_UnitTexture = m_AssetHandler->getTextureAtPath("Assets/Graphics/soldier unit.png");
+	m_UnitTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/soldier unit.png");
 	m_UnitSprite.setTexture(m_UnitTexture);
 }
 
@@ -146,11 +145,6 @@ Unit& UnitManager::getUnitWithId(UnitID id)
 	return Unit();
 }
 #pragma warning(pop)
-
-void UnitManager::setAssetHandler(AssetHandler* assetHandler)
-{
-	m_AssetHandler = assetHandler;
-}
 
 void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 {

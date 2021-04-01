@@ -25,7 +25,6 @@ void Game::init()
 	initWindow();
 	initHotReloading();
 	initAssets();
-	UnitManager::get().setAssetHandler(m_AssetHandler);
 	addEntitys();
 }
 
