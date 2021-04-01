@@ -117,7 +117,7 @@
     <ClInclude Include="Source\Game\Components\UI\UISpriteRenderer.h">
       <Filter>Game\Components\UI</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Components\UI\UIText.h">
+    <ClInclude Include="Source\Game\UI\UIText.h">
       <Filter>Game\Components\UI</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Components\Unit.h">
@@ -141,7 +141,7 @@
     <ClInclude Include="Source\Game\Data\UIType.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Data\UIWindow.h">
+    <ClInclude Include="Source\Game\Data\UIElement.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Data\Unit.h">
@@ -199,9 +199,6 @@
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\UI\UISpriteRenderSystem.h">
-      <Filter>Game\Systems\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Systems\UI\UITextSystem.h">
       <Filter>Game\Systems\UI</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\UnitSystem.h">

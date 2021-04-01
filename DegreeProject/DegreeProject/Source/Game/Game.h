@@ -6,7 +6,6 @@
 #include <SFML/Audio.hpp>
 
 #include "Engine/Vector2D.h"
-#include "Game/AI/AIManager.h"
 #include <mutex>
 #include <Game/GameDate.h>
 #include "Game/Map/Map.h"
@@ -33,7 +32,6 @@ private:
 	Window* m_Window = nullptr;
 	AssetHandler* m_AssetHandler = nullptr;
 	HotReloader* m_HotReloader = nullptr;
-	AIManager* m_AIManager = nullptr;
 	sf::SoundBuffer m_SoundBuffer;
 	sf::Font m_UIFont;
 	float volume = 5.0f;
@@ -52,9 +50,7 @@ private:
 	void initAssets();
 	void initSound();
 
-	void initSystems();
 	void addEntitys();
-	void initAI();
 
-	EntityID createCharacter(EntityManager& entityManager, std::vector<unsigned int>& ownedRegions, Title title, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color);
+	CharacterID createCharacter(std::vector<unsigned int>& ownedRegions, Title title, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color);
 };

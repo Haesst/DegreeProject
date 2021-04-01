@@ -123,7 +123,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Components\Player.h" />
     <ClInclude Include="Source\Game\Components\SpriteRenderer.h" />
     <ClInclude Include="Source\Game\Components\UI\UISpriteRenderer.h" />
-    <ClInclude Include="Source\Game\Components\UI\UIText.h" />
+    <ClInclude Include="Source\Game\UI\UIText.h" />
     <ClInclude Include="Source\Game\Components\Unit.h" />
     <ClInclude Include="Source\Game\Components\Warmind.h" />
     <ClInclude Include="Source\Game\Data\AIData.h" />
@@ -131,7 +131,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Data\Titles.h" />
     <ClInclude Include="Source\Game\Data\Types.h" />
     <ClInclude Include="Source\Game\Data\UIType.h" />
-    <ClInclude Include="Source\Game\Data\UIWindow.h" />
+    <ClInclude Include="Source\Game\Data\UIElement.h" />
     <ClInclude Include="Source\Game\Data\Unit.h" />
     <ClInclude Include="Source\Game\Game.h" />
     <ClInclude Include="Source\Game\GameData.h" />
@@ -151,7 +151,6 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Systems\PlayerSystem.h" />
     <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h" />
     <ClInclude Include="Source\Game\Systems\UI\UISpriteRenderSystem.h" />
-    <ClInclude Include="Source\Game\Systems\UI\UITextSystem.h" />
     <ClInclude Include="Source\Game\Systems\UnitSystem.h" />
     <ClInclude Include="Source\Game\UI\CharacterWindow.h" />
     <ClInclude Include="Source\Game\UI\DateBar.h" />
