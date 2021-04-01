@@ -12,7 +12,7 @@ void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 	}
 
 	auto& enemyCharacter = CharacterManager::get()->getCharacter(warmind.m_Opponent);
-	auto& enemyUnit = UnitComponent();
+	auto& enemyUnit = UnitManager::get().getUnitOfCharacter(CharacterManager::get()->getCharacter(warmind.m_Opponent).m_CharacterID);
 
 	if (!enemyUnit.m_Raised)
 	{
@@ -23,23 +23,21 @@ void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 
 	if (enemyUnit.m_CurrentPath.size() > 0)
 	{
-		//LOG_INFO("{0} is chasing the enemy army", m_Characters[warmind].m_Name);
 		battlefieldIntPosition = enemyUnit.m_CurrentPath.back();
 	}
 
 	else
 	{
-		battlefieldIntPosition = Map::convertToMap(enemyUnit.m_LastPosition); //Todo: This needs to change when transforms are changed!!!!!!
+		battlefieldIntPosition = Map::convertToMap(enemyUnit.m_LastPosition);
 	}
 
 	Vector2DInt unitPos{ (int)unit.m_Position.x, (int)unit.m_Position.y };
 	UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(unitPos, battlefieldIntPosition));
-	//Order unit to move
 }
 
 void WarOrders::orderSiegeCapital(WarmindComponent& warmind, Unit& unit)
 {
-	Vector2D unitPosition = unit.m_Position; //NEEDS TO CHANGE
+	Vector2D unitPosition = unit.m_Position;
 	Vector2DInt startingPosition = Map::convertToMap(unitPosition);
 
 	Vector2DInt capitalPosition;
@@ -66,7 +64,6 @@ void WarOrders::orderSiegeCapital(WarmindComponent& warmind, Unit& unit)
 	}
 
 	UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(startingPosition, capitalPosition));
-	//Order unit to move
 }
 
 void WarOrders::orderFlee(WarmindComponent& warmind, Unit& unit)

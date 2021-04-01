@@ -7,7 +7,6 @@ WarManager* WarManager::m_Instance = nullptr;
 int WarManager::createWar(CharacterID attacker, CharacterID defender, int warGoalRegion)
 {
 	static int handle = m_Warhandle++;
-
 	War war(attacker, defender, warGoalRegion, handle);
 	m_Wars.push_back(std::make_pair(handle, war));
 	return handle;

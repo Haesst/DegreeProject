@@ -262,10 +262,14 @@ struct UnitSystem : System
 
 				if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
 				{
-					EntityID loosingEntity = region.m_OwnerID;
-					conquerRegion(unit.m_Owner, loosingEntity, unit.m_SeizingRegionID);
-					unit.m_DaysSeizing = 0;
-					unit.m_SeizingRegionID = -1;
+					CharacterID loosingCharacter = region.m_OwnerID;
+					if (WarManager::get().atWarWith(unit.m_Owner, loosingCharacter))
+					{
+						conquerRegion(unit.m_Owner, loosingCharacter, unit.m_SeizingRegionID);
+						unit.m_DaysSeizing = 0;
+						unit.m_SeizingRegionID = -1;
+						WarManager::get().getWarAgainst(unit.m_Owner, loosingCharacter)->addWarscore(unit.m_Owner, 100);
+					}
 				}
 			}
 		}
