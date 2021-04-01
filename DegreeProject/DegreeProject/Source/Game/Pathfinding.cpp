@@ -2,6 +2,8 @@
 #include <queue>
 #include <list>
 
+#include <chrono>
+
 Pathfinding* Pathfinding::m_Instance = nullptr;
 
 void Pathfinding::init()
@@ -48,29 +50,45 @@ std::vector<Vector2DInt> Pathfinding::findPath(Vector2DInt start, Vector2DInt en
 		return std::vector<Vector2DInt>();
 	}
 
+	std::vector<Vector2DInt> path;
+
+	auto t1 = std::chrono::high_resolution_clock::now();
+	if (usePerformantPath)
+	{
+		path = findPerformantPath(start, end);
+	}
+	else
+	{
+		path = findDeterministicPath(start, end);
+	}
+	auto t2 = std::chrono::high_resolution_clock::now();
+
+	std::chrono::duration<double, std::milli> ms_double = t2 - t1;
+
+	LOG_INFO("Pathfinder elapsed time: {0}", ms_double.count());
+
+	return path;
+}
+
+std::vector<Vector2DInt> Pathfinding::findDeterministicPath(Vector2DInt start, Vector2DInt end)
+{
 	//f = start -> current node
 	//h = current node -> goal
 	//g = Sum of f and h
 
 	auto cmp = [](const Node& left, const Node& right) {return (left.m_GCost) >= (right.m_GCost); };
 
-	std::vector<int> visited = std::vector<int>(m_MapWidth * m_MapHeight);
+	size_t mapSize = m_MapWidth * m_MapHeight;
 
-	for (int& node : visited)
-	{
-		node = 0;
-	}
+	std::vector<int> visited = std::vector<int>(mapSize);
 
-	std::vector<Node> currentNodes = std::vector<Node>(m_MapWidth * m_MapHeight);
-	std::vector<Node> parents = std::vector<Node>(m_MapWidth * m_MapHeight);
-	std::vector<Vector2DInt> path = std::vector<Vector2DInt>();
-	std::vector<float> fCosts = std::vector<float>(m_MapWidth * m_MapHeight);
+	std::vector<Node> currentNodes = std::vector<Node>(mapSize);
+	std::vector<Node> parents = std::vector<Node>(mapSize);
+
 	std::priority_queue<Node, std::vector<Node>, decltype(cmp)> openList(cmp);
 
-	for (float& cost : fCosts)
-	{
-		cost = FLT_MAX; 
-	}
+	std::vector<Vector2DInt> path = std::vector<Vector2DInt>();
+	path.reserve((size_t)mapSize);
 
 	//Calculating from end to start so we don't have to reverse the path
 
@@ -79,6 +97,11 @@ std::vector<Vector2DInt> Pathfinding::findPath(Vector2DInt start, Vector2DInt en
 	currentNodes[end.x + end.y * m_MapWidth].x = end.x;
 	currentNodes[end.x + end.y * m_MapWidth].y = end.y;
 	openList.push(currentNodes[end.x + end.y * m_MapWidth]);
+
+	Node startNode;
+
+	startNode.x = end.x;
+	startNode.y = end.y;
 
 	Node goalNode;
 	goalNode.x = start.x;
@@ -96,52 +119,144 @@ std::vector<Vector2DInt> Pathfinding::findPath(Vector2DInt start, Vector2DInt en
 			break;
 		}
 
-	    const Node current = openList.top();
+		const Node current = openList.top();
+
 		visited[indexOf(current)] = 1;
 
-		for (int x = -1; x < 2; x++)
+		const int dirx[] = { 0, 0, -1, 1, -1, 1, -1, 1 };
+		const int diry[] = { -1, 1, 0, 0, 1, -1, -1, 1 };
+
+		for (int i = 0; i < 8; ++i)
 		{
-			for (int y = -1; y < 2; y++)
+			const int x = current.x + dirx[i];
+			const int y = current.y + diry[i];
+
+			if (!Map::get().mapSquareDataContainsKey({ x,  y }))
 			{
-				if (x == 0 && y == 0)
-				{
-					continue;
-				}
+				continue;
+			}
 
-				int nodeX = current.x + x;
-				int nodeY = current.y + y;
+			Node neighbour;
+			neighbour.x = x;
+			neighbour.y = y;
 
-				Node neighbour;
-				neighbour.x = nodeX;
-				neighbour.y = nodeY;
 
-				currentNodes[indexOf(neighbour)].x = nodeX;
-				currentNodes[indexOf(neighbour)].y = nodeY;
+			const int neighbourIndex = indexOf(neighbour);
 
-				float possibleLowerCost = current.m_FCost + calculateHCost({ current.x, current.y }, { neighbour.x, neighbour.y });
+			currentNodes[neighbourIndex].x = x;
+			currentNodes[neighbourIndex].y = y;
 
-				if (possibleLowerCost < currentNodes[indexOf(neighbour)].m_FCost)
-				{
-					currentNodes[indexOf(neighbour)].m_FCost = possibleLowerCost;
-					currentNodes[indexOf(neighbour)].m_GCost = possibleLowerCost + calculateHCost({ neighbour.x, neighbour.y }, { goalNode.x, goalNode.y });
-					parents[indexOf(neighbour)] = current;
-				}
+			float possibleLowerCost = current.m_FCost + calculateHCost({ current.x, current.y }, { neighbour.x, neighbour.y });
 
-				if (visited[indexOf(neighbour)] != 1 && Map::get().mapSquareDataContainsKey({ neighbour.x, neighbour.y }))
-				{
-					openList.push(currentNodes[indexOf(neighbour)]);
-				}
+			if (possibleLowerCost < currentNodes[indexOf(neighbour)].m_FCost)
+			{
+				currentNodes[indexOf(neighbour)].m_FCost = possibleLowerCost;
+				currentNodes[indexOf(neighbour)].m_GCost = possibleLowerCost + calculateHCost({ neighbour.x, neighbour.y }, { goalNode.x, goalNode.y });
+				parents[indexOf(neighbour)] = current;
+			}
+
+			if (visited[indexOf(neighbour)] != 1)
+			{
+				openList.push(currentNodes[indexOf(neighbour)]);
 			}
 		}
 	}
 
-	Node currentNode = parents[start.x + start.y * m_MapWidth];
-	std::vector<int> parentIndexes = std::vector<int>();
+	Node currentNode = parents[indexOf(goalNode)];
 
 	while (currentNode.x != end.x || currentNode.y != end.y)
 	{
 		path.push_back({ currentNode.x, currentNode.y });
-		parentIndexes.push_back(indexOf(currentNode));
+		currentNode = parents[indexOf(currentNode)];
+	}
+
+	path.push_back(end);
+	return path;
+}
+
+std::vector<Vector2DInt> Pathfinding::findPerformantPath(Vector2DInt start, Vector2DInt end)
+{
+	//f = start -> current node
+	//h = current node -> goal
+	//g = Sum of f and h
+
+	auto cmp = [](const Node& left, const Node& right) {return (left.m_GCost) >= (right.m_GCost); };
+
+	size_t mapSize = m_MapWidth * m_MapHeight;
+
+	std::vector<int> visited = std::vector<int>(mapSize);
+	std::vector<Node> parents = std::vector<Node>(mapSize);
+
+	std::priority_queue<Node, std::vector<Node>, decltype(cmp)> openList(cmp);
+
+	std::vector<Vector2DInt> path = std::vector<Vector2DInt>();
+	path.reserve(mapSize);
+
+	Node startNode;
+
+	startNode.x = end.x;
+	startNode.y = end.y;
+	startNode.m_FCost = 0;
+	startNode.m_GCost = calculateHCost(end, start);
+	openList.push(startNode);
+
+	Node goalNode;
+	goalNode.x = start.x;
+	goalNode.y = start.y;
+
+	const int dirx[] = { 0, 0, -1, 1, -1, 1, -1, 1 };
+	const int diry[] = { -1, 1, 0, 0, 1, -1, -1, 1 };
+
+	while (!openList.empty())
+	{
+		if (openList.empty())
+		{
+			break;
+		}
+
+		const Node current = openList.top();
+		openList.pop();
+
+		if (current.x == goalNode.x && current.y == goalNode.y)
+		{
+			break;
+		}
+
+		for (int i = 0; i < 8; ++i)
+		{
+			const int x = current.x + dirx[i];
+			const int y = current.y + diry[i];
+
+			if (!Map::get().mapSquareDataContainsKey({ x,  y }))
+			{
+				continue;
+			}
+
+			Node neighbour;
+			neighbour.x = x;
+			neighbour.y = y;
+
+			const int neighbourIndex = indexOf(neighbour);
+
+			if (visited[neighbourIndex])
+			{
+				continue;
+			}
+
+			neighbour.m_FCost = current.m_FCost + calculateHCost({ current.x, current.y }, { neighbour.x, neighbour.y });
+			neighbour.m_GCost = current.m_FCost + calculateHCost({ neighbour.x, neighbour.y }, { goalNode.x, goalNode.y });
+
+			visited[neighbourIndex] = 1;
+			parents[neighbourIndex] = current;
+			openList.push(neighbour);
+		}
+	}
+
+	Node currentNode = parents[indexOf(goalNode)];
+
+	while (currentNode.x != end.x || currentNode.y != end.y)
+	{
+		path.push_back({ currentNode.x, currentNode.y });
 		currentNode = parents[indexOf(currentNode)];
 	}
 
