@@ -37,9 +37,9 @@ struct DateBar
 	sf::RenderWindow* m_Window = nullptr;
 	unsigned int m_CurrentSpeedLevel = 3;
 
-	UIWindowID m_OwnedUIWindow = INVALID_UI_ID;
+	UIID m_OwnedUIWindow = INVALID_UI_ID;
 
-	DateBar(UIWindowID id, sf::Font font)
+	DateBar(UIID id, sf::Font font)
 	{
 		m_OwnedUIWindow = id;
 		m_Window = Window::getWindow();

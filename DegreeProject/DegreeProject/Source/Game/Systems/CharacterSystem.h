@@ -8,7 +8,6 @@
 #include "Game/Components/CharacterComponent.h"
 #include "Game/Components/Unit.h"
 #include "Game/Components/SpriteRenderer.h"
-#include "Game/Systems/UI/UITextSystem.h"
 #include "Game/WarManager.h"
 
 struct CharacterSystem : System
@@ -227,11 +226,6 @@ struct CharacterSystem : System
 		character.m_OwnedRegionIDs.push_back(regionID);
 		Map::get().setRegionColor(regionID, character.m_RegionColor);
 		Map::get().getRegionById(regionID).m_OwnerID = conqueringEntity;
-#pragma warning(push)
-#pragma warning(disable: 26815)
-		UITextSystem* textUISystem = (UITextSystem*)m_EntityManager->getSystem<UITextSystem>().get();
-#pragma warning(pop)
-		textUISystem->conquerRegion(regionID, conqueringEntity);
 	}
 
 	void loseRegion(unsigned int regionID, unsigned int losingEntity)
@@ -247,11 +241,6 @@ struct CharacterSystem : System
 			}
 			regionIndex++;
 		}
-#pragma warning(push)
-#pragma warning(disable: 26815)
-		UITextSystem* textUISystem = (UITextSystem*)m_EntityManager->getSystem<UITextSystem>().get();
-#pragma warning(pop)
-		textUISystem->loseRegion(regionIndex, losingEntity);
 	}
 
 	EntityID getPlayerID()

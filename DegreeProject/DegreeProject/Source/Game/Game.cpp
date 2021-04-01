@@ -2,21 +2,15 @@
 #include "Engine/Window.h"
 #include "Engine/Time.h"
 #include "Engine/InputHandler.h"
-#include "ECS/EntityManager.h"
 #include "Engine/UnitManager.h"
-#include "Game/Systems/CharacterSystem.h"
 #include "Game/HotReloader.h"
 #include "Game/GameData.h"
 #include "Game/AI/AIManager.h"
-#include "Game/Components/MovingSprite.h"
-#include "Game/Components/SpriteRenderer.h"
-#include "Game/Systems/SpriteRenderSystem.h"
-#include "Game/Systems/UnitSystem.h"
-#include "Game/Systems/PlayerSystem.h"
-#include <Game/Systems/AI/AI.h>
-#include "Game/Systems/AI/WarmindSystem.h"
 #include "Game/UI/UIManager.h"
-#include "Game/Systems/UI/UITextSystem.h"
+
+//Todo: Move from ECS
+#include "ECS/EntityManager.h"
+#include "Game/Systems/SpriteRenderSystem.h"
 #include "Game/Systems/UI/UISpriteRenderSystem.h"
 
 sf::Sound Game::m_Sound;
@@ -32,9 +26,7 @@ void Game::init()
 	initHotReloading();
 	initAssets();
 	UnitManager::get().setAssetHandler(m_AssetHandler);
-	initSystems();
 	addEntitys();
-	initAI();
 }
 
 void Game::run()
@@ -44,8 +36,8 @@ void Game::run()
 	sf::View view(floatResolution * 0.5f, floatResolution);
 	internalWindow->setView(view);
 
+	//Start
 	CharacterManager::get()->start();
-	EntityManager::get().start();
 	UnitManager::get().start();
 	AIManager::get().start();
 	UIManager::get()->start();
@@ -59,21 +51,21 @@ void Game::run()
 		InputHandler::handleInputEvents();
 
 		// Update
-		EntityManager::get().update();
 		UnitManager::get().update();
 		CharacterManager::get()->update();
 		AIManager::get().update();
 		UIManager::get()->update();
-		// Update map
 
 		// Render
 		Window::getWindow()->clear(sf::Color::Blue);
+
 		// Render map
 		Map::get().render();
+
 		CharacterManager::get()->render();
-		UIManager::get()->render();
-		EntityManager::get().render();
 		UnitManager::get().render();
+		UIManager::get()->render();
+
 		Window::getWindow()->display();
 	}
 
@@ -106,14 +98,6 @@ void Game::initSound()
 	m_Sound.play();
 }
 
-void Game::initSystems()
-{
-	EntityManager* entityManager = &EntityManager::get();
-	entityManager->registerSystem<UITextSystem>();
-	entityManager->registerSystem<SpriteRenderSystem>();
-	entityManager->registerSystem<UISpriteRenderSystem>();
-}
-
 void Game::addEntitys()
 {
 	EntityManager* entityManager = &EntityManager::get();
@@ -121,6 +105,7 @@ void Game::addEntitys()
 	Map::get().init();
 	Map::get().setLandTexture(m_AssetHandler->getTextureAtPath("Assets/Graphics/Checkerboard.png"));
 
+	//Todo: Move from ECS
 	const char* castlePath = "Assets/Graphics/Castle.png";
 	for (unsigned int regionIndex = 0; regionIndex < m_NumberOfRegions; regionIndex++)
 	{
@@ -133,15 +118,19 @@ void Game::addEntitys()
 	m_UIFont = m_AssetHandler->loadFontFromFile("Assets/Fonts/TestFont.ttf");
 
 	std::vector<unsigned int> id0{ 1, 2, 3, 4, 5, 6, 7 };
-	CharacterID char0 = createCharacter(*entityManager, id0, Title::King, "Kingdom of Milano", "Erik", 50, 5, false, sf::Color(181, 54, 107));
+	CharacterID char0 = createCharacter(id0, Title::King, "Kingdom of Milano", "Erik", 50, 5, false, sf::Color(181, 54, 107));
+	UIManager::get()->createUITextElement(m_UIFont, CharacterManager::get()->getCharacter(char0).m_KingdomName, id0);
 
 	std::vector<unsigned int> id1{ 8, 9, 10, 11, 12 };
-	CharacterID char1 = createCharacter(*entityManager, id1, Title::Emperor, "Roman Empire", "Robin", 100, 10, false, sf::Color(54, 181, 105));
+	CharacterID char1 = createCharacter(id1, Title::Emperor, "Roman Empire", "Robin", 100, 10, false, sf::Color(54, 181, 105));
+	UIManager::get()->createUITextElement(m_UIFont, CharacterManager::get()->getCharacter(char1).m_KingdomName, id1);
 
 	std::vector<unsigned int> id2{ 13, 14, 15, 16, 17 };
-	CharacterID char2 = createCharacter(*entityManager, id2, Title::King, "Kingdom of Sicilies", "Fredrik", 150, 10, true, sf::Color(200, 181, 105));
+	CharacterID char2 = createCharacter(id2, Title::King, "Kingdom of Sicilies", "Fredrik", 150, 10, true, sf::Color(200, 181, 105));
+	UIManager::get()->createUITextElement(m_UIFont, CharacterManager::get()->getCharacter(char2).m_KingdomName, id2);
 
 	//UI Sprite IDs
+	//Todo: Move from ECS
 	EntityID topPortraitID = entityManager->addNewEntity();
 	EntityID bottomPortraitID = entityManager->addNewEntity();
 	EntityID regionPortraitID = entityManager->addNewEntity();
@@ -151,7 +140,7 @@ void Game::addEntitys()
 	EntityID regionBuildSlotID3 = entityManager->addNewEntity();
 	EntityID regionBuildSlotID4 = entityManager->addNewEntity();
 
-	// Temp
+	//Todo: Move from ECS
 	unsigned int ids[10];
 	ids[2] = regionBuildSlotID;
 	ids[3] = regionBuildSlotID2;
@@ -165,20 +154,21 @@ void Game::addEntitys()
 	//UI
 	Vector2D characterWindowPosition = { 10.0f, 10.0f };
 	Vector2D characterWindowSize = { 600.0f, 1060.0f };
-	ids[0] = UIManager::get()->createUIWindow(m_UIFont, characterWindowPosition, characterWindowSize, UIType::CharacterWindow);
+	ids[0] = UIManager::get()->createUIWindowElement(m_UIFont, UIType::CharacterWindow, characterWindowPosition, characterWindowSize);
 
 	Vector2D regionWindowPosition = { 10.0f, Window::getWindow()->getSize().y - (600.0f + 10.0f) };
 	Vector2D regionWindowSize = { 600.0f, 600.0f };
-	ids[1] = UIManager::get()->createUIWindow(m_UIFont, regionWindowPosition, regionWindowSize, UIType::RegionWindow);
+	ids[1] = UIManager::get()->createUIWindowElement(m_UIFont, UIType::RegionWindow, regionWindowPosition, regionWindowSize);
 
 	Vector2D statBarPosition = { Window::getWindow()->getSize().x - (400.0f + 10.0f), 10.0f };
 	Vector2D statBarSize = { 400.0f, 50.0f };
-	UIManager::get()->createUIWindow(m_UIFont, statBarPosition, statBarSize, UIType::StatBar);
+	UIManager::get()->createUIWindowElement(m_UIFont, UIType::StatBar, statBarPosition, statBarSize);
 
 	Vector2D dateBarPosition = { Window::getWindow()->getSize().x - (600.0f + 10.0f), Window::getWindow()->getSize().y - (50.0f + 10.0f) };
 	Vector2D dateBarSize = { 600.0f, 50.0f };
-	UIManager::get()->createUIWindow(m_UIFont, dateBarPosition, dateBarSize, UIType::DateBar);
+	UIManager::get()->createUIWindowElement(m_UIFont, UIType::DateBar, dateBarPosition, dateBarSize);
 
+	//Todo: Move from ECS
 	EntityID goldSpriteID = entityManager->addNewEntity();
 	entityManager->addComponent<UISpriteRenderer>(goldSpriteID, "Assets/Graphics/Coins.png", 32, 32, m_AssetHandler);
 	Transform& goldSpriteTransform = entityManager->getComponent<Transform>(goldSpriteID);
@@ -233,38 +223,14 @@ void Game::addEntitys()
 	//entityManager->setEntityActive(regionBuildSlotID4, false);
 }
 
-void Game::initAI()
+CharacterID Game::createCharacter(std::vector<unsigned int>& ownedRegions, Title title, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color)
 {
-	EntityManager* entityManager = &EntityManager::get();
-
-	// Create entity with AIManagerComoponent
-	m_AIManager = new AIManager();
-
-	// Register system
-	entityManager->registerSystem<AISystem>();
-	// Get system
-#pragma warning(push)
-#pragma warning(disable: 26815)
-	AISystem* sys = (AISystem*)entityManager->getSystem<AISystem>().get();
-#pragma warning(pop)
-
-	// Init system with manager component
-	sys->init(m_AIManager);
-}
-
-EntityID Game::createCharacter(EntityManager& entityManager, std::vector<unsigned int>& ownedRegions, Title title, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color)
-{
-	CharacterID character = CharacterManager::get()->createCharacter(characterName, Title::King, ownedRegions, realmName, 50, 5.0f, color, playerControlled);
+	CharacterID character = CharacterManager::get()->createCharacter(characterName, title, ownedRegions, realmName, 50, 5.0f, color, playerControlled);
 
 	for (int i : ownedRegions)
 	{
 		Map::get().setRegionColor(i, color);
 	}
-
-	EntityID textUI = entityManager.addNewEntity();
-	// entityManager.addComponent<UIText>(textUI, m_UIFont, realmName, ownedRegions);
-
-	//CharacterManager::get()->getCharacter(character).m_TextUI = textUI;
 
 	return character;
 }

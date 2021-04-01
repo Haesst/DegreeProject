@@ -1,7 +1,7 @@
 #include "UIManager.h"
 
 UIManager* UIManager::m_Instance = nullptr;
-UIWindowID UIManager::m_UIWindowIDs = 1;
+UIID UIManager::m_UIElementsIDs = 1;
 
 UIManager* UIManager::get()
 {
@@ -12,22 +12,46 @@ UIManager* UIManager::get()
 	return m_Instance;
 }
 
+UIManager::UIManager()
+{
+	m_CharacterWindow = nullptr;
+	m_RegionWindow = nullptr;
+	m_StatBar = nullptr;
+	m_DateBar = nullptr;
+}
+
 UIManager::~UIManager()
 {
 	delete m_CharacterWindow;
 	delete m_RegionWindow;
 	delete m_StatBar;
 	delete m_DateBar;
+	for (UIText* uiText : m_UITexts)
+	{
+		delete uiText;
+	}
+	delete m_Instance;
 }
 
-UIWindowID UIManager::createUIWindow(sf::Font font, Vector2D position, Vector2D size, UIType type)
+UIID UIManager::createUITextElement(sf::Font font, std::string countryName, std::vector<unsigned int> ownedRegions)
 {
-	UIWindowID id = m_UIWindowIDs++;
-	UIWindow uiWindow;
-	uiWindow.m_UIWindowID = id;
-	uiWindow.m_Position = position;
-	uiWindow.m_Size = size;
-	uiWindow.m_Type = type;
+	UIID id = m_UIElementsIDs++;
+	UIElement uiElement;
+	uiElement.m_UIElementID = id;
+	m_UITexts.push_back(new UIText(id, font, countryName, ownedRegions));
+	m_UIElements.push_back(uiElement);
+	return id;
+}
+
+
+UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D position, Vector2D size)
+{
+	UIID id = m_UIElementsIDs++;
+	UIElement uiElement;
+	uiElement.m_UIElementID = id;
+	uiElement.m_Position = position;
+	uiElement.m_Size = size;
+	uiElement.m_Type = type;
 	switch (type)
 	{
 		case UIType::CharacterWindow:
@@ -55,7 +79,7 @@ UIWindowID UIManager::createUIWindow(sf::Font font, Vector2D position, Vector2D 
 			break;
 		}
 	}
-	m_UIWindows.push_back(uiWindow);
+	m_UIElements.push_back(uiElement);
 	return id;
 }
 
@@ -65,10 +89,14 @@ void UIManager::start()
 	ASSERT(m_RegionWindow != nullptr, "Region Window does not exist");
 	ASSERT(m_StatBar != nullptr, "Stat Bar does not exist");
 	ASSERT(m_DateBar != nullptr, "Date Bar does not exist");
-	m_CharacterWindow->start();
-	m_RegionWindow->start();
+	for (UIText* uiText : m_UITexts)
+	{
+		uiText->start();
+	}
 	m_StatBar->start();
 	m_DateBar->start();
+	m_CharacterWindow->start();
+	m_RegionWindow->start();
 }
 
 void UIManager::update()
@@ -81,21 +109,40 @@ void UIManager::update()
 
 void UIManager::render()
 {
+	for (UIText* uiText : m_UITexts)
+	{
+		uiText->render();
+	}
 	m_CharacterWindow->render();
 	m_RegionWindow->render();
 	m_StatBar->render();
 	m_DateBar->render();
 }
 
-UIWindow& UIManager::getUIWindow(UIWindowID id)
+UIElement& UIManager::getUIElement(UIID id)
 {
 	ASSERT(id != INVALID_UI_ID, "Invalid UI id requested");
 
-	for (UIWindow& uiWindow : m_UIWindows)
+	for (UIElement& uiElement : m_UIElements)
 	{
-		if (uiWindow.m_UIWindowID == id)
+		if (uiElement.m_UIElementID == id)
 		{
-			return uiWindow;
+			return uiElement;
+		}
+	}
+	
+	ASSERT(false, "UI id not found");
+}
+
+UIText& UIManager::getUIText(UIID id)
+{
+	ASSERT(id != INVALID_UI_ID, "Invalid UI id requested");
+
+	for (UIText* uiText : m_UITexts)
+	{
+		if (uiText->m_OwnedUIElement == id)
+		{
+			return *uiText;
 		}
 	}
 

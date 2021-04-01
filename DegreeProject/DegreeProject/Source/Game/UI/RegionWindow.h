@@ -49,9 +49,9 @@ struct RegionWindow
 	float m_ProgressMeterBorder = 1.0f;
 	float m_ProgressMeterDoubleBorder;
 	sf::Color m_OuterBuildingProgressColor = sf::Color(25, 25, 25, 250);
-	UIWindowID m_OwnedUIWindow = INVALID_UI_ID;
+	UIID m_OwnedUIWindow = INVALID_UI_ID;
 
-	RegionWindow(UIWindowID id, sf::Font font)
+	RegionWindow(UIID id, sf::Font font)
 	{
 		m_OwnedUIWindow = id;
 		m_Font = font;
@@ -279,7 +279,7 @@ struct RegionWindow
 				Unit& unit = UnitManager::get().getUnitWithId(m_PlayerCharacter->m_UnitEntity);
 				if (unit.m_Raised)
 				{
-					//characterSystem->dismissUnit(m_PlayerCharacter->m_EntityID);
+					UnitManager::get().dismissUnit(unit.m_UnitID);
 					m_RaiseArmyColor = sf::Color::Transparent;
 				}
 				else
@@ -295,7 +295,6 @@ struct RegionWindow
 				if (m_BuildingSlotShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 				{
 					CharacterManager::get()->constructBuilding(m_PlayerCharacter->m_CharacterID, index + 1, m_CurrentRegionID, index);
-					//m_PlayerCharacter->constructBuilding(index + 1, m_CurrentRegionID, index);
 					break;
 				}
 			}

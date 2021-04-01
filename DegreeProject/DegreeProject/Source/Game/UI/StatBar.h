@@ -27,11 +27,11 @@ struct StatBar
 #pragma warning(disable: 26812)
 	sf::Text::Style m_Style = sf::Text::Regular;
 #pragma warning(pop)
-	UIWindowID m_OwnedUIWindow = INVALID_UI_ID;
+	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	sf::RenderWindow* m_Window = nullptr;
 	const std::string m_PositiveSign = "+";
 
-	StatBar(UIWindowID id, sf::Font font)
+	StatBar(UIID id, sf::Font font)
 	{
 		m_OwnedUIWindow = id;
 		m_Font = font;

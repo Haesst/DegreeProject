@@ -58,11 +58,10 @@ public:
 	sf::Sound m_BattleSound;
 	sf::SoundBuffer m_BattleSoundBuffer;
 	float m_Volume = 5.0f;
-	AssetHandler* m_AssetHandler = nullptr;
-	UIWindowID m_OwnedUIWindow = INVALID_UI_ID;
+	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	unsigned int m_CurrentWars = 0;
 
-	CharacterWindow(UIWindowID id, sf::Font font)
+	CharacterWindow(UIID id, sf::Font font)
 	{
 		m_OwnedUIWindow = id;
 		m_Font = font;
@@ -72,17 +71,11 @@ public:
 		m_Titles.push_back("Count ");
 		m_Titles.push_back("Baron ");
 		m_Window = Window::getWindow();
-		m_AssetHandler = new AssetHandler();
-	}
-
-	~CharacterWindow()
-	{
-		delete m_AssetHandler;
 	}
 
 	void start()
 	{
-		m_BattleSound = m_AssetHandler->loadAudioFile("Assets/Audio/battle.wav", m_BattleSoundBuffer);
+		m_BattleSound = AssetHandler::get().loadAudioFile("Assets/Audio/battle.wav", m_BattleSoundBuffer);
 		m_BattleSound.setLoop(true);
 		m_BattleSound.setVolume(m_Volume);
 
@@ -132,40 +125,38 @@ public:
 
 	void update()
 	{
+		updateInfo();
+		handleWindow();
 
-			updateInfo();
-			handleWindow();
+		if (m_Visible)
+		{
+			clickButton();
 
-			if (m_Visible)
-			{
-				clickButton();
+			m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_OutlineThickness, (int)m_OutlineThickness)));
+			m_WindowShape.setOutlineColor(m_OwnerColor);
 
-				m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_OutlineThickness, (int)m_OutlineThickness)));
-				m_WindowShape.setOutlineColor(m_OwnerColor);
+			m_DeclareWarShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.032f))));
+			m_DeclareWarText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.04f))));
 
-				m_DeclareWarShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.032f))));
-				m_DeclareWarText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.04f))));
+			m_MakePeaceShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.112f))));
+			m_MakePeaceText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.12f))));
 
-				m_MakePeaceShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.112f))));
-				m_MakePeaceText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.12f))));
+			m_OwnerCharacterText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.25f), (int)(m_SizeY * 0.025f))));
+			m_OwnerCharacterText.setString(m_OwnerTitle + m_OwnerCharacterName);
+			m_OwnerCharacterText.setFillColor(m_OwnerColor);
 
-				m_OwnerCharacterText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.25f), (int)(m_SizeY * 0.025f))));
-				m_OwnerCharacterText.setString(m_OwnerTitle + m_OwnerCharacterName);
-				m_OwnerCharacterText.setFillColor(m_OwnerColor);
+			m_OwnerNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.1f))));
+			m_OwnerNameText.setString(m_OwnerKingdomName);
+			m_OwnerNameText.setFillColor(m_OwnerColor);
 
-				m_OwnerNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.1f))));
-				m_OwnerNameText.setString(m_OwnerKingdomName);
-				m_OwnerNameText.setFillColor(m_OwnerColor);
+			m_RegionNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.2f))));
+			m_RegionNameText.setString(m_RegionString + m_RegionName);
+			m_RegionNameText.setFillColor(m_OwnerColor);
 
-				m_RegionNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.2f))));
-				m_RegionNameText.setString(m_RegionString + m_RegionName);
-				m_RegionNameText.setFillColor(m_OwnerColor);
-
-				m_TaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.3f))));
-				m_TaxText.setString(m_TaxString + std::to_string(m_RegionTax));
-				m_TaxText.setFillColor(m_OwnerColor);
-			}
-			
+			m_TaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.3f))));
+			m_TaxText.setString(m_TaxString + std::to_string(m_RegionTax));
+			m_TaxText.setFillColor(m_OwnerColor);
+		}
 	}
 
 	void render()
