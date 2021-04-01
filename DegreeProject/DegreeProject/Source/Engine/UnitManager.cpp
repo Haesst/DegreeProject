@@ -96,11 +96,12 @@ UnitManager& UnitManager::get()
 	return *m_Instance;
 }
 
-UnitID UnitManager::addUnit(CharacterID owner)
+UnitID UnitManager::addUnit(CharacterID owner, int size)
 {
 	Unit newUnit;
 	newUnit.m_Owner = owner;
 	newUnit.m_UnitID = m_UnitIDs++;
+	newUnit.m_RepresentedForce = size;
 
 	newUnit.m_Sprite.setTexture(m_UnitTexture);
 	newUnit.m_Sprite.setPosition({ newUnit.m_Position.x, newUnit.m_Position.y });
@@ -154,6 +155,11 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 	}
 
 	Unit& unit = getUnitWithId(unitID);
+
+	if (unit.m_RepresentedForce == 0)
+	{
+		return;
+	}
 
 	unit.m_Position = Map::get().convertToScreen(location);
 	unit.m_Raised = true;
@@ -381,7 +387,18 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	if (getUnitWithId(unitID).m_RepresentedForce > getUnitOfCharacter(enemyID).m_RepresentedForce)
 	{
 		dismissUnit(enemyID);
-		war->addWarscore(getUnitWithId(unitID).m_Owner, 50);
+		getUnitWithId(enemyID).m_RepresentedForce = 0;
+
+		if (war->isDefender(unitID))
+		{
+			war->addWarscore(getUnitWithId(unitID).m_Owner, 100);
+		}
+
+		else
+		{
+			war->addWarscore(getUnitWithId(unitID).m_Owner, 50);
+		}
+
 		war->addWarscore(getUnitWithId(enemyID).m_Owner, -50);
 		getUnitWithId(unitID).m_FightingArmyID = INVALID_UNIT_ID;
 		getUnitWithId(enemyID).m_FightingArmyID = INVALID_UNIT_ID;
@@ -393,7 +410,17 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	else
 	{
 		dismissUnit(unitID);
-		war->addWarscore(getUnitWithId(enemyID).m_Owner, 50);
+		getUnitWithId(unitID).m_RepresentedForce = 0;
+		
+		if (war->isDefender(enemyID))
+		{
+			war->addWarscore(getUnitWithId(unitID).m_Owner, 100);
+		}
+
+		else
+		{
+			war->addWarscore(getUnitWithId(enemyID).m_Owner, 50);
+		}
 		war->addWarscore(getUnitWithId(unitID).m_Owner, -50);
 		getUnitWithId(unitID).m_FightingArmyID = INVALID_UNIT_ID;
 		getUnitWithId(enemyID).m_FightingArmyID = INVALID_UNIT_ID;
@@ -409,6 +436,7 @@ void UnitManager::unitSiege(Unit& unit)
 		return;
 	}
 
+
 	if (unit.m_LastSeizeDate < Time::m_GameDate.m_Date)
 	{
 		if (!unit.m_InCombat)
@@ -417,12 +445,17 @@ void UnitManager::unitSiege(Unit& unit)
 			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
 
 			MapRegion region = Map::get().getRegionById(unit.m_SeizingRegionID);
+			if (Map::get().convertToMap(unit.m_Position) != region.m_RegionCapital)
+			{
+				unit.m_DaysSeizing = 0;
+				unit.m_SeizingRegionID = -1;
+				return;
+			}
 
 			if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
 			{				
 				CharacterManager::get()->removeRegion(region.m_OwnerID, region.m_RegionId);
 				CharacterManager::get()->addRegion(unit.m_Owner, region.m_RegionId);
-
 				Map::get().setRegionColor(region.m_RegionId, CharacterManager::get()->getCharacter(unit.m_Owner).m_RegionColor);
 
 				unit.m_DaysSeizing = 0;

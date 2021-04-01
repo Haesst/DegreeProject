@@ -11,7 +11,6 @@ void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 		return;
 	}
 
-	auto& enemyCharacter = CharacterManager::get()->getCharacter(warmind.m_Opponent);
 	auto& enemyUnit = UnitManager::get().getUnitOfCharacter(CharacterManager::get()->getCharacter(warmind.m_Opponent).m_CharacterID);
 
 	if (!enemyUnit.m_Raised)
@@ -66,6 +65,6 @@ void WarOrders::orderSiegeCapital(WarmindComponent& warmind, Unit& unit)
 	UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(startingPosition, capitalPosition));
 }
 
-void WarOrders::orderFlee(WarmindComponent& warmind, Unit& unit)
+void WarOrders::orderFlee(WarmindComponent&, Unit&)
 {
 }

@@ -87,7 +87,7 @@ void War::endWar(CharacterID winningEntity)
 		index++;
 	}
 
-	LOG_INFO("{0}'s war against {1} is over. {2} Won!", CharacterManager::get()->getCharacter(m_Attacker).m_Name, CharacterManager::get()->getCharacter(m_Defender).m_Name, CharacterManager::get()->getCharacter(winningEntity).m_Name);
+	LOG_INFO("WAR IS OVER");
 }
 
 bool War::isAttacker(CharacterID ent)

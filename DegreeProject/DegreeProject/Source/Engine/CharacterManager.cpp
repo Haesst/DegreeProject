@@ -164,9 +164,9 @@ CharacterID CharacterManager::createCharacter(const char* characterName, Title t
 	newChar.m_RegionColor = color;
 
 	newChar.m_Name = characterName;
-	newChar.m_UnitEntity = UnitManager::get().addUnit(id);
-
+	newChar.m_UnitEntity = UnitManager::get().addUnit(id, army);
 	m_Characters.push_back(newChar);
+
 
 	if (playerControlled)
 	{

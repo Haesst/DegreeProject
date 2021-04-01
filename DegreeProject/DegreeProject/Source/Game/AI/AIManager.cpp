@@ -111,16 +111,17 @@ void AIManager::update()
 {
 	for (auto& data : m_AIDatas)
 	{
-		if (data.m_CurrentAction == Action::NONE)
+		if (data.m_CurrentAction == Action::NONE || data.m_LastAction != Action::War)
 		{
-			if (expansionDecision(data.m_OwnerID) > .2f)
+			if (expansionDecision(data.m_OwnerID) > .4f)
 			{
-				if (warDecision(data.m_OwnerID) > .2)
+				if (warDecision(data.m_OwnerID) > 0)
 				{
 					int war = WarManager::get().createWar(data.m_OwnerID, GetWarmindOfCharacter(data.m_OwnerID).m_Opponent, GetWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
 					CharacterManager::get()->getCharacter(data.m_OwnerID).m_CurrentWars.push_back(war);
 					CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CurrentWars.push_back(war);
 					GetWarmindOfCharacter(data.m_OwnerID).m_Active = true;
+					data.m_LastAction = Action::War;
 					data.m_CurrentAction = Action::War;
 				}
 			}
@@ -132,6 +133,11 @@ void AIManager::update()
 		if (!warmind.m_Active)
 		{
 			continue;
+		}
+
+		if (CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
+		{
+			UnitManager::get().dismissUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity);
 		}
 
 		warmind.m_PrioritizedWarHandle = considerPrioritizedWar(warmind);

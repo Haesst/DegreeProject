@@ -17,7 +17,7 @@ public:
 
 	static UnitManager& get();
 
-	UnitID addUnit(CharacterID owner);
+	UnitID addUnit(CharacterID owner, int size);
 	Unit& getUnitOfCharacter(CharacterID character);
 	Unit& getUnitWithId(UnitID id);
 
