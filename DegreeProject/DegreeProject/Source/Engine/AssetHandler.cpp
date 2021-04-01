@@ -1,5 +1,7 @@
 #include "AssetHandler.h"
 
+AssetHandler* AssetHandler::m_Instance = nullptr;
+
 const sf::Texture AssetHandler::loadImageFromFile(const char* FilePath)
 {
 	for(const auto& Pair : m_LoadedTextures)

@@ -11,6 +11,16 @@ public:
 
 public:
 
+	inline static AssetHandler& get()
+	{
+		if (m_Instance == nullptr)
+		{
+			m_Instance = new AssetHandler();
+		}
+
+		return *m_Instance;
+	}
+
 	const sf::Texture loadImageFromFile(const char* FilePath);
 
 	sf::Font loadFontFromFile(const char* FilePath);
@@ -20,5 +30,6 @@ public:
 	const sf::Texture getTextureAtPath(const char* FilePath);
 
 private:
+	static AssetHandler* m_Instance;
 	std::vector<std::pair<const char*, sf::Texture>> m_LoadedTextures;
 };
