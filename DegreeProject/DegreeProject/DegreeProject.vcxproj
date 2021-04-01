@@ -120,7 +120,6 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Callback.h" />
     <ClInclude Include="Source\Game\Components\CharacterComponent.h" />
     <ClInclude Include="Source\Game\Components\MovingSprite.h" />
-    <ClInclude Include="Source\Game\Components\SpriteRenderer.h" />
     <ClInclude Include="Source\Game\Components\Unit.h" />
     <ClInclude Include="Source\Game\Components\Warmind.h" />
     <ClInclude Include="Source\Game\Data\AIData.h" />
@@ -140,6 +139,8 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Map\RegionBuilding.h" />
     <ClInclude Include="Source\Game\Pathfinding.h" />
     <ClInclude Include="Source\Game\Player.h" />
+    <ClInclude Include="Source\Game\StaticSprite.h" />
+    <ClInclude Include="Source\Game\StaticSpriteManager.h" />
     <ClInclude Include="Source\Game\Systems\AI\AI.h" />
     <ClInclude Include="Source\Game\Systems\AI\AIConsideration.h" />
     <ClInclude Include="Source\Game\Systems\AI\WarmindConsiderations.h" />
@@ -147,7 +148,6 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Systems\CharacterSystem.h" />
     <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h" />
     <ClInclude Include="Source\Game\Systems\PlayerSystem.h" />
-    <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h" />
     <ClInclude Include="Source\Game\Systems\UnitSystem.h" />
     <ClInclude Include="Source\Game\UI\CharacterWindow.h" />
     <ClInclude Include="Source\Game\UI\DateBar.h" />
@@ -177,6 +177,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\Game\Map\Map.cpp" />
     <ClCompile Include="Source\Game\Pathfinding.cpp" />
     <ClCompile Include="Source\Game\Player.cpp" />
+    <ClCompile Include="Source\Game\StaticSpriteManager.cpp" />
     <ClCompile Include="Source\Game\Systems\AI\AI.cpp" />
     <ClCompile Include="Source\Game\UI\UIManager.cpp" />
     <ClCompile Include="Source\Game\War.cpp" />

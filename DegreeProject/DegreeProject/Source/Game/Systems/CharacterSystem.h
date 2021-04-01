@@ -7,7 +7,6 @@
 #include "ECS/Components/Transform.h"
 #include "Game/Components/CharacterComponent.h"
 #include "Game/Components/Unit.h"
-#include "Game/Components/SpriteRenderer.h"
 #include "Game/WarManager.h"
 
 //struct CharacterSystem : System

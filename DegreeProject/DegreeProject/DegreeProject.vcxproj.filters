@@ -102,9 +102,6 @@
     <ClInclude Include="Source\Game\Components\MovingSprite.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Components\SpriteRenderer.h">
-      <Filter>Game\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Components\Unit.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
@@ -162,6 +159,12 @@
     <ClInclude Include="Source\Game\Player.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\StaticSprite.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\StaticSpriteManager.h">
+      <Filter>Game</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Systems\AI\AI.h">
       <Filter>Game\Systems\AI</Filter>
     </ClInclude>
@@ -181,9 +184,6 @@
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\PlayerSystem.h">
-      <Filter>Game\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\UnitSystem.h">
@@ -267,6 +267,9 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\Player.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\StaticSpriteManager.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\Systems\AI\AI.cpp">

@@ -7,10 +7,7 @@
 #include "Game/GameData.h"
 #include "Game/AI/AIManager.h"
 #include "Game/UI/UIManager.h"
-
-//Todo: Move from ECS
-#include "ECS/EntityManager.h"
-#include "Game/Systems/SpriteRenderSystem.h"
+#include "Game/StaticSpriteManager.h"
 
 sf::Sound Game::m_Sound;
 
@@ -36,6 +33,7 @@ void Game::run()
 
 	//Start
 	CharacterManager::get()->start();
+	StaticSpriteManager::get()->start();
 	UnitManager::get().start();
 	AIManager::get().start();
 	UIManager::get()->start();
@@ -48,7 +46,8 @@ void Game::run()
 		// Events
 		InputHandler::handleInputEvents();
 
-		// Update
+		// Update		
+		StaticSpriteManager::get()->update();
 		UnitManager::get().update();
 		CharacterManager::get()->update();
 		AIManager::get().update();
@@ -61,6 +60,7 @@ void Game::run()
 		Map::get().render();
 
 		CharacterManager::get()->render();
+		StaticSpriteManager::get()->render();
 		UnitManager::get().render();
 		UIManager::get()->render();
 
@@ -98,19 +98,14 @@ void Game::initSound()
 
 void Game::addEntitys()
 {
-	EntityManager* entityManager = &EntityManager::get();
-
 	Map::get().init();
 	Map::get().setLandTexture(m_AssetHandler->getTextureAtPath("Assets/Graphics/Checkerboard.png"));
 
-	//Todo: Move from ECS
 	const char* castlePath = "Assets/Graphics/Castle.png";
-	for (unsigned int regionIndex = 0; regionIndex < m_NumberOfRegions; regionIndex++)
+	for (unsigned int regionIndex = 0; regionIndex < NUMBER_OF_REGIONS; regionIndex++)
 	{
-		EntityID castle = entityManager->addNewEntity();
-		entityManager->addComponent<SpriteRenderer>(castle, castlePath, 32, 32, m_AssetHandler);
-		Transform* castleTransform = &entityManager->getComponent<Transform>(castle);
-		castleTransform->m_Position = Map::convertToScreen(Map::get().m_Data.m_Regions[regionIndex].m_RegionCapital);
+		Vector2D castlePosition = Map::convertToScreen(Map::get().m_Data.m_Regions[regionIndex].m_RegionCapital);
+		StaticSpriteManager::get()->createStaticSprite(castlePath, 32, 32, castlePosition);
 	}
 
 	m_UIFont = m_AssetHandler->loadFontFromFile("Assets/Fonts/TestFont.ttf");

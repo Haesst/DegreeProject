@@ -3,8 +3,6 @@
 #include "Game\Components\CharacterComponent.h"
 #include <Game\Components\Unit.h>
 #include <Game\War.h>
-#include "Game\Components\SpriteRenderer.h"
-
 
 struct WarmindComponent
 {

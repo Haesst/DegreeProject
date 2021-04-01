@@ -7,6 +7,8 @@
 const static unsigned int NUMBER_OF_SPEEDS = 5;
 const static unsigned int NUMBER_OF_BUTTONS = 3;
 
+#pragma warning(push)
+#pragma warning(disable: 26812)
 struct DateBar
 {
 	sf::RectangleShape m_Shape;
@@ -30,10 +32,7 @@ struct DateBar
 	sf::Font m_Font;
 	std::string m_Date = "";
 	int m_CharacterSize = 30;
-#pragma warning(push)
-#pragma warning(disable: 26812)
 	sf::Text::Style m_Style = sf::Text::Regular;
-#pragma warning(pop)
 	sf::RenderWindow* m_Window = nullptr;
 	unsigned int m_CurrentSpeedLevel = 3;
 
@@ -214,3 +213,4 @@ struct DateBar
 		}
 	}
 };
+#pragma warning(pop)

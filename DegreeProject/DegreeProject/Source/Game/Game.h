@@ -9,24 +9,22 @@
 #include <mutex>
 #include <Game/GameDate.h>
 #include "Game/Map/Map.h"
-#include "ECS/Types.h"
 
 class Window;
 class AssetHandler;
 class HotReloader;
-class EntityManager;
 
 enum class FileStatus;
 enum class Title;
 
 const static unsigned int BUILDING_SLOTS = 4;
+const static unsigned int NUMBER_OF_REGIONS = 17;
 
 class Game
 {
 private:
 	char* m_GameTitle = "GRAND STRATEGY GAME 2.5!";
 	Vector2DInt m_Resolution = { 1920, 1080 };
-	unsigned int m_NumberOfRegions = 17;
 
 private:
 	Window* m_Window = nullptr;

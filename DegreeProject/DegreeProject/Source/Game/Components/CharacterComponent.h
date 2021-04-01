@@ -5,7 +5,6 @@
 #include "Engine/Log.h"
 #include "ECS/Component.h"
 #include "Game/Components/Unit.h"
-#include "Game/Components/SpriteRenderer.h"
 #include "Game/Components/Warmind.h"
 #include "Game/Data/Titles.h"
 

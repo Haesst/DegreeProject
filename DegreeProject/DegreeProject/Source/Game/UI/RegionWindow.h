@@ -95,11 +95,11 @@ struct RegionWindow
 		for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
 		{
 			m_BuildingSlotShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
-			m_BuildingSlotShapes[index].setSize(sf::Vector2f(64.0f, 64.0f));
+			m_BuildingSlotShapes[index].setSize(sf::Vector2f((float)m_SpriteSize, (float)m_SpriteSize));
 		}
 
 		m_RaiseArmyShape.setOutlineThickness(m_OutlineThickness * 0.5f);
-		m_RaiseArmyShape.setSize(sf::Vector2f(64.0f, 64.0f));
+		m_RaiseArmyShape.setSize(sf::Vector2f((float)m_SpriteSize, (float)m_SpriteSize));
 
 		m_RegionNameText.setFont(m_Font);
 		m_RegionNameText.setCharacterSize(m_CharacterSize);
@@ -129,9 +129,9 @@ struct RegionWindow
 			m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX, positionY)));
 			m_WindowShape.setOutlineColor(m_OwnerColor);
 
-			int iconSlotPositionX = (int)(m_SizeX - 64 - m_OutlineThickness);
-			int iconSlotPositionOffset = (int)(64 + m_OutlineThickness * 2);
-			int iconSlotPositionY = (int)(Window::getWindow()->getSize().y - 64 - m_OutlineThickness * 3);
+			int iconSlotPositionX = (int)(m_SizeX - m_SpriteSize - m_OutlineThickness);
+			int iconSlotPositionOffset = (int)(m_SpriteSize + m_OutlineThickness * 2);
+			int iconSlotPositionY = (int)(Window::getWindow()->getSize().y - m_SpriteSize - m_OutlineThickness * 3);
 
 			for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
 			{
