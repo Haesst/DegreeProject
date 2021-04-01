@@ -19,9 +19,6 @@
     <Filter Include="Game\Components">
       <UniqueIdentifier>{3441F2CD-A0CC-5F92-A9DD-E28615E8BB92}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\Components\UI">
-      <UniqueIdentifier>{E1F77384-CDDB-34DA-363C-2F2D223F1F5C}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\Data">
       <UniqueIdentifier>{48E62F7B-B450-E4F1-FD8E-95976938C246}</UniqueIdentifier>
     </Filter>
@@ -33,9 +30,6 @@
     </Filter>
     <Filter Include="Game\Systems\AI">
       <UniqueIdentifier>{5F998C41-CB24-FA05-D435-7DFA40405606}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Game\Systems\UI">
-      <UniqueIdentifier>{F39B8C41-5F27-FA05-6838-7DFAD4425606}</UniqueIdentifier>
     </Filter>
     <Filter Include="Game\UI">
       <UniqueIdentifier>{4C805747-B85F-D6E2-C177-61B92DD63C44}</UniqueIdentifier>
@@ -108,17 +102,8 @@
     <ClInclude Include="Source\Game\Components\MovingSprite.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Player.h">
-      <Filter>Game\Components</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Components\SpriteRenderer.h">
       <Filter>Game\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Components\UI\UISpriteRenderer.h">
-      <Filter>Game\Components\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\UI\UIText.h">
-      <Filter>Game\Components\UI</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Components\Unit.h">
       <Filter>Game\Components</Filter>
@@ -138,10 +123,10 @@
     <ClInclude Include="Source\Game\Data\Types.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Data\UIType.h">
+    <ClInclude Include="Source\Game\Data\UIElement.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Data\UIElement.h">
+    <ClInclude Include="Source\Game\Data\UIType.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Data\Unit.h">
@@ -174,6 +159,9 @@
     <ClInclude Include="Source\Game\Pathfinding.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Player.h">
+      <Filter>Game</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Systems\AI\AI.h">
       <Filter>Game\Systems\AI</Filter>
     </ClInclude>
@@ -198,9 +186,6 @@
     <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Systems\UI\UISpriteRenderSystem.h">
-      <Filter>Game\Systems\UI</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Systems\UnitSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
@@ -217,6 +202,9 @@
       <Filter>Game\UI</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\UI\UIManager.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\UI\UIText.h">
       <Filter>Game\UI</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\War.h">
@@ -278,6 +266,9 @@
     <ClCompile Include="Source\Game\Pathfinding.cpp">
       <Filter>Game</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Player.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Game\Systems\AI\AI.cpp">
       <Filter>Game\Systems\AI</Filter>
     </ClCompile>
@@ -291,6 +282,5 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Game\Player.cpp" />
   </ItemGroup>
 </Project>

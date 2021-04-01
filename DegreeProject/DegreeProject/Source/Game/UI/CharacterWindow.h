@@ -61,6 +61,11 @@ public:
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	unsigned int m_CurrentWars = 0;
 
+	sf::Texture m_CharacterTexture;
+	sf::Sprite m_CharacterSprite;
+	int m_SpriteSize = 64;
+	sf::Vector2f m_CharacterPosition = sf::Vector2f();
+
 	CharacterWindow(UIID id, sf::Font font)
 	{
 		m_OwnedUIWindow = id;
@@ -71,6 +76,8 @@ public:
 		m_Titles.push_back("Count ");
 		m_Titles.push_back("Baron ");
 		m_Window = Window::getWindow();
+		m_CharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Unit.png");
+		m_CharacterPosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.025f);
 	}
 
 	void start()
@@ -164,6 +171,7 @@ public:
 		if (m_Visible)
 		{
 			m_Window->draw(m_WindowShape);
+			updateSprite(m_CharacterSprite, m_CharacterTexture, m_CharacterPosition);
 			m_Window->draw(m_OwnerNameText);
 			m_Window->draw(m_RegionNameText);
 			m_Window->draw(m_TaxText);
@@ -318,5 +326,17 @@ public:
 			}
 		}
 		return m_PlayerRegion;
+	}
+
+	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position)
+	{
+		sprite.setTexture(texture, true);
+		sprite.setPosition(Window::getWindow()->mapPixelToCoords(sf::Vector2i((int)position.x, (int)position.y)));
+
+		sf::FloatRect localSize = sprite.getLocalBounds();
+
+		sprite.setScale(m_SpriteSize / localSize.width, m_SpriteSize / localSize.height);
+
+		m_Window->draw(sprite);
 	}
 };

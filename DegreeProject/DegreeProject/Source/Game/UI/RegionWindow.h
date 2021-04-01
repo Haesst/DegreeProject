@@ -32,6 +32,16 @@ struct RegionWindow
 	bool m_Open = false;
 	unsigned int m_CurrentRegionID = 0;
 	sf::RectangleShape m_BuildingProgressShape[NUMBER_OF_BUILDING_SLOTS];
+	sf::Sprite m_BuildingSlotSprites[NUMBER_OF_BUILDING_SLOTS];
+	sf::Texture m_BuildingSlotTextures[NUMBER_OF_BUILDING_SLOTS];
+	sf::Texture m_RaiseArmyTexture;
+	sf::Sprite m_RaiseArmySprite;
+	sf::Texture m_CharacterTexture;
+	sf::Sprite m_CharacterSprite;
+	int m_SpriteSize = 64;
+	float m_IconSlotPositionX = 0.0f;
+	float m_IconSlotPositionOffset = 0.0f;
+	float m_IconSlotPositionY = 0.0f;
 
 #pragma warning(push)
 #pragma warning(disable: 26812)
@@ -51,12 +61,28 @@ struct RegionWindow
 	sf::Color m_OuterBuildingProgressColor = sf::Color(25, 25, 25, 250);
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 
+	sf::Vector2f m_CharacterPosition = sf::Vector2f();
+
 	RegionWindow(UIID id, sf::Font font)
 	{
 		m_OwnedUIWindow = id;
 		m_Font = font;
 		m_Window = Window::getWindow();
 		m_ProgressMeterDoubleBorder = m_ProgressMeterBorder * 2;
+
+		m_BuildingSlotTextures[0] = AssetHandler::get().getTextureAtPath("Assets/Graphics/FortIcon.png");
+		m_BuildingSlotTextures[1] = AssetHandler::get().getTextureAtPath("Assets/Graphics/BarackIcon.png");
+		m_BuildingSlotTextures[2] = AssetHandler::get().getTextureAtPath("Assets/Graphics/MarketIcon.png");
+		m_BuildingSlotTextures[3] = AssetHandler::get().getTextureAtPath("Assets/Graphics/WallIcon.png");
+
+		m_RaiseArmyTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/soldier unit.png");
+		m_CharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Unit.png");
+
+		m_IconSlotPositionX = m_SizeX - m_SpriteSize - m_OutlineThickness;
+		m_IconSlotPositionOffset = m_SpriteSize + m_OutlineThickness * 2;
+		m_IconSlotPositionY = m_Window->getSize().y - m_SpriteSize - m_OutlineThickness * 3;
+
+		m_CharacterPosition = sf::Vector2f(m_OutlineThickness + m_SpriteSize, (float)(m_Window->getSize().y - m_SpriteSize * 8));
 	}
 
 	void start()
@@ -146,6 +172,7 @@ struct RegionWindow
 				m_Window->draw(m_BuildingSlotShapes[index]);
 				displayProgressMeter(index);
 			}
+			updateSprites();
 		}
 	}
 
@@ -162,6 +189,10 @@ struct RegionWindow
 			m_BuildingProgressShape[index].setFillColor(m_OwnerColor);
 
 			Window::getWindow()->draw(m_BuildingProgressShape[index]);
+		}
+		else if(m_CurrentMapRegion->m_BuildingSlots[index].m_Finished)
+		{
+			m_BuildingSlotColors[index] = m_OwnerColor;
 		}
 	}
 
@@ -208,12 +239,12 @@ struct RegionWindow
 							if (m_CurrentMapRegion->m_BuildingSlots[index].m_Finished)
 							{
 								m_BuildingSlotColors[index] = m_OwnerColor;
-								//m_EntityManager->getComponent<UISpriteRenderer>(m_BuildingIconIDs[index]).m_Sprite.setColor(m_OwnerColor);
+								m_BuildingSlotSprites[index].setColor(m_OwnerColor);
 							}
 							else
 							{
 								m_BuildingSlotColors[index] = sf::Color::Transparent;
-								//m_EntityManager->getComponent<UISpriteRenderer>(m_BuildingIconIDs[index]).m_Sprite.setColor(sf::Color::White);
+								m_BuildingSlotSprites[index].setColor(sf::Color::White);
 							}
 						}
 					}
@@ -280,12 +311,14 @@ struct RegionWindow
 				if (unit.m_Raised)
 				{
 					UnitManager::get().dismissUnit(unit.m_UnitID);
+					m_PlayerCharacter->m_RaisedArmySize = 0;
 					m_RaiseArmyColor = sf::Color::Transparent;
 				}
 				else
 				{
 					Vector2DInt capitalPosition = Map::get().getRegionCapitalLocation(m_CurrentRegionID);
-					UnitManager::get().raiseUnit(CharacterManager::get()->getPlayerCharacter().m_UnitEntity, capitalPosition);
+					UnitManager::get().raiseUnit(unit.m_UnitID, capitalPosition);
+					m_PlayerCharacter->m_RaisedArmySize = m_PlayerCharacter->m_MaxArmySize;
 					m_RaiseArmyColor = m_OwnerColor;
 				}
 				return;
@@ -316,5 +349,28 @@ struct RegionWindow
 			}
 		}
 		return m_PlayerRegion;
+	}
+
+	void updateSprites()
+	{
+		for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
+		{
+			updateSprite(m_BuildingSlotSprites[index], m_BuildingSlotTextures[index], sf::Vector2f(m_IconSlotPositionX - m_IconSlotPositionOffset * index, m_IconSlotPositionY));
+		}
+
+		updateSprite(m_RaiseArmySprite, m_RaiseArmyTexture, sf::Vector2f(m_IconSlotPositionX, m_IconSlotPositionY - m_IconSlotPositionOffset));
+		updateSprite(m_CharacterSprite, m_CharacterTexture, m_CharacterPosition);
+	}
+
+	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position)
+	{
+		sprite.setTexture(texture, true);
+		sprite.setPosition(Window::getWindow()->mapPixelToCoords(sf::Vector2i((int)position.x, (int)position.y)));
+
+		sf::FloatRect localSize = sprite.getLocalBounds();
+
+		sprite.setScale(m_SpriteSize / localSize.width, m_SpriteSize / localSize.height);
+		
+		m_Window->draw(sprite);
 	}
 };
