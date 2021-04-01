@@ -155,6 +155,23 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 	}
 }
 
+void UnitManager::dismissUnit(UnitID unitID)
+{
+	Unit& unit = getUnitWithId(unitID);
+
+	for (auto& squareData : Map::get().m_MapSquareData)
+	{
+		if (squareData.m_Position != Map::convertToMap(unit.m_Position))
+		{
+			continue;
+		}
+
+		squareData.remove(unitID);
+	}
+
+	unit.m_Raised = false;
+}
+
 void UnitManager::giveUnitPath(UnitID unitID, std::vector<Vector2DInt> path)
 {
 	if (path.size() <= 0)

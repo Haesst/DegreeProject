@@ -24,6 +24,7 @@ public:
 	void setAssetHandler(AssetHandler* assetHandler);
 
 	void raiseUnit(UnitID unitID, Vector2DInt location);
+	void dismissUnit(UnitID unitID);
 	void giveUnitPath(UnitID unitID, std::vector<Vector2DInt> path);
 
 private:
