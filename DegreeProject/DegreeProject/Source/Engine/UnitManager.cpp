@@ -5,6 +5,7 @@
 #include "Engine/AssetHandler.h"
 #include "Engine/Log.h"
 #include "Engine/Time.h"
+#include "Game/WarManager.h"
 
 UnitManager* UnitManager::m_Instance = nullptr;
 UnitID UnitManager::m_UnitIDs = INVALID_UNIT_ID + 1;
@@ -34,6 +35,15 @@ void UnitManager::update()
 		unitSiege(unit);
 
 		updateSprite(unit);
+
+		if (unit.m_InCombat)
+		{
+			unit.m_CombatTimerAccu += Time::deltaTime();
+			if (unit.m_CombatTimerAccu > unit.m_CombatTimer)
+			{
+				determineCombat(unit.m_UnitID, unit.m_FightingArmyID);
+			}
+		}
 	}
 }
 
@@ -271,18 +281,6 @@ void UnitManager::moveUnit(Unit& unit)
 			}
 		}
 
-		/*if (enemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
-		{
-			EntityID enemyID = m_Warminds[unit.m_Owner].m_Opponent;
-			UnitComponent& enemyUnit = m_UnitComponents[m_Characters[enemyID].m_UnitEntity];
-
-			if (enemyUnit.m_Raised)
-			{
-				startCombatTimer(unit.m_EntityID, enemyUnit.m_EntityID);
-			}
-		}*/
-		// Combat could probably be moved to it's own function
-
 		if (unit.m_CurrentPath.size() > 0)
 		{
 			Vector2D nextPosition = Map::convertToScreen(unit.m_CurrentPath.front());
@@ -316,16 +314,88 @@ void UnitManager::moveUnit(Unit& unit)
 
 void UnitManager::unitCombat(Unit& unit)
 {
-	/*if (enemyAtSquare(pos, m_Warminds[unit.m_Owner].m_Opponent))
-	{
-		EntityID enemyID = m_Warminds[unit.m_Owner].m_Opponent;
-		UnitComponent& enemyUnit = m_UnitComponents[m_Characters[enemyID].m_UnitEntity];
+	int id = unitAtSquare(Map::get().convertToMap(unit.m_Position), unit.m_UnitID);
 
-		if (enemyUnit.m_Raised)
+	if (id == INVALID_UNIT_ID)
+	{
+		return;
+	}
+
+	if (WarManager::get().atWarWith(unit.m_Owner, getUnitWithId(id).m_Owner))
+	{
+		unit.m_FightingArmyID = id;
+		getUnitWithId(id).m_FightingArmyID = unit.m_UnitID;
+		startCombatTimer(unit.m_UnitID, id);
+	}
+}
+
+void UnitManager::startCombatTimer(UnitID unitID, UnitID enemyUnitID)
+{
+	if (!getUnitWithId(unitID).m_InCombat && !getUnitWithId(enemyUnitID).m_InCombat)
+	{
+		Unit& unit = getUnitWithId(unitID);
+		Unit& enemyUnit = getUnitWithId(enemyUnitID);
+
+		unit.m_Moving = false;
+		unit.m_InCombat = true;
+		enemyUnit.m_Moving = false;
+		enemyUnit.m_InCombat = true;
+	}
+}
+
+UnitID UnitManager::unitAtSquare(Vector2DInt square, UnitID unitID)
+{
+	for (auto& squareData : Map::get().m_MapSquareData)
+	{
+		if (squareData.m_Position == square)
 		{
-			startCombatTimer(unit.m_EntityID, enemyUnit.m_EntityID);
+			for (auto& ID : squareData.m_EntitiesInSquare)
+			{
+				if (unitID != ID)
+				{
+					return ID;
+				}
+			}
+
+			break;
 		}
-	}*/
+	}
+
+	return INVALID_UNIT_ID;
+}
+
+void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
+{
+	WarManager* warManager = &WarManager::get();
+	War* war = warManager->getWarAgainst(getUnitWithId(unitID).m_Owner, getUnitWithId(enemyID).m_Owner);
+
+	if (war == nullptr)
+	{
+		return;
+	}
+
+	if (getUnitWithId(unitID).m_RepresentedForce > getUnitOfCharacter(enemyID).m_RepresentedForce)
+	{
+		dismissUnit(enemyID);
+		war->addWarscore(getUnitWithId(unitID).m_Owner, 50);
+		war->addWarscore(getUnitWithId(enemyID).m_Owner, -50);
+		getUnitWithId(unitID).m_FightingArmyID = INVALID_UNIT_ID;
+		getUnitWithId(enemyID).m_FightingArmyID = INVALID_UNIT_ID;
+		getUnitWithId(unitID).m_InCombat = false;
+		getUnitWithId(enemyID).m_InCombat = false;
+
+	}
+
+	else
+	{
+		dismissUnit(unitID);
+		war->addWarscore(getUnitWithId(enemyID).m_Owner, 50);
+		war->addWarscore(getUnitWithId(unitID).m_Owner, -50);
+		getUnitWithId(unitID).m_FightingArmyID = INVALID_UNIT_ID;
+		getUnitWithId(enemyID).m_FightingArmyID = INVALID_UNIT_ID;
+		getUnitWithId(unitID).m_InCombat = false;
+		getUnitWithId(enemyID).m_InCombat = false;
+	}
 }
 
 void UnitManager::unitSiege(Unit& unit)

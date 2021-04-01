@@ -32,7 +32,9 @@ private:
 	void unitCombat(Unit& unit);
 	void unitSiege(Unit& unit);
 	void showPath(Unit& unit);
-
+	void startCombatTimer(UnitID unit, UnitID enemyUnit);
+	UnitID unitAtSquare(Vector2DInt square, UnitID unitID);
+	void determineCombat(UnitID unitID, UnitID enemyID);
 	void startConquerRegion(Unit& unit);
 
 	void updateSprite(Unit& unit);
