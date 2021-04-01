@@ -1,6 +1,8 @@
 #include "WarOrders.h"
 #include "Game/WarManager.h"
 #include "Game/Data/Unit.h"
+#include "Engine/UnitManager.h"
+#include "Game/Pathfinding.h"
 
 void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 {
@@ -30,6 +32,8 @@ void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 		battlefieldIntPosition = Map::convertToMap(enemyUnit.m_LastPosition); //Todo: This needs to change when transforms are changed!!!!!!
 	}
 
+	Vector2DInt unitPos{ (int)unit.m_Position.x, (int)unit.m_Position.y };
+	UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(unitPos, battlefieldIntPosition));
 	//Order unit to move
 }
 
@@ -61,6 +65,7 @@ void WarOrders::orderSiegeCapital(WarmindComponent& warmind, Unit& unit)
 		capitalPosition = Map::get().getRegionCapitalLocation(CharacterManager::get()->getCharacter(enemyCharacter).m_OwnedRegionIDs[randomRegionIndex]);
 	}
 
+	UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(startingPosition, capitalPosition));
 	//Order unit to move
 }
 

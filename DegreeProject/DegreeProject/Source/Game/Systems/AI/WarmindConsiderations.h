@@ -4,6 +4,8 @@
 #include <Game\Components\Unit.h>
 #include <ECS\Components\Transform.h>
 #include "Game/Components/CharacterComponent.h"
+#include "Engine/UnitManager.h"
+#include "Game/Data/Unit.h"
 
 
 struct SiegeCapitalConsideration : public Consideration
@@ -70,8 +72,8 @@ struct FightEnemyArmyConsideration : public Consideration
 
 	float evaluate(EntityID context, EntityID target) override
 	{
-		Vector2D contextPosition = m_Transforms[m_Characters[context].m_UnitEntity].m_Position;
-		Vector2D targetPosition = m_Transforms[m_Characters[target].m_UnitEntity].m_Position;
+		Vector2D contextPosition = UnitManager::get().getUnitOfCharacter(context).m_Position;
+		Vector2D targetPosition = UnitManager::get().getUnitOfCharacter(context).m_Position;
 
 		float distance = (contextPosition - targetPosition).getLength();
 		distance = std::clamp(distance * 0.1f, 0.0f, 1.0f);

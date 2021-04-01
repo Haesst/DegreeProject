@@ -4,6 +4,7 @@
 #include "Engine/UnitManager.h"
 #include "Game/Data/Unit.h"
 #include <Game\Data\AIData.h>
+#include "Engine/UnitManager.h"
 
 AIManager* AIManager::m_Instance = nullptr;
 
@@ -13,6 +14,7 @@ AIManager::AIManager()
 	HotReloader::get()->subscribeToFileChange("Assets\\Data\\AI\\AIPersonalities.json", std::bind(&AIManager::onFileChange, this, std::placeholders::_1, std::placeholders::_2));
 	m_WarManager = &WarManager::get();
 	m_UnitManager = &UnitManager::get();
+	m_Orders = WarOrders();
 }
 
 AIManager::~AIManager()
@@ -106,7 +108,9 @@ void AIManager::update()
 			{
 				if (warDecision(data.m_OwnerID) > .2)
 				{
-					WarManager::get().createWar(data.m_OwnerID, GetWarmindOfCharacter(data.m_OwnerID).m_Opponent, GetWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
+					int war = WarManager::get().createWar(data.m_OwnerID, GetWarmindOfCharacter(data.m_OwnerID).m_Opponent, GetWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
+					CharacterManager::get()->getCharacter(data.m_OwnerID).m_CurrentWars.push_back(war);
+					CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CurrentWars.push_back(war);
 					GetWarmindOfCharacter(data.m_OwnerID).m_Active = true;
 					data.m_CurrentAction = Action::War;
 				}
@@ -272,14 +276,14 @@ void AIManager::GiveDefenderOrders(WarmindComponent& warmind, CharacterID target
 
 int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 {
-	//WarManager* warManager = &WarManager::get();
-	//
-	//if (!warmind.m_CurrentWars.empty())
-	//{
-	//	m_Warminds[ent].m_PrioritizedWarHandle = m_Characters[ent].m_CurrentWars.front();
-	//	return m_Warminds[ent].m_PrioritizedWarHandle;
-	//}
-	//
+	WarManager* warManager = &WarManager::get();
+	
+	if (!CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty())
+	{
+		warmind.m_PrioritizedWarHandle = CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.front();
+		return warmind.m_PrioritizedWarHandle;
+	}
+	
 	return -1;
 }
 
@@ -287,19 +291,19 @@ void AIManager::considerOrders(WarmindComponent& warmind, Unit& unit, CharacterI
 {
 	if (warmind.m_PrioritizedWarHandle == -1)
 	{
-		return;
+		considerPrioritizedWar(warmind);
 	}
 
-	Unit* enemyUnit = nullptr; //m_UnitManager->getUnitOfCharacter(warmind.m_Opponent); // m_Units[m_Characters[target].m_UnitEntity];
+	Unit& enemyUnit = UnitManager::get().getUnitOfCharacter(target);
 
 	if (m_WarManager->getWar(warmind.m_PrioritizedWarHandle)->isDefender(warmind.m_OwnerID))
 	{
-		GiveDefenderOrders(warmind, target, unit, *enemyUnit);
+		GiveDefenderOrders(warmind, target, unit, enemyUnit);
 	}
 
 	else if (m_WarManager->getWar(warmind.m_PrioritizedWarHandle)->isAttacker(warmind.m_OwnerID))
 	{
-		GiveAttackerOrders(warmind, target, unit, *enemyUnit);
+		GiveAttackerOrders(warmind, target, unit, enemyUnit);
 	}
 }
 
