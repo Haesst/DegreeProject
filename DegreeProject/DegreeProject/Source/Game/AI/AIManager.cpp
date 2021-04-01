@@ -3,6 +3,9 @@
 #include <Game\Systems\AI\WarmindConsiderations.h>
 #include "Engine/UnitManager.h"
 #include "Game/Data/Unit.h"
+#include <Game\Data\AIData.h>
+
+AIManager* AIManager::m_Instance = nullptr;
 
 AIManager::AIManager()
 {
@@ -10,6 +13,26 @@ AIManager::AIManager()
 	HotReloader::get()->subscribeToFileChange("Assets\\Data\\AI\\AIPersonalities.json", std::bind(&AIManager::onFileChange, this, std::placeholders::_1, std::placeholders::_2));
 	m_WarManager = &WarManager::get();
 	m_UnitManager = &UnitManager::get();
+}
+
+AIManager::~AIManager()
+{
+	delete m_Instance;
+}
+
+AIManager& AIManager::get()
+{
+	if (m_Instance == nullptr)
+	{
+		m_Instance = new AIManager();
+	}
+
+	return *m_Instance;
+}
+
+void AIManager::start()
+{
+
 }
 
 void AIManager::loadPersonalities(const char* path)
@@ -45,15 +68,52 @@ WarmindComponent& AIManager::GetWarmindOfCharacter(int handle)
 	return WarmindComponent();
 }
 
-void AIManager::AddWarmind(CharacterID ID)
+AIData& AIManager::getAIDataofCharacter(int handle)
+{
+	for (auto& data : m_AIDatas)
+	{
+		if (data.m_OwnerID == handle)
+		{
+			return data;
+		}
+	}
+
+	ASSERT(false, "No data belonging to that handle");
+	return AIData();
+}
+
+
+void AIManager::initAI(CharacterID ID)
 {
 	WarmindComponent warmind;
 	warmind.m_OwnerID = ID;
 	m_Warminds.push_back(warmind);
+
+	AIData data;
+	data.m_OwnerID = ID;
+	data.m_LastAction = Action::NONE;
+	data.m_CurrentAction = Action::NONE;
+	m_AIDatas.push_back(data);
 }
 
-void AIManager::Update()
+void AIManager::update()
 {
+	for (auto& data : m_AIDatas)
+	{
+		if (data.m_CurrentAction == Action::NONE)
+		{
+			if (expansionDecision(data.m_OwnerID) > .2f)
+			{
+				if (warDecision(data.m_OwnerID) > .2)
+				{
+					WarManager::get().createWar(data.m_OwnerID, GetWarmindOfCharacter(data.m_OwnerID).m_Opponent, GetWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
+					GetWarmindOfCharacter(data.m_OwnerID).m_Active = true;
+					data.m_CurrentAction = Action::War;
+				}
+			}
+		}
+	}
+
 	for (auto& warmind : m_Warminds)
 	{
 		if (!warmind.m_Active)
@@ -72,6 +132,11 @@ void AIManager::Update()
 				warmind.m_OrderAccu = 0.0f;
 				considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warmind.m_Opponent);
 			}
+		}
+
+		else
+		{
+			UnitManager::get().raiseUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity, Map::get().getRegionCapitalLocation(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_OwnedRegionIDs[0]));
 		}
 	}
 }
@@ -96,11 +161,9 @@ float AIManager::warDecision(CharacterID ID)
 
 	if (war == nullptr)
 	{
-		LOG_INFO("VALID WAR");
 		return std::clamp(actionScore, 0.0f, 1.0f);
 	}
 
-	LOG_INFO("Cant declare war against someone you are at war with");
 	return 0.0f;
 }
 
@@ -115,13 +178,15 @@ float AIManager::expansionDecision(CharacterID ID)
 	//Get characters in certain range,
 	std::vector<int> regionIndexes = Map::get().getRegionIDs();
 
+	Character& character = CharacterManager::get()->getCharacter(ID);
+
 	for (size_t i = 0; i < regionIndexes.size(); i++)
 	{
-		//if (std::find(characterComponents[ent].m_OwnedRegionIDs.begin(), characterComponents[ent].m_OwnedRegionIDs.end(),
-		//	(size_t)regionIndexes[i]) != characterComponents[ent].m_OwnedRegionIDs.end())
-		//{
-		//	continue;
-		//}
+		if (std::find(character.m_OwnedRegionIDs.begin(), character.m_OwnedRegionIDs.end(),
+			(size_t)regionIndexes[i]) != character.m_OwnedRegionIDs.end())
+		{
+			continue;
+		}
 
 		float eval = expansionConsideration.evaluate(ID, regionIndexes[i]);
 		auto pair = std::make_pair(eval, regionIndexes[i]);

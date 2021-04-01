@@ -302,7 +302,7 @@ struct UnitSystem : System
 		characterSystem->conquerRegion(regionID, conqueringCharacterID);
 		characterSystem->loseRegion(regionID, loosingCharacterEntity);
 
-		War& currentWar = *m_WarManager->getWarAgainst(m_Characters[conqueringCharacterID], m_Characters[loosingCharacterEntity]);
+		War& currentWar = *m_WarManager->getWarAgainst(conqueringCharacterID, loosingCharacterEntity);
 		currentWar.addWarscore(conqueringCharacterID, 50);
 	}
 
@@ -345,36 +345,36 @@ struct UnitSystem : System
 
 	void determineCombat(EntityID unit, EntityID enemyUnit)
 	{
-		WarManager* warManager = &WarManager::get();
-
-		if (m_UnitComponents[unit].m_CombatTimerAccu > m_UnitComponents[unit].m_CombatTimer)
-		{
-			War* currentWar = warManager->getWarAgainst(m_Characters[m_UnitComponents[unit].m_Owner], m_Characters[m_UnitComponents[enemyUnit].m_Owner]);
-
-			if (currentWar == nullptr)
-			{
-				return;
-			}
-
-#pragma warning(push)
-#pragma warning(disable: 26815)
-			CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
-#pragma warning(pop)
-
-			if (currentWar->getAttacker().m_RaisedArmySize > currentWar->getDefender().m_RaisedArmySize)
-			{
-				currentWar->addWarscore(m_Characters[m_UnitComponents[unit].m_Owner].getID(), 50);
-				characterSystem->dismissUnit(currentWar->getDefender().m_EntityID);
-				OnCombatEnded(unit, enemyUnit);
-			}
-
-			else
-			{
-				currentWar->addWarscore(m_Characters[m_UnitComponents[enemyUnit].m_Owner].getID(), 100);
-				characterSystem->dismissUnit(currentWar->getAttacker().m_EntityID);
-				OnCombatEnded(unit, enemyUnit);
-			}
-		}
+//		WarManager* warManager = &WarManager::get();
+//
+//		if (m_UnitComponents[unit].m_CombatTimerAccu > m_UnitComponents[unit].m_CombatTimer)
+//		{
+//			War* currentWar = warManager->getWarAgainst(m_Characters[m_UnitComponents[unit].m_Owner], m_Characters[m_UnitComponents[enemyUnit].m_Owner]);
+//
+//			if (currentWar == nullptr)
+//			{
+//				return;
+//			}
+//
+//#pragma warning(push)
+//#pragma warning(disable: 26815)
+//			CharacterSystem* characterSystem = (CharacterSystem*)m_EntityManager->getSystem<CharacterSystem>().get();
+//#pragma warning(pop)
+//
+//			if (currentWar->getAttacker().m_RaisedArmySize > currentWar->getDefender().m_RaisedArmySize)
+//			{
+//				currentWar->addWarscore(m_Characters[m_UnitComponents[unit].m_Owner].getID(), 50);
+//				characterSystem->dismissUnit(currentWar->getDefender().m_EntityID);
+//				OnCombatEnded(unit, enemyUnit);
+//			}
+//
+//			else
+//			{
+//				currentWar->addWarscore(m_Characters[m_UnitComponents[enemyUnit].m_Owner].getID(), 100);
+//				characterSystem->dismissUnit(currentWar->getAttacker().m_EntityID);
+//				OnCombatEnded(unit, enemyUnit);
+//			}
+//		}
 	}
 
 	void OnCombatEnded(EntityID unit, EntityID enemyUnit)

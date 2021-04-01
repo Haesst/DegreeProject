@@ -90,11 +90,11 @@ struct CharacterSystem : System
 
 		for (auto& war : m_Characters[character].m_CurrentWars)
 		{
-			if (warManager->getWar(war)->m_Defender->getID() == target)
-			{
-				LOG_INFO("Tried to declare war against current opponent");
-				return;
-			}
+			//if (warManager->getWar(war)->m_Defender->getID() == target)
+			//{
+			//	LOG_INFO("Tried to declare war against current opponent");
+			//	return;
+			//}
 		}
 
 		EntityManager* entityManager = &EntityManager::get();
@@ -102,25 +102,25 @@ struct CharacterSystem : System
 		WarmindComponent* warminds = nullptr;//entityManager->getComponentArray<WarmindComponent>();
 
 		LOG_INFO("{0} Declared war with {1} for {2}", m_Characters[character].m_Name, characters[target].m_Name, Map::get().getRegionById(warGoalRegion).m_RegionName);
-		int war = warManager->createWar(characters[character], characters[target], warGoalRegion);
-		m_Characters[character].m_CurrentWars.push_back(war);
-		m_Characters[character].m_AtWar = true;
-
-		characters[target].m_RecentlyAtWar = true;
-		characters[target].m_CurrentWars.push_back(war);
-		characters[target].m_AtWar = true;
-
-		if (!m_Characters[character].m_IsPlayerControlled)
-		{
-			//warminds[character].m_Active = true;
-			m_Characters[character].m_RecentlyAtWar = true;
-		}
-
-		if (!characters[target].m_IsPlayerControlled)
-		{
-			//warminds[target].m_Opponent = character;
-			//warminds[target].m_Active = true;
-		}
+		//int war = warManager->createWar(characters[character], characters[target], warGoalRegion);
+		//m_Characters[character].m_CurrentWars.push_back(war);
+		//m_Characters[character].m_AtWar = true;
+		//
+		//characters[target].m_RecentlyAtWar = true;
+		//characters[target].m_CurrentWars.push_back(war);
+		//characters[target].m_AtWar = true;
+		//
+		//if (!m_Characters[character].m_IsPlayerControlled)
+		//{
+		//	//warminds[character].m_Active = true;
+		//	m_Characters[character].m_RecentlyAtWar = true;
+		//}
+		//
+		//if (!characters[target].m_IsPlayerControlled)
+		//{
+		//	//warminds[target].m_Opponent = character;
+		//	//warminds[target].m_Active = true;
+		//}
 	}
 
 	void makePeace(CharacterComponent& attacker, CharacterComponent& defender, int warToEnd)

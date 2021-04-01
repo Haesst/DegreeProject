@@ -1,8 +1,10 @@
 #include "WarManager.h"
+#include "Engine/CharacterManager.h"
+#include "Game/Data/Character.h"
 
 WarManager* WarManager::m_Instance = nullptr;
 
-int WarManager::createWar(CharacterComponent& attacker, CharacterComponent& defender, int warGoalRegion)
+int WarManager::createWar(CharacterID attacker, CharacterID defender, int warGoalRegion)
 {
 	static int handle = m_Warhandle++;
 
@@ -40,16 +42,30 @@ War* WarManager::getWar(int handle)
 	return nullptr;
 }
 
-War* WarManager::getWarAgainst(CharacterComponent& character, CharacterComponent& enemy)
+bool WarManager::atWarWith(CharacterID character, CharacterID enemy)
+{
+	for (auto& war : m_Wars)
+	{
+		if ((war.second.getAttacker() == character || war.second.getDefender() == character) && 
+			(war.second.getAttacker() == enemy || war.second.getDefender() == enemy))
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+War* WarManager::getWarAgainst(CharacterID character, CharacterID enemy)
 {
 	for (auto& pair : m_Wars)
 	{
-		if (pair.second.getAttacker().getID() == character.getID() && pair.second.getDefender().getID() == enemy.getID())
+		if (pair.second.getAttacker() == character && pair.second.getDefender() == enemy)
 		{
 			return &pair.second;
 		}
 
-		else if (pair.second.getDefender().getID() == character.getID() && pair.second.getAttacker().getID() == enemy.getID())
+		else if (pair.second.getDefender() == character && pair.second.getAttacker() == enemy)
 		{
 			return &pair.second;
 		}
