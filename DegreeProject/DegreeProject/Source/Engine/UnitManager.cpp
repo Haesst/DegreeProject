@@ -27,6 +27,7 @@ void UnitManager::update()
 
 		// Move unit
 		moveUnit(unit);
+		showPath(unit);
 		// Engage enemy
 		unitCombat(unit);
 		// Siege
@@ -46,6 +47,15 @@ void UnitManager::render()
 		}
 
 		Window::getWindow()->draw(unit.m_Sprite);
+
+
+		if (unit.m_Moving)
+		{
+			for each (sf::RectangleShape rectangle in unit.m_TargetPath)
+			{
+				Window::getWindow()->draw(rectangle);
+			}
+		}
 
 		if (unit.m_Selected)
 		{
@@ -364,4 +374,80 @@ void UnitManager::updateSprite(Unit& unit)
 		32 / localSize.width, // Todo: Remove magic number
 		32 / localSize.height
 	);
+}
+
+
+void UnitManager::showPath(Unit& unit)
+{
+	unit.m_TargetPath.clear();
+	std::vector<Vector2DInt> path;
+	for each (Vector2DInt position in unit.m_CurrentPath)
+	{
+		path.push_back(position);
+	}
+	unsigned int index = 0;
+	for each (Vector2DInt position in path)
+	{
+		Vector2D screenPosition = Map::convertToScreen(position);
+		Vector2D rectangleSize = Vector2D(unit.m_HighlightShape.getSize().x * 1.45f, unit.m_HighlightShape.getSize().y * 0.25f);
+		float rotation = 0.0f;
+		Vector2DInt oldPosition = Vector2DInt();
+		if (unit.m_TargetPath.size() > 0)
+		{
+			oldPosition = path[index - 1];
+		}
+		else
+		{
+			oldPosition = Map::convertToMap(unit.m_Position);
+		}
+		Vector2DInt change = position - oldPosition;
+		if (abs(change.y) == 1 && change.x == 0)
+		{
+			rotation = 90.0f;
+			screenPosition.x += unit.m_HighlightShape.getSize().x * 0.625f;
+			screenPosition.y -= unit.m_HighlightShape.getSize().y * 0.375f;
+			if (change.y < 0)
+			{
+				screenPosition.y += unit.m_HighlightShape.getSize().y * 0.5f;
+			}
+			else
+			{
+				screenPosition.y -= unit.m_HighlightShape.getSize().y * 0.5f;
+			}
+		}
+		else if (change.x > 0 && change.y > 0 || change.x < 0 && change.y < 0)
+		{
+			rotation = 45.0f;
+			screenPosition.x += unit.m_HighlightShape.getSize().x * 0.28125f;
+			screenPosition.y -= unit.m_HighlightShape.getSize().y * 0.28125f;
+			if (change.x > 0 && change.y > 0)
+			{
+				screenPosition.x -= unit.m_HighlightShape.getSize().x;
+				screenPosition.y -= unit.m_HighlightShape.getSize().y;
+			}
+			if (change.x < 0 && change.y < 0)
+			{
+				screenPosition.x += unit.m_HighlightShape.getSize().x * 0.5f;
+				screenPosition.y += unit.m_HighlightShape.getSize().y * 0.5f;
+			}
+		}
+		else if (change.x > 0 && change.y < 0 || change.x < 0 && change.y > 0)
+		{
+			rotation = -45.0f;
+			screenPosition.x += unit.m_HighlightShape.getSize().x * 0.21875f;
+			screenPosition.y += unit.m_HighlightShape.getSize().y * 0.21875f;
+			if (change.x > 0 && change.y < 0)
+			{
+				screenPosition.x -= unit.m_HighlightShape.getSize().x;
+				screenPosition.y += unit.m_HighlightShape.getSize().y;
+			}
+		}
+
+		sf::RectangleShape rectangle = sf::RectangleShape(sf::Vector2f(rectangleSize.x, rectangleSize.y));
+		rectangle.setFillColor(sf::Color::White);
+		rectangle.setRotation(rotation);
+		rectangle.setPosition(screenPosition.x, screenPosition.y + unit.m_HighlightShape.getSize().y * 0.375f);
+		unit.m_TargetPath.push_back(rectangle);
+		index++;
+	}
 }

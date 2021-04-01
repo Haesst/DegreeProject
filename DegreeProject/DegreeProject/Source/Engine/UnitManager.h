@@ -30,6 +30,7 @@ private:
 	void moveUnit(Unit& unit);
 	void unitCombat(Unit& unit);
 	void unitSiege(Unit& unit);
+	void showPath(Unit& unit);
 
 	void startConquerRegion(Unit& unit);
 
