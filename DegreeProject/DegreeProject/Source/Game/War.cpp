@@ -1,6 +1,6 @@
 #include "War.h"
 #include <Engine\Log.h>
-
+#include "Game/WarManager.h"
 
 War::War(CharacterID attacker, CharacterID defender, int warGoalRegion, int handle)
 {
@@ -61,14 +61,33 @@ void War::addWarscore(CharacterID ID, int warScore)
 
 void War::endWar(CharacterID winningEntity)
 {
-	//CharacterManager::get()->getCharacter(m_Attacker).m_AtWar = false;
-	//CharacterManager::get()->getCharacter(m_Defender).m_AtWar = false;
+	CharacterManager::get()->getCharacter(m_Attacker);
+	CharacterManager::get()->getCharacter(m_Defender);
 
-	//LOG_INFO("{0}'s war against {1} is over. {2} Won!", CharacterManager::get()->getCharacter(m_Attacker), CharacterManager::get()->getCharacter(m_Defender), CharacterManager::get()->getCharacter(winningEntity));
-	
-	//if (!CharacterManager::get()->getCharacter(m_Attacker).m_IsPlayerControlled)
-	//{
-	//}
+	unsigned int index = 0;
+	for (auto& war : CharacterManager::get()->getCharacter(m_Attacker).m_CurrentWars)
+	{
+		if (WarManager::get().getWar(war) == this)
+		{
+			CharacterManager::get()->getCharacter(m_Attacker).m_CurrentWars.erase(CharacterManager::get()->getCharacter(m_Attacker).m_CurrentWars.begin() + index);
+			break;
+		}
+		index++;
+	}
+
+	index = 0;
+
+	for (auto& war : CharacterManager::get()->getCharacter(m_Defender).m_CurrentWars)
+	{
+		if (WarManager::get().getWar(war) == this)
+		{
+			CharacterManager::get()->getCharacter(m_Defender).m_CurrentWars.erase(CharacterManager::get()->getCharacter(m_Defender).m_CurrentWars.begin() + index);
+			break;
+		}
+		index++;
+	}
+
+	LOG_INFO("{0}'s war against {1} is over. {2} Won!", CharacterManager::get()->getCharacter(m_Attacker).m_Name, CharacterManager::get()->getCharacter(m_Defender).m_Name, CharacterManager::get()->getCharacter(winningEntity).m_Name);
 }
 
 bool War::isAttacker(CharacterID ent)
