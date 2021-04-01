@@ -225,7 +225,7 @@ void Game::addEntitys()
 
 CharacterID Game::createCharacter(std::vector<unsigned int>& ownedRegions, Title title, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color)
 {
-	CharacterID character = CharacterManager::get()->createCharacter(characterName, title, ownedRegions, realmName, 50, 5.0f, color, playerControlled);
+	CharacterID character = CharacterManager::get()->createCharacter(characterName, title, ownedRegions, realmName, army, (float)gold, color, playerControlled);
 
 	for (int i : ownedRegions)
 	{

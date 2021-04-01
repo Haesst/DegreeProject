@@ -6,7 +6,7 @@
 #include "Game/GameDate.h"
 #include "Game/Map/Map.h"
 #include "Game/AI/AIManager.h"
-#include "Game/Components/Player.h"
+#include "Game/Player.h"
 
 CharacterManager* CharacterManager::m_Instance = nullptr;
 CharacterID CharacterManager::m_CharacterIDs = 1;
@@ -62,6 +62,8 @@ CharacterID CharacterManager::getPlayerCharacterID()
 	return m_PlayerCharacterID;
 }
 
+#pragma warning(push)
+#pragma warning(disable: 4239 4172)
 Character& CharacterManager::getCharacter(CharacterID id)
 {
 	ASSERT(id != INVALID_CHARACTER_ID, "Invalid character id requested");
@@ -75,17 +77,19 @@ Character& CharacterManager::getCharacter(CharacterID id)
 	}
 
 	ASSERT(false, "Character id not found");
+	return Character();
 }
+#pragma warning(pop)
 
 void CharacterManager::onMonthChange(Date)
 {
 	for (auto& character : m_Characters)
 	{
-		int incomingGold = 0;
+		float incomingGold = 0;
 
 		for (unsigned int id : character.m_OwnedRegionIDs)
 		{
-			incomingGold += Map::get().getRegionById(id).m_RegionTax;
+			incomingGold += (float)Map::get().getRegionById(id).m_RegionTax;
 		}
 
 		incomingGold -= (character.m_RaisedArmySize * 0.1f); // Todo: Declare armycost somewhere

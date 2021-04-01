@@ -56,25 +56,33 @@ void AIManager::loadPersonalities(const char* path)
 	m_PersonalityMtx.unlock();
 }
 
+#pragma warning(push)
+#pragma warning(disable: 4239 4172)
 WarmindComponent& AIManager::GetWarmindOfCharacter(int handle)
 {
+	size_t convertedHandle = (size_t)handle;
 	for (auto& warmind : m_Warminds)
 	{
-		if (warmind.m_OwnerID == handle)
+		if (warmind.m_OwnerID == convertedHandle)
 		{
 			return warmind;
 		}
 	}
 
 	ASSERT(false, "No warmind belonging to that handle");
+
 	return WarmindComponent();
 }
+#pragma warning(pop)
 
+#pragma warning(push)
+#pragma warning(disable: 4239 4172 26444)
 AIData& AIManager::getAIDataofCharacter(int handle)
 {
+	size_t convertedHandle = (size_t)handle;
 	for (auto& data : m_AIDatas)
 	{
-		if (data.m_OwnerID == handle)
+		if (data.m_OwnerID == convertedHandle)
 		{
 			return data;
 		}
@@ -83,6 +91,7 @@ AIData& AIManager::getAIDataofCharacter(int handle)
 	ASSERT(false, "No data belonging to that handle");
 	return AIData();
 }
+#pragma warning(pop)
 
 
 void AIManager::initAI(CharacterID ID)
@@ -276,7 +285,7 @@ void AIManager::GiveDefenderOrders(WarmindComponent& warmind, CharacterID target
 
 int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 {
-	WarManager* warManager = &WarManager::get();
+	// WarManager* warManager = &WarManager::get();
 	
 	if (!CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty())
 	{

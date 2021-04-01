@@ -108,7 +108,7 @@
     <ClInclude Include="Source\Game\Components\MovingSprite.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Components\Player.h">
+    <ClInclude Include="Source\Game\Player.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Components\SpriteRenderer.h">
@@ -291,5 +291,6 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
+    <ClCompile Include="Source\Game\Player.cpp" />
   </ItemGroup>
 </Project>

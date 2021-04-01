@@ -285,9 +285,9 @@ void Map::startConstructionOfBuilding(int buildingId, int buildSlot, int regionI
 {
 	// not working -> int maxBuildings = (sizeof(RegionBuilding) / sizeof(*GetRegionById(regionId).m_BuildingSlots));
 	ASSERT(buildSlot >= 0 /*&& buildSlot < maxBuildings */, "Invalid buildslot");
-	int characterGold = CharacterManager::get()->getCharacter(getRegionById(regionId).m_OwnerID).m_CurrentGold; // EntityManager::get().getComponent<CharacterComponent>(getRegionById(regionId).m_OwnerID).m_CurrentGold;
+	float characterGold = CharacterManager::get()->getCharacter(getRegionById(regionId).m_OwnerID).m_CurrentGold; // EntityManager::get().getComponent<CharacterComponent>(getRegionById(regionId).m_OwnerID).m_CurrentGold;
 	int buildingCost = GameData::m_Buildings[buildingId].m_Cost;
-	ASSERT(characterGold >= buildingCost, "Not enough money to build");
+	ASSERT(characterGold >= (float)buildingCost, "Not enough money to build");
 
 	RegionBuilding& building = getRegionById(regionId).m_BuildingSlots[buildSlot];
 
@@ -339,7 +339,7 @@ MapRegion& Map::getRegionById(unsigned int regionId)
 
 Vector2DInt Map::convertToMap(Vector2D position)
 {
-	return Vector2DInt((int)(position.x - m_XOffset + m_HalfTileSize) / m_TileSize, (int)(position.y - m_YOffset + m_HalfTileSize) / m_TileSize);
+	return Vector2DInt((int)((position.x - m_XOffset + m_HalfTileSize) / m_TileSize), (int)((position.y - m_YOffset + m_HalfTileSize) / m_TileSize));
 }
 
 Vector2D Map::convertToScreen(Vector2DInt position)

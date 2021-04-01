@@ -47,6 +47,8 @@ void UnitManager::update()
 	}
 }
 
+#pragma warning(push)
+#pragma warning(disable: 26812)
 void UnitManager::render()
 {
 	for (auto& unit : m_Units)
@@ -83,6 +85,7 @@ void UnitManager::render()
 		}
 	}
 }
+#pragma warning(pop)
 
 UnitManager& UnitManager::get()
 {
@@ -109,6 +112,8 @@ UnitID UnitManager::addUnit(CharacterID owner)
 	return newUnit.m_UnitID;
 }
 
+#pragma warning(push)
+#pragma warning(disable: 4239 4172)
 Unit& UnitManager::getUnitOfCharacter(CharacterID character)
 {
 	for (auto& unit : m_Units)
@@ -122,7 +127,10 @@ Unit& UnitManager::getUnitOfCharacter(CharacterID character)
 	ASSERT(false, "Given character doesn't have any units.");
 	return Unit();
 }
+#pragma warning(pop)
 
+#pragma warning(push)
+#pragma warning(disable: 4239 4172)
 Unit& UnitManager::getUnitWithId(UnitID id)
 {
 	for (auto& unit : m_Units)
@@ -134,8 +142,10 @@ Unit& UnitManager::getUnitWithId(UnitID id)
 	}
 
 	ASSERT(false, "No unit with given ID exists");
+
 	return Unit();
 }
+#pragma warning(pop)
 
 void UnitManager::setAssetHandler(AssetHandler* assetHandler)
 {

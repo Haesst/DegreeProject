@@ -8,8 +8,8 @@ struct Node
 	float m_GCost = FLT_MAX;
 	float m_FCost = FLT_MAX;
 
-	int x;
-	int y;
+	int x = 0;
+	int y = 0;
 };
 
 class Pathfinding

@@ -47,7 +47,7 @@ struct FightEnemyArmyConsideration : public Consideration
 		m_Context = context;
 	}
 
-	float evaluate(EntityID context, EntityID target) override
+	float evaluate(EntityID context, EntityID) override
 	{
 		Vector2D contextPosition = UnitManager::get().getUnitOfCharacter(context).m_Position;
 		Vector2D targetPosition = UnitManager::get().getUnitOfCharacter(context).m_Position;

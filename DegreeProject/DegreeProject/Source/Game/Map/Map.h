@@ -87,6 +87,9 @@ struct Map
 		{
 			m_Instance = this;
 		}
+
+		width = 0;
+		height = 0;
 	}
 
 	~Map()
