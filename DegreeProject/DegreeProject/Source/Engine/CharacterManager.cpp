@@ -5,6 +5,7 @@
 
 #include "Game/GameDate.h"
 #include "Game/Map/Map.h"
+#include "Game/AI/AIManager.h"
 #include "Game/Components/Player.h"
 
 CharacterManager* CharacterManager::m_Instance = nullptr;
@@ -171,6 +172,11 @@ CharacterID CharacterManager::createCharacter(const char* characterName, Title t
 		m_PlayerCharacterID = id;
 
 		m_Player = new Player(id);
+	}
+
+	else
+	{
+		AIManager::get().initAI(id);
 	}
 
 	return id;
