@@ -37,6 +37,9 @@
     <Filter Include="Game\Systems\UI">
       <UniqueIdentifier>{F39B8C41-5F27-FA05-6838-7DFAD4425606}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\UI">
+      <UniqueIdentifier>{4C805747-B85F-D6E2-C177-61B92DD63C44}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Source\ECS\Component.h">
@@ -111,18 +114,6 @@
     <ClInclude Include="Source\Game\Components\SpriteRenderer.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Components\UI\CharacterWindow.h">
-      <Filter>Game\Components\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Components\UI\DateBar.h">
-      <Filter>Game\Components\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Components\UI\RegionWindow.h">
-      <Filter>Game\Components\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Components\UI\StatBar.h">
-      <Filter>Game\Components\UI</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Components\UI\UISpriteRenderer.h">
       <Filter>Game\Components\UI</Filter>
     </ClInclude>
@@ -135,6 +126,9 @@
     <ClInclude Include="Source\Game\Components\Warmind.h">
       <Filter>Game\Components</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Data\AIData.h">
+      <Filter>Game\Data</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Data\Character.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
@@ -142,6 +136,12 @@
       <Filter>Game\Data</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Data\Types.h">
+      <Filter>Game\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Data\UIType.h">
+      <Filter>Game\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Data\UIWindow.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Data\Unit.h">
@@ -198,18 +198,6 @@
     <ClInclude Include="Source\Game\Systems\SpriteRenderSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Systems\UI\CharacterWindowSystem.h">
-      <Filter>Game\Systems\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Systems\UI\DateBarSystem.h">
-      <Filter>Game\Systems\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Systems\UI\RegionWindowSystem.h">
-      <Filter>Game\Systems\UI</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Systems\UI\StatBarSystem.h">
-      <Filter>Game\Systems\UI</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\Systems\UI\UISpriteRenderSystem.h">
       <Filter>Game\Systems\UI</Filter>
     </ClInclude>
@@ -219,13 +207,27 @@
     <ClInclude Include="Source\Game\Systems\UnitSystem.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\UI\CharacterWindow.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\UI\DateBar.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\UI\RegionWindow.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\UI\StatBar.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\UI\UIManager.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\War.h">
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\WarManager.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Data\AIData.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\ECS\EntityManager.cpp">
@@ -281,6 +283,9 @@
     </ClCompile>
     <ClCompile Include="Source\Game\Systems\AI\AI.cpp">
       <Filter>Game\Systems\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\UI\UIManager.cpp">
+      <Filter>Game\UI</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\War.cpp">
       <Filter>Game</Filter>
