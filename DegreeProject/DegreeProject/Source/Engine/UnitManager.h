@@ -45,7 +45,7 @@ private:
 	static UnitManager* m_Instance;
 	std::vector<Unit> m_Units;
 
-	AssetHandler* m_AssetHandler; // Todo: Change asset handler to be static or singleton
+	AssetHandler* m_AssetHandler = nullptr; // Todo: Change asset handler to be static or singleton
 
 	float m_MoveTolerance = 0.3f;
 

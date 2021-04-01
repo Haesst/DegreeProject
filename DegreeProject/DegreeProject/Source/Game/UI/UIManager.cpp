@@ -119,6 +119,8 @@ void UIManager::render()
 	m_DateBar->render();
 }
 
+#pragma warning(push)
+#pragma warning(disable: 4239 4172)
 UIElement& UIManager::getUIElement(UIID id)
 {
 	ASSERT(id != INVALID_UI_ID, "Invalid UI id requested");
@@ -132,8 +134,12 @@ UIElement& UIManager::getUIElement(UIID id)
 	}
 	
 	ASSERT(false, "UI id not found");
+	return UIElement();
 }
+#pragma warning(pop)
 
+#pragma warning(push)
+#pragma warning(disable: 4239 4172)
 UIText& UIManager::getUIText(UIID id)
 {
 	ASSERT(id != INVALID_UI_ID, "Invalid UI id requested");
@@ -147,4 +153,6 @@ UIText& UIManager::getUIText(UIID id)
 	}
 
 	ASSERT(false, "UI id not found");
+	return *m_UITexts[0];
 }
+#pragma warning(pop)
