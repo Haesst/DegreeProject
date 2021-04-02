@@ -1,6 +1,5 @@
 #pragma once
-#include "ECS\Component.h"
-#include "Game\Components\CharacterComponent.h"
+
 #include <Game\Components\Unit.h>
 #include <Game\War.h>
 
@@ -8,7 +7,7 @@ struct WarmindComponent
 {
 	int m_WargoalRegionId = 0;
 
-	EntityID m_Opponent;
+	CharacterID m_Opponent;
 
 	bool m_Active = false;
 	bool m_AtWar = false;
@@ -29,7 +28,7 @@ struct WarmindComponent
 		m_Opponent = (size_t)INT_MAX;
 	};
 
-	WarmindComponent(int warGoalRegionId,  EntityID opponent)
+	WarmindComponent(int warGoalRegionId, CharacterID opponent)
 	{
 		m_WargoalRegionId = warGoalRegionId;
 		m_Opponent = opponent;

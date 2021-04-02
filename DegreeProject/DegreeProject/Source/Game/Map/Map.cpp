@@ -4,7 +4,6 @@
 #include "Map.h"
 #include "Game/HotReloader.h"
 #include "Engine/FileWatcher.h"
-#include <Game/Components/CharacterComponent.h>
 
 const int   Map::m_XOffset = -300;
 const int   Map::m_YOffset = -100;

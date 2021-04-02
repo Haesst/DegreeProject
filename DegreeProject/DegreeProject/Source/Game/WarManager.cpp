@@ -1,5 +1,5 @@
 #include "WarManager.h"
-#include "Engine/CharacterManager.h"
+#include "Game/Systems/CharacterManager.h"
 #include "Game/Data/Character.h"
 
 WarManager* WarManager::m_Instance = nullptr;

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "ECS/Types.h"
 #include <vector>
 #include <SFML/Graphics.hpp>
 #include <fstream>
@@ -11,7 +10,7 @@ using json = nlohmann::json;
 #include "Engine/Log.h"
 #include "Engine/Window.h"
 #include "Engine/AssetHandler.h"
-#include "Engine/CharacterManager.h"
+#include "Game/Systems/CharacterManager.h"
 
 #include "MapRegion.h"
 #include "MapData.h"
@@ -27,11 +26,11 @@ struct Building;
 
 struct SquareData
 {
-	std::list<EntityID> m_EntitiesInSquare = std::list<EntityID>();
+	std::list<UnitID> m_EntitiesInSquare = std::list<UnitID>();
 	unsigned int m_RegionID;
 	Vector2DInt m_Position;
 
-	void addUnique(EntityID entityToAdd)
+	void addUnique(UnitID entityToAdd)
 	{
 		for (auto& entity : m_EntitiesInSquare)
 		{
@@ -44,7 +43,7 @@ struct SquareData
 		m_EntitiesInSquare.push_back(entityToAdd);
 	}
 
-	void remove(EntityID entityToRemove)
+	void remove(UnitID entityToRemove)
 	{
 		m_EntitiesInSquare.remove(entityToRemove);
 	}

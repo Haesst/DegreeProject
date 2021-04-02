@@ -36,34 +36,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Source\ECS\Component.h">
-      <Filter>ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ECS\ComponentList.h">
-      <Filter>ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ECS\Components\Transform.h">
-      <Filter>ECS\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ECS\DOComponentList.h">
-      <Filter>ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ECS\EntityManager.h">
-      <Filter>ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ECS\EntityTag.h">
-      <Filter>ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ECS\System.h">
-      <Filter>ECS</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\ECS\Types.h">
-      <Filter>ECS</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Engine\AssetHandler.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\CharacterManager.h">
+    <ClInclude Include="Source\Game\Systems\CharacterManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\FileWatcher.h">
@@ -78,7 +54,7 @@
     <ClInclude Include="Source\Engine\Time.h">
       <Filter>Engine</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Engine\UnitManager.h">
+    <ClInclude Include="Source\Game\Systems\UnitManager.h">
       <Filter>Engine</Filter>
     </ClInclude>
     <ClInclude Include="Source\Engine\Vector2D.h">
@@ -95,15 +71,6 @@
     </ClInclude>
     <ClInclude Include="Source\Game\Callback.h">
       <Filter>Game</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Components\CharacterComponent.h">
-      <Filter>Game\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Components\MovingSprite.h">
-      <Filter>Game\Components</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Components\Unit.h">
-      <Filter>Game\Components</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Components\Warmind.h">
       <Filter>Game\Components</Filter>
@@ -174,21 +141,6 @@
     <ClInclude Include="Source\Game\Systems\AI\WarmindConsiderations.h">
       <Filter>Game\Systems\AI</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Systems\AI\WarmindSystem.h">
-      <Filter>Game\Systems\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Systems\CharacterSystem.h">
-      <Filter>Game\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Systems\ECSExampleSystem.h">
-      <Filter>Game\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Systems\PlayerSystem.h">
-      <Filter>Game\Systems</Filter>
-    </ClInclude>
-    <ClInclude Include="Source\Game\Systems\UnitSystem.h">
-      <Filter>Game\Systems</Filter>
-    </ClInclude>
     <ClInclude Include="Source\Game\UI\CharacterWindow.h">
       <Filter>Game\UI</Filter>
     </ClInclude>
@@ -215,13 +167,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Source\ECS\EntityManager.cpp">
-      <Filter>ECS</Filter>
-    </ClCompile>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\CharacterManager.cpp">
+    <ClCompile Include="Source\Game\Systems\CharacterManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\FileWatcher.cpp">
@@ -236,7 +185,7 @@
     <ClCompile Include="Source\Engine\Time.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Engine\UnitManager.cpp">
+    <ClCompile Include="Source\Game\Systems\UnitManager.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="Source\Engine\Window.cpp">

@@ -1,10 +1,7 @@
 #pragma once
 #include "AIConsideration.h"
 #include <Game\Components\Warmind.h>
-#include <Game\Components\Unit.h>
-#include <ECS\Components\Transform.h>
-#include "Game/Components/CharacterComponent.h"
-#include "Engine/UnitManager.h"
+#include "Game/Systems/UnitManager.h"
 #include "Game/Data/Unit.h"
 
 
@@ -16,12 +13,12 @@ struct SiegeCapitalConsideration : public Consideration
 
 	SiegeCapitalConsideration(CharacterID context) { m_Context = context; }
 
-	void setContext(EntityID context) override
+	void setContext(CharacterID context) override
 	{
 		m_Context = context;
 	}
 
-	float evaluate(EntityID context, EntityID target)
+	float evaluate(CharacterID context, CharacterID target)
 	{
 		//Judge distance to other army
 		Vector2D contextPosition = UnitManager::get().getUnitOfCharacter(context).m_Position;
@@ -40,14 +37,14 @@ struct FightEnemyArmyConsideration : public Consideration
 	{
 	}
 
-	FightEnemyArmyConsideration(EntityID context) { m_Context = context; }
+	FightEnemyArmyConsideration(CharacterID context) { m_Context = context; }
 
-	void setContext(EntityID context) override
+	void setContext(CharacterID context) override
 	{
 		m_Context = context;
 	}
 
-	float evaluate(EntityID context, EntityID) override
+	float evaluate(CharacterID context, CharacterID) override
 	{
 		Vector2D contextPosition = UnitManager::get().getUnitOfCharacter(context).m_Position;
 		Vector2D targetPosition = UnitManager::get().getUnitOfCharacter(context).m_Position;

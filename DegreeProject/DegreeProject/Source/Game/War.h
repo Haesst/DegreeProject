@@ -2,7 +2,8 @@
 #include <list>
 #include "Game/Data/Character.h"
 #include <Game\Data\Types.h>
-#include "Engine\CharacterManager.h"
+#include "Game\Systems\CharacterManager.h"
+
 struct War
 {
 	int m_AttackerWarscore = 0;

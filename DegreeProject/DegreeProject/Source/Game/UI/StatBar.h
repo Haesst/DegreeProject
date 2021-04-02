@@ -3,7 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "Engine/Window.h"
 #include "Game/Data/Character.h"
-#include "Engine/CharacterManager.h"
+#include "Game/Systems/CharacterManager.h"
 #include <iomanip>
 
 struct StatBar

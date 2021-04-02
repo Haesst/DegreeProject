@@ -4,7 +4,7 @@
 #include "Engine/Window.h"
 #include "Engine/InputHandler.h"
 #include "Game/Data/Unit.h"
-#include "Engine/UnitManager.h"
+#include "Game/Systems/UnitManager.h"
 
 const static unsigned int NUMBER_OF_BUILDING_SLOTS = 4;
 
@@ -206,7 +206,7 @@ struct RegionWindow
 				Vector2DInt mouseMapPosition = InputHandler::getMouseMapPosition();
 				if (Map::get().mapSquareDataContainsKey(mouseMapPosition))
 				{
-					EntityID regionID = 0;
+					size_t regionID = 0;
 
 					for (auto& squareData : Map::get().m_MapSquareData)
 					{
@@ -334,7 +334,7 @@ struct RegionWindow
 		}
 	}
 
-	bool checkIfPlayerRegion(EntityID currentRegionID)
+	bool checkIfPlayerRegion(size_t currentRegionID)
 	{
 		for (unsigned int ownedRegionID : m_PlayerCharacter->m_OwnedRegionIDs)
 		{

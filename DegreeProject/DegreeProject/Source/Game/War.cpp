@@ -59,7 +59,7 @@ void War::addWarscore(CharacterID ID, int warScore)
 	}
 }
 
-void War::endWar(CharacterID winningEntity)
+void War::endWar(CharacterID)
 {
 	CharacterManager::get()->getCharacter(m_Attacker);
 	CharacterManager::get()->getCharacter(m_Defender);

@@ -6,7 +6,7 @@
 #include "Engine/AssetHandler.h"
 #include "Game/Data/Character.h"
 #include "Game/Map/Map.h"
-#include "Engine/CharacterManager.h"
+#include "Game/Systems/CharacterManager.h"
 #include "Game/Game.h"
 
 class CharacterWindow
@@ -196,7 +196,7 @@ public:
 				Vector2DInt mouseMapPosition = InputHandler::getMouseMapPosition();
 				if (Map::get().mapSquareDataContainsKey(mouseMapPosition))
 				{
-					EntityID regionID = 0;
+					size_t regionID = 0;
 					for (auto& squareData : Map::get().m_MapSquareData)
 					{
 						if (squareData.m_Position == mouseMapPosition)
@@ -311,7 +311,7 @@ public:
 		}
 	}
 
-	bool checkIfPlayerRegion(EntityID currentRegionID)
+	bool checkIfPlayerRegion(CharacterID currentRegionID)
 	{
 		for (unsigned int ownedRegionID : m_PlayerCharacter->m_OwnedRegionIDs)
 		{

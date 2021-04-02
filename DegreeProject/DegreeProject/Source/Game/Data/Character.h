@@ -1,12 +1,10 @@
 #pragma once
 
+#include "Game/Data/Types.h"
 #include "Game/Data/Titles.h"
-#include "ECS/Types.h"
 
 #include <vector>
 #include <SFML/Graphics.hpp>
-
-using CharacterID = size_t;
 
 struct Character
 {
@@ -39,6 +37,6 @@ struct Character
 
 	bool m_RecentlyAtWar = false;  //Flag for raising units when war starts // <- This might not be necessary
 
-	EntityID m_TextUI = (size_t)INT_MAX; // Moving away from the old entity system keeping EntityID until UI is moved
-	EntityID m_UnitEntity = INT_MAX; // Don't think this will be necessary but still keep it until fixed
+	CharacterID m_TextUI = (size_t)INT_MAX; // Moving away from the old entity system keeping EntityID until UI is moved
+	UnitID m_UnitEntity = INT_MAX; // Don't think this will be necessary but still keep it until fixed
 };

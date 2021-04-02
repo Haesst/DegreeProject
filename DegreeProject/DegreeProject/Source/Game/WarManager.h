@@ -1,7 +1,6 @@
 #pragma once
 #include <vector>
 #include <Game\War.h>
-#include "Game/Components/CharacterComponent.h"
 
 class WarManager
 {

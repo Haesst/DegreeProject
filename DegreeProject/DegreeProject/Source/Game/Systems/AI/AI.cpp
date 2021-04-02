@@ -1,5 +1,4 @@
 #include "AI.h"
-#include "Game/Systems/CharacterSystem.h"
 
 //void AISystem::update()
 //{

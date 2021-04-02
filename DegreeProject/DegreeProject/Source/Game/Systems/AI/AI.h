@@ -1,7 +1,5 @@
 #pragma once
 
-#include "ECS/EntityManager.h"
-#include "ECS/System.h"
 #include "Engine/Time.h"
 #include "Engine/Window.h"
 
@@ -9,13 +7,12 @@
 #include <json.hpp>
 using json = nlohmann::json;
 
-#include <Game\Components\CharacterComponent.h>
 #include <Game\Systems\AI\AIConsideration.h>
 #include <Game\Components\Warmind.h>
 #include "Game/WarManager.h"
 #include "Game/AI/AIManager.h"
 
-class CharacterSystem;
+//class CharacterSystem;
 
 //struct AISystem : System
 //{

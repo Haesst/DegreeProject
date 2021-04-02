@@ -1,13 +1,12 @@
 #pragma once
-#include "Game/Components/CharacterComponent.h"
 #include <algorithm>
 #include "Game/Map/Map.h"
 
 struct Consideration
 {
-	EntityID m_Context;
+	CharacterID m_Context;
 
-	Consideration() { m_Context = MAX_ENTITY_COUNT + 1; };
+	Consideration() { m_Context = INVALID_CHARACTER_ID; };
 
 	Consideration(CharacterID context) { m_Context = context; }
 
@@ -36,9 +35,9 @@ struct ArmySizeConsideration : public Consideration
 		m_Context = context;
 	}
 
-	float evaluate(CharacterID context, CharacterID target = MAX_ENTITY_COUNT + 1) override
+	float evaluate(CharacterID context, CharacterID target = INVALID_CHARACTER_ID) override
 	{
-		if (target > MAX_ENTITY_COUNT)
+		if (target == INVALID_CHARACTER_ID)
 		{
 			return 0.0f;
 		}
@@ -72,19 +71,19 @@ struct GoldConsideration : public Consideration
 	{
 	}
 
-	GoldConsideration(EntityID context) { m_Context = context; }
+	GoldConsideration(CharacterID context) { m_Context = context; }
 
-	void setContext(EntityID context) override
+	void setContext(CharacterID context) override
 	{
 		m_Context = context;
 	}
 
 
-	float evaluate(EntityID context, EntityID target = MAX_ENTITY_COUNT + 1) override
+	float evaluate(CharacterID context, CharacterID target = INVALID_CHARACTER_ID) override
 	{
 		float positiveGoldDiffWeight = 0.2f;
 
-		if (target > MAX_ENTITY_COUNT)
+		if (target == INVALID_CHARACTER_ID)
 		{
 			return 0.0f;
 		}
@@ -123,15 +122,15 @@ struct ExpansionConsideration : public Consideration
 
 	}
 
-	ExpansionConsideration(EntityID context) { m_Context = context; }
+	ExpansionConsideration(CharacterID context) { m_Context = context; }
 
-	void setContext(EntityID context)
+	void setContext(CharacterID context)
 	{
 		m_Context = context;
 	}
 
 
-	float evaluate(EntityID context, int regionIndex)
+	float evaluate(CharacterID context, int regionIndex)
 	{
 		float distanceWeight = 0.0f;
 

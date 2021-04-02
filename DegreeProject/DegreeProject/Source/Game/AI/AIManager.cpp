@@ -1,10 +1,9 @@
 #include "AIManager.h"
 #include "Game/WarManager.h"
 #include <Game\Systems\AI\WarmindConsiderations.h>
-#include "Engine/UnitManager.h"
+#include "Game/Systems/UnitManager.h"
 #include "Game/Data/Unit.h"
 #include <Game\Data\AIData.h>
-#include "Engine/UnitManager.h"
 
 AIManager* AIManager::m_Instance = nullptr;
 
