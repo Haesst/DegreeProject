@@ -1,6 +1,5 @@
 #pragma once
 
-#include <Game\Components\Unit.h>
 #include <Game\War.h>
 
 struct WarmindComponent

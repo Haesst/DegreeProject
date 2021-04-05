@@ -76,7 +76,7 @@ struct RegionWindow
 		m_BuildingSlotTextures[3] = AssetHandler::get().getTextureAtPath("Assets/Graphics/WallIcon.png");
 
 		m_RaiseArmyTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/soldier unit.png");
-		m_CharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Unit.png");
+		m_CharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/harold.jpg");
 
 		m_IconSlotPositionX = m_SizeX - m_SpriteSize - m_OutlineThickness;
 		m_IconSlotPositionOffset = m_SpriteSize + m_OutlineThickness * 2;

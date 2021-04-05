@@ -76,7 +76,7 @@ public:
 		m_Titles.push_back("Count ");
 		m_Titles.push_back("Baron ");
 		m_Window = Window::getWindow();
-		m_CharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Unit.png");
+		m_CharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/images.jpg");
 		m_CharacterPosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.025f);
 	}
 
