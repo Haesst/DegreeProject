@@ -160,6 +160,7 @@
       <Filter>Game</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\Characters\CharacterPool.h" />
+    <ClInclude Include="Source\Game\Systems\Characters\CharacterNamePool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
@@ -230,5 +231,6 @@
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
     <ClCompile Include="Source\Game\Systems\Characters\CharacterPool.cpp" />
+    <ClCompile Include="Source\Game\Systems\Characters\CharacterNamePool.cpp" />
   </ItemGroup>
 </Project>

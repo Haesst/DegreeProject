@@ -79,7 +79,7 @@ struct UpgradeSettlementConsideration : public Consideration
 		m_Context = context;
 	}
 
-	float evaluate(CharacterID context, int outRegion)
+	float evaluate(CharacterID context, int& outRegion)
 	{
 		CharacterManager* characterManager = CharacterManager::get();
 
@@ -106,7 +106,26 @@ struct UpgradeSettlementConsideration : public Consideration
 		float atWarWeight = 0.0f;
 
 		int buildingIndex = rand() % GameData::m_Buildings.size();
-		Building building = GameData::m_Buildings[buildingIndex];
+
+		int buildingId = -1;
+
+		int index = 0;
+		for (auto& pair : GameData::m_Buildings)
+		{
+			if (index == buildingIndex)
+			{
+				buildingId = pair.second.m_Id;
+				break;
+			}
+			++index;
+		}
+
+		if (buildingId < 0)
+		{
+			return 0.0f;
+		}
+
+		Building building = GameData::m_Buildings[buildingId];
 
 		if ((characterManager->getCharacter(context).m_CurrentGold - building.m_Cost) > 20)
 		{

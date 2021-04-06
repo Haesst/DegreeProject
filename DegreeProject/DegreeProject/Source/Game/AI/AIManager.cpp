@@ -127,15 +127,28 @@ void AIManager::update()
 
 			int regionID = -1;
 			
-			if (upgradeDecision(data.m_OwnerID, regionID) > .1f)
+			if (upgradeDecision(data.m_OwnerID, regionID) > .1f && regionID != -1)
 			{
 				int buildingIndex = rand() % GameData::m_Buildings.size();
+				
+				int buildingId = -1;
+
+				int index = 0;
+				for (auto& pair : GameData::m_Buildings)
+				{
+					if (index == buildingIndex)
+					{
+						buildingId = pair.second.m_Id;
+						break;
+					}
+					++index;
+				}
 				
 				for (int i = 0; i < 4; i++)
 				{
 					if (Map::get().getRegionById(regionID).m_BuildingSlots[i].m_BuildingId == -1)
 					{
-						CharacterManager::get()->constructBuilding(data.m_OwnerID, buildingIndex, regionID, i);
+						CharacterManager::get()->constructBuilding(data.m_OwnerID, buildingId, regionID, i);
 						data.m_LastAction = Action::Upgrade_Settlement;
 						break;
 					}
@@ -190,7 +203,7 @@ void AIManager::update()
 	}
 }
 
-float AIManager::upgradeDecision(CharacterID ID, int outRegion)
+float AIManager::upgradeDecision(CharacterID ID, int& outRegion)
 {
 	UpgradeSettlementConsideration consideration;
 	consideration.setContext(ID);

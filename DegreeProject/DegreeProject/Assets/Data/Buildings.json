@@ -34,14 +34,5 @@
         "regionIncome": 0,
         "regionArmy": 0,
         "daysToConstruct": 195
-    },
-    {
-        "id": 5,
-        "name": "Fish Factory",
-        "cost": 25,
-        "regionStrength": 40,
-        "regionIncome": 0,
-        "regionArmy": 0,
-        "daysToConstruct": 30
     }
 ]
