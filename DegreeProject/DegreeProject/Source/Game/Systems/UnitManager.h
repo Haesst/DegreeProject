@@ -52,7 +52,7 @@ private:
 	float m_ProgressMeterWidth = 32.0f;
 	float m_ProgressMeterHeight = 12.0f;
 	float m_ProgressMeterBorder = 1.0f;
-	float m_ProgressMeterDoubleBorder;
+	float m_ProgressMeterDoubleBorder = 1.0f;
 
 	sf::Color m_ProgressMeterOuterColor = sf::Color(25, 25, 25, 250);
 	sf::Color m_SeizeMeterFillColor = sf::Color(40, 70, 170, 250);
