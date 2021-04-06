@@ -117,13 +117,9 @@ void Game::addEntitys()
 	CharacterID char0 = createCharacter(id0, Title::King, "Kingdom of Milano", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(181, 54, 107));
 	UIManager::get()->createUITextElement(m_UIFont, CharacterManager::get()->getCharacter(char0).m_KingdomName, id0);
 
-	CharacterManager::get()->getCharacter(char0).m_Gender = Gender::Female;
-
 	std::vector<unsigned int> id1{ 8, 9, 10, 11, 12 };
 	CharacterID char1 = createCharacter(id1, Title::Emperor, "Roman Empire", CharacterNamePool::getMaleName(), 100, 10, false, sf::Color(54, 181, 105));
 	UIManager::get()->createUITextElement(m_UIFont, CharacterManager::get()->getCharacter(char1).m_KingdomName, id1);
-
-	CharacterManager::get()->marry(char0, char1);
 
 	std::vector<unsigned int> id2{ 13, 14, 15, 16, 17 };
 	CharacterID char2 = createCharacter(id2, Title::King, "Kingdom of Sicilies", CharacterNamePool::getMaleName(), 150, 10, true, sf::Color(200, 181, 105));
