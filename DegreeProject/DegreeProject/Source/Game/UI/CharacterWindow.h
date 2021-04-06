@@ -37,7 +37,6 @@ public:
 	const std::string m_DeclareWar = "Declare War";
 	const std::string m_MakePeace = "Make Peace";
 	const std::string m_Dash = "/";
-	const std::string m_Age = "Age: ";
 	std::string m_Titles[(unsigned int)Title::Baron + 1];
 	int m_CharacterSize = 50;
 #pragma warning(push)
@@ -73,6 +72,10 @@ public:
 	sf::Sprite m_ArmySprite;
 	sf::Vector2f m_ArmyPosition = sf::Vector2f();
 
+	sf::Texture m_AgeTexture;
+	sf::Sprite m_AgeSprite;
+	sf::Vector2f m_AgePosition = sf::Vector2f();
+
 	CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 	{
 		m_OwnedUIWindow = id;
@@ -100,6 +103,9 @@ public:
 
 		m_ArmyTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/soldier unit.png");
 		m_ArmyPosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.22f);
+
+		m_AgeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Age.png");
+		m_AgePosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.42f);
 
 		m_BattleSound = AssetHandler::get().loadAudioFile("Assets/Audio/battle.wav", m_BattleSoundBuffer);
 		m_BattleSound.setLoop(true);
@@ -164,11 +170,11 @@ public:
 
 			m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_OutlineThickness, (int)m_OutlineThickness)));
 
-			m_DeclareWarShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.032f))));
-			m_DeclareWarText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.04f))));
+			m_DeclareWarShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.2f))));
+			m_DeclareWarText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.208f))));
 
-			m_MakePeaceShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.112f))));
-			m_MakePeaceText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.12f))));
+			m_MakePeaceShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.3f))));
+			m_MakePeaceText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.308f))));
 
 			m_CharacterNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.25f), (int)(m_SizeY * 0.025f))));
 
@@ -194,6 +200,7 @@ public:
 			m_Window->draw(m_CharacterNameText);
 			updateSprite(m_ArmySprite, m_ArmyTexture, m_ArmyPosition, m_SpriteSize / 2);
 			m_Window->draw(m_ArmyText);
+			updateSprite(m_AgeSprite, m_AgeTexture, m_AgePosition, m_SpriteSize / 2);
 			m_Window->draw(m_CharacterAgeText);
 			if (!m_PlayerRegion)
 			{
@@ -275,7 +282,7 @@ public:
 		m_GoldText.setString(stream.str());
 		m_GoldText.setFillColor(m_OwnerColor);
 
-		m_CharacterAgeText.setString(m_Age + std::to_string(Time::m_GameDate.getAge(character.m_Birthday)));
+		m_CharacterAgeText.setString(std::to_string(Time::m_GameDate.getAge(character.m_Birthday)));
 		m_CharacterAgeText.setFillColor(m_OwnerColor);
 	}
 
