@@ -83,14 +83,14 @@ struct UpgradeSettlementConsideration : public Consideration
 	{
 		CharacterManager* characterManager = CharacterManager::get();
 
-		int lowestTax = INT_MAX;
-		int targetRegionID = INT_MAX;
+		unsigned int lowestTax = INT_MAX;
+		unsigned int targetRegionID = INT_MAX;
 
 		for (auto& region : characterManager->getCharacter(context).m_OwnedRegionIDs)
 		{
-			if ((float)Map::get().getRegionById(region).m_RegionTax < lowestTax)
+			if (Map::get().getRegionById(region).m_RegionTax < lowestTax)
 			{
-				lowestTax = (float)Map::get().getRegionById(region).m_RegionTax;
+				lowestTax = Map::get().getRegionById(region).m_RegionTax;
 				targetRegionID = region;
 			}
 		}
@@ -241,8 +241,6 @@ struct MarriageConsideration : public Consideration
 
 	float evaluate(CharacterID context, CharacterID potentialSpouse)
 	{
-		CharacterManager* characterManager = CharacterManager::get();
-
 		ArmySizeConsideration armyConsideration;
 		GoldConsideration goldConsideration;
 
