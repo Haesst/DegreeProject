@@ -6,6 +6,7 @@
 #include "Engine/Log.h"
 #include "Engine/Time.h"
 #include "Game/WarManager.h"
+#include "Game/UI/UIManager.h"
 
 UnitManager* UnitManager::m_Instance = nullptr;
 UnitID UnitManager::m_UnitIDs = INVALID_UNIT_ID + 1;
@@ -456,6 +457,7 @@ void UnitManager::unitSiege(Unit& unit)
 			{				
 				CharacterManager::get()->removeRegion(region.m_OwnerID, region.m_RegionId);
 				CharacterManager::get()->addRegion(unit.m_Owner, region.m_RegionId);
+				UIManager::get()->AdjustOwnership(unit.m_Owner, region.m_OwnerID, region.m_RegionId);
 				Map::get().setRegionColor(region.m_RegionId, CharacterManager::get()->getCharacter(unit.m_Owner).m_RegionColor);
 
 				unit.m_DaysSeizing = 0;

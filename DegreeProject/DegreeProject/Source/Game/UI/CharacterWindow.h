@@ -17,6 +17,8 @@ public:
 	sf::RectangleShape m_WindowShape;
 	sf::RectangleShape m_DeclareWarShape;
 	sf::RectangleShape m_MakePeaceShape;
+	sf::RectangleShape m_MarriageShape;
+	sf::RectangleShape m_AllianceShape;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
 	sf::Color m_DeclareWarColor = sf::Color(210, 32, 60);
@@ -33,9 +35,13 @@ public:
 	sf::Font m_Font;
 	sf::Text m_DeclareWarText;
 	sf::Text m_MakePeaceText;
+	sf::Text m_MarriageText;
+	sf::Text m_AllianceText;
 	unsigned int m_CurrentRegionID = 0;
 	const std::string m_DeclareWar = "Declare War";
 	const std::string m_MakePeace = "Make Peace";
+	const std::string m_Marriage = "Marriage";
+	const std::string m_Alliance = "Alliance";
 	const std::string m_Dash = "/";
 	std::string m_Titles[(unsigned int)Title::Baron + 1];
 	int m_CharacterSize = 50;
@@ -169,6 +175,28 @@ public:
 		m_MakePeaceText.setString(m_MakePeace);
 		m_MakePeaceText.setFillColor(m_MakePeaceColor);
 
+		m_MarriageShape.setFillColor(sf::Color::Transparent);
+		m_MarriageShape.setOutlineColor(m_MakePeaceColor);
+		m_MarriageShape.setOutlineThickness(m_OutlineThickness);
+		m_MarriageShape.setSize(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f));
+
+		m_MarriageText.setFont(m_Font);
+		m_MarriageText.setCharacterSize((int)(m_CharacterSize * 0.5f));
+		m_MarriageText.setStyle(m_Style);
+		m_MarriageText.setString(m_Marriage);
+		m_MarriageText.setFillColor(m_MakePeaceColor);
+
+		m_AllianceShape.setFillColor(sf::Color::Transparent);
+		m_AllianceShape.setOutlineColor(m_MakePeaceColor);
+		m_AllianceShape.setOutlineThickness(m_OutlineThickness);
+		m_AllianceShape.setSize(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f));
+
+		m_AllianceText.setFont(m_Font);
+		m_AllianceText.setCharacterSize((int)(m_CharacterSize * 0.5f));
+		m_AllianceText.setStyle(m_Style);
+		m_AllianceText.setString(m_Alliance);
+		m_AllianceText.setFillColor(m_MakePeaceColor);
+
 		m_CharacterNameText.setFont(m_Font);
 		m_CharacterNameText.setCharacterSize(m_CharacterSize);
 		m_CharacterNameText.setStyle(m_Style);
@@ -206,6 +234,12 @@ public:
 
 			m_MakePeaceShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.3f))));
 			m_MakePeaceText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.308f))));
+
+			m_AllianceShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.4f))));
+			m_AllianceText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.408f))));
+
+			m_MarriageShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.5f))));
+			m_MarriageText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.508f))));
 
 			m_CharacterNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.25f), (int)(m_SizeY * 0.025f))));
 
@@ -256,6 +290,10 @@ public:
 				m_Window->draw(m_DeclareWarText);
 				m_Window->draw(m_MakePeaceShape);
 				m_Window->draw(m_MakePeaceText);
+				m_Window->draw(m_AllianceShape);
+				m_Window->draw(m_AllianceText);
+				m_Window->draw(m_MarriageShape);
+				m_Window->draw(m_MarriageText);
 			}
 		}
 	}
@@ -403,6 +441,14 @@ public:
 						Game::m_Sound.play();
 					}
 				}
+			}
+			else if (m_MarriageShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				CharacterManager::get()->marry(m_PlayerCharacter->m_CharacterID, m_CurrentMapRegion->m_OwnerID);
+			}
+			else if (m_AllianceShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				
 			}
 		}
 	}
