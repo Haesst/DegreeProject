@@ -65,6 +65,70 @@ struct ArmySizeConsideration : public Consideration
 	}
 };
 
+struct UpgradeSettlementConsideration : public Consideration
+{
+	UpgradeSettlementConsideration() : Consideration()
+	{
+
+	}
+
+	UpgradeSettlementConsideration(CharacterID context) { m_Context = context; }
+
+	void setContext(CharacterID context) override
+	{
+		m_Context = context;
+	}
+
+	float evaluate(CharacterID context, int outRegion)
+	{
+		CharacterManager* characterManager = CharacterManager::get();
+
+		int lowestTax = INT_MAX;
+		int targetRegionID = INT_MAX;
+
+		for (auto& region : characterManager->getCharacter(context).m_OwnedRegionIDs)
+		{
+			if ((float)Map::get().getRegionById(region).m_RegionTax < lowestTax)
+			{
+				lowestTax = (float)Map::get().getRegionById(region).m_RegionTax;
+				targetRegionID = region;
+			}
+		}
+
+		if (lowestTax == INT_MAX || targetRegionID == INT_MAX)
+		{
+			return 0.0f;
+		}
+
+		outRegion = targetRegionID;
+
+		float goldSurplusWeight = 0.0f;
+		float atWarWeight = 0.0f;
+
+		int buildingIndex = rand() % GameData::m_Buildings.size();
+		Building building = GameData::m_Buildings[buildingIndex];
+
+		if ((characterManager->getCharacter(context).m_CurrentGold - building.m_Cost) > 20)
+		{
+			goldSurplusWeight += .2f;
+		}
+
+		if (characterManager->getCharacter(context).m_CurrentWars.size() > 0)
+		{
+			atWarWeight -= .5;
+		}
+		
+		else
+		{
+			atWarWeight += .4f;
+		}
+
+		return std::clamp(atWarWeight + goldSurplusWeight, 0.0f, 1.0f);
+	}
+};
+
+
+
 struct GoldConsideration : public Consideration
 {
 	GoldConsideration() : Consideration()
@@ -161,5 +225,30 @@ struct ExpansionConsideration : public Consideration
 		float percentDiff = (float)wantedRegionTax / avgTax;
 
 		return std::clamp(std::pow(percentDiff, 2.0f) + distanceWeight, 0.0f, 1.0f);
+	}
+};
+
+struct MarriageConsideration : public Consideration
+{
+	MarriageConsideration() : Consideration()
+	{
+	}
+
+	void setContext(CharacterID context)
+	{
+		m_Context = context;
+	}
+
+	float evaluate(CharacterID context, CharacterID potentialSpouse)
+	{
+		CharacterManager* characterManager = CharacterManager::get();
+
+		ArmySizeConsideration armyConsideration;
+		GoldConsideration goldConsideration;
+
+		float armyEval = armyConsideration.evaluate(potentialSpouse, context);
+		float goldEval = goldConsideration.evaluate(potentialSpouse, context);
+
+		return std::clamp(armyEval * goldEval, 0.0f, 1.0f);
 	}
 };

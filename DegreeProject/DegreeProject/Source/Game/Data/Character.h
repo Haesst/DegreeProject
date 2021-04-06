@@ -7,6 +7,12 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
+enum class Gender
+{
+	Male,
+	Female
+};
+
 struct Character
 {
 	// Don't add any functions to this. Keep it as POD
@@ -22,6 +28,10 @@ struct Character
 
 	float m_Income = 0.0f;
 	float m_CurrentGold = 0.0f;
+
+	CharacterID m_Spouse = INVALID_CHARACTER_ID;
+
+	Gender m_Gender = Gender::Male;
 
 	std::vector<unsigned int> m_OwnedRegionIDs;
 

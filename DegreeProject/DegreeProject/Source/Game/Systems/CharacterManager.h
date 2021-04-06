@@ -32,6 +32,8 @@ public:
 	void addRegion(const CharacterID characterId, const unsigned int regionId);
 	void removeRegion(const CharacterID characterId, const unsigned int regionId);
 
+	void marry(CharacterID character, CharacterID spouse);
+
 	static CharacterManager* get();
 	
 	CharacterID createCharacterWithRandomBirthday(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge);

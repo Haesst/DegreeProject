@@ -43,8 +43,10 @@ public:
 	void update();
 
 private:
+	float upgradeDecision(CharacterID ID, int outRegion);
 	float warDecision(CharacterID ID);
 	float expansionDecision(CharacterID ID);
+	float marriageDecision(CharacterID ID, CharacterID spouse);
 
 	int considerPrioritizedWar(WarmindComponent& warmind);
 	void considerOrders(WarmindComponent& warmind, Unit& unit, CharacterID target);
