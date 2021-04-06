@@ -7,6 +7,12 @@
 #include "Game/Map/Map.h"
 #include "Game/AI/AIManager.h"
 #include "Game/Player.h"
+#include <random>
+
+#include <fstream>
+#include <json.hpp>
+using json = nlohmann::json;
+#include <mutex>
 
 CharacterManager* CharacterManager::m_Instance = nullptr;
 CharacterID CharacterManager::m_CharacterIDs = 1;
@@ -32,6 +38,26 @@ CharacterID CharacterManager::createCharacterWithRandomBirthday(const char* char
 	return internalCreateCharacter(character, characterName, title, ownedRegions, realmName, army, gold, color, playerControlled);
 }
 
+void CharacterManager::loadTraits(const char* path)
+{
+	std::ifstream file(path);
+	json j;
+	file >> j;
+
+	m_TraitMtx.lock();
+	m_Traits.clear();
+
+	for (auto& element : j)
+	{
+		std::string traitName = element["debugName"].get<std::string>();
+		Trait newTrait;
+		newTrait.m_TraitName = traitName.c_str();
+		m_Traits.push_back({traitName.c_str()});
+	}
+
+	m_TraitMtx.unlock();
+}
+
 CharacterID CharacterManager::createCharacter(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday)
 {
 	Character& character = m_CharacterPool.Rent();
@@ -41,9 +67,51 @@ CharacterID CharacterManager::createCharacter(const char* characterName, Title t
 	return internalCreateCharacter(character, characterName, title, ownedRegions, realmName, army, gold, color, playerControlled);
 }
 
+void CharacterManager::addTrait(CharacterID ID, Trait trait)
+{
+	for (auto& t : getCharacter(ID).m_Traits)
+	{
+		if (t.m_TraitName == trait.m_TraitName)
+		{
+			return;
+		}
+	}
+
+	getCharacter(ID).m_Traits.push_back(trait);
+}
+
+void CharacterManager::removeTrait(CharacterID ID, Trait trait)
+{
+	unsigned int index = 0;
+	for (auto& t : getCharacter(ID).m_Traits)
+	{
+		if (t.m_TraitName == trait.m_TraitName)
+		{
+			getCharacter(ID).m_Traits.erase(getCharacter(ID).m_Traits.begin() + index);
+			break;
+		}
+
+		index++;
+	}
+}
+
+Trait CharacterManager::getTrait(const char* traitName)
+{
+	for (auto trait : m_Traits)
+	{
+		if (trait.m_TraitName == traitName)
+		{
+			return trait;
+		}
+	}
+
+	return Trait("INVALID");
+}
+
 void CharacterManager::start()
 {
 	Time::m_GameDate.subscribeToMonthChange(std::bind(&CharacterManager::onMonthChange, this, std::placeholders::_1));
+	loadTraits("Assets\\Data\\Traits.json");
 
 	for (auto& character : m_Characters)
 	{
@@ -67,7 +135,8 @@ void CharacterManager::render()
 
 CharacterManager::CharacterManager()
 	: m_CharacterPool(CharacterPool(m_PoolInitSize, m_PoolGrowSize))
-{}
+{
+}
 
 CharacterManager::~CharacterManager()
 {
@@ -119,8 +188,28 @@ void CharacterManager::onMonthChange(Date)
 		incomingGold -= (character.m_RaisedArmySize * 0.1f); // Todo: Declare armycost somewhere
 		character.m_Income = incomingGold; // Todo: Change to prediction for upcoming month instead of showing last month.
 		character.m_CurrentGold += incomingGold;
+
+		if (character.m_Spouse != INVALID_CHARACTER_ID)
+		{
+			float fertilityWeight = character.m_Fertility + getCharacter(character.m_Spouse).m_Fertility;
+			bool rand = weightedRandom(fertilityWeight);
+
+			if (rand)
+			{
+				//Mark character as pregnant.
+				addTrait(character.m_Spouse, getTrait("Pregnant"));
+			}
+		}
 	}
 }
+
+bool CharacterManager::weightedRandom(int weight)
+{
+	float f = rand() * 1.0f / RAND_MAX;
+	float vv = weight / 10.0f;
+	return f < vv;
+}
+
 
 void CharacterManager::constructBuilding(const CharacterID characterId, const int buildingId, const int regionId, const int buildingSlot)
 {
@@ -195,6 +284,9 @@ CharacterID CharacterManager::internalCreateCharacter(Character& character, cons
 
 	character.m_MaxArmySize = army;
 	character.m_CurrentMaxArmySize = army;
+
+	//Generate random number between 0 - 1, will be used as percent
+	character.m_Fertility = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
 
 	character.m_CurrentGold = gold;
 

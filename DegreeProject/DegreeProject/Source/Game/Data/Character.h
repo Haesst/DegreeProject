@@ -13,6 +13,21 @@ enum class Gender
 	Female
 };
 
+struct Trait
+{
+	const char* m_TraitName;
+
+	Trait()
+	{
+
+	}
+
+	Trait(const char* traitName)
+	{
+		m_TraitName = traitName;
+	}
+};
+
 struct Character
 {
 	// Don't add any functions to this. Keep it as POD
@@ -32,8 +47,9 @@ struct Character
 	CharacterID m_Spouse = INVALID_CHARACTER_ID;
 
 	Gender m_Gender = Gender::Male;
-
+	float m_Fertility = -1.f;
 	std::vector<unsigned int> m_OwnedRegionIDs;
+	std::vector<Trait> m_Traits;
 
 	unsigned int m_MaxArmySize = 0;
 	unsigned int m_RaisedArmySize = 0;
