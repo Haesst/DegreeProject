@@ -13,10 +13,8 @@ struct RegionWindow
 	sf::RectangleShape m_WindowShape;
 	sf::RectangleShape m_BuildingSlotShapes[NUMBER_OF_BUILDING_SLOTS];
 	sf::RectangleShape m_RaiseArmyShape;
-	sf::Color m_BuildingSlotColors[NUMBER_OF_BUILDING_SLOTS];
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
-	sf::Color m_RaiseArmyColor = sf::Color::Transparent;
 	float m_SizeX = 600.0f;
 	float m_SizeY = 600.0f;
 	float m_OutlineThickness = 10.0f;
@@ -24,9 +22,6 @@ struct RegionWindow
 	sf::Text m_RegionTaxText;
 	sf::Text m_KingdomNameText;
 	sf::Font m_Font;
-	std::string m_RegionName = "";
-	std::string m_RegionTax = "";
-	std::string m_KingdomName = "";
 	int m_CharacterSize = 50;
 	bool m_Visible = false;
 	bool m_Open = false;
@@ -38,7 +33,7 @@ struct RegionWindow
 	sf::Sprite m_RaiseArmySprite;
 	sf::Texture m_CharacterTexture;
 	sf::Sprite m_CharacterSprite;
-	int m_SpriteSize = 64;
+	const static int m_SpriteSize = 64;
 	float m_IconSlotPositionX = 0.0f;
 	float m_IconSlotPositionOffset = 0.0f;
 	float m_IconSlotPositionY = 0.0f;
@@ -58,17 +53,22 @@ struct RegionWindow
 	float m_ProgressMeterWidth = 64.0f;
 	float m_ProgressMeterBorder = 1.0f;
 	float m_ProgressMeterDoubleBorder;
-	sf::Color m_OuterBuildingProgressColor = sf::Color(25, 25, 25, 250);
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 
 	sf::Vector2f m_CharacterPosition = sf::Vector2f();
 
-	RegionWindow(UIID id, sf::Font font)
+	RegionWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 	{
 		m_OwnedUIWindow = id;
 		m_Font = font;
-		m_Window = Window::getWindow();
+		m_SizeX = size.x;
+		m_SizeY = size.y;
 		m_ProgressMeterDoubleBorder = m_ProgressMeterBorder * 2;
+	}
+
+	void start()
+	{
+		m_Window = Window::getWindow();
 
 		m_BuildingSlotTextures[0] = AssetHandler::get().getTextureAtPath("Assets/Graphics/FortIcon.png");
 		m_BuildingSlotTextures[1] = AssetHandler::get().getTextureAtPath("Assets/Graphics/BarackIcon.png");
@@ -83,10 +83,7 @@ struct RegionWindow
 		m_IconSlotPositionY = m_Window->getSize().y - m_SpriteSize - m_OutlineThickness * 3;
 
 		m_CharacterPosition = sf::Vector2f(m_OutlineThickness + m_SpriteSize, (float)(m_Window->getSize().y - m_SpriteSize * 8));
-	}
-
-	void start()
-	{
+		
 		m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
 
 		m_WindowShape.setFillColor(m_FillColor);
@@ -116,7 +113,7 @@ struct RegionWindow
 
 	void update()
 	{
-		updateInfo();
+		clickOnMap();
 		handleWindow();
 
 		if (m_Visible)
@@ -127,34 +124,23 @@ struct RegionWindow
 			int positionY = m_Window->getSize().y - (int)(m_SizeY + m_OutlineThickness);
 
 			m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX, positionY)));
-			m_WindowShape.setOutlineColor(m_OwnerColor);
 
 			int iconSlotPositionX = (int)(m_SizeX - m_SpriteSize - m_OutlineThickness);
 			int iconSlotPositionOffset = (int)(m_SpriteSize + m_OutlineThickness * 2);
-			int iconSlotPositionY = (int)(Window::getWindow()->getSize().y - m_SpriteSize - m_OutlineThickness * 3);
+			int iconSlotPositionY = (int)(m_Window->getSize().y - m_SpriteSize - m_OutlineThickness * 3);
 
 			for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
 			{
-				m_BuildingSlotShapes[index].setFillColor(m_BuildingSlotColors[index]);
-				m_BuildingSlotShapes[index].setOutlineColor(m_OwnerColor);
 				m_BuildingSlotShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i(iconSlotPositionX - iconSlotPositionOffset * index, iconSlotPositionY)));
 			}
 
-			m_RaiseArmyShape.setFillColor(m_RaiseArmyColor);
-			m_RaiseArmyShape.setOutlineColor(m_OwnerColor);
 			m_RaiseArmyShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(iconSlotPositionX, iconSlotPositionY - iconSlotPositionOffset)));
 
-			m_RegionNameText.setString(m_RegionName);
 			m_RegionNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.1f), positionY)));
-			m_RegionNameText.setFillColor(m_OwnerColor);
 
-			m_RegionTaxText.setString(m_TaxString + m_RegionTax);
-			m_RegionTaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.7f), positionY + (int)(m_SizeY * 0.4f))));
-			m_RegionTaxText.setFillColor(m_OwnerColor);
+			m_RegionTaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.8f), positionY + (int)(m_SizeY * 0.5f))));
 
-			m_KingdomNameText.setString(m_KingdomName);
 			m_KingdomNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.1f), positionY + (int)(m_SizeY * 0.1f))));
-			m_KingdomNameText.setFillColor(m_OwnerColor);
 		}
 	}
 
@@ -176,27 +162,7 @@ struct RegionWindow
 		}
 	}
 
-	void displayProgressMeter(unsigned int index)
-	{
-		int buildingProgress = m_CurrentMapRegion->m_BuildingSlots[index].m_DaysBuilt;
-		if (!m_CurrentMapRegion->m_BuildingSlots[index].m_Finished && buildingProgress != 0)
-		{
-			float progressWidth = m_ProgressMeterWidth - m_ProgressMeterDoubleBorder;
-			progressWidth *= (float)buildingProgress / (float)GameData::m_Buildings[index + 1].m_DaysToConstruct;
-
-			m_BuildingProgressShape[index].setPosition(m_BuildingSlotShapes[index].getPosition());
-			m_BuildingProgressShape[index].setSize({ progressWidth, m_BuildingSlotShapes[index].getSize().y });
-			m_BuildingProgressShape[index].setFillColor(m_OwnerColor);
-
-			Window::getWindow()->draw(m_BuildingProgressShape[index]);
-		}
-		else if(m_CurrentMapRegion->m_BuildingSlots[index].m_Finished)
-		{
-			m_BuildingSlotColors[index] = m_OwnerColor;
-		}
-	}
-
-	void updateInfo()
+	void clickOnMap()
 	{
 		if (InputHandler::getLeftMouseClicked() && !InputHandler::getPlayerUnitSelected() && !InputHandler::getCharacterWindowOpen())
 		{
@@ -215,39 +181,9 @@ struct RegionWindow
 							regionID = squareData.m_RegionID;
 						}
 					}
-
-					if (m_CurrentRegionID != regionID)
-					{
-						m_CurrentRegionID = regionID;
-						checkIfPlayerRegion(m_CurrentRegionID);
-						m_CurrentMapRegion = &Map::get().getRegionById(m_CurrentRegionID);
-						m_RegionTax = std::to_string(m_CurrentMapRegion->m_RegionTax);
-						m_RegionName = m_CurrentMapRegion->m_RegionName;
-						Character character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
-						m_KingdomName = character.m_KingdomName;
-						m_OwnerColor = character.m_RegionColor;
-						if (character.m_RaisedArmySize > 0)
-						{
-							m_RaiseArmyColor = m_OwnerColor;
-						}
-						else
-						{
-							m_RaiseArmyColor = sf::Color::Transparent;
-						}
-						for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
-						{
-							if (m_CurrentMapRegion->m_BuildingSlots[index].m_Finished)
-							{
-								m_BuildingSlotColors[index] = m_OwnerColor;
-								m_BuildingSlotSprites[index].setColor(m_OwnerColor);
-							}
-							else
-							{
-								m_BuildingSlotColors[index] = sf::Color::Transparent;
-								m_BuildingSlotSprites[index].setColor(sf::Color::White);
-							}
-						}
-					}
+					m_CurrentRegionID = regionID;
+					checkIfPlayerRegion(m_CurrentRegionID);
+					updateInfo();
 					m_Open = true;
 				}
 				else
@@ -266,6 +202,67 @@ struct RegionWindow
 			if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				closeWindow();
+			}
+		}
+	}
+
+	void displayProgressMeter(unsigned int index)
+	{
+		int buildingProgress = m_CurrentMapRegion->m_BuildingSlots[index].m_DaysBuilt;
+		if (!m_CurrentMapRegion->m_BuildingSlots[index].m_Finished && buildingProgress != 0)
+		{
+			float progressWidth = m_ProgressMeterWidth - m_ProgressMeterDoubleBorder;
+			progressWidth *= (float)buildingProgress / (float)GameData::m_Buildings[index + 1].m_DaysToConstruct;
+
+			m_BuildingProgressShape[index].setPosition(m_BuildingSlotShapes[index].getPosition());
+			m_BuildingProgressShape[index].setSize({ progressWidth, m_BuildingSlotShapes[index].getSize().y });
+			m_BuildingProgressShape[index].setFillColor(m_OwnerColor);
+
+			m_Window->draw(m_BuildingProgressShape[index]);
+		}
+		else if(m_CurrentMapRegion->m_BuildingSlots[index].m_Finished)
+		{
+			m_BuildingSlotShapes[index].setFillColor(m_OwnerColor);
+		}
+	}
+
+	void updateInfo()
+	{
+		m_CurrentMapRegion = &Map::get().getRegionById(m_CurrentRegionID);
+		Character character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
+		m_OwnerColor = character.m_RegionColor;
+
+		m_WindowShape.setOutlineColor(m_OwnerColor);
+
+		m_RegionTaxText.setString(m_TaxString + std::to_string(m_CurrentMapRegion->m_RegionTax));
+		m_RegionTaxText.setFillColor(m_OwnerColor);
+
+		m_RegionNameText.setString(m_CurrentMapRegion->m_RegionName);
+		m_RegionNameText.setFillColor(m_OwnerColor);
+
+		m_KingdomNameText.setString(character.m_KingdomName);
+		m_KingdomNameText.setFillColor(m_OwnerColor);
+
+		m_RaiseArmyShape.setOutlineColor(m_OwnerColor);
+		if (character.m_RaisedArmySize > 0)
+		{
+			m_RaiseArmyShape.setFillColor(m_OwnerColor);
+		}
+		else
+		{
+			m_RaiseArmyShape.setFillColor(sf::Color::Transparent);
+		}
+
+		for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
+		{
+			m_BuildingSlotShapes[index].setOutlineColor(m_OwnerColor);
+			if (m_CurrentMapRegion->m_BuildingSlots[index].m_Finished)
+			{
+				m_BuildingSlotSprites[index].setColor(m_OwnerColor);
+			}
+			else
+			{
+				m_BuildingSlotShapes[index].setFillColor(sf::Color::Transparent);
 			}
 		}
 	}
@@ -312,14 +309,16 @@ struct RegionWindow
 				{
 					UnitManager::get().dismissUnit(unit.m_UnitID);
 					m_PlayerCharacter->m_RaisedArmySize = 0;
-					m_RaiseArmyColor = sf::Color::Transparent;
+					m_RaiseArmyShape.setFillColor(sf::Color::Transparent);
+					m_RaiseArmySprite.setColor(sf::Color::White);
 				}
 				else
 				{
 					Vector2DInt capitalPosition = Map::get().getRegionCapitalLocation(m_CurrentRegionID);
 					UnitManager::get().raiseUnit(unit.m_UnitID, capitalPosition);
 					m_PlayerCharacter->m_RaisedArmySize = m_PlayerCharacter->m_MaxArmySize;
-					m_RaiseArmyColor = m_OwnerColor;
+					m_RaiseArmyShape.setFillColor(m_OwnerColor);
+					m_RaiseArmySprite.setColor(m_OwnerColor);
 				}
 				return;
 			}
@@ -362,14 +361,14 @@ struct RegionWindow
 		updateSprite(m_CharacterSprite, m_CharacterTexture, m_CharacterPosition);
 	}
 
-	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position)
+	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize = m_SpriteSize)
 	{
 		sprite.setTexture(texture, true);
 		sprite.setPosition(Window::getWindow()->mapPixelToCoords(sf::Vector2i((int)position.x, (int)position.y)));
 
 		sf::FloatRect localSize = sprite.getLocalBounds();
 
-		sprite.setScale(m_SpriteSize / localSize.width, m_SpriteSize / localSize.height);
+		sprite.setScale(spriteSize / localSize.width, spriteSize / localSize.height);
 		
 		m_Window->draw(sprite);
 	}

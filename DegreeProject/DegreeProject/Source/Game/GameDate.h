@@ -139,6 +139,18 @@ struct GameDate
 		return std::to_string(m_Date.m_Day) + getDaySuffix() + " of " + m_MonthName[m_Date.m_Month] + ". " + std::to_string(m_Date.m_Year) + " AD";
 	}
 
+	unsigned int getAge(Date birthday)
+	{
+		if ((m_Date.m_Month >= birthday.m_Month && m_Date.m_Day >= birthday.m_Day) || m_Date.m_Month > birthday.m_Month)
+		{
+			return m_Date.m_Year - birthday.m_Year;
+		}
+		else
+		{
+			return m_Date.m_Year - birthday.m_Year - 1;
+		}
+	}
+
 	void subscribeToMonthChange(std::function<void(Date)> action)
 	{
 		m_MonthChangeSubscribers.push_back(action);

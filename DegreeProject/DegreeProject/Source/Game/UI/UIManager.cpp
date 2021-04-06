@@ -56,22 +56,22 @@ UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D posit
 	{
 		case UIType::CharacterWindow:
 		{
-			m_CharacterWindow = new CharacterWindow(id, font);
+			m_CharacterWindow = new CharacterWindow(id, font, position, size);
 			break;
 		}
 		case UIType::RegionWindow:
 		{
-			m_RegionWindow = new RegionWindow(id, font);
+			m_RegionWindow = new RegionWindow(id, font, position, size);
 			break;
 		}
 		case UIType::StatBar:
 		{
-			m_StatBar = new StatBar(id, font);
+			m_StatBar = new StatBar(id, font, position, size);
 			break;
 		}
 		case UIType::DateBar:
 		{
-			m_DateBar = new DateBar(id, font);
+			m_DateBar = new DateBar(id, font, position, size);
 			break;
 		}
 		default:

@@ -8,7 +8,7 @@
 
 struct StatBar
 {
-	sf::RectangleShape m_Shape;
+	sf::RectangleShape m_WindowShape;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
 	float m_SizeX = 400.0f;
@@ -19,10 +19,6 @@ struct StatBar
 	sf::Text m_MaxArmyText;
 	sf::Text m_CurrentMaxArmyText;
 	sf::Font m_Font;
-	std::string m_CurrentGold = "";
-	std::string m_CurrentIncome = "";
-	std::string m_MaxArmy = "";
-	std::string m_CurrentMaxArmy = "";
 	int m_CharacterSize = 30;
 #pragma warning(push)
 #pragma warning(disable: 26812)
@@ -35,14 +31,22 @@ struct StatBar
 	sf::Sprite m_CoinSprite;
 	sf::Texture m_ArmyTexture;
 	sf::Sprite m_ArmySprite;
-	int m_SpriteSize = 32;
+	const static int m_SpriteSize = 32;
 	sf::Vector2f m_CoinPosition = sf::Vector2f();
 	sf::Vector2f m_ArmyPosition = sf::Vector2f();
 
-	StatBar(UIID id, sf::Font font)
+	StatBar(UIID id, sf::Font font, Vector2D, Vector2D size)
 	{
 		m_OwnedUIWindow = id;
 		m_Font = font;
+		m_SizeX = size.x;
+		m_SizeY = size.y;
+	}
+
+	void start()
+	{
+		Time::m_GameDate.subscribeToMonthChange(std::bind(&StatBar::onMonthChange, this));
+
 		m_Window = Window::getWindow();
 
 		m_CoinTexture = AssetHandler::get().loadImageFromFile("Assets/Graphics/Coins.png");
@@ -50,75 +54,54 @@ struct StatBar
 
 		m_CoinPosition = sf::Vector2f(m_SizeX * 0.1f + m_Window->getSize().x - m_SizeX - m_OutlineThickness, m_SizeY * 0.3f);
 		m_ArmyPosition = sf::Vector2f(m_SizeX * 0.5f + m_Window->getSize().x - m_SizeX - m_OutlineThickness, m_SizeY * 0.3f);
-	}
 
-	void start()
-	{
 		updateStats();
 
-		int positionX = m_Window->getSize().x - (int)(m_SizeX + m_OutlineThickness);
-		int positionY = (int)m_OutlineThickness;
-
-		m_Shape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX, positionY)));
-		m_Shape.setFillColor(m_FillColor);
-		m_Shape.setOutlineColor(m_OwnerColor);
-		m_Shape.setOutlineThickness(m_OutlineThickness);
-		m_Shape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
+		m_WindowShape.setFillColor(m_FillColor);
+		m_WindowShape.setOutlineColor(m_OwnerColor);
+		m_WindowShape.setOutlineThickness(m_OutlineThickness);
+		m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
 
 		m_CurrentGoldText.setFont(m_Font);
 		m_CurrentGoldText.setCharacterSize(m_CharacterSize);
 		m_CurrentGoldText.setStyle(m_Style);
-		m_CurrentGoldText.setString(m_CurrentGold);
-		m_CurrentGoldText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.2f), positionY)));
 		m_CurrentGoldText.setFillColor(m_OwnerColor);
 
 		m_CurrentIncomeText.setFont(m_Font);
 		m_CurrentIncomeText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 		m_CurrentIncomeText.setStyle(m_Style);
-		m_CurrentIncomeText.setString(m_CurrentIncome);
-		m_CurrentIncomeText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.2f), positionY * 4)));
 		m_CurrentIncomeText.setFillColor(m_OwnerColor);
 
 		m_MaxArmyText.setFont(m_Font);
 		m_MaxArmyText.setCharacterSize(m_CharacterSize);
 		m_MaxArmyText.setStyle(m_Style);
-		m_MaxArmyText.setString(m_MaxArmy);
-		m_MaxArmyText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.6f), positionY)));
 		m_MaxArmyText.setFillColor(m_OwnerColor);
 
 		m_CurrentMaxArmyText.setFont(m_Font);
 		m_CurrentMaxArmyText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 		m_CurrentMaxArmyText.setStyle(m_Style);
-		m_CurrentMaxArmyText.setString(m_CurrentMaxArmy);
-		m_CurrentMaxArmyText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.625f), positionY * 4)));
 		m_CurrentMaxArmyText.setFillColor(m_OwnerColor);
 	}
 
 	void update()
 	{
-		updateStats();
-
 		int positionX = m_Window->getSize().x - (int)(m_SizeX + m_OutlineThickness);
 		int positionY = (int)m_OutlineThickness;
 
-		m_Shape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX, positionY)));
+		m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX, positionY)));
 
-		m_CurrentGoldText.setString(m_CurrentGold);
 		m_CurrentGoldText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.2f), positionY)));
 
-		m_CurrentIncomeText.setString(m_CurrentIncome);
 		m_CurrentIncomeText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.2f), positionY * 4)));
 
-		m_MaxArmyText.setString(m_MaxArmy);
 		m_MaxArmyText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.6f), positionY)));
 
-		m_CurrentMaxArmyText.setString(m_CurrentMaxArmy);
 		m_CurrentMaxArmyText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.625f), positionY * 4)));
 	}
 
 	void render()
 	{
-		m_Window->draw(m_Shape);
+		m_Window->draw(m_WindowShape);
 		updateSprite(m_CoinSprite, m_CoinTexture, m_CoinPosition);
 		updateSprite(m_ArmySprite, m_ArmyTexture, m_ArmyPosition);
 		m_Window->draw(m_CurrentGoldText);
@@ -127,13 +110,18 @@ struct StatBar
 		m_Window->draw(m_CurrentMaxArmyText);
 	}
 
+	void onMonthChange()
+	{
+		updateStats();
+	}
+
 	void updateStats()
 	{
 		Character& character = CharacterManager::get()->getPlayerCharacter();
 
 		std::stringstream stream;
 		stream << std::fixed << std::setprecision(1) << character.m_CurrentGold;
-		m_CurrentGold = stream.str();
+		m_CurrentGoldText.setString(stream.str());
 		stream.str(std::string());
 		stream.clear();
 
@@ -141,27 +129,27 @@ struct StatBar
 		if (income >= 0.0f)
 		{
 			stream << m_PositiveSign << std::fixed << std::setprecision(1) << character.m_Income;
-			m_CurrentIncome = stream.str();
+			m_CurrentIncomeText.setString(stream.str());
 		}
 		else
 		{
 			stream << std::fixed << std::setprecision(1) << character.m_Income;
-			m_CurrentIncome = stream.str();
+			m_CurrentIncomeText.setString(stream.str());
 		}
 
-		m_MaxArmy = std::to_string(character.m_MaxArmySize);
-		m_CurrentMaxArmy = std::to_string(character.m_CurrentMaxArmySize);
+		m_MaxArmyText.setString(std::to_string(character.m_MaxArmySize));
+		m_CurrentMaxArmyText.setString(std::to_string(character.m_RaisedArmySize));
 		m_OwnerColor = character.m_RegionColor;
 	}
 
-	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position)
+	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize = m_SpriteSize)
 	{
 		sprite.setTexture(texture, true);
 		sprite.setPosition(Window::getWindow()->mapPixelToCoords(sf::Vector2i((int)position.x, (int)position.y)));
 
 		sf::FloatRect localSize = sprite.getLocalBounds();
 
-		sprite.setScale(m_SpriteSize / localSize.width, m_SpriteSize / localSize.height);
+		sprite.setScale(spriteSize / localSize.width, spriteSize / localSize.height);
 
 		m_Window->draw(sprite);
 	}

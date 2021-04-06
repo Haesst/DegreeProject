@@ -11,7 +11,7 @@ const static unsigned int NUMBER_OF_BUTTONS = 3;
 #pragma warning(disable: 26812)
 struct DateBar
 {
-	sf::RectangleShape m_Shape;
+	sf::RectangleShape m_WindowShape;
 	sf::RectangleShape m_DecreaseSpeedShape;
 	sf::RectangleShape m_IncreaseSpeedVerticalShape;
 	sf::RectangleShape m_IncreaseSpeedHorizontalShape;
@@ -38,11 +38,12 @@ struct DateBar
 
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 
-	DateBar(UIID id, sf::Font font)
+	DateBar(UIID id, sf::Font font, Vector2D, Vector2D size)
 	{
 		m_OwnedUIWindow = id;
-		m_Window = Window::getWindow();
 		m_Font = font;
+		m_SizeX = size.x;
+		m_SizeY = size.y;
 		for (unsigned int index = 0; index < NUMBER_OF_BUTTONS; index++)
 		{
 			m_ButtonShapes[index] = sf::RectangleShape();
@@ -55,6 +56,10 @@ struct DateBar
 
 	void start()
 	{
+		Time::m_GameDate.subscribeToDayChange([](void* data) { DateBar& datebar = *static_cast<DateBar*>(data); datebar.onDayChanged(); }, static_cast<void*>(this));
+
+		m_Window = Window::getWindow();
+
 		updateStats();
 
 		float sizeX = m_ButtonThickness * 0.5f;
@@ -62,10 +67,10 @@ struct DateBar
 
 		m_OwnerColor = CharacterManager::get()->getPlayerCharacter().m_RegionColor;
 
-		m_Shape.setFillColor(m_FillColor);
-		m_Shape.setOutlineColor(m_OwnerColor);
-		m_Shape.setOutlineThickness(m_OutlineThickness);
-		m_Shape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
+		m_WindowShape.setFillColor(m_FillColor);
+		m_WindowShape.setOutlineColor(m_OwnerColor);
+		m_WindowShape.setOutlineThickness(m_OutlineThickness);
+		m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
 
 		for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 		{
@@ -108,13 +113,12 @@ struct DateBar
 
 	void update()
 	{
-		updateStats();
 		clickButton();
 
 		int positionX = m_Window->getSize().x - (int)(m_SizeX + m_OutlineThickness);
 		int positionY = m_Window->getSize().y - (int)(m_SizeY + m_OutlineThickness);
 
-		m_Shape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX, positionY)));
+		m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX, positionY)));
 
 		for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 		{
@@ -148,13 +152,12 @@ struct DateBar
 
 		m_IncreaseSpeedVerticalShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_ButtonThickness * 11.5f), positionY + (int)(m_SizeY * 0.25f))));
 
-		m_DateText.setString(m_Date);
 		m_DateText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.475f), positionY + (int)(m_OutlineThickness * 0.5f))));
 	}
 
 	void render()
 	{
-		m_Window->draw(m_Shape);
+		m_Window->draw(m_WindowShape);
 		for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 		{
 			m_Window->draw(m_ButtonShapes[index]);
@@ -171,9 +174,14 @@ struct DateBar
 		m_Window->draw(m_DateText);
 	}
 
+	void onDayChanged()
+	{
+		updateStats();
+	}
+
 	void updateStats()
 	{
-		m_Date = Time::m_GameDate.getDateString();
+		m_DateText.setString(Time::m_GameDate.getDateString());
 		m_CurrentSpeedLevel = Time::m_CurrentSpeedLevel;
 	}
 

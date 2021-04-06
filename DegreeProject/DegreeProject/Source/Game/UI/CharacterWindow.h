@@ -8,6 +8,8 @@
 #include "Game/Map/Map.h"
 #include "Game/Systems/CharacterManager.h"
 #include "Game/Game.h"
+#include <iomanip>
+#include "Game/WarManager.h"
 
 class CharacterWindow
 {
@@ -23,22 +25,20 @@ public:
 	float m_SizeY = 1060.0f;
 	float m_OutlineThickness = 10.0f;
 	bool m_Visible = false;
-	sf::Text m_OwnerNameText;
-	sf::Text m_TaxText;
-	sf::Text m_RegionNameText;
-	sf::Text m_OwnerCharacterText;
+	sf::Text m_RealmNameText;
+	sf::Text m_GoldText;
+	sf::Text m_ArmyText;
+	sf::Text m_CharacterNameText;
+	sf::Text m_CharacterAgeText;
 	sf::Font m_Font;
 	sf::Text m_DeclareWarText;
 	sf::Text m_MakePeaceText;
-	int m_RegionTax = 0;
 	unsigned int m_CurrentRegionID = 0;
-	std::string m_RegionName = "";
-	std::string m_OwnerKingdomName = "";
-	std::string m_OwnerCharacterName = "";
-	std::string m_OwnerTitle = "";
-	std::string m_DeclareWar = "Declare War";
-	std::string m_MakePeace = "Make Peace";
-	std::vector<std::string> m_Titles;
+	const std::string m_DeclareWar = "Declare War";
+	const std::string m_MakePeace = "Make Peace";
+	const std::string m_Dash = "/";
+	const std::string m_Age = "Age: ";
+	std::string m_Titles[(unsigned int)Title::Baron + 1];
 	int m_CharacterSize = 50;
 #pragma warning(push)
 #pragma warning(disable: 26812)
@@ -46,14 +46,13 @@ public:
 #pragma warning(pop)
 	bool m_Open = false;
 
+	std::unordered_map<int, int> m_PlayerWars;
+
 	sf::RenderWindow* m_Window = nullptr;
 	CharacterWindow* m_CharacterWindows = nullptr;
 	Character* m_PlayerCharacter = nullptr;
 	MapRegion* m_CurrentMapRegion = nullptr;
 	bool m_PlayerRegion = false;
-
-	const std::string m_RegionString = "Region: ";
-	const std::string m_TaxString = "Tax: ";
 
 	sf::Sound m_BattleSound;
 	sf::SoundBuffer m_BattleSoundBuffer;
@@ -63,25 +62,45 @@ public:
 
 	sf::Texture m_CharacterTexture;
 	sf::Sprite m_CharacterSprite;
-	int m_SpriteSize = 64;
+	const static int m_SpriteSize = 64;
 	sf::Vector2f m_CharacterPosition = sf::Vector2f();
 
-	CharacterWindow(UIID id, sf::Font font)
+	sf::Texture m_GoldTexture;
+	sf::Sprite m_GoldSprite;
+	sf::Vector2f m_GoldPosition = sf::Vector2f();
+
+	sf::Texture m_ArmyTexture;
+	sf::Sprite m_ArmySprite;
+	sf::Vector2f m_ArmyPosition = sf::Vector2f();
+
+	CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 	{
 		m_OwnedUIWindow = id;
 		m_Font = font;
-		m_Titles.push_back("Emperor ");
-		m_Titles.push_back("King ");
-		m_Titles.push_back("Duke ");
-		m_Titles.push_back("Count ");
-		m_Titles.push_back("Baron ");
-		m_Window = Window::getWindow();
-		m_CharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/images.jpg");
-		m_CharacterPosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.025f);
+		m_SizeX = size.x;
+		m_SizeY = size.y;
+		m_Titles[(unsigned int)Title::Emperor] = "Emperor ";
+		m_Titles[(unsigned int)Title::King] = "King ";
+		m_Titles[(unsigned int)Title::Duke] = "Duke ";
+		m_Titles[(unsigned int)Title::Count] = "Count ";
+		m_Titles[(unsigned int)Title::Baron] = "Baron ";
 	}
 
 	void start()
 	{
+		Time::m_GameDate.subscribeToMonthChange(std::bind(&CharacterWindow::onMonthChange, this));
+
+		m_Window = Window::getWindow();
+
+		m_CharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/images.jpg");
+		m_CharacterPosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.025f);
+
+		m_GoldTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Coins.png");
+		m_GoldPosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.32f);
+
+		m_ArmyTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/soldier unit.png");
+		m_ArmyPosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.22f);
+
 		m_BattleSound = AssetHandler::get().loadAudioFile("Assets/Audio/battle.wav", m_BattleSoundBuffer);
 		m_BattleSound.setLoop(true);
 		m_BattleSound.setVolume(m_Volume);
@@ -113,26 +132,30 @@ public:
 		m_MakePeaceText.setString(m_MakePeace);
 		m_MakePeaceText.setFillColor(m_MakePeaceColor);
 
-		m_OwnerCharacterText.setFont(m_Font);
-		m_OwnerCharacterText.setCharacterSize(m_CharacterSize);
-		m_OwnerCharacterText.setStyle(m_Style);
+		m_CharacterNameText.setFont(m_Font);
+		m_CharacterNameText.setCharacterSize(m_CharacterSize);
+		m_CharacterNameText.setStyle(m_Style);
 
-		m_OwnerNameText.setFont(m_Font);
-		m_OwnerNameText.setCharacterSize(m_CharacterSize);
-		m_OwnerNameText.setStyle(m_Style);
+		m_RealmNameText.setFont(m_Font);
+		m_RealmNameText.setCharacterSize(m_CharacterSize);
+		m_RealmNameText.setStyle(m_Style);
 
-		m_RegionNameText.setFont(m_Font);
-		m_RegionNameText.setCharacterSize(m_CharacterSize);
-		m_RegionNameText.setStyle(m_Style);
+		m_CharacterAgeText.setFont(m_Font);
+		m_CharacterAgeText.setCharacterSize(m_CharacterSize);
+		m_CharacterAgeText.setStyle(m_Style);
 
-		m_TaxText.setFont(m_Font);
-		m_TaxText.setCharacterSize(m_CharacterSize);
-		m_TaxText.setStyle(m_Style);
+		m_ArmyText.setFont(m_Font);
+		m_ArmyText.setCharacterSize(m_CharacterSize);
+		m_ArmyText.setStyle(m_Style);
+
+		m_GoldText.setFont(m_Font);
+		m_GoldText.setCharacterSize(m_CharacterSize);
+		m_GoldText.setStyle(m_Style);
 	}
 
 	void update()
 	{
-		updateInfo();
+		clickOnMap();
 		handleWindow();
 
 		if (m_Visible)
@@ -140,7 +163,6 @@ public:
 			clickButton();
 
 			m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_OutlineThickness, (int)m_OutlineThickness)));
-			m_WindowShape.setOutlineColor(m_OwnerColor);
 
 			m_DeclareWarShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.032f))));
 			m_DeclareWarText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.04f))));
@@ -148,21 +170,15 @@ public:
 			m_MakePeaceShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.112f))));
 			m_MakePeaceText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.12f))));
 
-			m_OwnerCharacterText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.25f), (int)(m_SizeY * 0.025f))));
-			m_OwnerCharacterText.setString(m_OwnerTitle + m_OwnerCharacterName);
-			m_OwnerCharacterText.setFillColor(m_OwnerColor);
+			m_CharacterNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.25f), (int)(m_SizeY * 0.025f))));
 
-			m_OwnerNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.1f))));
-			m_OwnerNameText.setString(m_OwnerKingdomName);
-			m_OwnerNameText.setFillColor(m_OwnerColor);
+			m_RealmNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.1f))));
 
-			m_RegionNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.2f))));
-			m_RegionNameText.setString(m_RegionString + m_RegionName);
-			m_RegionNameText.setFillColor(m_OwnerColor);
+			m_ArmyText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.2f))));
 
-			m_TaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.3f))));
-			m_TaxText.setString(m_TaxString + std::to_string(m_RegionTax));
-			m_TaxText.setFillColor(m_OwnerColor);
+			m_GoldText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.3f))));
+
+			m_CharacterAgeText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.4f))));
 		}
 	}
 
@@ -172,10 +188,13 @@ public:
 		{
 			m_Window->draw(m_WindowShape);
 			updateSprite(m_CharacterSprite, m_CharacterTexture, m_CharacterPosition);
-			m_Window->draw(m_OwnerNameText);
-			m_Window->draw(m_RegionNameText);
-			m_Window->draw(m_TaxText);
-			m_Window->draw(m_OwnerCharacterText);
+			m_Window->draw(m_RealmNameText);
+			updateSprite(m_GoldSprite, m_GoldTexture, m_GoldPosition, m_SpriteSize / 2);
+			m_Window->draw(m_GoldText);
+			m_Window->draw(m_CharacterNameText);
+			updateSprite(m_ArmySprite, m_ArmyTexture, m_ArmyPosition, m_SpriteSize / 2);
+			m_Window->draw(m_ArmyText);
+			m_Window->draw(m_CharacterAgeText);
 			if (!m_PlayerRegion)
 			{
 				m_Window->draw(m_DeclareWarShape);
@@ -186,7 +205,7 @@ public:
 		}
 	}
 
-	void updateInfo()
+	void clickOnMap()
 	{
 		if (InputHandler::getRightMouseClicked() && !InputHandler::getPlayerUnitSelected())
 		{
@@ -204,20 +223,9 @@ public:
 							regionID = squareData.m_RegionID;
 						}
 					}
-
-					if (m_CurrentRegionID != regionID)
-					{
-						m_CurrentRegionID = regionID;
-						checkIfPlayerRegion(m_CurrentRegionID);
-						m_CurrentMapRegion = &Map::get().getRegionById(m_CurrentRegionID);
-						m_RegionTax = m_CurrentMapRegion->m_RegionTax;
-						m_RegionName = m_CurrentMapRegion->m_RegionName;
-						Character& character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
-						m_OwnerKingdomName = character.m_KingdomName;
-						m_OwnerCharacterName = character.m_Name;
-						m_OwnerTitle = m_Titles[(unsigned int)character.m_CharacterTitle];
-						m_OwnerColor = character.m_RegionColor;
-					}
+					m_CurrentRegionID = regionID;
+					checkIfPlayerRegion(m_CurrentRegionID);
+					updateInfo();
 					m_Open = true;
 				}
 				else
@@ -238,6 +246,37 @@ public:
 				closeWindow();
 			}
 		}
+	}
+
+	void onMonthChange()
+	{
+		updateInfo();
+	}
+
+	void updateInfo()
+	{
+		m_CurrentMapRegion = &Map::get().getRegionById(m_CurrentRegionID);
+		Character& character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
+		m_OwnerColor = character.m_RegionColor;
+
+		m_WindowShape.setOutlineColor(m_OwnerColor);
+
+		m_RealmNameText.setString(character.m_KingdomName);
+		m_RealmNameText.setFillColor(m_OwnerColor);
+
+		m_CharacterNameText.setString(m_Titles[(unsigned int)character.m_CharacterTitle] + character.m_Name);
+		m_CharacterNameText.setFillColor(m_OwnerColor);
+
+		m_ArmyText.setString(std::to_string(character.m_RaisedArmySize) + m_Dash + std::to_string(character.m_MaxArmySize));
+		m_ArmyText.setFillColor(m_OwnerColor);
+
+		std::stringstream stream;
+		stream << std::fixed << std::setprecision(1) << character.m_CurrentGold;
+		m_GoldText.setString(stream.str());
+		m_GoldText.setFillColor(m_OwnerColor);
+
+		m_CharacterAgeText.setString(m_Age + std::to_string(Time::m_GameDate.getAge(character.m_Birthday)));
+		m_CharacterAgeText.setFillColor(m_OwnerColor);
 	}
 
 	void handleWindow()
@@ -277,35 +316,35 @@ public:
 			Vector2D mousePosition = InputHandler::getMousePosition();
 			if (m_DeclareWarShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				//EntityID warTarget = m_CurrentMapRegion->m_OwnerID;
-				//m_PlayerCharacter->declareWar(warTarget, characterWindow.m_CurrentRegionID);
-
-				m_CurrentWars++;
-				Game::m_Sound.pause();
-				if (m_BattleSound.getStatus() != sf::SoundSource::Playing)
+				const int enemy = m_CurrentMapRegion->m_OwnerID;
+				if (m_PlayerWars.find(enemy) == m_PlayerWars.end())
 				{
-					m_BattleSound.play();
+					int warHandle = WarManager::get().createWar(m_PlayerCharacter->m_CharacterID, enemy, m_CurrentRegionID);
+					m_PlayerWars.insert(std::pair(enemy, warHandle));
+					m_CurrentWars++;
+					Game::m_Sound.pause();
+					if (m_BattleSound.getStatus() != sf::SoundSource::Playing)
+					{
+						m_BattleSound.play();
+					}
 				}
 			}
 			else if (m_MakePeaceShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				//EntityManager* entityManager = &EntityManager::get();
-
-				//WarManager* warManager = &WarManager::get();
-				// War* war = warManager->getWarAgainst(*m_PlayerCharacter, target);
-				// 
-				// if (war->getHandle() != -1)
-				// {
-				// 	characterSystem->makePeace(*m_PlayerCharacter, target, war->getHandle());
-				// }
-				if (m_CurrentWars > 0)
+				int enemy = m_CurrentMapRegion->m_OwnerID;
+				if (!m_PlayerWars.empty() && m_PlayerWars.find(enemy) != m_PlayerWars.end())
 				{
-					m_CurrentWars--;
-				}
-				if (m_BattleSound.getStatus() == sf::SoundSource::Playing && m_CurrentWars == 0)
-				{
-					m_BattleSound.stop();
-					Game::m_Sound.play();
+					WarManager::get().endWar(m_PlayerWars.at(enemy));
+					m_PlayerWars.erase(enemy);
+					if (m_CurrentWars > 0)
+					{
+						m_CurrentWars--;
+					}
+					if (m_BattleSound.getStatus() == sf::SoundSource::Playing && m_CurrentWars == 0)
+					{
+						m_BattleSound.stop();
+						Game::m_Sound.play();
+					}
 				}
 			}
 		}
@@ -328,14 +367,14 @@ public:
 		return m_PlayerRegion;
 	}
 
-	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position)
+	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize = m_SpriteSize)
 	{
 		sprite.setTexture(texture, true);
 		sprite.setPosition(Window::getWindow()->mapPixelToCoords(sf::Vector2i((int)position.x, (int)position.y)));
 
 		sf::FloatRect localSize = sprite.getLocalBounds();
 
-		sprite.setScale(m_SpriteSize / localSize.width, m_SpriteSize / localSize.height);
+		sprite.setScale(spriteSize / localSize.width, spriteSize / localSize.height);
 
 		m_Window->draw(sprite);
 	}
