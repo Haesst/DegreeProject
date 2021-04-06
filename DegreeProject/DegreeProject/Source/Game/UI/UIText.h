@@ -109,9 +109,16 @@ struct UIText
 		adjustText();
 	}
 
-	void loseRegion(unsigned regionIndex)
+	void loseRegion(unsigned regionID)
 	{
-		m_OwnedRegionIDs.erase(m_OwnedRegionIDs.begin() + regionIndex);
+		for (unsigned int index = 0; index < m_OwnedRegionIDs.size(); index++)
+		{
+			if (m_OwnedRegionIDs[index] == regionID)
+			{
+				m_OwnedRegionIDs.erase(m_OwnedRegionIDs.begin() + index);
+				break;
+			}
+		}
 		adjustText();
 	}
 };

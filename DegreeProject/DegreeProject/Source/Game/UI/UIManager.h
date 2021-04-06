@@ -21,6 +21,7 @@ public:
 	void render();
 	UIID createUIWindowElement(sf::Font font, UIType type, Vector2D position, Vector2D size);
 	UIID createUITextElement(sf::Font font, std::string countryName, std::vector<unsigned int> ownedRegions);
+	void AdjustOwnership(CharacterID conqueror, CharacterID loser, unsigned int regionID);
 	UIElement& getUIElement(UIID id);
 	UIText& getUIText(UIID id);
 private:

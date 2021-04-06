@@ -20,7 +20,7 @@ Game::~Game()
 
 void Game::init()
 {
-	std::srand(std::time(nullptr));
+	std::srand((unsigned int)std::time(nullptr));
 	initWindow();
 	initHotReloading();
 	initAssets();

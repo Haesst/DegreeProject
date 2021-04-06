@@ -30,7 +30,6 @@ struct DateBar
 	float m_ButtonThickness = 10.0f;
 	sf::Text m_DateText;
 	sf::Font m_Font;
-	std::string m_Date = "";
 	int m_CharacterSize = 30;
 	sf::Text::Style m_Style = sf::Text::Regular;
 	sf::RenderWindow* m_Window = nullptr;

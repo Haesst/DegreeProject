@@ -43,6 +43,13 @@ UIID UIManager::createUITextElement(sf::Font font, std::string countryName, std:
 	return id;
 }
 
+void UIManager::AdjustOwnership(CharacterID conqueror, CharacterID loser, unsigned int regionID)
+{
+	Map::get().getRegionById(regionID).m_OwnerID = conqueror;
+	m_UITexts[conqueror - 1]->conquerRegion(regionID);
+	m_UITexts[loser - 1]->loseRegion(regionID);
+}
+
 
 UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D position, Vector2D size)
 {
