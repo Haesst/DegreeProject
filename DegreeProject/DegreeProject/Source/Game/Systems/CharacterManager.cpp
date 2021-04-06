@@ -45,6 +45,10 @@ void CharacterManager::render()
 	m_Player->render();
 }
 
+CharacterManager::CharacterManager()
+	: m_CharacterPool(CharacterPool(m_PoolInitSize, m_PoolGrowSize))
+{}
+
 CharacterManager::~CharacterManager()
 {
 	delete m_Player;
@@ -146,7 +150,7 @@ CharacterID CharacterManager::createCharacter(const char* characterName, Title t
 {
 	CharacterID id = m_CharacterIDs++;
 
-	Character newChar;
+	Character newChar = m_CharacterPool.Rent();
 
 	newChar.m_CharacterID = id;
 	newChar.m_CharacterTitle = title;

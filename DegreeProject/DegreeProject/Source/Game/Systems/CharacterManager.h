@@ -3,13 +3,13 @@
 #include <memory>
 #include <SFML/Graphics.hpp>
 
+#include "Game/Systems/Characters/CharacterPool.h"
 #include "Game/Data/Character.h"
 #include "Game/Data/Types.h"
 
 enum class Title;
 struct Date;
 class Player;
-
 
 class CharacterManager
 {
@@ -18,6 +18,7 @@ public:
 	void update();
 	void render();
 
+	CharacterManager();
 	~CharacterManager();
 
 	Character& getPlayerCharacter();
@@ -40,9 +41,13 @@ private:
 	static CharacterManager* m_Instance;
 	static CharacterID m_CharacterIDs;
 
+	const size_t m_PoolInitSize = 20000;
+	const size_t m_PoolGrowSize = 10000;
+
 	Player* m_Player = nullptr;
 	CharacterID m_PlayerCharacterID = INVALID_CHARACTER_ID;
 	Character* m_PlayerCharacter = nullptr;
 
 	std::vector<Character> m_Characters;
+	CharacterPool m_CharacterPool;
 };
