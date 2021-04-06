@@ -48,7 +48,6 @@ public:
 	std::unordered_map<int, int> m_PlayerWars;
 
 	sf::RenderWindow* m_Window = nullptr;
-	CharacterWindow* m_CharacterWindows = nullptr;
 	Character* m_PlayerCharacter = nullptr;
 	MapRegion* m_CurrentMapRegion = nullptr;
 	bool m_PlayerRegion = false;
@@ -75,6 +74,25 @@ public:
 	sf::Texture m_AgeTexture;
 	sf::Sprite m_AgeSprite;
 	sf::Vector2f m_AgePosition = sf::Vector2f();
+
+	sf::Texture m_MaleGenderTexture;
+	sf::Texture m_FemaleGenderTexture;
+	sf::Sprite m_GenderSprite;
+	sf::Vector2f m_GenderPosition = sf::Vector2f();
+
+	sf::Texture m_PregnantTexture;
+	sf::Sprite m_Pregnantprite;
+	sf::Vector2f m_PregnantPosition = sf::Vector2f();
+
+	sf::Texture m_MarriedTexture;
+	sf::Sprite m_MarriedSprite;
+	sf::Vector2f m_MarriedPosition = sf::Vector2f();
+	sf::Texture m_MarriedTexture2;
+	sf::Sprite m_MarriedSprite2;
+	sf::Vector2f m_MarriedPosition2 = sf::Vector2f();
+
+	Gender m_Gender = Gender::Male;
+	bool m_Married = false;
 
 	CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 	{
@@ -106,6 +124,19 @@ public:
 
 		m_AgeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Age.png");
 		m_AgePosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.42f);
+
+		m_MaleGenderTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Male.png");
+		m_FemaleGenderTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Female.png");
+		m_GenderPosition = sf::Vector2f(m_SizeX * 0.3f, m_SizeY * 0.42f);
+
+		m_PregnantTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/BabyMale.png");
+		m_PregnantPosition = sf::Vector2f(m_SizeX * 0.5f, m_SizeY * 0.42f);
+
+		m_MarriedTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Circle.png");
+		m_MarriedPosition = sf::Vector2f(m_SizeX * 0.4f, m_SizeY * 0.425f);
+
+		m_MarriedTexture2 = AssetHandler::get().getTextureAtPath("Assets/Graphics/Circle.png");
+		m_MarriedPosition2 = sf::Vector2f(m_SizeX * 0.425f, m_SizeY * 0.415f);
 
 		m_BattleSound = AssetHandler::get().loadAudioFile("Assets/Audio/battle.wav", m_BattleSoundBuffer);
 		m_BattleSound.setLoop(true);
@@ -202,6 +233,23 @@ public:
 			m_Window->draw(m_ArmyText);
 			updateSprite(m_AgeSprite, m_AgeTexture, m_AgePosition, m_SpriteSize / 2);
 			m_Window->draw(m_CharacterAgeText);
+			if (m_Gender == Gender::Male)
+			{
+				updateSprite(m_GenderSprite, m_MaleGenderTexture, m_GenderPosition, m_SpriteSize / 2);
+			}
+			else
+			{
+				updateSprite(m_GenderSprite, m_FemaleGenderTexture, m_GenderPosition, m_SpriteSize / 2);
+				//if (m_Pregnant)
+				//{
+				//	updateSprite(m_Pregnantprite, m_PregnantTexture, m_PregnantPosition, m_SpriteSize / 2);
+				//}
+			}
+			if (m_Married)
+			{
+				updateSprite(m_MarriedSprite, m_MarriedTexture, m_MarriedPosition, m_SpriteSize / 2);
+				updateSprite(m_MarriedSprite2, m_MarriedTexture2, m_MarriedPosition2, m_SpriteSize / 2);
+			}
 			if (!m_PlayerRegion)
 			{
 				m_Window->draw(m_DeclareWarShape);
@@ -265,6 +313,8 @@ public:
 		m_CurrentMapRegion = &Map::get().getRegionById(m_CurrentRegionID);
 		Character& character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
 		m_OwnerColor = character.m_RegionColor;
+		m_Gender = character.m_Gender;
+		m_Married = character.m_Spouse;
 
 		m_WindowShape.setOutlineColor(m_OwnerColor);
 
