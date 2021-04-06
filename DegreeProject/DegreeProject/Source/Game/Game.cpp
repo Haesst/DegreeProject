@@ -142,7 +142,7 @@ void Game::addEntitys()
 
 CharacterID Game::createCharacter(std::vector<unsigned int>& ownedRegions, Title title, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color)
 {
-	CharacterID character = CharacterManager::get()->createCharacter(characterName, title, ownedRegions, realmName, army, (float)gold, color, playerControlled);
+	CharacterID character = CharacterManager::get()->createCharacterWithRandomBirthday(characterName, title, ownedRegions, realmName, army, (float)gold, color, playerControlled, 24, 62);
 
 	for (int i : ownedRegions)
 	{

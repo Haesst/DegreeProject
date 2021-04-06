@@ -28,14 +28,17 @@ public:
 	
 	void onMonthChange(Date date);
 
-	void constructBuilding(CharacterID character, int buildingId, int regionId, int buildingSlot);
-
-	void addRegion(CharacterID characterId, unsigned int regionId);
-	void removeRegion(CharacterID characterId, unsigned int regionId);
+	void constructBuilding(const CharacterID character, const int buildingId, const int regionId, const int buildingSlot);
+	void addRegion(const CharacterID characterId, const unsigned int regionId);
+	void removeRegion(const CharacterID characterId, const unsigned int regionId);
 
 	static CharacterManager* get();
+	
+	CharacterID createCharacterWithRandomBirthday(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge);
+	CharacterID createCharacter(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday);
 
-	CharacterID createCharacter(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
+private:
+	CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
 
 private:
 	static CharacterManager* m_Instance;

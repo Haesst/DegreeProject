@@ -17,6 +17,10 @@ struct Date
 		: m_Day(day), m_Month(month), m_Year(year)
 	{}
 
+	Date()
+		: m_Day(0), m_Month(0), m_Year(0)
+	{}
+
 	inline bool operator < (const Date& other) const
 	{
 		if (m_Year < other.m_Year)
@@ -43,6 +47,11 @@ struct Date
 		m_Month = other.m_Month;
 		m_Day = other.m_Day;
 	}
+
+	inline bool operator == (const Date& other)
+	{
+		return m_Year == other.m_Year && m_Month == other.m_Month && m_Day == other.m_Day;
+	}
 };
 
 struct GameDate
@@ -50,6 +59,7 @@ struct GameDate
 	const int m_MonthsInYear = 12;
 	size_t m_DaysInMonth[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	char* m_MonthName[12] = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+	const Date m_StartDate = { 1, 0, 1100 };
 	Date m_Date = { 1, 0, 1100 };
 
 	float timeBeforeAddingDay = 0.3f;
@@ -94,6 +104,20 @@ struct GameDate
 			//action(m_Date);
 			action.m_Action(action.data);
 		}
+	}
+
+	Date getRandomDate(bool futureDate, size_t minYearDifference, size_t maxYearDifference)
+	{
+		size_t yearRange = maxYearDifference - minYearDifference + 1;
+		size_t yearDiff = std::rand() % yearRange + minYearDifference;
+
+		size_t month = std::rand() % m_MonthsInYear + 1;
+		
+		size_t day = std::rand() % m_DaysInMonth[month - 1] + 1;
+
+		size_t year = futureDate ? m_StartDate.m_Year + yearDiff : m_StartDate.m_Year - yearDiff;
+
+		return Date(day, month, year);
 	}
 
 	char* getDaySuffix()

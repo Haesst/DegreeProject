@@ -2,6 +2,7 @@
 
 #include "Game/Data/Types.h"
 #include "Game/Data/Titles.h"
+#include "Game/GameDate.h"
 
 #include <vector>
 #include <SFML/Graphics.hpp>
@@ -15,6 +16,7 @@ struct Character
 
 	const char* m_Name = "";
 	Title m_CharacterTitle = Title::Baron;
+	Date m_Birthday;
 
 	const char* m_KingdomName = "";
 
@@ -37,6 +39,5 @@ struct Character
 
 	bool m_RecentlyAtWar = false;  //Flag for raising units when war starts // <- This might not be necessary
 
-	CharacterID m_TextUI = (size_t)INT_MAX; // Moving away from the old entity system keeping EntityID until UI is moved
-	UnitID m_UnitEntity = INT_MAX; // Don't think this will be necessary but still keep it until fixed
+	UnitID m_UnitEntity = INVALID_UNIT_ID; // Don't think this will be necessary but still keep it until fixed
 };

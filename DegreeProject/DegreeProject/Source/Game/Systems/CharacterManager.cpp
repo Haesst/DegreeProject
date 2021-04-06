@@ -21,6 +21,26 @@ CharacterManager* CharacterManager::get()
 	return m_Instance;
 }
 
+CharacterID CharacterManager::createCharacterWithRandomBirthday(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge)
+{
+	ASSERT(minAge <= maxAge, "Minimum age can't be less than maximum age");
+
+	Character& character = m_CharacterPool.Rent();
+
+	character.m_Birthday = Time::m_GameDate.getRandomDate(false, minAge, maxAge);
+
+	return internalCreateCharacter(character, characterName, title, ownedRegions, realmName, army, gold, color, playerControlled);
+}
+
+CharacterID CharacterManager::createCharacter(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday)
+{
+	Character& character = m_CharacterPool.Rent();
+
+	character.m_Birthday = birthday;
+
+	return internalCreateCharacter(character, characterName, title, ownedRegions, realmName, army, gold, color, playerControlled);
+}
+
 void CharacterManager::start()
 {
 	Time::m_GameDate.subscribeToMonthChange(std::bind(&CharacterManager::onMonthChange, this, std::placeholders::_1));
@@ -102,9 +122,9 @@ void CharacterManager::onMonthChange(Date)
 	}
 }
 
-void CharacterManager::constructBuilding(CharacterID characterId, int buildingId, int regionId, int buildingSlot)
+void CharacterManager::constructBuilding(const CharacterID characterId, const int buildingId, const int regionId, const int buildingSlot)
 {
-	Character character = getCharacter(characterId);
+	Character& character = getCharacter(characterId);
 	Building building = GameData::m_Buildings[buildingId];
 	MapRegion& region = Map::get().getRegionById(regionId);
 
@@ -127,14 +147,14 @@ void CharacterManager::constructBuilding(CharacterID characterId, int buildingId
 	character.m_CurrentGold -= building.m_Cost;
 }
 
-void CharacterManager::addRegion(CharacterID characterId, unsigned int regionId)
+void CharacterManager::addRegion(const CharacterID characterId, const unsigned int regionId)
 {
 	getCharacter(characterId).m_OwnedRegionIDs.push_back(regionId);
 }
 
-void CharacterManager::removeRegion(CharacterID characterId, unsigned int regionId)
+void CharacterManager::removeRegion(const CharacterID characterId, const unsigned int regionId)
 {
-	Character character = getCharacter(characterId);
+	Character& character = getCharacter(characterId);
 
 	for (size_t i = 0; i < character.m_OwnedRegionIDs.size(); ++i)
 	{
@@ -146,31 +166,28 @@ void CharacterManager::removeRegion(CharacterID characterId, unsigned int region
 	}
 }
 
-CharacterID CharacterManager::createCharacter(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled)
+CharacterID CharacterManager::internalCreateCharacter(Character& character, const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled)
 {
 	CharacterID id = m_CharacterIDs++;
 
-	Character newChar = m_CharacterPool.Rent();
+	character.m_CharacterID = id;
+	character.m_CharacterTitle = title;
 
-	newChar.m_CharacterID = id;
-	newChar.m_CharacterTitle = title;
+	character.m_OwnedRegionIDs = ownedRegions;
+	character.m_KingdomName = realmName;
 
-	newChar.m_OwnedRegionIDs = ownedRegions;
-	newChar.m_KingdomName = realmName;
+	character.m_MaxArmySize = army;
+	character.m_CurrentMaxArmySize = army;
 
-	newChar.m_MaxArmySize = army;
-	newChar.m_CurrentMaxArmySize = army;
+	character.m_CurrentGold = gold;
 
-	newChar.m_CurrentGold = gold;
+	character.m_IsPlayerControlled = playerControlled;
 
-	newChar.m_IsPlayerControlled = playerControlled;
+	character.m_RegionColor = color;
 
-	newChar.m_RegionColor = color;
-
-	newChar.m_Name = characterName;
-	newChar.m_UnitEntity = UnitManager::get().addUnit(id, army);
-	m_Characters.push_back(newChar);
-
+	character.m_Name = characterName;
+	character.m_UnitEntity = UnitManager::get().addUnit(id, army);
+	m_Characters.push_back(character);
 
 	if (playerControlled)
 	{
