@@ -8,6 +8,8 @@
 #include "Game/AI/AIManager.h"
 #include "Game/UI/UIManager.h"
 #include "Game/StaticSpriteManager.h"
+
+#include "Game/Systems/HeraldicShieldManager.h"
 #include "Game/Systems/Characters/CharacterNamePool.h"
 
 sf::Sound Game::m_Sound;
@@ -24,6 +26,7 @@ void Game::init()
 	initWindow();
 	initHotReloading();
 	initAssets();
+	HeraldicShieldManager::initialize();
 	addEntitys();
 }
 

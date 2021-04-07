@@ -4,6 +4,8 @@
 #include "Map.h"
 #include "Game/HotReloader.h"
 #include "Engine/FileWatcher.h"
+#include "Game/Systems/HeraldicShieldManager.h"
+#include "Game/Data/HeraldicShield.h"
 
 const int   Map::m_XOffset = -300;
 const int   Map::m_YOffset = -100;
@@ -100,6 +102,7 @@ void Map::loadAllRegions()
 		region.m_RegionName = element["name"].get<std::string>();
 		region.m_RegionCapital.x = element["capitalx"].get<unsigned int>();
 		region.m_RegionCapital.y = element["capitaly"].get<unsigned int>();
+		region.m_HeraldicShield = HeraldicShieldManager::generateRandomShield();
 
 		if (mapCharString.size() > 0)
 		{
@@ -204,6 +207,8 @@ void Map::render()
 		m_Data.m_Shader.setUniform("u_Texture", m_Data.m_LandTexture);
 		m_Data.m_Shader.setUniform("u_Highlighted", region.m_Highlighted);
 		Window::getWindow()->draw(region.m_VertexArray, m_Data.m_RenderStates);
+
+		HeraldicShieldManager::renderShield(region.m_HeraldicShield, convertToScreen(region.m_RegionCapital) + Vector2D(0.0f, -32.0f));
 	}
 }
 

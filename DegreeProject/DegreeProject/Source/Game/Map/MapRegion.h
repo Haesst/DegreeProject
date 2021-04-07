@@ -2,6 +2,7 @@
 #include <vector>
 #include "Engine/Vector2D.h"
 #include "RegionBuilding.h"
+#include "Game/Data/HeraldicShield.h"
 
 struct MapRegion
 {
@@ -17,4 +18,5 @@ struct MapRegion
 	unsigned int m_DaysToSeize = 60;
 	sf::VertexArray m_VertexArray;
 	RegionBuilding m_BuildingSlots[4];
+	HeraldicShield m_HeraldicShield;
 };

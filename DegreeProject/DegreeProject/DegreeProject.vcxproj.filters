@@ -161,6 +161,8 @@
     </ClInclude>
     <ClInclude Include="Source\Game\Systems\Characters\CharacterPool.h" />
     <ClInclude Include="Source\Game\Systems\Characters\CharacterNamePool.h" />
+    <ClInclude Include="Source\Game\Data\HeraldicShield.h" />
+    <ClInclude Include="Source\Game\Systems\HeraldicShieldManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
@@ -232,5 +234,6 @@
     <ClCompile Include="Source\StrategyGame.cpp" />
     <ClCompile Include="Source\Game\Systems\Characters\CharacterPool.cpp" />
     <ClCompile Include="Source\Game\Systems\Characters\CharacterNamePool.cpp" />
+    <ClCompile Include="Source\Game\Systems\HeraldicShieldManager.cpp" />
   </ItemGroup>
 </Project>

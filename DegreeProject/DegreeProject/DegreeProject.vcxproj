@@ -134,9 +134,11 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Systems\CharacterManager.h" />
     <ClInclude Include="Source\Game\Systems\Characters\CharacterNamePool.h" />
     <ClInclude Include="Source\Game\Systems\Characters\CharacterPool.h" />
+    <ClInclude Include="Source\Game\Systems\HeraldicShieldManager.h" />
     <ClInclude Include="Source\Game\Systems\UnitManager.h" />
     <ClInclude Include="Source\Game\UI\CharacterWindow.h" />
     <ClInclude Include="Source\Game\UI\DateBar.h" />
+    <ClInclude Include="Source\Game\Data\HeraldicShield.h" />
     <ClInclude Include="Source\Game\UI\RegionWindow.h" />
     <ClInclude Include="Source\Game\UI\StatBar.h" />
     <ClInclude Include="Source\Game\UI\UIManager.h" />
@@ -165,6 +167,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\Game\Systems\CharacterManager.cpp" />
     <ClCompile Include="Source\Game\Systems\Characters\CharacterNamePool.cpp" />
     <ClCompile Include="Source\Game\Systems\Characters\CharacterPool.cpp" />
+    <ClCompile Include="Source\Game\Systems\HeraldicShieldManager.cpp" />
     <ClCompile Include="Source\Game\Systems\UnitManager.cpp" />
     <ClCompile Include="Source\Game\UI\UIManager.cpp" />
     <ClCompile Include="Source\Game\War.cpp" />
