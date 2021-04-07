@@ -7,6 +7,8 @@
 #include "Game/GameDate.h"
 #include "Game/Map/Map.h"
 #include "Game/AI/AIManager.h"
+#include "Game/UI/UIManager.h"
+#include "Game/Game.h"
 #include "Game/Player.h"
 #include <random>
 
@@ -250,6 +252,39 @@ void CharacterManager::onMonthChange(Date)
 				addTrait(character.m_Spouse, getTrait("Pregnant"));
 				getCharacter(character.m_Spouse).m_PregnancyDay = Time::m_GameDate.m_Date;
 			}
+		}
+
+		if (Time::m_GameDate.getAge(character.m_Birthday) >= character.m_DieAge && character.m_CharacterTitle != Title::Unlanded)
+		{
+			character.m_Dead = true;
+			float giveawayGold = character.m_CurrentGold / character.m_OwnedRegionIDs.size();
+			unsigned int giveawayArmy = character.m_MaxArmySize / character.m_OwnedRegionIDs.size();
+			character.m_CurrentGold = 0;
+			character.m_MaxArmySize = 0;
+			character.m_RaisedArmySize = 0;
+			for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
+			{
+				for (Character& otherCharacter : m_Characters)
+				{
+					if (otherCharacter.m_CharacterTitle == Title::Unlanded && !otherCharacter.m_Dead)
+					{
+						addRegion(otherCharacter.m_CharacterID, ownedRegionID);
+						MapRegion& mapRegion = Map::get().getRegionById(ownedRegionID);
+						mapRegion.m_OwnerID = otherCharacter.m_CharacterID;
+						otherCharacter.m_CurrentGold = giveawayGold;
+						otherCharacter.m_MaxArmySize = giveawayArmy;
+						otherCharacter.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
+						otherCharacter.m_KingdomName = mapRegion.m_RegionName.c_str();
+						otherCharacter.m_CharacterTitle = Title::Count;
+						Map::get().setRegionColor(ownedRegionID, otherCharacter.m_RegionColor);
+						UIManager::get()->createUITextElement(Game::m_UIFont, otherCharacter.m_CharacterID, otherCharacter.m_KingdomName, otherCharacter.m_OwnedRegionIDs);
+						UIManager::get()->AdjustOwnership(otherCharacter.m_CharacterID, character.m_CharacterID, ownedRegionID);
+						break;
+					}
+				}
+			}
+			character.m_OwnedRegionIDs.clear();
+			character.m_CharacterTitle = Title::Unlanded;
 		}
 	}
 }

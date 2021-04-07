@@ -9,8 +9,9 @@ const static unsigned int NUMBER_OF_BUTTONS = 3;
 
 #pragma warning(push)
 #pragma warning(disable: 26812)
-struct DateBar
+class DateBar
 {
+public:
 	sf::RectangleShape m_WindowShape;
 	sf::RectangleShape m_DecreaseSpeedShape;
 	sf::RectangleShape m_IncreaseSpeedVerticalShape;

@@ -4,11 +4,14 @@
 #include "Engine/Vector2D.h"
 #include "Game/Data/UIElement.h"
 #include "Game/Data/UIType.h"
-#include "Game/UI/CharacterWindow.h"
-#include "Game/UI/RegionWindow.h"
-#include "Game/UI/StatBar.h"
-#include "Game/UI/DateBar.h"
-#include "Game/UI/UIText.h"
+#include "Game/Data/Types.h"
+#include <unordered_map>
+
+class CharacterWindow;
+class RegionWindow;
+class StatBar;
+class DateBar;
+class UIText;
 
 class UIManager
 {
@@ -20,7 +23,7 @@ public:
 	void update();
 	void render();
 	UIID createUIWindowElement(sf::Font font, UIType type, Vector2D position, Vector2D size);
-	UIID createUITextElement(sf::Font font, std::string countryName, std::vector<unsigned int> ownedRegions);
+	UIID createUITextElement(sf::Font font, CharacterID charID, std::string countryName, std::vector<unsigned int> ownedRegions);
 	void AdjustOwnership(CharacterID conqueror, CharacterID loser, unsigned int regionID);
 	UIElement& getUIElement(UIID id);
 	UIText& getUIText(UIID id);
@@ -28,7 +31,7 @@ private:
 	static UIManager* m_Instance;
 	static UIID m_UIElementsIDs;
 	std::vector<UIElement> m_UIElements;
-	std::vector<UIText*> m_UITexts;
+	std::unordered_map<CharacterID, UIText*> m_UITexts;
 	CharacterWindow* m_CharacterWindow = nullptr;
 	RegionWindow* m_RegionWindow = nullptr;
 	StatBar* m_StatBar = nullptr;

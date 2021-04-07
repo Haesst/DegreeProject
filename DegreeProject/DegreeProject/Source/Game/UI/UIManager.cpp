@@ -1,4 +1,9 @@
 #include "UIManager.h"
+#include "Game/UI/CharacterWindow.h"
+#include "Game/UI/RegionWindow.h"
+#include "Game/UI/StatBar.h"
+#include "Game/UI/DateBar.h"
+#include "Game/UI/UIText.h"
 
 UIManager* UIManager::m_Instance = nullptr;
 UIID UIManager::m_UIElementsIDs = 1;
@@ -26,19 +31,19 @@ UIManager::~UIManager()
 	delete m_RegionWindow;
 	delete m_StatBar;
 	delete m_DateBar;
-	for (UIText* uiText : m_UITexts)
+	for (std::unordered_map<CharacterID, UIText*>::iterator itr = m_UITexts.begin(); itr != m_UITexts.end(); itr++)
 	{
-		delete uiText;
+		delete itr->second;
 	}
 	delete m_Instance;
 }
 
-UIID UIManager::createUITextElement(sf::Font font, std::string countryName, std::vector<unsigned int> ownedRegions)
+UIID UIManager::createUITextElement(sf::Font font, CharacterID charID, std::string countryName, std::vector<unsigned int> ownedRegions)
 {
 	UIID id = m_UIElementsIDs++;
 	UIElement uiElement;
 	uiElement.m_UIElementID = id;
-	m_UITexts.push_back(new UIText(id, font, countryName, ownedRegions));
+	m_UITexts.insert(std::pair(charID, new UIText(id, font, countryName, ownedRegions)));
 	m_UIElements.push_back(uiElement);
 	return id;
 }
@@ -46,8 +51,8 @@ UIID UIManager::createUITextElement(sf::Font font, std::string countryName, std:
 void UIManager::AdjustOwnership(CharacterID conqueror, CharacterID loser, unsigned int regionID)
 {
 	Map::get().getRegionById(regionID).m_OwnerID = conqueror;
-	m_UITexts[conqueror - 1]->conquerRegion(regionID);
-	m_UITexts[loser - 1]->loseRegion(regionID);
+	m_UITexts[conqueror]->conquerRegion(regionID);
+	m_UITexts[loser]->loseRegion(regionID);
 }
 
 
@@ -96,9 +101,9 @@ void UIManager::start()
 	ASSERT(m_RegionWindow != nullptr, "Region Window does not exist");
 	ASSERT(m_StatBar != nullptr, "Stat Bar does not exist");
 	ASSERT(m_DateBar != nullptr, "Date Bar does not exist");
-	for (UIText* uiText : m_UITexts)
+	for (std::pair<CharacterID, UIText*> uiTextPair : m_UITexts)
 	{
-		uiText->start();
+		uiTextPair.second->start();
 	}
 	m_StatBar->start();
 	m_DateBar->start();
@@ -116,9 +121,9 @@ void UIManager::update()
 
 void UIManager::render()
 {
-	for (UIText* uiText : m_UITexts)
+	for (std::pair<CharacterID, UIText*> uiTextPair : m_UITexts)
 	{
-		uiText->render();
+		uiTextPair.second->render();
 	}
 	m_CharacterWindow->render();
 	m_RegionWindow->render();
@@ -151,11 +156,11 @@ UIText& UIManager::getUIText(UIID id)
 {
 	ASSERT(id != INVALID_UI_ID, "Invalid UI id requested");
 
-	for (UIText* uiText : m_UITexts)
+	for (std::pair<CharacterID, UIText*> uiTextPair : m_UITexts)
 	{
-		if (uiText->m_OwnedUIElement == id)
+		if (uiTextPair.second->m_OwnedUIElement == id)
 		{
-			return *uiText;
+			return *uiTextPair.second;
 		}
 	}
 

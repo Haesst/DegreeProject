@@ -6,8 +6,9 @@
 #include "Game/Systems/CharacterManager.h"
 #include <iomanip>
 
-struct StatBar
+class StatBar
 {
+public:
 	sf::RectangleShape m_WindowShape;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;

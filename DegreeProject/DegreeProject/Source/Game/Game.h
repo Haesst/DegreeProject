@@ -31,11 +31,11 @@ private:
 	AssetHandler* m_AssetHandler = nullptr;
 	HotReloader* m_HotReloader = nullptr;
 	sf::SoundBuffer m_SoundBuffer;
-	sf::Font m_UIFont;
 	float volume = 5.0f;
 
 public:
 	static sf::Sound m_Sound;
+	static sf::Font m_UIFont;
 
 public:
 	~Game();

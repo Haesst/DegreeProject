@@ -8,8 +8,9 @@
 
 const static unsigned int NUMBER_OF_BUILDING_SLOTS = 4;
 
-struct RegionWindow
+class RegionWindow
 {
+public:
 	sf::RectangleShape m_WindowShape;
 	sf::RectangleShape m_BuildingSlotShapes[NUMBER_OF_BUILDING_SLOTS];
 	sf::RectangleShape m_RaiseArmyShape;

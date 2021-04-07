@@ -5,8 +5,9 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-struct UIText
+class UIText
 {
+public:
 	sf::Color m_FillColor = sf::Color(255, 252, 240, 200);
 	sf::Color m_OutlineColor = sf::Color::Black;
 	float m_OutlineThickness = 1.0f;
@@ -33,16 +34,16 @@ struct UIText
 		m_CountryName = countryName;
 		m_OwnedRegionIDs = ownedRegions;
 		m_Window = Window::getWindow();
-	}
-
-	void start() 
-	{
 		m_CountryNameText.setFont(m_Font);
 		m_CountryNameText.setStyle(m_Style);
 		m_CountryNameText.setString(m_CountryName);
 		m_CountryNameText.setFillColor(m_FillColor);
 		m_CountryNameText.setOutlineColor(m_OutlineColor);
 		m_CountryNameText.setOutlineThickness(m_OutlineThickness);
+	}
+
+	void start() 
+	{
 		adjustText();
 	}
 
@@ -51,6 +52,7 @@ struct UIText
 		if (!m_Conquered)
 		{
 			m_Window->draw(m_CountryNameText);
+			LOG_INFO(m_CountryName);
 		}	
 	}
 
@@ -58,6 +60,7 @@ struct UIText
 	{
 		if (m_OwnedRegionIDs.size() > 0)
 		{
+			m_Conquered = false;
 			std::vector<SquareData> mapData = Map::get().m_MapSquareData;
 			Vector2DInt leftMostPosition = { Map::get().width, 0 };
 			Vector2DInt rightMostPosition = { 0, 0 };

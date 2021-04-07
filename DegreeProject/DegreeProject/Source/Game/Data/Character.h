@@ -53,11 +53,13 @@ struct Character
 
 	std::vector<int> m_CurrentWars = std::vector<int>();
 	
-	int m_PersonalityIndex = 0; // Change to personality id, move away from indicies
+	int m_PersonalityIndex = 0; // Change to personality id, move away from indices
 
 	sf::Color m_RegionColor = sf::Color::Black;
 	sf::Sprite m_CharacterPortrait;
 
+	unsigned int m_DieAge = 40;
+	bool m_Dead = false;
 
 	bool m_RecentlyAtWar = false;  //Flag for raising units when war starts // <- This might not be necessary
 
