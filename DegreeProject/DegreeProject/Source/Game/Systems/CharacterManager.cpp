@@ -65,8 +65,9 @@ void CharacterManager::createUnlandedCharacters(size_t amount)
 	{
 		bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
 		char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
+		std::vector<unsigned int> regions = std::vector<unsigned int>();
 
-		createCharacterWithRandomBirthday(name, Title::Unlanded, std::vector<unsigned int>(), "NONAME", 0, 0, sf::Color::White, false, 1, 72);
+		createCharacterWithRandomBirthday(name, Title::Unlanded, regions, "NONAME", 0, 0, sf::Color::White, false, 1, 72);
 		LOG_INFO("Created character {0}", name);
 	}
 
