@@ -8,8 +8,8 @@
 class UIText
 {
 public:
-	sf::Color m_FillColor = sf::Color(255, 252, 240, 200);
-	sf::Color m_OutlineColor = sf::Color::Black;
+	sf::Color m_FillColor = sf::Color(255, 252, 240, 150);
+	sf::Color m_OutlineColor = sf::Color(0, 0, 0, 150);
 	float m_OutlineThickness = 1.0f;
 	float m_PositionX = 960.0f;
 	float m_PositionY = 540.0f;
@@ -17,6 +17,7 @@ public:
 	sf::Font m_Font;
 	std::string m_CountryName = "";
 	unsigned int m_CharacterSize = 20;
+	unsigned int m_MinCharacterSize = 50;
 #pragma warning(push)
 #pragma warning(disable: 26812)
 	sf::Text::Style m_Style = sf::Text::Regular;
@@ -34,12 +35,6 @@ public:
 		m_CountryName = countryName;
 		m_OwnedRegionIDs = ownedRegions;
 		m_Window = Window::getWindow();
-		m_CountryNameText.setFont(m_Font);
-		m_CountryNameText.setStyle(m_Style);
-		m_CountryNameText.setString(m_CountryName);
-		m_CountryNameText.setFillColor(m_FillColor);
-		m_CountryNameText.setOutlineColor(m_OutlineColor);
-		m_CountryNameText.setOutlineThickness(m_OutlineThickness);
 	}
 
 	void start() 
@@ -69,7 +64,7 @@ public:
 				{
 					if (regionId == square.m_RegionID)
 					{
-						if (square.m_Position.x < leftMostPosition.x)
+						if (square.m_Position.x <= leftMostPosition.x)
 						{
 							leftMostPosition = square.m_Position;
 						}
@@ -83,19 +78,37 @@ public:
 			Vector2D leftMostPositionScreen = Map::convertToScreen(leftMostPosition);
 			Vector2D diagonal = Map::convertToScreen(rightMostPosition) - leftMostPositionScreen;
 			float offsetY = 1.0f;
-			m_CharacterSize = (unsigned int)(diagonal.x * 0.1f);
+			if ((unsigned int)(diagonal.x * 0.1f) > m_MinCharacterSize)
+			{
+				m_CharacterSize = (unsigned int)(diagonal.x * 0.1f);
+			}
+			else
+			{
+				m_CharacterSize = m_MinCharacterSize;
+			}
+			m_OutlineThickness = diagonal.x * 0.001f;
 			m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
 			if (m_Rotation < 0.0f)
 			{
-				offsetY = -0.5f;
+				offsetY = -0.05f;
 			}
 			else if (m_Rotation > 0.0f)
 			{
-				offsetY = 1.5f;
+				offsetY = 0.05f;
 			}
-			m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - m_CharacterSize * 3;
-			m_PositionY = diagonal.y * 0.5f + leftMostPositionScreen.y - m_CharacterSize * offsetY;
+			else
+			{
+				offsetY = 0.02f;
+			}
+			m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - m_CharacterSize * m_CountryName.size() * 2 * 0.05f;
+			m_PositionY = -(int)m_CharacterSize + diagonal.y * 0.5f + leftMostPositionScreen.y - m_CharacterSize * m_CountryName.size() * offsetY;
+			m_CountryNameText.setFont(m_Font);
+			m_CountryNameText.setStyle(m_Style);
+			m_CountryNameText.setString(m_CountryName);
+			m_CountryNameText.setFillColor(m_FillColor);
+			m_CountryNameText.setOutlineColor(m_OutlineColor);
 			m_CountryNameText.setCharacterSize(m_CharacterSize);
+			m_CountryNameText.setOutlineThickness(m_OutlineThickness);
 			m_CountryNameText.setPosition(m_PositionX, m_PositionY);
 			m_CountryNameText.setRotation(m_Rotation);
 		}
