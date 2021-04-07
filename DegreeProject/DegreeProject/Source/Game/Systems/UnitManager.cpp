@@ -445,7 +445,7 @@ void UnitManager::unitSiege(Unit& unit)
 			unit.m_DaysSeizing++;
 			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
 
-			MapRegion region = Map::get().getRegionById(unit.m_SeizingRegionID);
+			MapRegion& region = Map::get().getRegionById(unit.m_SeizingRegionID);
 			if (Map::get().convertToMap(unit.m_Position) != region.m_RegionCapital)
 			{
 				unit.m_DaysSeizing = 0;
