@@ -454,11 +454,25 @@ void UnitManager::unitSiege(Unit& unit)
 			}
 
 			if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
-			{				
-				CharacterManager::get()->removeRegion(region.m_OwnerID, region.m_RegionId);
-				CharacterManager::get()->addRegion(unit.m_Owner, region.m_RegionId);
-				UIManager::get()->AdjustOwnership(unit.m_Owner, region.m_OwnerID, region.m_RegionId);
-				Map::get().setRegionColor(region.m_RegionId, CharacterManager::get()->getCharacter(unit.m_Owner).m_RegionColor);
+			{	
+				CharacterManager* characterManager = CharacterManager::get();
+				War* currentWar = WarManager::get().getWarAgainst(characterManager->getCharacter(unit.m_Owner).m_CharacterID, characterManager->getCharacter(region.m_OwnerID).m_CharacterID);
+
+				if (currentWar == nullptr)
+				{
+					return;
+				}
+
+				//Todo: Apply filter over region
+				if (currentWar->getDefender() == region.m_OwnerID)
+				{
+					currentWar->m_AttackerOccupiedRegions.push_back(region.m_RegionId);
+				}
+
+				else if (currentWar->getAttacker() == region.m_OwnerID)
+				{
+					currentWar->m_DefenderOccupiedRegions.push_back(region.m_RegionId);
+				}
 
 				unit.m_DaysSeizing = 0;
 				unit.m_SeizingRegionID = -1;

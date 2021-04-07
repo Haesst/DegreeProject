@@ -12,9 +12,12 @@ int WarManager::createWar(CharacterID attacker, CharacterID defender, int warGoa
 	return handle;
 }
 
-void WarManager::endWar(int warHandle)
+void WarManager::endWar(int warHandle, CharacterID winner)
 {
 	unsigned int index = 0;
+
+	getWar(warHandle)->endWar(winner);
+
 	for (auto& pair : m_Wars)
 	{
 		if (pair.first == warHandle)

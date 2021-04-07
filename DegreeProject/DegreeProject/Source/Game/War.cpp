@@ -1,5 +1,8 @@
 #include "War.h"
 #include <Engine\Log.h>
+#include "Game/Map/Map.h"
+#include "Game/UI/UIManager.h"
+#include "AI/AIManager.h"
 #include "Game/WarManager.h"
 
 War::War(CharacterID attacker, CharacterID defender, int warGoalRegion, int handle)
@@ -59,7 +62,7 @@ void War::addWarscore(CharacterID ID, int warScore)
 	}
 }
 
-void War::endWar(CharacterID)
+void War::endWar(CharacterID winningCharacter)
 {
 	CharacterManager::get()->getCharacter(m_Attacker);
 	CharacterManager::get()->getCharacter(m_Defender);
@@ -87,8 +90,43 @@ void War::endWar(CharacterID)
 		index++;
 	}
 
+	handleOccupiedRegions(winningCharacter);
+
+	if (CharacterManager::get()->getCharacter(m_Attacker).m_IsPlayerControlled == false)
+	{
+		AIManager::get().GetWarmindOfCharacter(m_Attacker).m_PrioritizedWarHandle = -1;
+	}
+
+	if (CharacterManager::get()->getCharacter(m_Defender).m_IsPlayerControlled == false)
+	{
+		AIManager::get().GetWarmindOfCharacter(m_Defender).m_PrioritizedWarHandle = -1;
+	}
+
 	LOG_INFO("WAR IS OVER");
 }
+
+void War::handleOccupiedRegions(CharacterID winningCharacter)
+{
+	for (auto& region : m_AttackerOccupiedRegions)
+	{
+		Map::get().getRegionById(region).m_Occupied = false;
+	}
+
+	if (getAttacker() == winningCharacter)
+	{
+		CharacterManager::get()->removeRegion(Map::get().getRegionById(m_WargoalRegion).m_OwnerID, m_WargoalRegion);
+		CharacterManager::get()->addRegion(winningCharacter, m_WargoalRegion);
+
+		UIManager::get()->AdjustOwnership(winningCharacter, Map::get().getRegionById(m_WargoalRegion).m_OwnerID, Map::get().getRegionById(m_WargoalRegion).m_RegionId);
+		Map::get().setRegionColor(Map::get().getRegionById(m_WargoalRegion).m_RegionId, CharacterManager::get()->getCharacter(winningCharacter).m_RegionColor);
+	}
+
+	for (auto& region : m_DefenderOccupiedRegions)
+	{
+		Map::get().getRegionById(region).m_Occupied = false;
+	}
+}
+
 
 bool War::isAttacker(CharacterID ent)
 {
@@ -109,6 +147,7 @@ bool War::isDefender(CharacterID ent)
 
 	return false;
 }
+
 
 int War::getHandle()
 {

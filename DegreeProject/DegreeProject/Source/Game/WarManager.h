@@ -9,7 +9,7 @@ public:
 
 	//Returns handle to war
 	int createWar(CharacterID attacker, CharacterID defender, int warGoalRegion);
-	void endWar(int warHandle);
+	void endWar(int warHandle, CharacterID winner);
 	War* getWar(int handle);
 	War* getWarAgainst(CharacterID character, CharacterID enemy);
 	bool atWarWith(CharacterID character, CharacterID enemy); 

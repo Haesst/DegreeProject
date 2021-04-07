@@ -234,6 +234,11 @@ void CharacterManager::onMonthChange(Date)
 
 		for (unsigned int id : character.m_OwnedRegionIDs)
 		{
+			if (Map::get().getRegionById(id).m_Occupied)
+			{
+				continue;
+			}
+
 			incomingGold += (float)Map::get().getRegionById(id).m_RegionTax;
 		}
 

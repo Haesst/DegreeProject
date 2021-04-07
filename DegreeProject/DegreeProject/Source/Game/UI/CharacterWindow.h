@@ -456,7 +456,7 @@ public:
 				int enemy = m_CurrentMapRegion->m_OwnerID;
 				if (!m_PlayerWars.empty() && m_PlayerWars.find(enemy) != m_PlayerWars.end())
 				{
-					WarManager::get().endWar(m_PlayerWars.at(enemy));
+					WarManager::get().endWar(m_PlayerWars.at(enemy), WarManager::get().getWar(m_PlayerWars.at(enemy))->m_Attacker);
 					m_PlayerWars.erase(enemy);
 					if (m_CurrentWars > 0)
 					{

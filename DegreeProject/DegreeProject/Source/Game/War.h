@@ -9,6 +9,9 @@ struct War
 	int m_AttackerWarscore = 0;
 	int m_DefenderWarscore = 0;
 
+	std::vector<int> m_AttackerOccupiedRegions;
+	std::vector<int> m_DefenderOccupiedRegions;
+
 	CharacterID m_Attacker = INVALID_CHARACTER_ID;
 	CharacterID m_Defender = INVALID_CHARACTER_ID;
 
@@ -22,6 +25,9 @@ struct War
 	int getWarscore(CharacterID ID);
 	void addWarscore(CharacterID ID, int warScore);
 	void endWar(CharacterID winningEntity);
+
+	void handleOccupiedRegions(CharacterID winningCharacter);
+
 	bool isAttacker(CharacterID ent);
 	bool isDefender(CharacterID ent);
 
