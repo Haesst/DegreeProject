@@ -44,6 +44,7 @@ public:
 	const std::string m_Marriage = "Marriage";
 	const std::string m_Alliance = "Alliance";
 	const std::string m_Dash = "/";
+	const std::string m_PregnantTrait = "Pregnant";
 	std::string m_MaleTitles[(unsigned int)Title::Baron + 1];
 	std::string m_FemaleTitles[(unsigned int)Title::Baron + 1];
 	int m_CharacterSize = 50;
@@ -101,6 +102,7 @@ public:
 
 	Gender m_Gender = Gender::Male;
 	bool m_Married = false;
+	bool m_Pregnant = false;
 
 	CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 	{
@@ -283,10 +285,10 @@ public:
 			else
 			{
 				updateSprite(m_GenderSprite, m_FemaleGenderTexture, m_GenderPosition, m_SpriteSize / 2);
-				//if (m_Pregnant)
-				//{
-				//	updateSprite(m_Pregnantprite, m_PregnantTexture, m_PregnantPosition, m_SpriteSize / 2);
-				//}
+				if (m_Pregnant)
+				{
+					updateSprite(m_Pregnantprite, m_PregnantTexture, m_PregnantPosition, m_SpriteSize / 2);
+				}
 			}
 			if (m_Married)
 			{
@@ -358,36 +360,41 @@ public:
 
 	void updateInfo()
 	{
-		Character& character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
-		m_OwnerColor = character.m_RegionColor;
-		m_Gender = character.m_Gender;
-		m_Married = character.m_Spouse;
-
-		m_WindowShape.setOutlineColor(m_OwnerColor);
-
-		m_RealmNameText.setString(character.m_KingdomName);
-		m_RealmNameText.setFillColor(m_OwnerColor);
-
-		if (character.m_Gender == Gender::Male)
+		if (m_CurrentMapRegion != nullptr)
 		{
-			m_CharacterNameText.setString(m_MaleTitles[(unsigned int)character.m_CharacterTitle] + character.m_Name);
+			Character& character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
+			m_OwnerColor = character.m_RegionColor;
+			m_Gender = character.m_Gender;
+			m_Married = character.m_Spouse;
+
+			m_WindowShape.setOutlineColor(m_OwnerColor);
+
+			m_RealmNameText.setString(character.m_KingdomName);
+			m_RealmNameText.setFillColor(m_OwnerColor);
+
+			if (m_Gender == Gender::Male)
+			{
+				m_CharacterNameText.setString(m_MaleTitles[(unsigned int)character.m_CharacterTitle] + character.m_Name);
+				m_Pregnant = false;
+			}
+			else
+			{
+				m_CharacterNameText.setString(m_FemaleTitles[(unsigned int)character.m_CharacterTitle] + character.m_Name);
+				m_Pregnant = CharacterManager::get()->hasTrait(character.m_CharacterID, CharacterManager::get()->getTrait(m_PregnantTrait.c_str()));
+			}
+			m_CharacterNameText.setFillColor(m_OwnerColor);
+
+			m_ArmyText.setString(std::to_string(character.m_RaisedArmySize) + m_Dash + std::to_string(character.m_MaxArmySize));
+			m_ArmyText.setFillColor(m_OwnerColor);
+
+			std::stringstream stream;
+			stream << std::fixed << std::setprecision(1) << character.m_CurrentGold;
+			m_GoldText.setString(stream.str());
+			m_GoldText.setFillColor(m_OwnerColor);
+
+			m_CharacterAgeText.setString(std::to_string(Time::m_GameDate.getAge(character.m_Birthday)));
+			m_CharacterAgeText.setFillColor(m_OwnerColor);
 		}
-		else
-		{
-			m_CharacterNameText.setString(m_FemaleTitles[(unsigned int)character.m_CharacterTitle] + character.m_Name);
-		}
-		m_CharacterNameText.setFillColor(m_OwnerColor);
-
-		m_ArmyText.setString(std::to_string(character.m_RaisedArmySize) + m_Dash + std::to_string(character.m_MaxArmySize));
-		m_ArmyText.setFillColor(m_OwnerColor);
-
-		std::stringstream stream;
-		stream << std::fixed << std::setprecision(1) << character.m_CurrentGold;
-		m_GoldText.setString(stream.str());
-		m_GoldText.setFillColor(m_OwnerColor);
-
-		m_CharacterAgeText.setString(std::to_string(Time::m_GameDate.getAge(character.m_Birthday)));
-		m_CharacterAgeText.setFillColor(m_OwnerColor);
 	}
 
 	void handleWindow()
@@ -468,7 +475,7 @@ public:
 			}
 			else if (m_AllianceShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				
+
 			}
 		}
 	}
