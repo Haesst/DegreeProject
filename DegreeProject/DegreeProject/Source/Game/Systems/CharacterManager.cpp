@@ -286,6 +286,11 @@ void CharacterManager::handleInheritance(Character& character)
 		{
 			child.m_IsPlayerControlled = character.m_IsPlayerControlled;
 		}
+		if (child.m_IsPlayerControlled)
+		{
+			m_PlayerCharacterID = child.m_CharacterID;
+			m_PlayerCharacter = &child;
+		}
 		child.m_UnitEntity = character.m_UnitEntity;
 		if (character.m_CharacterTitle < child.m_CharacterTitle)
 		{
@@ -355,6 +360,7 @@ void CharacterManager::handleInheritance(Character& character)
 	character.m_RaisedArmySize = 0;
 	character.m_OwnedRegionIDs.clear();
 	character.m_CharacterTitle = Title::Unlanded;
+	getCharacter(character.m_Spouse).m_Spouse = INVALID_CHARACTER_ID;
 	character.m_Spouse = INVALID_CHARACTER_ID;
 }
 

@@ -380,6 +380,7 @@ public:
 	{
 		if (m_CurrentMapRegion != nullptr)
 		{
+			m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
 			Character& character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
 			m_OwnerColor = character.m_RegionColor;
 			m_Gender = character.m_Gender;
