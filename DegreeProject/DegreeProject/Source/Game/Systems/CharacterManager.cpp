@@ -234,7 +234,7 @@ void CharacterManager::onMonthChange(Date)
 
 		for (unsigned int id : character.m_OwnedRegionIDs)
 		{
-			if (Map::get().getRegionById(id).m_Occupied)
+			if (Map::get().getRegionById(id).m_OccupiedBy != INVALID_CHARACTER_ID)
 			{
 				continue;
 			}

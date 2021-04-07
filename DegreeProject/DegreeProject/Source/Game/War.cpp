@@ -109,7 +109,7 @@ void War::handleOccupiedRegions(CharacterID winningCharacter)
 {
 	for (auto& region : m_AttackerOccupiedRegions)
 	{
-		Map::get().getRegionById(region).m_Occupied = false;
+		Map::get().getRegionById(region).m_OccupiedBy = INVALID_CHARACTER_ID;
 	}
 
 	if (getAttacker() == winningCharacter)
@@ -123,7 +123,7 @@ void War::handleOccupiedRegions(CharacterID winningCharacter)
 
 	for (auto& region : m_DefenderOccupiedRegions)
 	{
-		Map::get().getRegionById(region).m_Occupied = false;
+		Map::get().getRegionById(region).m_OccupiedBy = INVALID_CHARACTER_ID;
 	}
 }
 

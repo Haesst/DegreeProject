@@ -467,11 +467,13 @@ void UnitManager::unitSiege(Unit& unit)
 				if (currentWar->getDefender() == region.m_OwnerID)
 				{
 					currentWar->m_AttackerOccupiedRegions.push_back(region.m_RegionId);
+					region.m_OccupiedBy = currentWar->getAttacker();
 				}
 
 				else if (currentWar->getAttacker() == region.m_OwnerID)
 				{
 					currentWar->m_DefenderOccupiedRegions.push_back(region.m_RegionId);
+					region.m_OccupiedBy = currentWar->getDefender();
 				}
 
 				unit.m_DaysSeizing = 0;
