@@ -219,7 +219,7 @@ void CharacterManager::onMonthChange(Date)
 		{
 			Date currentDate = Time::m_GameDate.m_Date;
 
-			if ((currentDate.m_Month - character.m_PregnancyDay.m_Month) >= 1)
+			if ((currentDate.m_Month - character.m_PregnancyDay.m_Month) >= 9)
 			{
 				//Give birth
 				createNewChild();
