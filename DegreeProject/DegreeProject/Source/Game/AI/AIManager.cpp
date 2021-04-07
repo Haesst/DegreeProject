@@ -110,6 +110,11 @@ void AIManager::update()
 {
 	for (auto& data : m_AIDatas)
 	{
+		if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_CharacterTitle == Title::Unlanded)
+		{
+			continue;
+		}
+
 		data.m_ConsiderationAccu++;
 
 		if (data.m_ConsiderationAccu > data.m_ConsiderationTimer) 

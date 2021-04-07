@@ -58,6 +58,14 @@ void CharacterManager::loadTraits(const char* path)
 	m_TraitMtx.unlock();
 }
 
+void CharacterManager::createNewChild()
+{
+	bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
+	char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
+	std::vector<unsigned int> regions = std::vector<unsigned int>();
+	createCharacter(name, Title::Unlanded, regions, "NONAME", 0, 0, sf::Color::Black, false, Time::m_GameDate.m_Date);
+}
+
 void CharacterManager::createUnlandedCharacters(size_t amount)
 {
 	for (size_t i = 0; i < amount; ++i)
@@ -211,10 +219,11 @@ void CharacterManager::onMonthChange(Date)
 		{
 			Date currentDate = Time::m_GameDate.m_Date;
 
-			if ((currentDate.m_Month - character.m_PregnancyDay.m_Month) >= 8)
+			if ((currentDate.m_Month - character.m_PregnancyDay.m_Month) >= 1)
 			{
 				//Give birth
-				createUnlandedCharacters(1);
+				createNewChild();
+
 				removeTrait(character.m_CharacterID, getTrait("Pregnant"));
 			}
 		}
@@ -235,7 +244,7 @@ void CharacterManager::onMonthChange(Date)
 			float fertilityWeight = character.m_Fertility + getCharacter(character.m_Spouse).m_Fertility;
 			bool rand = weightedRandom(fertilityWeight);
 
-			if (rand)
+			if (true)
 			{
 				//Mark character as pregnant.
 				addTrait(character.m_Spouse, getTrait("Pregnant"));
