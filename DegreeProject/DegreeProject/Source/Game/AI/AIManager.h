@@ -40,6 +40,7 @@ public:
 	AIData& getAIDataofCharacter(int handle);
 	void addWarmind(CharacterID ID);
 	void initAI(CharacterID ID);
+	bool handleRecieveMarriageRequest(CharacterID reciever, CharacterID sender);
 	void update();
 
 private:

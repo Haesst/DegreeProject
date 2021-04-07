@@ -106,6 +106,19 @@ void AIManager::initAI(CharacterID ID)
 	m_AIDatas.push_back(data);
 }
 
+bool AIManager::handleRecieveMarriageRequest(CharacterID reciever, CharacterID sender)
+{
+	MarriageConsideration consideration;
+	float eval = consideration.evaluate(reciever, sender);
+
+	if (eval > .5)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void AIManager::update()
 {
 	for (auto& data : m_AIDatas)

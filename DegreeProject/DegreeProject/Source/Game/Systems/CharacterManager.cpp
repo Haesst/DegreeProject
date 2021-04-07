@@ -344,6 +344,7 @@ void CharacterManager::removeRegion(const CharacterID characterId, const unsigne
 void CharacterManager::marry(CharacterID character, CharacterID spouse)
 {
 	CharacterManager* characterManager = CharacterManager::get();
+
 	if (characterManager->getCharacter(spouse).m_Spouse != INVALID_CHARACTER_ID)
 	{
 		return;
@@ -354,8 +355,20 @@ void CharacterManager::marry(CharacterID character, CharacterID spouse)
 		return;
 	}
 
-	characterManager->getCharacter(character).m_Spouse = spouse;
-	characterManager->getCharacter(spouse).m_Spouse = character;
+	if (!characterManager->getCharacter(spouse).m_IsPlayerControlled)
+	{
+		if (AIManager::get().handleRecieveMarriageRequest(spouse, character))
+		{
+			characterManager->getCharacter(character).m_Spouse = spouse;
+			characterManager->getCharacter(spouse).m_Spouse = character;
+		}
+	}
+
+	else
+	{
+		characterManager->getCharacter(character).m_Spouse = spouse;
+		characterManager->getCharacter(spouse).m_Spouse = character;
+	}
 }
 
 CharacterID CharacterManager::internalCreateCharacter(Character& character, const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled)
