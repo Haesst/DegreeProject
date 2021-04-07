@@ -353,7 +353,7 @@ void AIManager::GiveAttackerOrders(WarmindComponent& warmind, CharacterID target
 	}
 }
 
-void AIManager::GiveDefenderOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit)
+void AIManager::GiveDefenderOrders(WarmindComponent& warmind, CharacterID /*target*/, Unit& unit, Unit& enemyUnit)
 {
 	//FightEnemyArmyConsideration fightConsideration;
 	//float fightEval = fightConsideration.evaluate(warmind.m_OwnerID, target);
