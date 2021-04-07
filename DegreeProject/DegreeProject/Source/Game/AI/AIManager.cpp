@@ -110,64 +110,71 @@ void AIManager::update()
 {
 	for (auto& data : m_AIDatas)
 	{
-		if (data.m_CurrentAction == Action::NONE || data.m_LastAction != Action::War)
+		data.m_ConsiderationAccu++;
+
+		if (data.m_ConsiderationAccu > data.m_ConsiderationTimer) 
 		{
-			if (expansionDecision(data.m_OwnerID) > .7f)
+			if (data.m_CurrentAction == Action::NONE || data.m_LastAction != Action::War)
 			{
-				if (warDecision(data.m_OwnerID) > .7f)
+				if (expansionDecision(data.m_OwnerID) > .7f)
 				{
-					int war = WarManager::get().createWar(data.m_OwnerID, GetWarmindOfCharacter(data.m_OwnerID).m_Opponent, GetWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
-					CharacterManager::get()->getCharacter(data.m_OwnerID).m_CurrentWars.push_back(war);
-					CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CurrentWars.push_back(war);
-					GetWarmindOfCharacter(data.m_OwnerID).m_Active = true;
-					data.m_LastAction = Action::War;
-					data.m_CurrentAction = Action::War;
-				}
-			}
-
-			int regionID = -1;
-			
-			if (upgradeDecision(data.m_OwnerID, regionID) > .1f && regionID != -1)
-			{
-				int buildingIndex = rand() % GameData::m_Buildings.size();
-				
-				int buildingId = -1;
-
-				int index = 0;
-				for (auto& pair : GameData::m_Buildings)
-				{
-					if (index == buildingIndex)
+					if (warDecision(data.m_OwnerID) > .7f)
 					{
-						buildingId = pair.second.m_Id;
-						break;
-					}
-					++index;
-				}
-				
-				for (int i = 0; i < 4; i++)
-				{
-					if (Map::get().getRegionById(regionID).m_BuildingSlots[i].m_BuildingId == -1)
-					{
-						CharacterManager::get()->constructBuilding(data.m_OwnerID, buildingId, regionID, i);
-						data.m_LastAction = Action::Upgrade_Settlement;
-						break;
+						int war = WarManager::get().createWar(data.m_OwnerID, GetWarmindOfCharacter(data.m_OwnerID).m_Opponent, GetWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
+						CharacterManager::get()->getCharacter(data.m_OwnerID).m_CurrentWars.push_back(war);
+						CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CurrentWars.push_back(war);
+						GetWarmindOfCharacter(data.m_OwnerID).m_Active = true;
+						data.m_LastAction = Action::War;
+						data.m_CurrentAction = Action::War;
 					}
 				}
-			}
 
-			if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
-			{
-				for (auto& region : Map::get().getRegionIDs())
+				int regionID = -1;
+
+				if (upgradeDecision(data.m_OwnerID, regionID) > .7f && regionID != -1)
 				{
-					if (Map::get().getRegionById(region).m_OwnerID != data.m_OwnerID)
+					int buildingIndex = rand() % GameData::m_Buildings.size();
+
+					int buildingId = -1;
+
+					int index = 0;
+					for (auto& pair : GameData::m_Buildings)
 					{
-						if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Gender != CharacterManager::get()->getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
+						if (index == buildingIndex)
 						{
-							marriageDecision(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID);
+							buildingId = pair.second.m_Id;
+							break;
+						}
+						++index;
+					}
+
+					for (int i = 0; i < 4; i++)
+					{
+						if (Map::get().getRegionById(regionID).m_BuildingSlots[i].m_BuildingId == -1)
+						{
+							CharacterManager::get()->constructBuilding(data.m_OwnerID, buildingId, regionID, i);
+							data.m_LastAction = Action::Upgrade_Settlement;
+							break;
+						}
+					}
+				}
+
+				if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
+				{
+					for (auto& region : Map::get().getRegionIDs())
+					{
+						if (Map::get().getRegionById(region).m_OwnerID != data.m_OwnerID)
+						{
+							if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Gender != CharacterManager::get()->getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
+							{
+								marriageDecision(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID);
+							}
 						}
 					}
 				}
 			}
+
+			data.m_ConsiderationAccu = 0;
 		}
 	}
 
@@ -178,27 +185,34 @@ void AIManager::update()
 			continue;
 		}
 
-		if (CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
-		{
-			UnitManager::get().dismissUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity);
-		}
+		warmind.m_TickAccu++;
 
-		warmind.m_PrioritizedWarHandle = considerPrioritizedWar(warmind);
-
-		if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised) //TODO: Fix when units are using new system
+		if (warmind.m_TickAccu > warmind.m_OrderTimer)
 		{
-			warmind.m_OrderAccu += Time::deltaTime();
-		
-			if (warmind.m_OrderAccu >= warmind.m_OrderTimer)
+			if (CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
 			{
-				warmind.m_OrderAccu = 0.0f;
-				considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warmind.m_Opponent);
+				UnitManager::get().dismissUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity);
 			}
-		}
 
-		else
-		{
-			UnitManager::get().raiseUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity, Map::get().getRegionCapitalLocation(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_OwnedRegionIDs[0]));
+			warmind.m_PrioritizedWarHandle = considerPrioritizedWar(warmind);
+
+			if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised) //TODO: Fix when units are using new system
+			{
+				warmind.m_OrderAccu += Time::deltaTime();
+
+				if (warmind.m_OrderAccu >= warmind.m_OrderTimer)
+				{
+					warmind.m_OrderAccu = 0.0f;
+					considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warmind.m_Opponent);
+				}
+			}
+
+			else
+			{
+				UnitManager::get().raiseUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity, Map::get().getRegionCapitalLocation(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_OwnedRegionIDs[0]));
+			}
+
+			warmind.m_TickAccu = 0;
 		}
 	}
 }
