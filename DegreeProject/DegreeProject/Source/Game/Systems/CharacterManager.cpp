@@ -246,7 +246,7 @@ void CharacterManager::onMonthChange(Date)
 			float fertilityWeight = character.m_Fertility + getCharacter(character.m_Spouse).m_Fertility;
 			bool rand = weightedRandom(fertilityWeight);
 
-			if (true)
+			if (rand)
 			{
 				//Mark character as pregnant.
 				addTrait(character.m_Spouse, getTrait("Pregnant"));
