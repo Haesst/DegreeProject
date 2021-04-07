@@ -60,13 +60,20 @@ void CharacterManager::loadTraits(const char* path)
 	m_TraitMtx.unlock();
 }
 
-void CharacterManager::createNewChild()
+void CharacterManager::createNewChild(CharacterID motherID)
 {
 	bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
 	Gender gender = male ? Gender::Male : Gender::Female;
 	char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
 	std::vector<unsigned int> regions = std::vector<unsigned int>();
-	createCharacter(name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::Black, false, Time::m_GameDate.m_Date);
+	CharacterID childID = createCharacter(name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::Black, false, Time::m_GameDate.m_Date);
+	Character& child = getCharacter(childID);
+	Character& mother = getCharacter(motherID);
+	Character& father = getCharacter(mother.m_Spouse);
+	child.m_Mother = motherID;
+	child.m_Father = father.m_CharacterID;
+	mother.m_Child = childID;
+	father.m_Child = childID;
 }
 
 void CharacterManager::createUnlandedCharacters(size_t amount)
@@ -224,7 +231,7 @@ void CharacterManager::onMonthChange(Date)
 			if ((currentDate.m_Month - character.m_PregnancyDay.m_Month) >= 9)
 			{
 				//Give birth
-				createNewChild();
+				createNewChild(character.m_CharacterID);
 
 				removeTrait(character.m_CharacterID, getTrait("Pregnant"));
 			}
@@ -279,7 +286,7 @@ void CharacterManager::onMonthChange(Date)
 						otherCharacter.m_CurrentGold = giveawayGold;
 						otherCharacter.m_MaxArmySize = giveawayArmy;
 						otherCharacter.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
-						otherCharacter.m_KingdomName = mapRegion.m_RegionName.c_str();
+						otherCharacter.m_KingdomName = ("Barony of " + mapRegion.m_RegionName).c_str();
 						otherCharacter.m_CharacterTitle = Title::Baron;
 						Map::get().setRegionColor(ownedRegionID, otherCharacter.m_RegionColor);
 						UIManager::get()->createUITextElement(Game::m_UIFont, otherCharacter.m_CharacterID, otherCharacter.m_KingdomName, otherCharacter.m_OwnedRegionIDs);

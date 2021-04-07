@@ -456,7 +456,9 @@ void UnitManager::unitSiege(Unit& unit)
 			if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
 			{	
 				CharacterManager* characterManager = CharacterManager::get();
-				War* currentWar = WarManager::get().getWarAgainst(characterManager->getCharacter(unit.m_Owner).m_CharacterID, characterManager->getCharacter(region.m_OwnerID).m_CharacterID);
+				Character& attacker = characterManager->getCharacter(unit.m_Owner);
+				Character& defender = characterManager->getCharacter(region.m_OwnerID);
+				War* currentWar = WarManager::get().getWarAgainst(attacker.m_CharacterID, defender.m_CharacterID);
 
 				if (currentWar == nullptr)
 				{
@@ -464,16 +466,24 @@ void UnitManager::unitSiege(Unit& unit)
 				}
 
 				//Todo: Apply filter over region
-				if (currentWar->getDefender() == region.m_OwnerID)
+				if (defender.m_CharacterID == region.m_OwnerID)
 				{
 					currentWar->m_AttackerOccupiedRegions.push_back(region.m_RegionId);
-					region.m_OccupiedBy = currentWar->getAttacker();
+					region.m_OccupiedBy = attacker.m_CharacterID;
+
+					//Loot
+					defender.m_CurrentGold -= region.m_RegionTax;
+					attacker.m_CurrentGold += region.m_RegionTax;
 				}
 
-				else if (currentWar->getAttacker() == region.m_OwnerID)
+				else if (attacker.m_CharacterID == region.m_OwnerID)
 				{
 					currentWar->m_DefenderOccupiedRegions.push_back(region.m_RegionId);
-					region.m_OccupiedBy = currentWar->getDefender();
+					region.m_OccupiedBy =defender.m_CharacterID;
+
+					//Loot
+					attacker.m_CurrentGold -= region.m_RegionTax;
+					defender.m_CurrentGold += region.m_RegionTax;
 				}
 
 				unit.m_DaysSeizing = 0;

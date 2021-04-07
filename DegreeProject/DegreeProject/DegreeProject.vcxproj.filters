@@ -25,6 +25,9 @@
     <Filter Include="Game\Systems\AI">
       <UniqueIdentifier>{5F998C41-CB24-FA05-D435-7DFA40405606}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\Systems\Characters">
+      <UniqueIdentifier>{95485080-0180-9817-0A8A-FC3A7640BF10}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Game\UI">
       <UniqueIdentifier>{4C805747-B85F-D6E2-C177-61B92DD63C44}</UniqueIdentifier>
     </Filter>
@@ -67,6 +70,9 @@
       <Filter>Game\Data</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Data\Character.h">
+      <Filter>Game\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Data\HeraldicShield.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\Data\Titles.h">
@@ -132,6 +138,15 @@
     <ClInclude Include="Source\Game\Systems\CharacterManager.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Systems\Characters\CharacterNamePool.h">
+      <Filter>Game\Systems\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Systems\Characters\CharacterPool.h">
+      <Filter>Game\Systems\Characters</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\Systems\HeraldicShieldManager.h">
+      <Filter>Game\Systems</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Systems\UnitManager.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
@@ -159,10 +174,6 @@
     <ClInclude Include="Source\Game\WarManager.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Systems\Characters\CharacterPool.h" />
-    <ClInclude Include="Source\Game\Systems\Characters\CharacterNamePool.h" />
-    <ClInclude Include="Source\Game\Data\HeraldicShield.h" />
-    <ClInclude Include="Source\Game\Systems\HeraldicShieldManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
@@ -219,6 +230,15 @@
     <ClCompile Include="Source\Game\Systems\CharacterManager.cpp">
       <Filter>Game\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Systems\Characters\CharacterNamePool.cpp">
+      <Filter>Game\Systems\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Systems\Characters\CharacterPool.cpp">
+      <Filter>Game\Systems\Characters</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\Systems\HeraldicShieldManager.cpp">
+      <Filter>Game\Systems</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Game\Systems\UnitManager.cpp">
       <Filter>Game\Systems</Filter>
     </ClCompile>
@@ -232,8 +252,5 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Game\Systems\Characters\CharacterPool.cpp" />
-    <ClCompile Include="Source\Game\Systems\Characters\CharacterNamePool.cpp" />
-    <ClCompile Include="Source\Game\Systems\HeraldicShieldManager.cpp" />
   </ItemGroup>
 </Project>

@@ -17,7 +17,7 @@ public:
 	sf::Font m_Font;
 	std::string m_CountryName = "";
 	unsigned int m_CharacterSize = 20;
-	unsigned int m_MinCharacterSize = 50;
+	unsigned int m_MinCharacterSize = 30;
 #pragma warning(push)
 #pragma warning(disable: 26812)
 	sf::Text::Style m_Style = sf::Text::Regular;
@@ -90,15 +90,15 @@ public:
 			m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
 			if (m_Rotation < 0.0f)
 			{
-				offsetY = -0.05f;
+				offsetY = m_Rotation * 0.005f;
 			}
 			else if (m_Rotation > 0.0f)
 			{
-				offsetY = 0.05f;
+				offsetY = m_Rotation * 0.001f;
 			}
 			else
 			{
-				offsetY = 0.02f;
+				offsetY = 0.01f;
 			}
 			m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - m_CharacterSize * m_CountryName.size() * 2 * 0.05f;
 			m_PositionY = -(int)m_CharacterSize + diagonal.y * 0.5f + leftMostPositionScreen.y - m_CharacterSize * m_CountryName.size() * offsetY;

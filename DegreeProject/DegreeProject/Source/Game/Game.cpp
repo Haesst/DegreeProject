@@ -117,7 +117,7 @@ void Game::addEntitys()
 	m_UIFont = m_AssetHandler->loadFontFromFile("Assets/Fonts/TestFont.ttf");
 
 	std::vector<unsigned int> id0{ 1, 2, 3, 4, 5, 6, 7 };
-	CharacterID char0 = createCharacter(id0, Title::King, Gender::Male, "Kingdom of Milano", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(181, 54, 107));
+	CharacterID char0 = createCharacter(id0, Title::King, Gender::Female, "Kingdom of Milano", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(181, 54, 107));
 	UIManager::get()->createUITextElement(m_UIFont, char0, CharacterManager::get()->getCharacter(char0).m_KingdomName, id0);
 
 	std::vector<unsigned int> id1{ 8, 9, 10, 11, 12 };

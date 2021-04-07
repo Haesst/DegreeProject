@@ -51,7 +51,7 @@ private:
 	bool weightedRandom(float weight);
 	void loadTraits(const char* path);
 
-	void createNewChild();
+	void createNewChild(CharacterID motherID);
 	void createUnlandedCharacters(size_t amount);
 
 private:

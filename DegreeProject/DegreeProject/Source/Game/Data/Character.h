@@ -41,6 +41,9 @@ struct Character
 	float m_CurrentGold = 0.0f;
 
 	CharacterID m_Spouse = INVALID_CHARACTER_ID;
+	CharacterID m_Mother = INVALID_CHARACTER_ID;
+	CharacterID m_Father = INVALID_CHARACTER_ID;
+	CharacterID m_Child = INVALID_CHARACTER_ID;
 
 	Gender m_Gender = Gender::Male;
 	float m_Fertility = -1.f;
@@ -58,7 +61,7 @@ struct Character
 	sf::Color m_RegionColor = sf::Color::Black;
 	sf::Sprite m_CharacterPortrait;
 
-	unsigned int m_DieAge = 40;
+	unsigned int m_DieAge = 60;
 	bool m_Dead = false;
 
 	bool m_RecentlyAtWar = false;  //Flag for raising units when war starts // <- This might not be necessary
