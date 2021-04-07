@@ -50,7 +50,7 @@ void AIManager::loadPersonalities(const char* path)
 		std::string personalityName = element["debugName"].get<std::string>();
 		float declareWarModifier = element["declareWarMod"].get<float>();
 
-		m_Personalities.push_back({ personalityName.c_str(), declareWarModifier });
+		m_Personalities.push_back({ personalityName, declareWarModifier });
 	}
 	m_PersonalityMtx.unlock();
 }

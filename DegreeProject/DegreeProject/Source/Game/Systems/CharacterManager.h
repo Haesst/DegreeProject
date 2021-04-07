@@ -48,7 +48,7 @@ public:
 private:
 	CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
 
-	bool weightedRandom(int weight);
+	bool weightedRandom(float weight);
 	void loadTraits(const char* path);
 
 	void createUnlandedCharacters(size_t amount);

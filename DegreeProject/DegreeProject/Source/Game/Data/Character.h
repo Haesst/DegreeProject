@@ -15,14 +15,9 @@ enum class Gender
 
 struct Trait
 {
-	const char* m_TraitName;
+	std::string m_TraitName;
 
-	Trait()
-	{
-
-	}
-
-	Trait(const char* traitName)
+	Trait(std::string traitName)
 	{
 		m_TraitName = traitName;
 	}

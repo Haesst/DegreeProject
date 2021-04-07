@@ -17,10 +17,10 @@ struct AIData;
 
 struct Personality
 {
-	const char* m_PersonalityName;
+	std::string m_PersonalityName;
 	float m_DeclareWarModifier = 0.0f;
 
-	Personality(const char* personalityName, float declareWarModifier)
+	Personality(std::string personalityName, float declareWarModifier)
 	{
 		m_PersonalityName = personalityName;
 		m_DeclareWarModifier = declareWarModifier;

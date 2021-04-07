@@ -51,9 +51,8 @@ void CharacterManager::loadTraits(const char* path)
 	for (auto& element : j)
 	{
 		std::string traitName = element["debugName"].get<std::string>();
-		Trait newTrait;
-		newTrait.m_TraitName = traitName.c_str();
-		m_Traits.push_back({traitName.c_str()});
+
+		m_Traits.push_back(traitName);
 	}
 
 	m_TraitMtx.unlock();
@@ -220,7 +219,7 @@ void CharacterManager::onMonthChange(Date)
 	}
 }
 
-bool CharacterManager::weightedRandom(int weight)
+bool CharacterManager::weightedRandom(float weight)
 {
 	float f = rand() * 1.0f / RAND_MAX;
 	float vv = weight / 10.0f;
