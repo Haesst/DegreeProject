@@ -43,7 +43,8 @@ public:
 	const std::string m_Marriage = "Marriage";
 	const std::string m_Alliance = "Alliance";
 	const std::string m_Dash = "/";
-	std::string m_Titles[(unsigned int)Title::Baron + 1];
+	std::string m_MaleTitles[(unsigned int)Title::Baron + 1];
+	std::string m_FemaleTitles[(unsigned int)Title::Baron + 1];
 	int m_CharacterSize = 50;
 #pragma warning(push)
 #pragma warning(disable: 26812)
@@ -106,11 +107,18 @@ public:
 		m_Font = font;
 		m_SizeX = size.x;
 		m_SizeY = size.y;
-		m_Titles[(unsigned int)Title::Emperor] = "Emperor ";
-		m_Titles[(unsigned int)Title::King] = "King ";
-		m_Titles[(unsigned int)Title::Duke] = "Duke ";
-		m_Titles[(unsigned int)Title::Count] = "Count ";
-		m_Titles[(unsigned int)Title::Baron] = "Baron ";
+
+		m_MaleTitles[(unsigned int)Title::Emperor] = "Emperor ";
+		m_MaleTitles[(unsigned int)Title::King] = "King ";
+		m_MaleTitles[(unsigned int)Title::Duke] = "Duke ";
+		m_MaleTitles[(unsigned int)Title::Count] = "Count ";
+		m_MaleTitles[(unsigned int)Title::Baron] = "Baron ";
+
+		m_FemaleTitles[(unsigned int)Title::Emperor] = "Empress ";
+		m_FemaleTitles[(unsigned int)Title::King] = "Queen ";
+		m_FemaleTitles[(unsigned int)Title::Duke] = "Duchess ";
+		m_FemaleTitles[(unsigned int)Title::Count] = "Countess ";
+		m_FemaleTitles[(unsigned int)Title::Baron] = "Baroness ";
 	}
 
 	void start()
@@ -359,7 +367,14 @@ public:
 		m_RealmNameText.setString(character.m_KingdomName);
 		m_RealmNameText.setFillColor(m_OwnerColor);
 
-		m_CharacterNameText.setString(m_Titles[(unsigned int)character.m_CharacterTitle] + character.m_Name);
+		if (character.m_Gender == Gender::Male)
+		{
+			m_CharacterNameText.setString(m_MaleTitles[(unsigned int)character.m_CharacterTitle] + character.m_Name);
+		}
+		else
+		{
+			m_CharacterNameText.setString(m_FemaleTitles[(unsigned int)character.m_CharacterTitle] + character.m_Name);
+		}
 		m_CharacterNameText.setFillColor(m_OwnerColor);
 
 		m_ArmyText.setString(std::to_string(character.m_RaisedArmySize) + m_Dash + std::to_string(character.m_MaxArmySize));
