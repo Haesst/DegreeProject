@@ -81,7 +81,6 @@ void CharacterManager::createUnlandedCharacters(size_t amount)
 		createCharacterWithRandomBirthday(name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::White, false, 1, 72);
 		LOG_INFO("Created character {0}", name);
 	}
-
 }
 
 CharacterID CharacterManager::createCharacter(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday)
