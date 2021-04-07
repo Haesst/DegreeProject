@@ -183,7 +183,8 @@ public:
 						}
 					}
 					m_CurrentRegionID = regionID;
-					checkIfPlayerRegion(m_CurrentRegionID);
+					m_CurrentMapRegion = &Map::get().getRegionById(m_CurrentRegionID);
+					checkIfPlayerRegion();
 					updateInfo();
 					m_Open = true;
 				}
@@ -229,7 +230,6 @@ public:
 
 	void updateInfo()
 	{
-		m_CurrentMapRegion = &Map::get().getRegionById(m_CurrentRegionID);
 		Character character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
 		m_OwnerColor = character.m_RegionColor;
 
@@ -334,21 +334,9 @@ public:
 		}
 	}
 
-	bool checkIfPlayerRegion(size_t currentRegionID)
+	bool checkIfPlayerRegion()
 	{
-		for (unsigned int ownedRegionID : m_PlayerCharacter->m_OwnedRegionIDs)
-		{
-			if (currentRegionID == ownedRegionID)
-			{
-				m_PlayerRegion = true;
-				break;
-			}
-			else
-			{
-				m_PlayerRegion = false;
-			}
-		}
-		return m_PlayerRegion;
+		return m_PlayerRegion = m_CurrentMapRegion->m_OwnerID == m_PlayerCharacter->m_CharacterID;
 	}
 
 	void updateSprites()
