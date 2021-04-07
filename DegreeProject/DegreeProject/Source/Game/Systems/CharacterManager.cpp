@@ -360,8 +360,11 @@ void CharacterManager::handleInheritance(Character& character)
 	character.m_RaisedArmySize = 0;
 	character.m_OwnedRegionIDs.clear();
 	character.m_CharacterTitle = Title::Unlanded;
-	getCharacter(character.m_Spouse).m_Spouse = INVALID_CHARACTER_ID;
-	character.m_Spouse = INVALID_CHARACTER_ID;
+	if (character.m_Spouse != INVALID_CHARACTER_ID)
+	{
+		getCharacter(character.m_Spouse).m_Spouse = INVALID_CHARACTER_ID;
+		character.m_Spouse = INVALID_CHARACTER_ID;
+	}
 }
 
 bool CharacterManager::weightedRandom(float weight)
