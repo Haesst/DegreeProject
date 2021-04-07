@@ -16,6 +16,7 @@
 #include <json.hpp>
 using json = nlohmann::json;
 #include <mutex>
+#include "Game/WarManager.h"
 
 CharacterManager* CharacterManager::m_Instance = nullptr;
 CharacterID CharacterManager::m_CharacterIDs = 1;
@@ -72,8 +73,8 @@ void CharacterManager::createNewChild(CharacterID motherID)
 	Character& father = getCharacter(mother.m_Spouse);
 	child.m_Mother = motherID;
 	child.m_Father = father.m_CharacterID;
-	mother.m_Child = childID;
-	father.m_Child = childID;
+	mother.m_Children.push_back(childID);
+	father.m_Children.push_back(childID);
 }
 
 void CharacterManager::createUnlandedCharacters(size_t amount)
@@ -253,7 +254,7 @@ void CharacterManager::onMonthChange(Date)
 		character.m_Income = incomingGold; // Todo: Change to prediction for upcoming month instead of showing last month.
 		character.m_CurrentGold += incomingGold;
 
-		if (character.m_Spouse != INVALID_CHARACTER_ID)
+		if (character.m_Gender == Gender::Male && !character.m_Dead && character.m_Spouse != INVALID_CHARACTER_ID)
 		{
 			float fertilityWeight = character.m_Fertility + getCharacter(character.m_Spouse).m_Fertility;
 			bool rand = weightedRandom(fertilityWeight);
@@ -268,37 +269,93 @@ void CharacterManager::onMonthChange(Date)
 
 		if (Time::m_GameDate.getAge(character.m_Birthday) >= character.m_DieAge && character.m_CharacterTitle != Title::Unlanded)
 		{
-			character.m_Dead = true;
-			float giveawayGold = character.m_CurrentGold / character.m_OwnedRegionIDs.size();
-			unsigned int giveawayArmy = character.m_MaxArmySize / character.m_OwnedRegionIDs.size();
-			character.m_CurrentGold = 0;
-			character.m_MaxArmySize = 0;
-			character.m_RaisedArmySize = 0;
-			for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
-			{
-				for (Character& otherCharacter : m_Characters)
-				{
-					if (otherCharacter.m_CharacterTitle == Title::Unlanded && !otherCharacter.m_Dead)
-					{
-						addRegion(otherCharacter.m_CharacterID, ownedRegionID);
-						MapRegion& mapRegion = Map::get().getRegionById(ownedRegionID);
-						mapRegion.m_OwnerID = otherCharacter.m_CharacterID;
-						otherCharacter.m_CurrentGold = giveawayGold;
-						otherCharacter.m_MaxArmySize = giveawayArmy;
-						otherCharacter.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
-						otherCharacter.m_KingdomName = ("Barony of " + mapRegion.m_RegionName).c_str();
-						otherCharacter.m_CharacterTitle = Title::Baron;
-						Map::get().setRegionColor(ownedRegionID, otherCharacter.m_RegionColor);
-						UIManager::get()->createUITextElement(Game::m_UIFont, otherCharacter.m_CharacterID, otherCharacter.m_KingdomName, otherCharacter.m_OwnedRegionIDs);
-						UIManager::get()->AdjustOwnership(otherCharacter.m_CharacterID, character.m_CharacterID, ownedRegionID);
-						break;
-					}
-				}
-			}
-			character.m_OwnedRegionIDs.clear();
-			character.m_CharacterTitle = Title::Unlanded;
+			handleInheritance(character);
 		}
 	}
+}
+
+void CharacterManager::handleInheritance(Character& character)
+{
+	character.m_Dead = true;
+	if (character.m_Children.size() > 0)
+	{
+		Character& child = getCharacter(character.m_Children.front());
+		child.m_CurrentGold += character.m_CurrentGold;
+		child.m_MaxArmySize += character.m_MaxArmySize;
+		if (!child.m_IsPlayerControlled)
+		{
+			child.m_IsPlayerControlled = character.m_IsPlayerControlled;
+		}
+		child.m_UnitEntity = character.m_UnitEntity;
+		if (character.m_CharacterTitle < child.m_CharacterTitle)
+		{
+			child.m_CharacterTitle = character.m_CharacterTitle;
+			child.m_RegionColor = character.m_RegionColor;
+			child.m_KingdomName = character.m_KingdomName;
+		}
+		for (int warhandle : character.m_CurrentWars)
+		{
+			child.m_OwnedRegionIDs.push_back(warhandle);
+		}
+		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
+		{
+			child.m_OwnedRegionIDs.push_back(ownedRegionID);
+			Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
+		}
+		UIManager::get()->createUITextElement(Game::m_UIFont, child.m_CharacterID, child.m_KingdomName, child.m_OwnedRegionIDs);
+		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
+		{
+			UIManager::get()->AdjustOwnership(child.m_CharacterID, character.m_CharacterID, ownedRegionID);
+		}
+	}
+	else
+	{
+		float giveawayGold = character.m_CurrentGold / character.m_OwnedRegionIDs.size();
+		unsigned int giveawayArmy = character.m_MaxArmySize / character.m_OwnedRegionIDs.size();
+		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
+		{
+			for (Character& otherCharacter : m_Characters)
+			{
+				if (otherCharacter.m_CharacterTitle == Title::Unlanded && !otherCharacter.m_Dead)
+				{
+					for (int warhandle : character.m_CurrentWars)
+					{
+						if (WarManager::get().getWar(warhandle)->m_WargoalRegion == (int)ownedRegionID)
+						{
+							otherCharacter.m_CurrentWars.push_back(warhandle);
+							break;
+						}
+					}
+					addRegion(otherCharacter.m_CharacterID, ownedRegionID);
+					MapRegion& mapRegion = Map::get().getRegionById(ownedRegionID);
+					mapRegion.m_OwnerID = otherCharacter.m_CharacterID;
+					otherCharacter.m_CurrentGold = giveawayGold;
+					otherCharacter.m_MaxArmySize = giveawayArmy;
+					otherCharacter.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
+					std::stringstream stream;
+					stream << "Barony of " << mapRegion.m_RegionName;
+					otherCharacter.m_KingdomName = stream.str();
+					otherCharacter.m_CharacterTitle = Title::Baron;
+					Map::get().setRegionColor(ownedRegionID, otherCharacter.m_RegionColor);
+					UIManager::get()->createUITextElement(Game::m_UIFont, otherCharacter.m_CharacterID, otherCharacter.m_KingdomName, otherCharacter.m_OwnedRegionIDs);
+					UIManager::get()->AdjustOwnership(otherCharacter.m_CharacterID, character.m_CharacterID, ownedRegionID);
+					break;
+				}
+			}
+		}
+	}
+	character.m_CurrentWars.clear();
+	character.m_IsPlayerControlled = false;
+	UnitManager::get().dismissUnit(character.m_UnitEntity);
+	character.m_UnitEntity = INVALID_UNIT_ID;
+	character.m_RegionColor = sf::Color::White;
+	character.m_KingdomName = "";
+	character.m_CurrentGold = 0;
+	character.m_MaxArmySize = 0;
+	character.m_RaisedArmySize = 0;
+	character.m_OwnedRegionIDs.clear();
+	character.m_CharacterTitle = Title::Unlanded;
+	character.m_Spouse = INVALID_CHARACTER_ID;
 }
 
 bool CharacterManager::weightedRandom(float weight)

@@ -54,6 +54,7 @@ private:
 	void createNewChild(CharacterID motherID);
 	void createUnlandedCharacters(size_t amount);
 
+	void handleInheritance(Character& character);
 private:
 	static CharacterManager* m_Instance;
 	static CharacterID m_CharacterIDs;

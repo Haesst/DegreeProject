@@ -44,9 +44,9 @@ void HeraldicShieldManager::loadAllPatterns()
 
 sf::Color HeraldicShieldManager::generateRandomColor()
 {
-	sf::Uint8 r = (rand() / (RAND_MAX / 255));
-	sf::Uint8 g = (rand() / (RAND_MAX / 255));
-	sf::Uint8 b = (rand() / (RAND_MAX / 255));
+	sf::Uint8 r = (sf::Uint8)(rand() / (RAND_MAX / 255));
+	sf::Uint8 g = (sf::Uint8)(rand() / (RAND_MAX / 255));
+	sf::Uint8 b = (sf::Uint8)(rand() / (RAND_MAX / 255));
 	
 	return sf::Color(r, g, b);
 }

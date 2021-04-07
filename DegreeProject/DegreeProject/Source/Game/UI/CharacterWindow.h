@@ -20,6 +20,11 @@ public:
 	sf::RectangleShape m_MakePeaceShape;
 	sf::RectangleShape m_MarriageShape;
 	sf::RectangleShape m_AllianceShape;
+	std::vector<sf::RectangleShape> m_BabyShapes;
+	std::vector<sf::Sprite> m_BabySprites;
+	std::vector<sf::Texture> m_BabyTextures;
+	sf::Texture m_MaleBabyTexture;
+	sf::Texture m_FemaleBabyTexture;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
 	sf::Color m_DeclareWarColor = sf::Color(210, 32, 60);
@@ -44,7 +49,7 @@ public:
 	const std::string m_Marriage = "Marriage";
 	const std::string m_Alliance = "Alliance";
 	const std::string m_Dash = "/";
-	const std::string m_PregnantTrait = "Pregnant";
+	const char* m_PregnantTrait = "Pregnant";
 	std::string m_MaleTitles[(unsigned int)Title::Baron + 1];
 	std::string m_FemaleTitles[(unsigned int)Title::Baron + 1];
 	int m_CharacterSize = 50;
@@ -148,6 +153,9 @@ public:
 
 		m_PregnantTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/BabyMale.png");
 		m_PregnantPosition = sf::Vector2f(m_SizeX * 0.5f, m_SizeY * 0.42f);
+
+		m_MaleBabyTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/BabyMale.png");
+		m_FemaleBabyTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/BabyFemale.png");
 
 		m_MarriedTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Circle.png");
 		m_MarriedPosition = sf::Vector2f(m_SizeX * 0.4f, m_SizeY * 0.425f);
@@ -261,6 +269,11 @@ public:
 			m_GoldText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.3f))));
 
 			m_CharacterAgeText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.4f))));
+
+			for (unsigned int index = 0; index < m_BabyShapes.size(); index++)
+			{
+				m_BabyShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.1f * (index + 1)), (int)(m_SizeY * 0.5f))));
+			}
 		}
 	}
 
@@ -294,6 +307,11 @@ public:
 			{
 				updateSprite(m_MarriedSprite, m_MarriedTexture, m_MarriedPosition, m_SpriteSize / 2);
 				updateSprite(m_MarriedSprite2, m_MarriedTexture2, m_MarriedPosition2, m_SpriteSize / 2);
+			}
+			for (unsigned int index = 0; index < m_BabyShapes.size(); index++)
+			{
+				m_Window->draw(m_BabyShapes[index]);
+				updateSprite(m_BabySprites[index], m_BabyTextures[index], sf::Vector2f(m_SizeX * 0.1f * (index + 1), m_SizeY * 0.5f), m_SpriteSize / 2);
 			}
 			if (!m_PlayerRegion)
 			{
@@ -372,6 +390,28 @@ public:
 			m_RealmNameText.setString(character.m_KingdomName);
 			m_RealmNameText.setFillColor(m_OwnerColor);
 
+			m_BabyShapes.clear();
+			m_BabySprites.clear();
+			m_BabyTextures.clear();
+			for (unsigned int index = 0; index < character.m_Children.size(); index++)
+			{
+				Character& child = CharacterManager::get()->getCharacter(character.m_Children[index]);
+				m_BabyShapes.push_back(sf::RectangleShape());
+				m_BabySprites.push_back(sf::Sprite());
+				if (child.m_Gender == Gender::Male)
+				{
+					m_BabyTextures.push_back(m_MaleBabyTexture);
+				}
+				else
+				{
+					m_BabyTextures.push_back(m_FemaleBabyTexture);
+				}
+				m_BabyShapes[index].setFillColor(sf::Color::Transparent);
+				m_BabyShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
+				m_BabyShapes[index].setSize(sf::Vector2f(m_SpriteSize / 2, m_SpriteSize / 2));
+				m_BabyShapes[index].setOutlineColor(m_OwnerColor);
+			}
+
 			if (m_Gender == Gender::Male)
 			{
 				m_CharacterNameText.setString(m_MaleTitles[(unsigned int)character.m_CharacterTitle] + character.m_Name);
@@ -380,7 +420,7 @@ public:
 			else
 			{
 				m_CharacterNameText.setString(m_FemaleTitles[(unsigned int)character.m_CharacterTitle] + character.m_Name);
-				m_Pregnant = CharacterManager::get()->hasTrait(character.m_CharacterID, CharacterManager::get()->getTrait(m_PregnantTrait.c_str()));
+				m_Pregnant = CharacterManager::get()->hasTrait(character.m_CharacterID, CharacterManager::get()->getTrait(m_PregnantTrait));
 			}
 			m_CharacterNameText.setFillColor(m_OwnerColor);
 

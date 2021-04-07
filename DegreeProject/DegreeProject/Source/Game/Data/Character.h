@@ -35,7 +35,7 @@ struct Character
 	Date m_Birthday;
 	Date m_PregnancyDay;
 
-	const char* m_KingdomName = "";
+	std::string m_KingdomName = "";
 
 	float m_Income = 0.0f;
 	float m_CurrentGold = 0.0f;
@@ -43,7 +43,7 @@ struct Character
 	CharacterID m_Spouse = INVALID_CHARACTER_ID;
 	CharacterID m_Mother = INVALID_CHARACTER_ID;
 	CharacterID m_Father = INVALID_CHARACTER_ID;
-	CharacterID m_Child = INVALID_CHARACTER_ID;
+	std::vector<CharacterID> m_Children = std::vector<CharacterID>();
 
 	Gender m_Gender = Gender::Male;
 	float m_Fertility = -1.f;
