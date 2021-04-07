@@ -52,7 +52,6 @@ public:
 		if (!m_Conquered)
 		{
 			m_Window->draw(m_CountryNameText);
-			LOG_INFO(m_CountryName);
 		}	
 	}
 
