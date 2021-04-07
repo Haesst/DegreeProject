@@ -50,5 +50,5 @@ private:
 
 	void addEntitys();
 
-	CharacterID createCharacter(std::vector<unsigned int>& ownedRegions, Title title, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color);
+	CharacterID createCharacter(std::vector<unsigned int>& ownedRegions, Title title, Gender gender, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color);
 };

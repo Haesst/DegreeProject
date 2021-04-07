@@ -38,15 +38,15 @@ public:
 
 	static CharacterManager* get();
 	
-	CharacterID createCharacterWithRandomBirthday(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge);
-	CharacterID createCharacter(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday);
+	CharacterID createCharacterWithRandomBirthday(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge);
+	CharacterID createCharacter(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday);
 	void addTrait(CharacterID ID, Trait trait);
 	void removeTrait(CharacterID ID, Trait trait);
 	bool hasTrait(CharacterID ID, Trait trait);
 	Trait getTrait(const char* traitName);
 
 private:
-	CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
+	CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
 
 	bool weightedRandom(float weight);
 	void loadTraits(const char* path);

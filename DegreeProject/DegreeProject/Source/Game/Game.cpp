@@ -114,15 +114,15 @@ void Game::addEntitys()
 	m_UIFont = m_AssetHandler->loadFontFromFile("Assets/Fonts/TestFont.ttf");
 
 	std::vector<unsigned int> id0{ 1, 2, 3, 4, 5, 6, 7 };
-	CharacterID char0 = createCharacter(id0, Title::King, "Kingdom of Milano", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(181, 54, 107));
+	CharacterID char0 = createCharacter(id0, Title::King, Gender::Male, "Kingdom of Milano", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(181, 54, 107));
 	UIManager::get()->createUITextElement(m_UIFont, char0, CharacterManager::get()->getCharacter(char0).m_KingdomName, id0);
 
 	std::vector<unsigned int> id1{ 8, 9, 10, 11, 12 };
-	CharacterID char1 = createCharacter(id1, Title::Emperor, "Roman Empire", CharacterNamePool::getMaleName(), 100, 10, false, sf::Color(54, 181, 105));
+	CharacterID char1 = createCharacter(id1, Title::Emperor, Gender::Male, "Roman Empire", CharacterNamePool::getMaleName(), 100, 10, false, sf::Color(54, 181, 105));
 	UIManager::get()->createUITextElement(m_UIFont, char1, CharacterManager::get()->getCharacter(char1).m_KingdomName, id1);
 
 	std::vector<unsigned int> id2{ 13, 14, 15, 16, 17 };
-	CharacterID char2 = createCharacter(id2, Title::King, "Kingdom of Sicilies", CharacterNamePool::getMaleName(), 150, 10, true, sf::Color(200, 181, 105));
+	CharacterID char2 = createCharacter(id2, Title::King, Gender::Male, "Kingdom of Sicilies", CharacterNamePool::getMaleName(), 150, 10, true, sf::Color(200, 181, 105));
 	UIManager::get()->createUITextElement(m_UIFont, char2, CharacterManager::get()->getCharacter(char2).m_KingdomName, id2);
 
 	//UI
@@ -143,9 +143,9 @@ void Game::addEntitys()
 	UIManager::get()->createUIWindowElement(m_UIFont, UIType::DateBar, dateBarPosition, dateBarSize);
 }
 
-CharacterID Game::createCharacter(std::vector<unsigned int>& ownedRegions, Title title, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color)
+CharacterID Game::createCharacter(std::vector<unsigned int>& ownedRegions, Title title, Gender gender, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color)
 {
-	CharacterID character = CharacterManager::get()->createCharacterWithRandomBirthday(characterName, title, ownedRegions, realmName, army, (float)gold, color, playerControlled, 24, 62);
+	CharacterID character = CharacterManager::get()->createCharacterWithRandomBirthday(characterName, title, gender, ownedRegions, realmName, army, (float)gold, color, playerControlled, 24, 62);
 
 	for (int i : ownedRegions)
 	{

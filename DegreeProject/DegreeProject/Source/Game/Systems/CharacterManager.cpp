@@ -30,7 +30,7 @@ CharacterManager* CharacterManager::get()
 	return m_Instance;
 }
 
-CharacterID CharacterManager::createCharacterWithRandomBirthday(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge)
+CharacterID CharacterManager::createCharacterWithRandomBirthday(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge)
 {
 	ASSERT(minAge <= maxAge, "Minimum age can't be less than maximum age");
 
@@ -38,7 +38,7 @@ CharacterID CharacterManager::createCharacterWithRandomBirthday(const char* char
 
 	character.m_Birthday = Time::m_GameDate.getRandomDate(false, minAge, maxAge);
 
-	return internalCreateCharacter(character, characterName, title, ownedRegions, realmName, army, gold, color, playerControlled);
+	return internalCreateCharacter(character, characterName, title, gender, ownedRegions, realmName, army, gold, color, playerControlled);
 }
 
 void CharacterManager::loadTraits(const char* path)
@@ -63,9 +63,10 @@ void CharacterManager::loadTraits(const char* path)
 void CharacterManager::createNewChild()
 {
 	bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
+	Gender gender = male ? Gender::Male : Gender::Female;
 	char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
 	std::vector<unsigned int> regions = std::vector<unsigned int>();
-	createCharacter(name, Title::Unlanded, regions, "NONAME", 0, 0, sf::Color::Black, false, Time::m_GameDate.m_Date);
+	createCharacter(name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::Black, false, Time::m_GameDate.m_Date);
 }
 
 void CharacterManager::createUnlandedCharacters(size_t amount)
@@ -73,22 +74,23 @@ void CharacterManager::createUnlandedCharacters(size_t amount)
 	for (size_t i = 0; i < amount; ++i)
 	{
 		bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
+		Gender gender = male ? Gender::Male : Gender::Female;
 		char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
 		std::vector<unsigned int> regions = std::vector<unsigned int>();
 
-		createCharacterWithRandomBirthday(name, Title::Unlanded, regions, "NONAME", 0, 0, sf::Color::White, false, 1, 72);
+		createCharacterWithRandomBirthday(name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::White, false, 1, 72);
 		LOG_INFO("Created character {0}", name);
 	}
 
 }
 
-CharacterID CharacterManager::createCharacter(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday)
+CharacterID CharacterManager::createCharacter(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday)
 {
 	Character& character = m_CharacterPool.Rent();
 
 	character.m_Birthday = birthday;
 
-	return internalCreateCharacter(character, characterName, title, ownedRegions, realmName, army, gold, color, playerControlled);
+	return internalCreateCharacter(character, characterName, title, gender, ownedRegions, realmName, army, gold, color, playerControlled);
 }
 
 void CharacterManager::addTrait(CharacterID ID, Trait trait)
@@ -237,7 +239,7 @@ void CharacterManager::onMonthChange(Date)
 			incomingGold += (float)Map::get().getRegionById(id).m_RegionTax;
 		}
 
-		incomingGold -= (character.m_RaisedArmySize * 0.1f); // Todo: Declare armycost somewhere
+		incomingGold -= (character.m_RaisedArmySize * 0.1f); // Todo: Declare army cost somewhere
 		character.m_Income = incomingGold; // Todo: Change to prediction for upcoming month instead of showing last month.
 		character.m_CurrentGold += incomingGold;
 
@@ -275,7 +277,7 @@ void CharacterManager::onMonthChange(Date)
 						otherCharacter.m_MaxArmySize = giveawayArmy;
 						otherCharacter.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
 						otherCharacter.m_KingdomName = mapRegion.m_RegionName.c_str();
-						otherCharacter.m_CharacterTitle = Title::Count;
+						otherCharacter.m_CharacterTitle = Title::Baron;
 						Map::get().setRegionColor(ownedRegionID, otherCharacter.m_RegionColor);
 						UIManager::get()->createUITextElement(Game::m_UIFont, otherCharacter.m_CharacterID, otherCharacter.m_KingdomName, otherCharacter.m_OwnedRegionIDs);
 						UIManager::get()->AdjustOwnership(otherCharacter.m_CharacterID, character.m_CharacterID, ownedRegionID);
@@ -358,7 +360,7 @@ void CharacterManager::marry(CharacterID character, CharacterID spouse)
 	characterManager->getCharacter(spouse).m_Spouse = character;
 }
 
-CharacterID CharacterManager::internalCreateCharacter(Character& character, const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled)
+CharacterID CharacterManager::internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled)
 {
 	CharacterID id = m_CharacterIDs++;
 
@@ -373,6 +375,7 @@ CharacterID CharacterManager::internalCreateCharacter(Character& character, cons
 
 	//Generate random number between 0 - 1, will be used as percent
 	character.m_Fertility = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	character.m_Gender = gender;
 
 	character.m_CurrentGold = gold;
 
