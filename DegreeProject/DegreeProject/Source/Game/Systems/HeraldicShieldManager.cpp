@@ -1,6 +1,8 @@
 #include "HeraldicShieldManager.h"
+#include <filesystem>
 
 #include "Engine/Window.h"
+#include "Engine/Log.h"
 #include "Engine/AssetHandler.h"
 #include "Game/Map/Map.h"
 
@@ -19,6 +21,14 @@ void HeraldicShieldManager::initialize()
 
 	m_ShieldShader.loadFromFile("Assets\\Shaders\\ShieldShader.frag", sf::Shader::Fragment);
 	m_ShieldRenderStates.shader = &m_ShieldShader;
+
+	static size_t textureId = textureId++;
+
+	for (auto& file : std::filesystem::recursive_directory_iterator("Assets\\Graphics\\HeraldicShields\\Patterns"))
+	{
+		m_PatternTextures[textureId] = AssetHandler::get().getTextureAtPath(file.path().string().c_str());
+		m_PatternSprites[textureId].setTexture(m_PatternTextures[textureId], true);
+	}
 }
 
 void HeraldicShieldManager::loadBaseShield()
@@ -34,9 +44,9 @@ void HeraldicShieldManager::loadAllPatterns()
 
 sf::Color HeraldicShieldManager::generateRandomColor()
 {
-	float r = (rand() / (RAND_MAX / 250.0f));
-	float g = (rand() / (RAND_MAX / 250.0f));
-	float b = (rand() / (RAND_MAX / 250.0f));
+	int r = (rand() / (RAND_MAX / 255));
+	int g = (rand() / (RAND_MAX / 255));
+	int b = (rand() / (RAND_MAX / 255));
 	
 	return sf::Color(r, g, b);
 }
@@ -56,9 +66,7 @@ void HeraldicShieldManager::renderShield(const HeraldicShield& shield, const Vec
 	m_ShieldShader.setUniform("u_Color", sf::Glsl::Vec4(shield.m_BaseColor));
 	Window::getWindow()->draw(m_ShieldBaseSprite, &m_ShieldShader);
 
-	if (shield.m_PatternId != 0)
-	{
-		m_ShieldShader.setUniform("u_Color", sf::Glsl::Vec4(shield.m_PatternColor));
-		Window::getWindow()->draw(m_PatternSprites[shield.m_PatternId], &m_ShieldShader);
-	}
+	m_ShieldShader.setUniform("u_Color", sf::Glsl::Vec4(shield.m_PatternColor));
+	m_PatternSprites[shield.m_PatternId].setPosition({ position.x, position.y });
+	Window::getWindow()->draw(m_PatternSprites[shield.m_PatternId], &m_ShieldShader);
 }
