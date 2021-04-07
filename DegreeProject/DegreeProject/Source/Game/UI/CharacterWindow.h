@@ -9,6 +9,7 @@
 #include "Game/Systems/CharacterManager.h"
 #include "Game/Game.h"
 #include <iomanip>
+#include "Game/AI/AIManager.h"
 #include "Game/WarManager.h"
 
 class CharacterWindow
@@ -432,6 +433,10 @@ public:
 					int warHandle = WarManager::get().createWar(m_PlayerCharacter->m_CharacterID, enemy, m_CurrentRegionID);
 					m_PlayerWars.insert(std::pair(enemy, warHandle));
 					m_CurrentWars++;
+
+					CharacterManager::get()->getCharacter(enemy).m_CurrentWars.push_back(warHandle);
+					AIManager::get().GetWarmindOfCharacter(enemy).m_Active = true;
+
 					Game::m_Sound.pause();
 					if (m_BattleSound.getStatus() != sf::SoundSource::Playing)
 					{

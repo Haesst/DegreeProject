@@ -13,16 +13,16 @@ void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 
 	auto& enemyUnit = UnitManager::get().getUnitOfCharacter(CharacterManager::get()->getCharacter(warmind.m_Opponent).m_CharacterID);
 
-	if (!enemyUnit.m_Raised)
-	{
-		return;
-	}
-
 	Vector2DInt battlefieldIntPosition;
 
 	if (enemyUnit.m_CurrentPath.size() > 0)
 	{
 		battlefieldIntPosition = enemyUnit.m_CurrentPath.back();
+	}
+
+	else if(!enemyUnit.m_Raised)
+	{
+		battlefieldIntPosition = Map::get().getRegionById(WarManager::get().getWar(warmind.m_PrioritizedWarHandle)->m_WargoalRegion).m_RegionCapital;
 	}
 
 	else

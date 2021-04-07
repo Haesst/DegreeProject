@@ -3,6 +3,7 @@
 #include <Game\Systems\AI\WarmindConsiderations.h>
 #include "Game/Systems/UnitManager.h"
 #include "Game/Data/Unit.h"
+#include "Game\Pathfinding.h"
 #include <Game\Data\AIData.h>
 
 AIManager* AIManager::m_Instance = nullptr;
@@ -142,6 +143,7 @@ void AIManager::update()
 						CharacterManager::get()->getCharacter(data.m_OwnerID).m_CurrentWars.push_back(war);
 						CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CurrentWars.push_back(war);
 						GetWarmindOfCharacter(data.m_OwnerID).m_Active = true;
+						GetWarmindOfCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Active = true;
 						data.m_LastAction = Action::War;
 						data.m_CurrentAction = Action::War;
 					}
@@ -205,7 +207,7 @@ void AIManager::update()
 
 		warmind.m_TickAccu++;
 
-		if (warmind.m_TickAccu > warmind.m_OrderTimer)
+		if (warmind.m_TickAccu > warmind.m_AtWarTickRate)
 		{
 			if (CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
 			{
@@ -353,28 +355,29 @@ void AIManager::GiveAttackerOrders(WarmindComponent& warmind, CharacterID target
 
 void AIManager::GiveDefenderOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit)
 {
-	FightEnemyArmyConsideration fightConsideration;
-	float fightEval = fightConsideration.evaluate(warmind.m_OwnerID, target);
+	//FightEnemyArmyConsideration fightConsideration;
+	//float fightEval = fightConsideration.evaluate(warmind.m_OwnerID, target);
 
-	if (fightEval > 0.7)
-	{
-		m_Orders.orderFightEnemyArmy(warmind, unit);
-		return;
-	}
+	//if (fightEval > 0.7)
+	//{
+	//	m_Orders.orderFightEnemyArmy(warmind, unit);
+	//	return;
+	//}
 
-	Vector2D unitPosition = unit.m_Position; //NEEDS TO CHANGE
-	Vector2D enemyUnitPosition = enemyUnit.m_Position; //NEEDS TO CHANGe
+	Vector2D unitPosition = unit.m_Position;
+	Vector2D enemyUnitPosition = enemyUnit.m_Position;
 
-	float distance = (unitPosition - enemyUnitPosition).getLength();
-	if (distance < 100.0f)
-	{
-		m_Orders.orderFlee(warmind, unit);
-		return;
-	}
+	//float distance = (unitPosition - enemyUnitPosition).getLength();
+	//if (distance < 100.0f)
+	//{
+	//	m_Orders.orderFlee(warmind, unit);
+	//	return;
+	//}
 
 	int regionID = m_WarManager->getWar(warmind.m_PrioritizedWarHandle)->m_WargoalRegion;
 	Vector2DInt regionPosition = Map::get().getRegionById(regionID).m_RegionCapital;
 	//Order unit to move
+	UnitManager::get().giveUnitPath(UnitManager::get().getUnitOfCharacter(warmind.m_OwnerID).m_UnitID, Pathfinding::get().findPath(Map::get().convertToMap(unitPosition), regionPosition));
 }
 
 int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
