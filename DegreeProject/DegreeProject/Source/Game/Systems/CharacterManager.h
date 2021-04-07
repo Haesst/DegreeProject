@@ -51,6 +51,8 @@ private:
 	bool weightedRandom(int weight);
 	void loadTraits(const char* path);
 
+	void createUnlandedCharacters(size_t amount);
+
 private:
 	static CharacterManager* m_Instance;
 	static CharacterID m_CharacterIDs;
@@ -59,6 +61,7 @@ private:
 	std::vector<Trait> m_Traits;
 	const size_t m_PoolInitSize = 20000;
 	const size_t m_PoolGrowSize = 10000;
+	const size_t m_UnlandedCharactersAtStart = 200;
 
 	Player* m_Player = nullptr;
 	CharacterID m_PlayerCharacterID = INVALID_CHARACTER_ID;

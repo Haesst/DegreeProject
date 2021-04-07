@@ -6,5 +6,6 @@ enum class Title
 	King,
 	Duke,
 	Count,
-	Baron
+	Baron,
+	Unlanded
 };

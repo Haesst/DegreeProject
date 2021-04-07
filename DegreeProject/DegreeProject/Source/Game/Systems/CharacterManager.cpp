@@ -2,6 +2,7 @@
 
 #include "Engine/Log.h"
 #include "Game/Systems/UnitManager.h"
+#include "Game/Systems/Characters/CharacterNamePool.h"
 
 #include "Game/GameDate.h"
 #include "Game/Map/Map.h"
@@ -56,6 +57,19 @@ void CharacterManager::loadTraits(const char* path)
 	}
 
 	m_TraitMtx.unlock();
+}
+
+void CharacterManager::createUnlandedCharacters(size_t amount)
+{
+	for (size_t i = 0; i < amount; ++i)
+	{
+		bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
+		char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
+
+		createCharacterWithRandomBirthday(name, Title::Unlanded, std::vector<unsigned int>(), "NONAME", 0, 0, sf::Color::White, false, 1, 72);
+		LOG_INFO("Created character {0}", name);
+	}
+
 }
 
 CharacterID CharacterManager::createCharacter(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday)
@@ -121,6 +135,8 @@ void CharacterManager::start()
 			Map::get().getRegionById(id).m_OwnerID = character.m_CharacterID;
 		}
 	}
+
+	createUnlandedCharacters(m_UnlandedCharactersAtStart);
 }
 
 void CharacterManager::update()
@@ -146,7 +162,7 @@ CharacterManager::~CharacterManager()
 Character& CharacterManager::getPlayerCharacter()
 {
 	ASSERT(m_PlayerCharacterID != INVALID_CHARACTER_ID, "Player not set");
-	return *m_PlayerCharacter;
+	return getCharacter(m_PlayerCharacterID);
 }
 
 CharacterID CharacterManager::getPlayerCharacterID()
@@ -302,7 +318,7 @@ CharacterID CharacterManager::internalCreateCharacter(Character& character, cons
 	{
 		ASSERT(m_PlayerCharacter == nullptr, "No multiplayer game yet, only one player controlled character allowed.");
 
-		m_PlayerCharacter = &m_Characters.back();
+		m_PlayerCharacter = &getCharacter(id);
 		m_PlayerCharacterID = id;
 
 		m_Player = new Player(id);

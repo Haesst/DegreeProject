@@ -12,7 +12,7 @@ const std::vector<char*> CharacterNamePool::m_MaleNames = {
 		"Azzo", "Azzolino", "Baldassare", "Baldovino", "Bàrtolo", "Bartolomeo", "Bartolommeo",
 		"Basilio", "Battista", "Benedetto", "Beniamino", "Benigno", "Benvenuto", "Beppe",
 		"Berengar", "Berengar", "Bernardino", "Bernardo", "Bertoldo", "Bertrando",
-		"Bettino", "Biaggio", "Biagino", "Biagio", "Bonaventura", "Bonaventure"
+		"Bettino", "Biaggio", "Biagino", "Biagio", "Bonaventura", "Bonaventure",
 		"Bonfilio", "Bonifacio", "Brizio", "Buonfiglio", "Caj", "Cajetan", "Callisto",
 		"Calogero", "Calvino", "Camillo", "Carlo", "Casimiro", "Cecilio", "Celestino",
 		"Celino", "Celio", "Celso", "Cesare", "Cesarino", "Cipriano", "Ciriaco",
