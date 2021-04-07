@@ -141,6 +141,16 @@ public:
 		m_MaxArmyText.setString(std::to_string(character.m_MaxArmySize));
 		m_CurrentMaxArmyText.setString(std::to_string(character.m_RaisedArmySize));
 		m_OwnerColor = character.m_RegionColor;
+
+		m_WindowShape.setOutlineColor(m_OwnerColor);
+
+		m_CurrentGoldText.setFillColor(m_OwnerColor);
+
+		m_CurrentIncomeText.setFillColor(m_OwnerColor);
+
+		m_MaxArmyText.setFillColor(m_OwnerColor);
+
+		m_CurrentMaxArmyText.setFillColor(m_OwnerColor);
 	}
 
 	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize = m_SpriteSize)

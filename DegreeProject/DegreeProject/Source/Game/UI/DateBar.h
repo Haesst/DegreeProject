@@ -56,7 +56,8 @@ public:
 
 	void start()
 	{
-		Time::m_GameDate.subscribeToDayChange([](void* data) { DateBar& datebar = *static_cast<DateBar*>(data); datebar.onDayChanged(); }, static_cast<void*>(this));
+		Time::m_GameDate.subscribeToDayChange([](void* data) { DateBar& datebar = *static_cast<DateBar*>(data); datebar.onDayChange(); }, static_cast<void*>(this));
+		Time::m_GameDate.subscribeToMonthChange(std::bind(&DateBar::onMonthChange, this));
 
 		m_Window = Window::getWindow();
 
@@ -174,9 +175,38 @@ public:
 		m_Window->draw(m_DateText);
 	}
 
-	void onDayChanged()
+	void onDayChange()
 	{
 		updateStats();
+	}
+
+	void onMonthChange()
+	{
+		m_OwnerColor = CharacterManager::get()->getPlayerCharacter().m_RegionColor;
+
+		m_WindowShape.setOutlineColor(m_OwnerColor);
+
+		for (unsigned int index = 0; index < m_NumberOfButtons; index++)
+		{
+			m_ButtonShapes[index].setOutlineColor(m_OwnerColor);
+		}
+
+		for (unsigned int index = 0; index < m_NumberOfSpeeds; index++)
+		{
+			m_SpeedShapes[index].setOutlineColor(m_OwnerColor);
+		}
+
+		m_PauseLeftShape.setFillColor(m_OwnerColor);
+
+		m_PauseRightShape.setFillColor(m_OwnerColor);
+
+		m_DecreaseSpeedShape.setFillColor(m_OwnerColor);
+
+		m_IncreaseSpeedHorizontalShape.setFillColor(m_OwnerColor);
+
+		m_IncreaseSpeedVerticalShape.setFillColor(m_OwnerColor);
+
+		m_DateText.setFillColor(m_OwnerColor);
 	}
 
 	void updateStats()

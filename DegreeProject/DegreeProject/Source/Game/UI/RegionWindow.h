@@ -69,6 +69,8 @@ public:
 
 	void start()
 	{
+		Time::m_GameDate.subscribeToMonthChange(std::bind(&RegionWindow::onMonthChange, this));
+
 		m_Window = Window::getWindow();
 
 		m_BuildingSlotTextures[0] = AssetHandler::get().getTextureAtPath("Assets/Graphics/FortIcon.png");
@@ -208,6 +210,11 @@ public:
 		}
 	}
 
+	void onMonthChange()
+	{
+		updateInfo();
+	}
+
 	void displayProgressMeter(unsigned int index)
 	{
 		int buildingProgress = m_CurrentMapRegion->m_BuildingSlots[index].m_DaysBuilt;
@@ -230,40 +237,44 @@ public:
 
 	void updateInfo()
 	{
-		Character character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
-		m_OwnerColor = character.m_RegionColor;
-
-		m_WindowShape.setOutlineColor(m_OwnerColor);
-
-		m_RegionTaxText.setString(m_TaxString + std::to_string(m_CurrentMapRegion->m_RegionTax));
-		m_RegionTaxText.setFillColor(m_OwnerColor);
-
-		m_RegionNameText.setString(m_CurrentMapRegion->m_RegionName);
-		m_RegionNameText.setFillColor(m_OwnerColor);
-
-		m_KingdomNameText.setString(character.m_KingdomName);
-		m_KingdomNameText.setFillColor(m_OwnerColor);
-
-		m_RaiseArmyShape.setOutlineColor(m_OwnerColor);
-		if (character.m_RaisedArmySize > 0)
+		if (m_CurrentMapRegion != nullptr)
 		{
-			m_RaiseArmyShape.setFillColor(m_OwnerColor);
-		}
-		else
-		{
-			m_RaiseArmyShape.setFillColor(sf::Color::Transparent);
-		}
+			m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
+			Character character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
+			m_OwnerColor = character.m_RegionColor;
 
-		for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
-		{
-			m_BuildingSlotShapes[index].setOutlineColor(m_OwnerColor);
-			if (m_CurrentMapRegion->m_BuildingSlots[index].m_Finished)
+			m_WindowShape.setOutlineColor(m_OwnerColor);
+
+			m_RegionTaxText.setString(m_TaxString + std::to_string(m_CurrentMapRegion->m_RegionTax));
+			m_RegionTaxText.setFillColor(m_OwnerColor);
+
+			m_RegionNameText.setString(m_CurrentMapRegion->m_RegionName);
+			m_RegionNameText.setFillColor(m_OwnerColor);
+
+			m_KingdomNameText.setString(character.m_KingdomName);
+			m_KingdomNameText.setFillColor(m_OwnerColor);
+
+			m_RaiseArmyShape.setOutlineColor(m_OwnerColor);
+			if (character.m_RaisedArmySize > 0)
 			{
-				m_BuildingSlotSprites[index].setColor(m_OwnerColor);
+				m_RaiseArmyShape.setFillColor(m_OwnerColor);
 			}
 			else
 			{
-				m_BuildingSlotShapes[index].setFillColor(sf::Color::Transparent);
+				m_RaiseArmyShape.setFillColor(sf::Color::Transparent);
+			}
+
+			for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
+			{
+				m_BuildingSlotShapes[index].setOutlineColor(m_OwnerColor);
+				if (m_CurrentMapRegion->m_BuildingSlots[index].m_Finished)
+				{
+					m_BuildingSlotSprites[index].setColor(m_OwnerColor);
+				}
+				else
+				{
+					m_BuildingSlotShapes[index].setFillColor(sf::Color::Transparent);
+				}
 			}
 		}
 	}
