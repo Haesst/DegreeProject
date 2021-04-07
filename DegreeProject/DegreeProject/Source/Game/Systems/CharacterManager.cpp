@@ -79,7 +79,6 @@ void CharacterManager::createUnlandedCharacters(size_t amount)
 		std::vector<unsigned int> regions = std::vector<unsigned int>();
 
 		createCharacterWithRandomBirthday(name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::White, false, 1, 72);
-		LOG_INFO("Created character {0}", name);
 	}
 }
 
