@@ -22,12 +22,12 @@ void HeraldicShieldManager::initialize()
 	m_ShieldShader.loadFromFile("Assets\\Shaders\\ShieldShader.frag", sf::Shader::Fragment);
 	m_ShieldRenderStates.shader = &m_ShieldShader;
 
-	int textureId = 0;
+	static size_t textureId = textureId++;
+
 	for (auto& file : std::filesystem::recursive_directory_iterator("Assets\\Graphics\\HeraldicShields\\Patterns"))
 	{
 		m_PatternTextures[textureId] = AssetHandler::get().getTextureAtPath(file.path().string().c_str());
 		m_PatternSprites[textureId].setTexture(m_PatternTextures[textureId], true);
-		++textureId;
 	}
 }
 
@@ -56,7 +56,7 @@ HeraldicShield HeraldicShieldManager::generateRandomShield()
 	HeraldicShield shield;
 	shield.m_BaseColor = generateRandomColor();
 	shield.m_PatternColor = generateRandomColor();
-	shield.m_PatternId = (rand() / (RAND_MAX / m_PatternTextures.size()));
+	shield.m_PatternId = 0;
 	return shield;
 }
 
