@@ -33,6 +33,7 @@ struct Character
 	const char* m_Name = "";
 	Title m_CharacterTitle = Title::Baron;
 	Date m_Birthday;
+	Date m_PregnancyDay;
 
 	const char* m_KingdomName = "";
 

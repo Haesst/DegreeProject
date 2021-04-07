@@ -109,6 +109,19 @@ void CharacterManager::removeTrait(CharacterID ID, Trait trait)
 	}
 }
 
+bool CharacterManager::hasTrait(CharacterID ID, Trait trait)
+{
+	for (auto& t : getCharacter(ID).m_Traits)
+	{
+		if (t.m_TraitName == trait.m_TraitName)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 Trait CharacterManager::getTrait(const char* traitName)
 {
 	for (auto trait : m_Traits)
@@ -194,6 +207,18 @@ void CharacterManager::onMonthChange(Date)
 {
 	for (auto& character : m_Characters)
 	{
+		if (hasTrait(character.m_CharacterID, getTrait("Pregnant")))
+		{
+			Date currentDate = Time::m_GameDate.m_Date;
+
+			if ((currentDate.m_Month - character.m_PregnancyDay.m_Month) >= 8)
+			{
+				//Give birth
+				createUnlandedCharacters(1);
+				removeTrait(character.m_CharacterID, getTrait("Pregnant"));
+			}
+		}
+
 		float incomingGold = 0;
 
 		for (unsigned int id : character.m_OwnedRegionIDs)
@@ -214,6 +239,7 @@ void CharacterManager::onMonthChange(Date)
 			{
 				//Mark character as pregnant.
 				addTrait(character.m_Spouse, getTrait("Pregnant"));
+				getCharacter(character.m_Spouse).m_PregnancyDay = Time::m_GameDate.m_Date;
 			}
 		}
 	}

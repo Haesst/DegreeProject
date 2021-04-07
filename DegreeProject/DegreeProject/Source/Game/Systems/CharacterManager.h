@@ -42,7 +42,7 @@ public:
 	CharacterID createCharacter(const char* characterName, Title title, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday);
 	void addTrait(CharacterID ID, Trait trait);
 	void removeTrait(CharacterID ID, Trait trait);
-
+	bool hasTrait(CharacterID ID, Trait trait);
 	Trait getTrait(const char* traitName);
 
 private:
