@@ -34,6 +34,7 @@ struct Character
 	Title m_CharacterTitle = Title::Baron;
 	Date m_Birthday;
 	Date m_PregnancyDay;
+	CharacterID m_LastChildFather = INVALID_CHARACTER_ID;
 
 	std::string m_KingdomName = "";
 

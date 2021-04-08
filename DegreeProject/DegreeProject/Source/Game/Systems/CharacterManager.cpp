@@ -70,7 +70,7 @@ void CharacterManager::createNewChild(CharacterID motherID)
 	CharacterID childID = createCharacter(name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::Black, false, Time::m_GameDate.m_Date);
 	Character& child = getCharacter(childID);
 	Character& mother = getCharacter(motherID);
-	Character& father = getCharacter(mother.m_Spouse);
+	Character& father = getCharacter(mother.m_LastChildFather);
 	child.m_Mother = motherID;
 	child.m_Father = father.m_CharacterID;
 	mother.m_Children.push_back(childID);
@@ -256,14 +256,20 @@ void CharacterManager::onMonthChange(Date)
 
 		if (character.m_Gender == Gender::Male && !character.m_Dead && character.m_Spouse != INVALID_CHARACTER_ID)
 		{
-			float fertilityWeight = character.m_Fertility + getCharacter(character.m_Spouse).m_Fertility;
-			bool rand = weightedRandom(fertilityWeight);
+			Character& spouse = getCharacter(character.m_Spouse);
 
-			if (rand)
+			if (spouse.m_Gender == Gender::Female)
 			{
-				//Mark character as pregnant.
-				addTrait(character.m_Spouse, getTrait("Pregnant"));
-				getCharacter(character.m_Spouse).m_PregnancyDay = Time::m_GameDate.m_Date;
+				float fertilityWeight = character.m_Fertility + spouse.m_Fertility;
+				bool rand = weightedRandom(fertilityWeight);
+
+				if (rand)
+				{
+					//Mark character as pregnant.
+					addTrait(character.m_Spouse, getTrait("Pregnant"));
+					spouse.m_PregnancyDay = Time::m_GameDate.m_Date;
+					spouse.m_LastChildFather = character.m_CharacterID;
+				}
 			}
 		}
 
