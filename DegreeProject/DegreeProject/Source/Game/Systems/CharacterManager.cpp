@@ -247,7 +247,21 @@ void CharacterManager::onMonthChange(Date)
 				continue;
 			}
 
-			incomingGold += (float)Map::get().getRegionById(id).m_RegionTax;
+			MapRegion& region = Map::get().getRegionById(id);
+
+			for (auto& slot : region.m_BuildingSlots)
+			{
+				if (slot.m_BuildingId == -1)
+				{
+					continue;
+				}
+
+				Building& building = GameData::m_Buildings[slot.m_BuildingId];
+				
+				incomingGold += building.m_IncomeModifier;
+			}
+
+			incomingGold += region.m_RegionTax;
 		}
 
 		incomingGold -= (character.m_RaisedArmySize * 0.1f); // Todo: Declare army cost somewhere

@@ -86,7 +86,21 @@ void UnitManager::render()
 
 		if (unit.m_SeizingRegionID > 0)
 		{
-			displayProgressMeter(unit, (float)unit.m_DaysSeizing, (float)Map::get().getRegionById(unit.m_SeizingRegionID).m_DaysToSeize, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
+			MapRegion& region = Map::get().getRegionById(unit.m_SeizingRegionID);
+			int daysToSiegeRegion = region.m_DaysToSeize;
+
+			for (auto& slot : region.m_BuildingSlots)
+			{
+				if (slot.m_BuildingId == -1)
+				{
+					continue;
+				}
+
+				Building& building = GameData::m_Buildings[slot.m_BuildingId];
+				daysToSiegeRegion += building.m_HoldingModifier;
+			}
+
+			displayProgressMeter(unit, (float)unit.m_DaysSeizing, (float)daysToSiegeRegion, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
 		}
 	}
 }
@@ -450,6 +464,20 @@ void UnitManager::unitSiege(Unit& unit)
 			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
 
 			MapRegion& region = Map::get().getRegionById(unit.m_SeizingRegionID);
+
+			int daysToSiegeRegion = region.m_DaysToSeize;
+
+			for (auto& slot : region.m_BuildingSlots)
+			{
+				if (slot.m_BuildingId == -1)
+				{
+					continue;
+				}
+
+				Building& building = GameData::m_Buildings[slot.m_BuildingId];
+				daysToSiegeRegion += building.m_HoldingModifier;
+			}
+
 			if (Map::get().convertToMap(unit.m_Position) != region.m_RegionCapital)
 			{
 				unit.m_DaysSeizing = 0;
