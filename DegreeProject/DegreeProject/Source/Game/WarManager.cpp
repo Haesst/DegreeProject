@@ -1,5 +1,7 @@
 #include "WarManager.h"
 #include "Game/Systems/CharacterManager.h"
+#include "Game/AI/AIManager.h"
+#include "Game/Data/AIData.h"
 #include "Game/Data/Character.h"
 
 WarManager* WarManager::m_Instance = nullptr;
@@ -15,6 +17,16 @@ int WarManager::createWar(CharacterID attacker, CharacterID defender, int warGoa
 void WarManager::endWar(int warHandle, CharacterID winner)
 {
 	unsigned int index = 0;
+
+	if (!CharacterManager::get()->getCharacter(getWar(warHandle)->getAttacker()).m_IsPlayerControlled)
+	{
+		AIManager::get().getAIDataofCharacter(getWar(warHandle)->getAttacker()).m_CurrentAction = Action::NONE;
+	}
+
+	if (!CharacterManager::get()->getCharacter(getWar(warHandle)->getDefender()).m_IsPlayerControlled)
+	{
+		AIManager::get().getAIDataofCharacter(getWar(warHandle)->getAttacker()).m_CurrentAction = Action::NONE;
+	}
 
 	getWar(warHandle)->endWar(winner);
 

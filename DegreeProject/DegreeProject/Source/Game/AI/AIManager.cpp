@@ -138,6 +138,12 @@ void AIManager::update()
 				if (expansionDecision(data.m_OwnerID) > .3f)
 				{
 					float warEval = warDecision(data.m_OwnerID);
+
+					if (data.m_LastAction == Action::War)
+					{
+						warEval -= .3f;
+					}
+
 					data.m_Evaluations.push_back(std::make_pair(warEval, Action::War));
 				}
 
@@ -447,12 +453,18 @@ void AIManager::handleHighestEvaluation(AIData& data)
 	{
 	case Action::War:
 		warAction(data);
+		data.m_LastAction = Action::War;
+		LOG_INFO("AI Declared war");
 		break;
 	case Action::Upgrade_Settlement:
 		upgradeAction(data);
+		data.m_LastAction = Action::Upgrade_Settlement;
+		LOG_INFO("AI UPGRADING SETTLEMENT");
 		break;
 	case Action::Marriage:
 		marriageAction(data);
+		data.m_LastAction = Action::Marriage;
+		LOG_INFO("AI MARRIED");
 		break;
 	case Action::NONE:
 		data.m_PotentialSpouseID = INVALID_CHARACTER_ID;
@@ -462,6 +474,8 @@ void AIManager::handleHighestEvaluation(AIData& data)
 	default:
 		break;
 	}
+
+	data.m_Evaluations.clear();
 }
 
 int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
