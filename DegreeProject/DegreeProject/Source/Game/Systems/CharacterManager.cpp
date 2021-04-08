@@ -267,16 +267,28 @@ void CharacterManager::onMonthChange(Date)
 			}
 		}
 
-		if (Time::m_GameDate.getAge(character.m_Birthday) >= character.m_DieAge && character.m_CharacterTitle != Title::Unlanded)
-		{
-			handleInheritance(character);
+		if (!character.m_Dead)
+		{	
+			unsigned int age = Time::m_GameDate.getAge(character.m_Birthday);
+			if (age > character.m_DeadlyAge)
+			{
+				float dieChance = ((float)((age - character.m_DeadlyAge) * (age - character.m_DeadlyAge)) / (character.m_AgeMax * character.m_AgeMax)) * m_MortalityRate;
+				bool die = weightedRandom(dieChance);
+				if (die)
+				{
+					character.m_Dead = true;
+					if (character.m_CharacterTitle != Title::Unlanded)
+					{
+						handleInheritance(character);
+					}
+				}
+			}
 		}
 	}
 }
 
 void CharacterManager::handleInheritance(Character& character)
 {
-	character.m_Dead = true;
 	if (character.m_Children.size() > 0)
 	{
 		Character& child = getCharacter(character.m_Children.front());
@@ -351,8 +363,11 @@ void CharacterManager::handleInheritance(Character& character)
 	}
 	character.m_CurrentWars.clear();
 	character.m_IsPlayerControlled = false;
-	UnitManager::get().dismissUnit(character.m_UnitEntity);
-	character.m_UnitEntity = INVALID_UNIT_ID;
+	//if (character.m_UnitEntity != INVALID_UNIT_ID)
+	//{
+	//	UnitManager::get().dismissUnit(character.m_UnitEntity);
+	//	character.m_UnitEntity = INVALID_UNIT_ID;
+	//}
 	character.m_RegionColor = sf::Color::White;
 	character.m_KingdomName = "";
 	character.m_CurrentGold = 0;
