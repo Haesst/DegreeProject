@@ -74,7 +74,8 @@ public:
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	unsigned int m_CurrentWars = 0;
 
-	sf::Texture m_CharacterTexture;
+	sf::Texture m_MaleCharacterTexture;
+	sf::Texture m_FemaleCharacterTexture;
 	sf::Sprite m_CharacterSprite;
 	const static int m_SpriteSize = 64;
 	sf::Vector2f m_CharacterPosition = sf::Vector2f();
@@ -142,7 +143,8 @@ public:
 
 		m_Window = Window::getWindow();
 
-		m_CharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/images.jpg");
+		m_MaleCharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/MalePortrait.jpg");
+		m_FemaleCharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/FemalePortrait.jpg");
 		m_CharacterPosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.025f);
 
 		m_GoldTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Coins.png");
@@ -293,7 +295,14 @@ public:
 		if (m_Visible)
 		{
 			m_Window->draw(m_WindowShape);
-			updateSprite(m_CharacterSprite, m_CharacterTexture, m_CharacterPosition);
+			if (CharacterManager::get()->getCharacter(m_CurrentCharacterID).m_Gender == Gender::Male)
+			{
+				updateSprite(m_CharacterSprite, m_MaleCharacterTexture, m_CharacterPosition);
+			}
+			else
+			{
+				updateSprite(m_CharacterSprite, m_FemaleCharacterTexture, m_CharacterPosition);
+			}
 			m_Window->draw(m_RealmNameText);
 			updateSprite(m_GoldSprite, m_GoldTexture, m_GoldPosition, m_SpriteSize / 2);
 			m_Window->draw(m_GoldText);

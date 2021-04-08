@@ -32,7 +32,8 @@ public:
 	sf::Texture m_BuildingSlotTextures[NUMBER_OF_BUILDING_SLOTS];
 	sf::Texture m_RaiseArmyTexture;
 	sf::Sprite m_RaiseArmySprite;
-	sf::Texture m_CharacterTexture;
+	sf::Texture m_MaleCharacterTexture;
+	sf::Texture m_FemaleCharacterTexture;
 	sf::Sprite m_CharacterSprite;
 	const static int m_SpriteSize = 64;
 	float m_IconSlotPositionX = 0.0f;
@@ -79,7 +80,8 @@ public:
 		m_BuildingSlotTextures[3] = AssetHandler::get().getTextureAtPath("Assets/Graphics/WallIcon.png");
 
 		m_RaiseArmyTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/soldier unit.png");
-		m_CharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/harold.jpg");
+		m_MaleCharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harold.jpg");
+		m_FemaleCharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harriet.jpg");
 
 		m_IconSlotPositionX = m_SizeX - m_SpriteSize - m_OutlineThickness;
 		m_IconSlotPositionOffset = m_SpriteSize + m_OutlineThickness * 2;
@@ -358,7 +360,15 @@ public:
 		}
 
 		updateSprite(m_RaiseArmySprite, m_RaiseArmyTexture, sf::Vector2f(m_IconSlotPositionX, m_IconSlotPositionY - m_IconSlotPositionOffset));
-		updateSprite(m_CharacterSprite, m_CharacterTexture, m_CharacterPosition);
+		
+		if (CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID).m_Gender == Gender::Male)
+		{
+			updateSprite(m_CharacterSprite, m_MaleCharacterTexture, m_CharacterPosition);
+		}
+		else
+		{
+			updateSprite(m_CharacterSprite, m_FemaleCharacterTexture, m_CharacterPosition);
+		}
 	}
 
 	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize = m_SpriteSize)
