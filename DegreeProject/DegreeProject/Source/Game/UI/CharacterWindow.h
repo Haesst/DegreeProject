@@ -477,6 +477,7 @@ public:
 
 					CharacterManager::get()->getCharacter(enemy).m_CurrentWars.push_back(warHandle);
 					AIManager::get().GetWarmindOfCharacter(enemy).m_Active = true;
+					AIManager::get().GetWarmindOfCharacter(enemy).m_Opponent = m_PlayerCharacter->m_CharacterID;
 
 					Game::m_Sound.pause();
 					if (m_BattleSound.getStatus() != sf::SoundSource::Playing)

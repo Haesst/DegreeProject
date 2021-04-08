@@ -185,7 +185,17 @@ void AIManager::update()
 				getAIDataofCharacter(warmind.m_OwnerID).m_CurrentAction = Action::NONE;
 			}
 
+			if (warmind.m_PrioritizedWarHandle != -1)
+			{
+				warmind.m_PrioritizedWarHandle = -1;
+			}
+
 			continue;
+		}
+
+		else if (warmind.m_Active)
+		{
+			warmind.m_PrioritizedWarHandle = considerPrioritizedWar(warmind);
 		}
 
 		warmind.m_TickAccu++;
@@ -196,8 +206,6 @@ void AIManager::update()
 			{
 				UnitManager::get().dismissUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity);
 			}
-
-			warmind.m_PrioritizedWarHandle = considerPrioritizedWar(warmind);
 
 			if (warmind.m_PrioritizedWarHandle == -1)
 			{
@@ -397,7 +405,11 @@ void AIManager::warAction(AIData& data)
 	GetWarmindOfCharacter(data.m_OwnerID).m_Active = true;
 
 	WarmindComponent& warmind = GetWarmindOfCharacter(data.m_OwnerID);
-	GetWarmindOfCharacter(warmind.m_Opponent).m_Active = true;
+
+	if (!CharacterManager::get()->getCharacter(warmind.m_Opponent).m_IsPlayerControlled)
+	{
+		GetWarmindOfCharacter(warmind.m_Opponent).m_Active = true;
+	}
 
 	if (!CharacterManager::get()->getCharacter(warmind.m_Opponent).m_IsPlayerControlled)
 	{
@@ -408,8 +420,11 @@ void AIManager::warAction(AIData& data)
 	data.m_LastAction = Action::War;
 	data.m_CurrentAction = Action::War;
 
-	getAIDataofCharacter(CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_CurrentAction = Action::War;
-	getAIDataofCharacter(CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_LastAction = Action::War;
+	if (!CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_IsPlayerControlled)
+	{
+		getAIDataofCharacter(CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_CurrentAction = Action::War;
+		getAIDataofCharacter(CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_LastAction = Action::War;
+	}
 }
 
 void AIManager::upgradeAction(AIData& data)

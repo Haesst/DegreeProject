@@ -25,7 +25,7 @@ void WarManager::endWar(int warHandle, CharacterID winner)
 
 	if (!CharacterManager::get()->getCharacter(getWar(warHandle)->getDefender()).m_IsPlayerControlled)
 	{
-		AIManager::get().getAIDataofCharacter(getWar(warHandle)->getAttacker()).m_CurrentAction = Action::NONE;
+		AIManager::get().getAIDataofCharacter(getWar(warHandle)->getDefender()).m_CurrentAction = Action::NONE;
 	}
 
 	getWar(warHandle)->endWar(winner);

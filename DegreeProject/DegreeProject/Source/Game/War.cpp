@@ -46,7 +46,7 @@ void War::addWarscore(CharacterID ID, int warScore)
 		m_DefenderWarscore -= warScore;
 		if (m_AttackerWarscore >= 100)
 		{
-			endWar(ID);
+			WarManager::get().endWar(m_Handle, getAttacker());
 		}
 	}
 
@@ -57,7 +57,7 @@ void War::addWarscore(CharacterID ID, int warScore)
 
 		if (m_DefenderWarscore >= 100)
 		{
-			endWar(ID);
+			WarManager::get().endWar(m_Handle, getDefender());
 		}
 	}
 }
