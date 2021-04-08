@@ -71,4 +71,6 @@ private:
 
 	std::vector<Character> m_Characters;
 	CharacterPool m_CharacterPool;
+
+	float m_MortalityRate = 4.0f;
 };

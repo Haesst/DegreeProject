@@ -101,9 +101,6 @@ public:
 	sf::Texture m_MarriedTexture;
 	sf::Sprite m_MarriedSprite;
 	sf::Vector2f m_MarriedPosition = sf::Vector2f();
-	sf::Texture m_MarriedTexture2;
-	sf::Sprite m_MarriedSprite2;
-	sf::Vector2f m_MarriedPosition2 = sf::Vector2f();
 
 	Gender m_Gender = Gender::Male;
 	bool m_Married = false;
@@ -151,17 +148,14 @@ public:
 		m_FemaleGenderTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Female.png");
 		m_GenderPosition = sf::Vector2f(m_SizeX * 0.3f, m_SizeY * 0.42f);
 
-		m_PregnantTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/BabyMale.png");
+		m_PregnantTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Pregnant.png");
 		m_PregnantPosition = sf::Vector2f(m_SizeX * 0.5f, m_SizeY * 0.42f);
 
 		m_MaleBabyTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/BabyMale.png");
 		m_FemaleBabyTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/BabyFemale.png");
 
-		m_MarriedTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Circle.png");
-		m_MarriedPosition = sf::Vector2f(m_SizeX * 0.4f, m_SizeY * 0.425f);
-
-		m_MarriedTexture2 = AssetHandler::get().getTextureAtPath("Assets/Graphics/Circle.png");
-		m_MarriedPosition2 = sf::Vector2f(m_SizeX * 0.425f, m_SizeY * 0.415f);
+		m_MarriedTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Married.png");
+		m_MarriedPosition = sf::Vector2f(m_SizeX * 0.4f, m_SizeY * 0.42f);
 
 		m_BattleSound = AssetHandler::get().loadAudioFile("Assets/Audio/battle.wav", m_BattleSoundBuffer);
 		m_BattleSound.setLoop(true);
@@ -306,7 +300,6 @@ public:
 			if (m_Married)
 			{
 				updateSprite(m_MarriedSprite, m_MarriedTexture, m_MarriedPosition, m_SpriteSize / 2);
-				updateSprite(m_MarriedSprite2, m_MarriedTexture2, m_MarriedPosition2, m_SpriteSize / 2);
 			}
 			for (unsigned int index = 0; index < m_BabyShapes.size(); index++)
 			{

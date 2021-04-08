@@ -61,7 +61,8 @@ struct Character
 	sf::Color m_RegionColor = sf::Color::Black;
 	sf::Sprite m_CharacterPortrait;
 
-	unsigned int m_DieAge = 60;
+	unsigned int m_DeadlyAge = 50;
+	unsigned int m_AgeMax = 100;
 	bool m_Dead = false;
 
 	bool m_RecentlyAtWar = false;  //Flag for raising units when war starts // <- This might not be necessary
