@@ -129,74 +129,37 @@ void AIManager::update()
 			continue;
 		}
 
-		data.m_ConsiderationAccu++;
+		data.m_ConsiderationAccu += Time::deltaTime();
 
 		if (data.m_ConsiderationAccu > data.m_ConsiderationTimer) 
 		{
-			if (data.m_CurrentAction == Action::NONE || data.m_LastAction != Action::War)
+			if (data.m_CurrentAction == Action::NONE)
 			{
-				if (expansionDecision(data.m_OwnerID) > .7f)
+				if (expansionDecision(data.m_OwnerID) > .3f)
 				{
-					if (warDecision(data.m_OwnerID) > .7f)
-					{
-						int war = WarManager::get().createWar(data.m_OwnerID, GetWarmindOfCharacter(data.m_OwnerID).m_Opponent, GetWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
-						CharacterManager::get()->getCharacter(data.m_OwnerID).m_CurrentWars.push_back(war);
-						CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CurrentWars.push_back(war);
-						GetWarmindOfCharacter(data.m_OwnerID).m_Active = true;
-						GetWarmindOfCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Active = true;
-						data.m_LastAction = Action::War;
-						data.m_CurrentAction = Action::War;
-					}
+					float warEval = warDecision(data.m_OwnerID);
+					data.m_Evaluations.push_back(std::make_pair(warEval, Action::War));
 				}
 
 				int regionID = -1;
-
-				if (upgradeDecision(data.m_OwnerID, regionID) > .7f && regionID != -1)
-				{
-					int buildingIndex = rand() % GameData::m_Buildings.size();
-
-					int buildingId = -1;
-
-					int index = 0;
-					for (auto& pair : GameData::m_Buildings)
-					{
-						if (index == buildingIndex)
-						{
-							buildingId = pair.second.m_Id;
-							break;
-						}
-						++index;
-					}
-
-					for (int i = 0; i < 4; i++)
-					{
-						if (Map::get().getRegionById(regionID).m_BuildingSlots[i].m_BuildingId == -1)
-						{
-							CharacterManager::get()->constructBuilding(data.m_OwnerID, buildingId, regionID, i);
-							data.m_LastAction = Action::Upgrade_Settlement;
-							break;
-						}
-					}
-				}
+				float settlementEval = upgradeDecision(data.m_OwnerID, regionID);
+				data.m_SettlementToUpgrade = regionID;
+				data.m_Evaluations.push_back(std::make_pair(settlementEval, Action::War));
 
 				if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
 				{
-					for (auto& region : Map::get().getRegionIDs())
+					CharacterID potentialSpouse = getPotentialSpouse(data);
+
+					if (potentialSpouse != INVALID_CHARACTER_ID)
 					{
-						if (Map::get().getRegionById(region).m_OwnerID != data.m_OwnerID)
-						{
-							if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Gender != CharacterManager::get()->getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
-							{
-								if (marriageDecision(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID) > .5f)
-								{
-									CharacterManager::get()->marry(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID);
-								}
-							}
-						}
+						float marriageEval = marriageDecision(data.m_OwnerID, potentialSpouse);
+						data.m_PotentialSpouseID = potentialSpouse;
+						data.m_Evaluations.push_back(std::make_pair(marriageEval, Action::Marriage));
 					}
 				}
 			}
 
+			handleHighestEvaluation(data);
 			data.m_ConsiderationAccu = 0;
 		}
 	}
@@ -205,6 +168,11 @@ void AIManager::update()
 	{
 		if (!warmind.m_Active)
 		{
+			if (getAIDataofCharacter(warmind.m_OwnerID).m_CurrentAction == Action::War)
+			{
+				getAIDataofCharacter(warmind.m_OwnerID).m_CurrentAction = Action::NONE;
+			}
+
 			continue;
 		}
 
@@ -238,6 +206,25 @@ void AIManager::update()
 			warmind.m_TickAccu = 0;
 		}
 	}
+}
+
+CharacterID AIManager::getPotentialSpouse(AIData& data)
+{
+	for (auto& region : Map::get().getRegionIDs())
+	{
+		if (Map::get().getRegionById(region).m_OwnerID != data.m_OwnerID)
+		{
+			if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Gender != CharacterManager::get()->getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
+			{
+				if (marriageDecision(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID) > .4f)
+				{
+					return Map::get().getRegionById(region).m_OwnerID;
+				}
+			}
+		}
+	}
+
+	return INVALID_CHARACTER_ID;
 }
 
 float AIManager::upgradeDecision(CharacterID ID, int& outRegion)
@@ -381,6 +368,100 @@ void AIManager::GiveDefenderOrders(WarmindComponent& warmind, CharacterID /*targ
 	Vector2DInt regionPosition = Map::get().getRegionById(regionID).m_RegionCapital;
 	//Order unit to move
 	UnitManager::get().giveUnitPath(UnitManager::get().getUnitOfCharacter(warmind.m_OwnerID).m_UnitID, Pathfinding::get().findPath(Map::get().convertToMap(unitPosition), regionPosition));
+}
+
+void AIManager::warAction(AIData& data)
+{
+	int war = WarManager::get().createWar(data.m_OwnerID, GetWarmindOfCharacter(data.m_OwnerID).m_Opponent, GetWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
+	CharacterManager::get()->getCharacter(data.m_OwnerID).m_CurrentWars.push_back(war);
+	CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CurrentWars.push_back(war);
+	GetWarmindOfCharacter(data.m_OwnerID).m_Active = true;
+	GetWarmindOfCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Active = true;
+	data.m_LastAction = Action::War;
+	data.m_CurrentAction = Action::War;
+}
+
+void AIManager::upgradeAction(AIData& data)
+{
+	if (data.m_SettlementToUpgrade == -1)
+	{
+		return;
+	}
+
+	int buildingIndex = rand() % GameData::m_Buildings.size();
+
+	int buildingId = -1;
+
+	int index = 0;
+	for (auto& pair : GameData::m_Buildings)
+	{
+		if (index == buildingIndex)
+		{
+			buildingId = pair.second.m_Id;
+			break;
+		}
+		++index;
+	}
+
+	for (int i = 0; i < 4; i++)
+	{
+		if (Map::get().getRegionById(data.m_SettlementToUpgrade).m_BuildingSlots[i].m_BuildingId == -1)
+		{
+			CharacterManager::get()->constructBuilding(data.m_OwnerID, buildingId, data.m_SettlementToUpgrade, i);
+			data.m_LastAction = Action::Upgrade_Settlement;
+			break;
+		}
+	}
+}
+
+void AIManager::marriageAction(AIData& data)
+{
+	if (data.m_PotentialSpouseID == INVALID_CHARACTER_ID)
+	{
+		return;
+	}
+
+	CharacterManager::get()->marry(data.m_OwnerID, data.m_PotentialSpouseID);
+}
+
+void AIManager::handleHighestEvaluation(AIData& data)
+{
+	float highest = -1.0f;
+	Action bestAction = Action::NONE;
+
+	for (auto& eval : data.m_Evaluations)
+	{
+		if (eval.first > highest)
+		{
+			highest = eval.first;
+			bestAction = eval.second;
+		}
+	}
+
+	if (highest < .3f)
+	{
+		data.m_CurrentAction = Action::NONE;
+	}
+
+	switch (bestAction)
+	{
+	case Action::War:
+		warAction(data);
+		break;
+	case Action::Upgrade_Settlement:
+		upgradeAction(data);
+		break;
+	case Action::Marriage:
+		marriageAction(data);
+		break;
+	case Action::NONE:
+		data.m_PotentialSpouseID = INVALID_CHARACTER_ID;
+		data.m_SettlementToUpgrade = -1;
+		break;
+
+	default:
+		break;
+	}
 }
 
 int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
