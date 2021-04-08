@@ -21,6 +21,11 @@ void UnitManager::update()
 {
 	for (auto& unit : m_Units)
 	{
+		if (!unit.m_Raised && unit.m_RepresentedForce != CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize)
+		{
+			unit.m_RepresentedForce++;
+		}
+
 		if (!unit.m_Raised)
 		{
 			continue;
@@ -151,8 +156,7 @@ Unit& UnitManager::getUnitWithId(UnitID id)
 void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 {
 	if (!Map::get().mapSquareDataContainsKey(location))
-	{
-		return;
+	{		return;
 	}
 
 	Unit& unit = getUnitWithId(unitID);

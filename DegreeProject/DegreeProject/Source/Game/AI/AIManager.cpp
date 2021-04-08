@@ -131,9 +131,15 @@ void AIManager::update()
 
 		data.m_ConsiderationAccu += Time::deltaTime();
 
-		if (data.m_ConsiderationAccu > data.m_ConsiderationTimer) 
+		if (data.m_ConsiderationAccu > data.m_ConsiderationTimer)
 		{
-			if (data.m_CurrentAction == Action::NONE)
+			if (data.m_CurrentAction == Action::War)
+			{
+				data.m_ConsiderationAccu = 0;
+				continue;
+			}
+
+			if (data.m_CurrentAction != Action::War && CharacterManager::get()->getCharacter(data.m_OwnerID).m_CurrentWars.size() == 0)
 			{
 				if (expansionDecision(data.m_OwnerID) > .3f)
 				{
@@ -146,22 +152,22 @@ void AIManager::update()
 
 					data.m_Evaluations.push_back(std::make_pair(warEval, Action::War));
 				}
+			}
 
-				int regionID = -1;
-				float settlementEval = upgradeDecision(data.m_OwnerID, regionID);
-				data.m_SettlementToUpgrade = regionID;
-				data.m_Evaluations.push_back(std::make_pair(settlementEval, Action::War));
+			int regionID = -1;
+			float settlementEval = upgradeDecision(data.m_OwnerID, regionID);
+			data.m_SettlementToUpgrade = regionID;
+			data.m_Evaluations.push_back(std::make_pair(settlementEval, Action::War));
 
-				if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
+			if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
+			{
+				CharacterID potentialSpouse = getPotentialSpouse(data);
+
+				if (potentialSpouse != INVALID_CHARACTER_ID)
 				{
-					CharacterID potentialSpouse = getPotentialSpouse(data);
-
-					if (potentialSpouse != INVALID_CHARACTER_ID)
-					{
-						float marriageEval = marriageDecision(data.m_OwnerID, potentialSpouse);
-						data.m_PotentialSpouseID = potentialSpouse;
-						data.m_Evaluations.push_back(std::make_pair(marriageEval, Action::Marriage));
-					}
+					float marriageEval = marriageDecision(data.m_OwnerID, potentialSpouse);
+					data.m_PotentialSpouseID = potentialSpouse;
+					data.m_Evaluations.push_back(std::make_pair(marriageEval, Action::Marriage));
 				}
 			}
 
@@ -192,6 +198,11 @@ void AIManager::update()
 			}
 
 			warmind.m_PrioritizedWarHandle = considerPrioritizedWar(warmind);
+
+			if (warmind.m_PrioritizedWarHandle == -1)
+			{
+				UnitManager::get().dismissUnit(UnitManager::get().getUnitOfCharacter(warmind.m_OwnerID).m_UnitID);
+			}
 
 			if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised) //TODO: Fix when units are using new system
 			{
@@ -378,13 +389,27 @@ void AIManager::GiveDefenderOrders(WarmindComponent& warmind, CharacterID /*targ
 
 void AIManager::warAction(AIData& data)
 {
-	int war = WarManager::get().createWar(data.m_OwnerID, GetWarmindOfCharacter(data.m_OwnerID).m_Opponent, GetWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
-	CharacterManager::get()->getCharacter(data.m_OwnerID).m_CurrentWars.push_back(war);
-	CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CurrentWars.push_back(war);
+	int warHandle = WarManager::get().createWar(data.m_OwnerID, GetWarmindOfCharacter(data.m_OwnerID).m_Opponent, GetWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
+	War* war = WarManager::get().getWar(warHandle);
+	CharacterManager::get()->getCharacter(war->getAttacker()).m_CurrentWars.push_back(warHandle);
+	CharacterManager::get()->getCharacter(war->getDefender()).m_CurrentWars.push_back(warHandle);
+
 	GetWarmindOfCharacter(data.m_OwnerID).m_Active = true;
-	GetWarmindOfCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Active = true;
+
+	WarmindComponent& warmind = GetWarmindOfCharacter(data.m_OwnerID);
+	GetWarmindOfCharacter(warmind.m_Opponent).m_Active = true;
+
+	if (!CharacterManager::get()->getCharacter(warmind.m_Opponent).m_IsPlayerControlled)
+	{
+		GetWarmindOfCharacter(warmind.m_Opponent).m_Opponent = warmind.m_OwnerID;
+	}
+
+	LOG_INFO("{0} Declared war against {1}", CharacterManager::get()->getCharacter(data.m_OwnerID).m_Name, CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Name);
 	data.m_LastAction = Action::War;
 	data.m_CurrentAction = Action::War;
+
+	getAIDataofCharacter(CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_CurrentAction = Action::War;
+	getAIDataofCharacter(CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_LastAction = Action::War;
 }
 
 void AIManager::upgradeAction(AIData& data)
@@ -454,7 +479,6 @@ void AIManager::handleHighestEvaluation(AIData& data)
 	case Action::War:
 		warAction(data);
 		data.m_LastAction = Action::War;
-		LOG_INFO("AI Declared war");
 		break;
 	case Action::Upgrade_Settlement:
 		upgradeAction(data);
@@ -481,13 +505,13 @@ void AIManager::handleHighestEvaluation(AIData& data)
 int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 {
 	// WarManager* warManager = &WarManager::get();
-	
+
 	if (!CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty())
 	{
 		warmind.m_PrioritizedWarHandle = CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.front();
 		return warmind.m_PrioritizedWarHandle;
 	}
-	
+
 	return -1;
 }
 
