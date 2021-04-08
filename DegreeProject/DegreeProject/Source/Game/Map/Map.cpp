@@ -217,7 +217,6 @@ void Map::render()
 		}
 
 		Window::getWindow()->draw(region.m_VertexArray, m_Data.m_RenderStates);
-		//m_Data.m_Shader.setUniform("u_OccupiedColor", region.m_OccupiedBy == INVALID_CHARACTER_ID ? sf::Glsl::Vec4(region.m_HighlightColor) : sf::Glsl::Vec4(CharacterManager::get()->getCharacter(region.m_OccupiedBy).m_RegionColor));
 		
 		HeraldicShieldManager::renderShield(region.m_HeraldicShield, convertToScreen(region.m_RegionCapital) + Vector2D(0.0f, -32.0f));
 	}
