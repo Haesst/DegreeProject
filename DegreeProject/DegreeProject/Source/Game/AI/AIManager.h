@@ -43,6 +43,7 @@ public:
 	bool handleRecieveMarriageRequest(CharacterID reciever, CharacterID sender);
 	void update();
 
+
 private:
 	float upgradeDecision(CharacterID ID, int& outRegion);
 	float warDecision(CharacterID ID);
@@ -53,6 +54,12 @@ private:
 	void considerOrders(WarmindComponent& warmind, Unit& unit, CharacterID target);
 	void GiveAttackerOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit);
 	void GiveDefenderOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit);
+	CharacterID getPotentialSpouse(AIData& data);
+
+	void warAction(AIData& data);
+	void upgradeAction(AIData& data);
+	void marriageAction(AIData& data);
+	void handleHighestEvaluation(AIData& data);
 
 private:
 	static AIManager* m_Instance;
