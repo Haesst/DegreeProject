@@ -187,7 +187,10 @@ void AIManager::update()
 						{
 							if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Gender != CharacterManager::get()->getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
 							{
-								marriageDecision(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID);
+								if (marriageDecision(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID) > .5f)
+								{
+									CharacterManager::get()->marry(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID);
+								}
 							}
 						}
 					}
