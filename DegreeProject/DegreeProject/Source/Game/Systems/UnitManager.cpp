@@ -208,6 +208,8 @@ void UnitManager::dismissUnit(UnitID unitID)
 		squareData.remove(unitID);
 	}
 
+	unit.m_Moving = false;
+	unit.m_CurrentPath.clear();
 	unit.m_Raised = false;
 }
 
