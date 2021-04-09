@@ -411,6 +411,12 @@ bool UnitManager::neutralUnitAtSquare(CharacterID character, Vector2DInt square)
 			for (auto& ID : squareData.m_EntitiesInSquare)
 			{
 				Unit& unit = getUnitWithId(ID);
+
+				if (unit.m_Owner == character)
+				{
+					continue;
+				}
+
 				War* potentialWar = warManager->getWarAgainst(character, unit.m_Owner);
 
 				if (potentialWar == nullptr)
@@ -439,9 +445,13 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		return;
 	}
 
-	if (getUnitWithId(unitID).m_RepresentedForce >= getUnitWithId(enemyID).m_RepresentedForce)
-	{
+	float armyWeight = getUnitWithId(unitID).m_RepresentedForce / getUnitWithId(enemyID).m_RepresentedForce;
+	
+	LOG_INFO("ARMY WEIGHT: {0}", armyWeight);
+	bool win = weightedRandomCombat(armyWeight);
 
+	if (win)
+	{
 		dismissUnit(enemyID);
 		getUnitWithId(enemyID).m_RepresentedForce = 0;
 
@@ -455,6 +465,7 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 			war->addWarscore(getUnitWithId(unitID).m_Owner, 50);
 		}
 
+		LOG_INFO("{0} won the battle against {1}", CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get()->getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
 		war->addWarscore(getUnitWithId(enemyID).m_Owner, -50);
 	}
 
@@ -474,6 +485,7 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		}
 	}
 
+	LOG_INFO("{0} won the battle against {1}", CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get()->getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
 
 	getUnitWithId(unitID).m_FightingArmyID = INVALID_UNIT_ID;
 	getUnitWithId(enemyID).m_FightingArmyID = INVALID_UNIT_ID;
@@ -504,13 +516,12 @@ void UnitManager::unitSiege(Unit& unit)
 				}
 			}
 
-			if (region.m_OwnerID == unit.m_Owner)
-			{
-				return;
-			}
+			//if (region.m_OwnerID == unit.m_Owner)
+			//{
+			//	return;
+			//}
 
 			War* war = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OwnerID);
-
 			if (war == nullptr)
 			{
 				return;
@@ -596,6 +607,13 @@ void UnitManager::startConquerRegion(Unit& unit)
 			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
 		}
 	}
+}
+
+bool UnitManager::weightedRandomCombat(float weight)
+{
+	float f = rand() * 1.0f / RAND_MAX;
+	float vv = weight / 10.0f;
+	return f < vv;
 }
 
 void UnitManager::updateSprite(Unit& unit)

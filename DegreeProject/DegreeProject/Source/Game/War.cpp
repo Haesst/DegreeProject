@@ -58,7 +58,6 @@ void War::addWarscore(CharacterID ID, int warScore)
 
 		if (m_DefenderWarscore >= 100)
 		{
-			WarManager::get().invalidateWarsForRegion(*this);
 			WarManager::get().endWar(m_Handle, getDefender());
 		}
 	}

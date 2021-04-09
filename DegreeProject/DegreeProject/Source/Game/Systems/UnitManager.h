@@ -34,6 +34,7 @@ private:
 	UnitID unitAtSquare(Vector2DInt square, UnitID unitID);
 	void determineCombat(UnitID unitID, UnitID enemyID);
 	bool neutralUnitAtSquare(CharacterID character, Vector2DInt square);
+	bool weightedRandomCombat(float weight);
 	void startConquerRegion(Unit& unit);
 
 	void updateSprite(Unit& unit);
