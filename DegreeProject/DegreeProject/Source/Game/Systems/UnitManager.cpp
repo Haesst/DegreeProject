@@ -209,6 +209,7 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 
 	unit.m_Position = Map::get().convertToScreen(location);
 	unit.m_Raised = true;
+	unit.m_Sprite.setColor(CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_RegionColor);
 
 	for (auto& squareData : Map::get().m_MapSquareData)
 	{
