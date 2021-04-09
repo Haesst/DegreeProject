@@ -405,7 +405,10 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		return;
 	}
 
-	if (getUnitWithId(unitID).m_RepresentedForce > getUnitOfCharacter(enemyID).m_RepresentedForce)
+	float unitForce = getUnitWithId(unitID).m_RepresentedForce;
+	float enemyForce = getUnitWithId(enemyID).m_RepresentedForce;
+
+	if (getUnitWithId(unitID).m_RepresentedForce >= getUnitWithId(enemyID).m_RepresentedForce)
 	{
 		dismissUnit(enemyID);
 		getUnitWithId(enemyID).m_RepresentedForce = 0;
@@ -435,14 +438,14 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		
 		if (war->isDefender(enemyID))
 		{
-			war->addWarscore(getUnitWithId(unitID).m_Owner, 100);
+			war->addWarscore(getUnitWithId(enemyID).m_Owner, 100);
 		}
 
 		else
 		{
 			war->addWarscore(getUnitWithId(enemyID).m_Owner, 50);
 		}
-		war->addWarscore(getUnitWithId(unitID).m_Owner, -50);
+
 		getUnitWithId(unitID).m_FightingArmyID = INVALID_UNIT_ID;
 		getUnitWithId(enemyID).m_FightingArmyID = INVALID_UNIT_ID;
 		getUnitWithId(unitID).m_InCombat = false;
