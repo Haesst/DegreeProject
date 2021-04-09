@@ -18,16 +18,19 @@ void WarManager::endWar(int warHandle, CharacterID winner)
 {
 	unsigned int index = 0;
 
-	if (!CharacterManager::get()->getCharacter(getWar(warHandle)->getAttacker()).m_IsPlayerControlled)
+	if (winner != INVALID_CHARACTER_ID)
 	{
-		AIManager::get().getAIDataofCharacter(getWar(warHandle)->getAttacker()).m_CurrentAction = Action::NONE;
-	}
+		if (!CharacterManager::get()->getCharacter(getWar(warHandle)->getAttacker()).m_IsPlayerControlled)
+		{
+			AIManager::get().getAIDataofCharacter(getWar(warHandle)->getAttacker()).m_CurrentAction = Action::NONE;
+		}
 
-	if (!CharacterManager::get()->getCharacter(getWar(warHandle)->getDefender()).m_IsPlayerControlled)
-	{
-		AIManager::get().getAIDataofCharacter(getWar(warHandle)->getDefender()).m_CurrentAction = Action::NONE;
+		if (!CharacterManager::get()->getCharacter(getWar(warHandle)->getDefender()).m_IsPlayerControlled)
+		{
+			AIManager::get().getAIDataofCharacter(getWar(warHandle)->getDefender()).m_CurrentAction = Action::NONE;
+		}
 	}
-
+	
 	getWar(warHandle)->endWar(winner);
 
 	for (auto& pair : m_Wars)
@@ -70,7 +73,7 @@ bool WarManager::atWarWith(CharacterID character, CharacterID enemy)
 	return false;
 }
 
-void WarManager::invalidateWarsForRegion(War& wonWar)
+void WarManager::invalidateWarsForRegionOnWonWar(War& wonWar)
 {
 	for (auto& war : m_Wars)
 	{
@@ -81,6 +84,17 @@ void WarManager::invalidateWarsForRegion(War& wonWar)
 				continue;
 			}
 
+			endWar(war.second.getHandle(), INVALID_CHARACTER_ID);
+		}
+	}
+}
+
+void WarManager::invalidateWarsForRegion(int regionID)
+{
+	for (auto& war : m_Wars)
+	{
+		if (war.second.m_WargoalRegion == regionID)
+		{
 			endWar(war.second.getHandle(), INVALID_CHARACTER_ID);
 		}
 	}

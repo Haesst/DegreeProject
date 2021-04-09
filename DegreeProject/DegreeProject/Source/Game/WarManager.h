@@ -13,7 +13,8 @@ public:
 	War* getWar(int handle);
 	War* getWarAgainst(CharacterID character, CharacterID enemy);
 	bool atWarWith(CharacterID character, CharacterID enemy); 
-	void invalidateWarsForRegion(War& wonWar);
+	void invalidateWarsForRegionOnWonWar(War& wonWar);
+	void invalidateWarsForRegion(int regionID);
 
 	inline static WarManager& get()
 	{

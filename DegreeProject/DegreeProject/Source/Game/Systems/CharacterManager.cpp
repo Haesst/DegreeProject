@@ -393,6 +393,11 @@ void CharacterManager::killCharacter(CharacterID characterID)
 		return;
 	}
 
+	for (auto& region : getCharacter(characterID).m_OwnedRegionIDs)
+	{
+		WarManager::get().invalidateWarsForRegion(region);
+	}
+
 	Character& character = getCharacter(characterID);
 	character.m_Dead = true;
 	if (character.m_CharacterTitle != Title::Unlanded && character.m_OwnedRegionIDs.size() > 0)
