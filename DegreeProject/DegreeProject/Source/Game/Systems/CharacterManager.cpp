@@ -400,6 +400,40 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	}
 }
 
+void CharacterManager::updateTitle(Character& character)
+{
+	if (character.m_OwnedRegionIDs.size() == 0)
+	{
+		character.m_CharacterTitle = Title::Unlanded;
+		character.m_KingdomName = "NONAME";
+	}
+	if (character.m_OwnedRegionIDs.size() == 1)
+	{
+		character.m_CharacterTitle = Title::Baron;
+		character.m_KingdomName = "Barony of " + Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
+	}
+	else if (character.m_OwnedRegionIDs.size() == 2 || character.m_OwnedRegionIDs.size() == 3)
+	{
+		character.m_CharacterTitle = Title::Count;
+		character.m_KingdomName = "County of " + Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
+	}
+	else if (character.m_OwnedRegionIDs.size() == 4)
+	{
+		character.m_CharacterTitle = Title::Duke;
+		character.m_KingdomName = "Duchy of " + Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
+	}
+	else if (character.m_OwnedRegionIDs.size() <= 6)
+	{
+		character.m_CharacterTitle = Title::King;
+		character.m_KingdomName = "Kingdom of " + Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
+	}
+	else if (character.m_OwnedRegionIDs.size() >= 9)
+	{
+		character.m_CharacterTitle = Title::Emperor;
+		character.m_KingdomName = "Empire of " + Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
+	}
+}
+
 void CharacterManager::handleInheritance(Character& character)
 {
 	if (character.m_Children.size() == 1)
@@ -407,6 +441,8 @@ void CharacterManager::handleInheritance(Character& character)
 		Character& child = getCharacter(character.m_Children.front());
 		child.m_CurrentGold += character.m_CurrentGold;
 		child.m_MaxArmySize += character.m_MaxArmySize;
+		child.m_UnitEntity = character.m_UnitEntity;
+		child.m_RegionColor = character.m_RegionColor;
 		if (!child.m_IsPlayerControlled)
 		{
 			child.m_IsPlayerControlled = character.m_IsPlayerControlled;
@@ -416,22 +452,16 @@ void CharacterManager::handleInheritance(Character& character)
 			m_PlayerCharacterID = child.m_CharacterID;
 			m_PlayerCharacter = &child;
 		}
-		child.m_UnitEntity = character.m_UnitEntity;
-		if (character.m_CharacterTitle < child.m_CharacterTitle)
-		{
-			child.m_CharacterTitle = character.m_CharacterTitle;
-			child.m_RegionColor = character.m_RegionColor;
-			child.m_KingdomName = character.m_KingdomName;
-		}
-		for (int warhandle : character.m_CurrentWars)
-		{
-			child.m_OwnedRegionIDs.push_back(warhandle);
-		}
+		//for (int warhandle : character.m_CurrentWars)
+		//{
+		//	child.m_OwnedRegionIDs.push_back(warhandle);
+		//}
 		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
 		{
 			child.m_OwnedRegionIDs.push_back(ownedRegionID);
 			Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
 		}
+		updateTitle(child);
 		UIManager::get()->createUITextElement(Game::m_UIFont, child.m_CharacterID, child.m_KingdomName, child.m_OwnedRegionIDs);
 		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
 		{
@@ -458,36 +488,20 @@ void CharacterManager::handleInheritance(Character& character)
 					if (!child.m_Dead && !child.m_Inherited)
 					{
 						child.m_Inherited = true;
-						for (int warhandle : character.m_CurrentWars)
-						{
-							if (WarManager::get().getWar(warhandle)->m_WargoalRegion == (int)ownedRegionID)
-							{
-								child.m_CurrentWars.push_back(warhandle);
-								break;
-							}
-						}
+						//for (int warhandle : character.m_CurrentWars)
+						//{
+						//	if (WarManager::get().getWar(warhandle)->m_WargoalRegion == (int)ownedRegionID)
+						//	{
+						//		child.m_CurrentWars.push_back(warhandle);
+						//		break;
+						//	}
+						//}
 						if (child.m_RegionColor == sf::Color::Black)
 						{
 							child.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
 						}
 						addRegion(childID, ownedRegionID);
-						MapRegion& mapRegion = Map::get().getRegionById(ownedRegionID);
-						mapRegion.m_OwnerID = childID;
 						Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
-						if (numberOfLoops - index == 1)
-						{
-							child.m_CurrentGold += giveawayGold;
-							child.m_MaxArmySize += giveawayArmy;
-							std::stringstream stream;
-							stream << "Barony of " << mapRegion.m_RegionName;
-							child.m_KingdomName = stream.str();
-							child.m_CharacterTitle = Title::Baron;
-							UIManager::get()->createUITextElement(Game::m_UIFont, childID, child.m_KingdomName, child.m_OwnedRegionIDs);
-							for (unsigned int childOwnedRegionID : child.m_OwnedRegionIDs)
-							{
-								UIManager::get()->AdjustOwnership(childID, character.m_CharacterID, childOwnedRegionID);
-							}
-						}
 						break;
 					}
 				}
@@ -496,10 +510,28 @@ void CharacterManager::handleInheritance(Character& character)
 			{
 				getCharacter(childID).m_Inherited = false;
 			}
-			for (unsigned int i = 0; i < character.m_Children.size(); i++)
+			if (numberOfLoops - index != 1 && numberOfLoops > 1)
 			{
-				character.m_OwnedRegionIDs[i] = character.m_OwnedRegionIDs[character.m_OwnedRegionIDs.size() - 1];
-				character.m_OwnedRegionIDs.pop_back();
+				for (unsigned int i = 0; i < character.m_Children.size(); i++)
+				{
+					character.m_OwnedRegionIDs[i] = character.m_OwnedRegionIDs[character.m_OwnedRegionIDs.size() - 1];
+					character.m_OwnedRegionIDs.pop_back();
+				}
+			}
+		}
+		for (CharacterID childID : character.m_Children)
+		{
+			Character& child = getCharacter(childID);
+			if (child.m_OwnedRegionIDs.size() > 0)
+			{
+				child.m_CurrentGold += giveawayGold;
+				child.m_MaxArmySize += giveawayArmy;
+				updateTitle(child);
+				UIManager::get()->createUITextElement(Game::m_UIFont, childID, child.m_KingdomName, child.m_OwnedRegionIDs);
+				for (unsigned int childOwnedRegionID : child.m_OwnedRegionIDs)
+				{
+					UIManager::get()->AdjustOwnership(childID, character.m_CharacterID, childOwnedRegionID);
+				}
 			}
 		}
 	}
@@ -511,26 +543,21 @@ void CharacterManager::handleInheritance(Character& character)
 		{
 			for (Character& otherCharacter : m_Characters)
 			{
-				if (otherCharacter.m_CharacterTitle == Title::Unlanded && !otherCharacter.m_Dead)
+				if (otherCharacter.m_CharacterTitle == Title::Unlanded && !otherCharacter.m_Dead && otherCharacter.m_Father == INVALID_CHARACTER_ID && otherCharacter.m_Mother == INVALID_CHARACTER_ID)
 				{
-					for (int warhandle : character.m_CurrentWars)
-					{
-						if (WarManager::get().getWar(warhandle)->m_WargoalRegion == (int)ownedRegionID)
-						{
-							otherCharacter.m_CurrentWars.push_back(warhandle);
-							break;
-						}
-					}
+					//for (int warhandle : character.m_CurrentWars)
+					//{
+					//	if (WarManager::get().getWar(warhandle)->m_WargoalRegion == (int)ownedRegionID)
+					//	{
+					//		otherCharacter.m_CurrentWars.push_back(warhandle);
+					//		break;
+					//	}
+					//}
 					addRegion(otherCharacter.m_CharacterID, ownedRegionID);
-					MapRegion& mapRegion = Map::get().getRegionById(ownedRegionID);
-					mapRegion.m_OwnerID = otherCharacter.m_CharacterID;
 					otherCharacter.m_CurrentGold += giveawayGold;
 					otherCharacter.m_MaxArmySize += giveawayArmy;
 					otherCharacter.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
-					std::stringstream stream;
-					stream << "Barony of " << mapRegion.m_RegionName;
-					otherCharacter.m_KingdomName = stream.str();
-					otherCharacter.m_CharacterTitle = Title::Baron;
+					updateTitle(otherCharacter);
 					Map::get().setRegionColor(ownedRegionID, otherCharacter.m_RegionColor);
 					UIManager::get()->createUITextElement(Game::m_UIFont, otherCharacter.m_CharacterID, otherCharacter.m_KingdomName, otherCharacter.m_OwnedRegionIDs);
 					UIManager::get()->AdjustOwnership(otherCharacter.m_CharacterID, character.m_CharacterID, ownedRegionID);
@@ -616,12 +643,12 @@ void CharacterManager::marry(CharacterID character, CharacterID spouse)
 {
 	CharacterManager* characterManager = CharacterManager::get();
 
-	if (characterManager->getCharacter(spouse).m_Spouse != INVALID_CHARACTER_ID)
+	if (characterManager->getCharacter(spouse).m_Spouse != INVALID_CHARACTER_ID || characterManager->getCharacter(character).m_Spouse != INVALID_CHARACTER_ID)
 	{
 		return;
 	}
 
-	if (characterManager->getCharacter(character).m_Spouse != INVALID_CHARACTER_ID)
+	if (Time::m_GameDate.getAge(getCharacter(character).m_Birthday) < m_AgeOfConsent || Time::m_GameDate.getAge(getCharacter(spouse).m_Birthday) < m_AgeOfConsent)
 	{
 		return;
 	}

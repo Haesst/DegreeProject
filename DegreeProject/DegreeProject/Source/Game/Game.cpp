@@ -128,15 +128,6 @@ void Game::addEntitys()
 	CharacterID char2 = createCharacter(id2, Title::King, Gender::Male, "Kingdom of Sicilies", CharacterNamePool::getMaleName(), 150, 15, true, sf::Color(200, 181, 105));
 	UIManager::get()->createUITextElement(m_UIFont, char2, CharacterManager::get()->getCharacter(char2).m_KingdomName, id2);
 
-	//Begin with child
-	CharacterManager::get()->getCharacter(char1).m_LastChildFather = char2;
-	CharacterManager::get()->createNewChild(char1);
-	CharacterManager::get()->createNewChild(char1);
-	CharacterManager::get()->createNewChild(char1);
-	CharacterManager::get()->createNewChild(char1);
-	CharacterManager::get()->createNewChild(char1);
-	CharacterManager::get()->createNewChild(char1);
-
 	//UI
 	Vector2D characterWindowPosition = { 10.0f, 10.0f };
 	Vector2D characterWindowSize = { 600.0f, 1060.0f };

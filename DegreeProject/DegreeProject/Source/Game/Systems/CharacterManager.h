@@ -60,6 +60,7 @@ private:
 	void createUnlandedCharacters(size_t amount);
 
 	void handleInheritance(Character& character);
+	void updateTitle(Character& character);
 private:
 	static CharacterManager* m_Instance;
 	static CharacterID m_CharacterIDs;
@@ -70,9 +71,10 @@ private:
 	const size_t m_PoolGrowSize = 10000;
 	const size_t m_UnlandedCharactersAtStart = 200;
 
-	const int m_FertilityBarrenAge = 60;
-	const int m_FertilityBarrenSmoother = 59;
-	const int m_FertilityCurveSteepness = 75000;
+	const unsigned int m_AgeOfConsent = 16;
+	const unsigned int m_FertilityBarrenAge = 60;
+	const unsigned int m_FertilityBarrenSmoother = 59;
+	const unsigned int m_FertilityCurveSteepness = 75000;
 	const float m_OneOverFertilityCurveSteep = 1.0f / m_FertilityCurveSteepness;
 
 	Player* m_Player = nullptr;
