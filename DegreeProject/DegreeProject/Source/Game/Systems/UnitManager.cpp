@@ -21,7 +21,7 @@ void UnitManager::update()
 {
 	for (auto& unit : m_Units)
 	{
-		if (!unit.m_Raised && unit.m_RepresentedForce != CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize)
+		if (!unit.m_Raised && (unsigned int)unit.m_RepresentedForce != CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize)
 		{
 			unit.m_RepresentedForce++;
 		}
@@ -400,6 +400,35 @@ UnitID UnitManager::unitAtSquare(Vector2DInt square, UnitID unitID)
 	return INVALID_UNIT_ID;
 }
 
+bool UnitManager::neutralUnitAtSquare(CharacterID character, Vector2DInt square)
+{
+	for (auto& squareData : Map::get().m_MapSquareData)
+	{
+		if (squareData.m_Position == square)
+		{
+			WarManager* warManager = &WarManager::get();
+
+			for (auto& ID : squareData.m_EntitiesInSquare)
+			{
+				Unit& unit = getUnitWithId(ID);
+				War* potentialWar = warManager->getWarAgainst(character, unit.m_Owner);
+
+				if (potentialWar == nullptr)
+				{
+					return true;
+				}
+
+				else
+				{
+					return false;
+				}
+			}
+		}
+	}
+
+	return false;
+}
+
 void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 {
 	WarManager* warManager = &WarManager::get();
@@ -410,11 +439,9 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		return;
 	}
 
-	float unitForce = getUnitWithId(unitID).m_RepresentedForce;
-	float enemyForce = getUnitWithId(enemyID).m_RepresentedForce;
-
 	if (getUnitWithId(unitID).m_RepresentedForce >= getUnitWithId(enemyID).m_RepresentedForce)
 	{
+
 		dismissUnit(enemyID);
 		getUnitWithId(enemyID).m_RepresentedForce = 0;
 
@@ -469,6 +496,14 @@ void UnitManager::unitSiege(Unit& unit)
 			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
 
 			MapRegion& region = Map::get().getRegionById(unit.m_SeizingRegionID);
+
+			if (Map::get().mapSquareDataContainsKey(region.m_RegionCapital))
+			{
+				if (neutralUnitAtSquare(unit.m_Owner, region.m_RegionCapital))
+				{
+					return;
+				}
+			}
 
 			War* war = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OwnerID);
 

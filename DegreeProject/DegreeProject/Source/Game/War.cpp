@@ -46,6 +46,7 @@ void War::addWarscore(CharacterID ID, int warScore)
 		m_DefenderWarscore -= warScore;
 		if (m_AttackerWarscore >= 100)
 		{
+			WarManager::get().invalidateWarsForRegion(*this);
 			WarManager::get().endWar(m_Handle, getAttacker());
 		}
 	}
@@ -57,6 +58,7 @@ void War::addWarscore(CharacterID ID, int warScore)
 
 		if (m_DefenderWarscore >= 100)
 		{
+			WarManager::get().invalidateWarsForRegion(*this);
 			WarManager::get().endWar(m_Handle, getDefender());
 		}
 	}
@@ -114,11 +116,13 @@ void War::handleOccupiedRegions(CharacterID winningCharacter)
 
 	if (getAttacker() == winningCharacter)
 	{
-		CharacterManager::get()->removeRegion(Map::get().getRegionById(m_WargoalRegion).m_OwnerID, m_WargoalRegion);
-		CharacterManager::get()->addRegion(winningCharacter, m_WargoalRegion);
-
-		UIManager::get()->AdjustOwnership(winningCharacter, Map::get().getRegionById(m_WargoalRegion).m_OwnerID, Map::get().getRegionById(m_WargoalRegion).m_RegionId);
-		Map::get().setRegionColor(Map::get().getRegionById(m_WargoalRegion).m_RegionId, CharacterManager::get()->getCharacter(winningCharacter).m_RegionColor);
+		if (winningCharacter != INVALID_CHARACTER_ID)
+		{
+			CharacterManager::get()->removeRegion(Map::get().getRegionById(m_WargoalRegion).m_OwnerID, m_WargoalRegion);
+			CharacterManager::get()->addRegion(winningCharacter, m_WargoalRegion);
+			UIManager::get()->AdjustOwnership(winningCharacter, Map::get().getRegionById(m_WargoalRegion).m_OwnerID, Map::get().getRegionById(m_WargoalRegion).m_RegionId);
+			Map::get().setRegionColor(Map::get().getRegionById(m_WargoalRegion).m_RegionId, CharacterManager::get()->getCharacter(winningCharacter).m_RegionColor);
+		}
 	}
 
 	for (auto& region : m_DefenderOccupiedRegions)

@@ -33,6 +33,7 @@ private:
 	void startCombatTimer(UnitID unit, UnitID enemyUnit);
 	UnitID unitAtSquare(Vector2DInt square, UnitID unitID);
 	void determineCombat(UnitID unitID, UnitID enemyID);
+	bool neutralUnitAtSquare(CharacterID character, Vector2DInt square);
 	void startConquerRegion(Unit& unit);
 
 	void updateSprite(Unit& unit);

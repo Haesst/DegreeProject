@@ -8,7 +8,7 @@ WarManager* WarManager::m_Instance = nullptr;
 
 int WarManager::createWar(CharacterID attacker, CharacterID defender, int warGoalRegion)
 {
-	static int handle = m_Warhandle++;
+	int handle = m_Warhandle++;
 	War war(attacker, defender, warGoalRegion, handle);
 	m_Wars.push_back(std::make_pair(handle, war));
 	return handle;
@@ -68,6 +68,22 @@ bool WarManager::atWarWith(CharacterID character, CharacterID enemy)
 	}
 
 	return false;
+}
+
+void WarManager::invalidateWarsForRegion(War& wonWar)
+{
+	for (auto& war : m_Wars)
+	{
+		if (war.second.m_WargoalRegion == wonWar.m_WargoalRegion)
+		{
+			if (war.second.getHandle() == wonWar.getHandle())
+			{
+				continue;
+			}
+
+			endWar(war.second.getHandle(), INVALID_CHARACTER_ID);
+		}
+	}
 }
 
 War* WarManager::getWarAgainst(CharacterID character, CharacterID enemy)
