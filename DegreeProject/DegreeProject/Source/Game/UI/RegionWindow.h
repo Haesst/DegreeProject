@@ -260,10 +260,12 @@ public:
 			if (character.m_RaisedArmySize > 0)
 			{
 				m_RaiseArmyShape.setFillColor(m_OwnerColor);
+				m_RaiseArmySprite.setColor(m_OwnerColor);
 			}
 			else
 			{
 				m_RaiseArmyShape.setFillColor(sf::Color::Transparent);
+				m_RaiseArmySprite.setColor(sf::Color::White);
 			}
 
 			for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)

@@ -61,7 +61,7 @@ void CharacterManager::loadTraits(const char* path)
 	m_TraitMtx.unlock();
 }
 
-void CharacterManager::createNewChild(CharacterID motherID)
+CharacterID CharacterManager::createNewChild(CharacterID motherID)
 {
 	bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
 	Gender gender = male ? Gender::Male : Gender::Female;
@@ -75,6 +75,7 @@ void CharacterManager::createNewChild(CharacterID motherID)
 	child.m_Father = father.m_CharacterID;
 	mother.m_Children.push_back(childID);
 	father.m_Children.push_back(childID);
+	return childID;
 }
 
 void CharacterManager::createUnlandedCharacters(size_t amount)
@@ -377,20 +378,31 @@ void CharacterManager::onMonthChange(Date)
 				bool die = chancePerPercent(dieChance);
 				if (die)
 				{
-					character.m_Dead = true;
-					if (character.m_CharacterTitle != Title::Unlanded)
-					{
-						handleInheritance(character);
-					}
+					killCharacter(character.m_CharacterID);
 				}
 			}
 		}
 	}
 }
 
+void CharacterManager::killCharacter(CharacterID characterID)
+{
+	if (characterID == INVALID_CHARACTER_ID)
+	{
+		return;
+	}
+
+	Character& character = getCharacter(characterID);
+	character.m_Dead = true;
+	if (character.m_CharacterTitle != Title::Unlanded && character.m_OwnedRegionIDs.size() > 0)
+	{
+		handleInheritance(character);
+	}
+}
+
 void CharacterManager::handleInheritance(Character& character)
 {
-	if (character.m_Children.size() > 0)
+	if (character.m_Children.size() == 1)
 	{
 		Character& child = getCharacter(character.m_Children.front());
 		child.m_CurrentGold += character.m_CurrentGold;
@@ -424,6 +436,45 @@ void CharacterManager::handleInheritance(Character& character)
 		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
 		{
 			UIManager::get()->AdjustOwnership(child.m_CharacterID, character.m_CharacterID, ownedRegionID);
+		}
+	}
+	else if (character.m_Children.size() > 1)
+	{
+		float giveawayGold = character.m_CurrentGold / character.m_Children.size();
+		unsigned int giveawayArmy = character.m_MaxArmySize / character.m_Children.size();
+		unsigned int giveawayRegions = character.m_OwnedRegionIDs.size() / character.m_Children.size();
+		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
+		{
+			for (CharacterID childID : character.m_Children)
+			{
+				Character& child = getCharacter(childID);
+				if (!child.m_Dead && !child.m_Inherited)
+				{
+					child.m_Inherited = true;
+					for (int warhandle : character.m_CurrentWars)
+					{
+						if (WarManager::get().getWar(warhandle)->m_WargoalRegion == (int)ownedRegionID)
+						{
+							child.m_CurrentWars.push_back(warhandle);
+							break;
+						}
+					}
+					addRegion(childID, ownedRegionID);
+					MapRegion& mapRegion = Map::get().getRegionById(ownedRegionID);
+					mapRegion.m_OwnerID = childID;
+					child.m_CurrentGold = giveawayGold;
+					child.m_MaxArmySize = giveawayArmy;
+					child.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
+					std::stringstream stream;
+					stream << "Barony of " << mapRegion.m_RegionName;
+					child.m_KingdomName = stream.str();
+					child.m_CharacterTitle = Title::Baron;
+					Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
+					UIManager::get()->createUITextElement(Game::m_UIFont, childID, child.m_KingdomName, child.m_OwnedRegionIDs);
+					UIManager::get()->AdjustOwnership(childID, character.m_CharacterID, ownedRegionID);
+					break;
+				}
+			}
 		}
 	}
 	else

@@ -669,46 +669,46 @@ public:
 	{
 		if (InputHandler::getLeftMouseReleased())
 		{
-Vector2D mousePosition = InputHandler::getMousePosition();
-if (m_MarriedSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
-{
-	m_ShowSpouseName = true;
-}
-else
-{
-	m_ShowSpouseName = false;
-}
-if (m_FatherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
-{
-	m_ShowFatherName = true;
-}
-else
-{
-	m_ShowFatherName = false;
-}
-if (m_MotherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
-{
-	m_ShowMotherName = true;
-}
-else
-{
-	m_ShowMotherName = false;
-}
-for (unsigned int index = 0; index < m_ChildrenShapes.size(); index++)
-{
-	if (index + 1 > m_ShowChildrenNames.size())
-	{
-		m_ShowChildrenNames.push_back(false);
-	}
-	if (m_ChildrenShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
-	{
-		m_ShowChildrenNames[index] = true;
-	}
-	else
-	{
-		m_ShowChildrenNames[index] = false;
-	}
-}
+			Vector2D mousePosition = InputHandler::getMousePosition();
+			if (m_MarriedSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				m_ShowSpouseName = true;
+			}
+			else
+			{
+				m_ShowSpouseName = false;
+			}
+			if (m_FatherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				m_ShowFatherName = true;
+			}
+			else
+			{
+				m_ShowFatherName = false;
+			}
+			if (m_MotherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				m_ShowMotherName = true;
+			}
+			else
+			{
+				m_ShowMotherName = false;
+			}
+			for (unsigned int index = 0; index < m_ChildrenShapes.size(); index++)
+			{
+				if (index + 1 > m_ShowChildrenNames.size())
+				{
+					m_ShowChildrenNames.push_back(false);
+				}
+				if (m_ChildrenShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+				{
+					m_ShowChildrenNames[index] = true;
+				}
+				else
+				{
+					m_ShowChildrenNames[index] = false;
+				}
+			}
 		}
 		if (InputHandler::getRightMouseReleased())
 		{
@@ -801,7 +801,7 @@ for (unsigned int index = 0; index < m_ChildrenShapes.size(); index++)
 			}
 			else if (m_AssassinateShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				m_CurrentCharacter->m_Dead = true;
+				CharacterManager::get()->killCharacter(m_CurrentCharacterID);
 			}
 		}
 	}
