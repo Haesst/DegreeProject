@@ -29,7 +29,7 @@ void UnitManager::update()
 			{
 				unit.m_RepresentedForce += 1;
 
-				if (unit.m_RepresentedForce > CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize)
+				if ((unsigned int)unit.m_RepresentedForce > CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize)
 				{
 					unit.m_RepresentedForce = CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize;
 				}
@@ -472,7 +472,17 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		return;
 	}
 
-	float armyWeight = getUnitWithId(unitID).m_RepresentedForce / getUnitWithId(enemyID).m_RepresentedForce;
+	float armyWeight;
+
+	if (getUnitWithId(unitID).m_RepresentedForce > 0 && getUnitWithId(enemyID).m_RepresentedForce > 0)
+	{
+		armyWeight = (float)getUnitWithId(unitID).m_RepresentedForce / getUnitWithId(enemyID).m_RepresentedForce;
+	}
+
+	else
+	{
+		armyWeight = 0.5f;
+	}
 	
 	LOG_INFO("ARMY WEIGHT: {0}", armyWeight);
 	bool win = weightedRandomCombat(armyWeight);
