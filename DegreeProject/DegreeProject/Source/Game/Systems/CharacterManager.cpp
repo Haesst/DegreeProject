@@ -204,12 +204,6 @@ void CharacterManager::dailyUpdates(Character& character)
 
 void CharacterManager::tryForPregnancy(Character& character)
 {
-
-	if (character.m_IsPlayerControlled)
-	{
-		bool treareaw = true;
-	}
-
 	if (character.m_Dead || character.m_Gender == Gender::Female)
 	{
 		return;
@@ -227,12 +221,12 @@ void CharacterManager::tryForPregnancy(Character& character)
 		return;
 	}
 
-	float spouseAge = Time::m_GameDate.getAge(spouse.m_Birthday);
+	unsigned int spouseAge = Time::m_GameDate.getAge(spouse.m_Birthday);
 	float spouseFertility = (((spouseAge - m_FertilityBarrenAge) * (m_FertilityBarrenAge - spouseAge) * (spouseAge - m_FertilityBarrenSmoother)) * m_OneOverFertilityCurveSteep) * spouse.m_Fertility;
 
-	float fertility = character.m_Fertility * spouse.m_Fertility;
+	float fertility = character.m_Fertility * spouseFertility;
 
-	bool success = chancePerPercent(fertility * 0.1); // Todo: This should absolutely not have a magic number.
+	bool success = chancePerPercent(fertility * 0.1f); // Todo: This should absolutely not have a magic number.
 
 	if (success)
 	{
@@ -489,9 +483,9 @@ void CharacterManager::handleInheritance(Character& character)
 							child.m_KingdomName = stream.str();
 							child.m_CharacterTitle = Title::Baron;
 							UIManager::get()->createUITextElement(Game::m_UIFont, childID, child.m_KingdomName, child.m_OwnedRegionIDs);
-							for (unsigned int ownedRegionID : child.m_OwnedRegionIDs)
+							for (unsigned int childOwnedRegionID : child.m_OwnedRegionIDs)
 							{
-								UIManager::get()->AdjustOwnership(childID, character.m_CharacterID, ownedRegionID);
+								UIManager::get()->AdjustOwnership(childID, character.m_CharacterID, childOwnedRegionID);
 							}
 						}
 						break;

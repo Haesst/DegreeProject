@@ -12,6 +12,8 @@
 #include "Game/AI/AIManager.h"
 #include "Game/WarManager.h"
 
+#pragma warning(push)
+#pragma warning(disable: 26812)
 class CharacterWindow
 {
 public:
@@ -59,10 +61,8 @@ public:
 	std::string m_MaleTitles[(unsigned int)Title::Baron + 1];
 	std::string m_FemaleTitles[(unsigned int)Title::Baron + 1];
 	int m_CharacterSize = 50;
-#pragma warning(push)
-#pragma warning(disable: 26812)
 	sf::Text::Style m_Style = sf::Text::Regular;
-#pragma warning(pop)
+
 	bool m_Open = false;
 
 	std::unordered_map<int, int> m_PlayerWars;
@@ -828,3 +828,4 @@ public:
 		m_Window->draw(sprite);
 	}
 };
+#pragma warning(pop)
