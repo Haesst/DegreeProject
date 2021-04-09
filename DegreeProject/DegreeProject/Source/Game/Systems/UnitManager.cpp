@@ -37,7 +37,11 @@ void UnitManager::update()
 		// Engage enemy
 		unitCombat(unit);
 		// Siege
-		unitSiege(unit);
+
+		if (CharacterManager::get()->getCharacter(unit.m_Owner).m_CurrentWars.size() > 0)
+		{
+			unitSiege(unit);
+		}
 
 		updateSprite(unit);
 
@@ -47,6 +51,7 @@ void UnitManager::update()
 			if (unit.m_CombatTimerAccu > unit.m_CombatTimer)
 			{
 				determineCombat(unit.m_UnitID, unit.m_FightingArmyID);
+				unit.m_CombatTimerAccu = 0;
 			}
 		}
 	}
@@ -424,11 +429,6 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		}
 
 		war->addWarscore(getUnitWithId(enemyID).m_Owner, -50);
-		getUnitWithId(unitID).m_FightingArmyID = INVALID_UNIT_ID;
-		getUnitWithId(enemyID).m_FightingArmyID = INVALID_UNIT_ID;
-		getUnitWithId(unitID).m_InCombat = false;
-		getUnitWithId(enemyID).m_InCombat = false;
-
 	}
 
 	else
@@ -445,12 +445,13 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		{
 			war->addWarscore(getUnitWithId(enemyID).m_Owner, 50);
 		}
-
-		getUnitWithId(unitID).m_FightingArmyID = INVALID_UNIT_ID;
-		getUnitWithId(enemyID).m_FightingArmyID = INVALID_UNIT_ID;
-		getUnitWithId(unitID).m_InCombat = false;
-		getUnitWithId(enemyID).m_InCombat = false;
 	}
+
+
+	getUnitWithId(unitID).m_FightingArmyID = INVALID_UNIT_ID;
+	getUnitWithId(enemyID).m_FightingArmyID = INVALID_UNIT_ID;
+	getUnitWithId(unitID).m_InCombat = false;
+	getUnitWithId(enemyID).m_InCombat = false;
 }
 
 void UnitManager::unitSiege(Unit& unit)
@@ -460,7 +461,6 @@ void UnitManager::unitSiege(Unit& unit)
 		return;
 	}
 
-
 	if (unit.m_LastSeizeDate < Time::m_GameDate.m_Date)
 	{
 		if (!unit.m_InCombat)
@@ -469,6 +469,13 @@ void UnitManager::unitSiege(Unit& unit)
 			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
 
 			MapRegion& region = Map::get().getRegionById(unit.m_SeizingRegionID);
+
+			War* war = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OwnerID);
+
+			if (war == nullptr)
+			{
+				return;
+			}
 
 			int daysToSiegeRegion = region.m_DaysToSeize;
 
