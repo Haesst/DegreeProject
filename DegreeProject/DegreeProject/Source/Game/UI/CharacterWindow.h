@@ -669,46 +669,46 @@ public:
 	{
 		if (InputHandler::getLeftMouseReleased())
 		{
-			Vector2D mousePosition = InputHandler::getMousePosition();
-			if (m_MarriedSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
-			{
-				m_ShowSpouseName = true;
-			}
-			else
-			{
-				m_ShowSpouseName = false;
-			}
-			if (m_FatherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
-			{
-				m_ShowFatherName = true;
-			}
-			else
-			{
-				m_ShowFatherName = false;
-			}
-			if (m_MotherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
-			{
-				m_ShowMotherName = true;
-			}
-			else
-			{
-				m_ShowMotherName = false;
-			}
-			for (unsigned int index = 0; index < m_ChildrenShapes.size(); index++)
-			{
-				if (index + 1 > m_ShowChildrenNames.size())
-				{
-					m_ShowChildrenNames.push_back(false);
-				}
-				if (m_ChildrenShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
-				{
-					m_ShowChildrenNames[index] = true;
-				}
-				else
-				{
-					m_ShowChildrenNames[index] = false;
-				}
-			}
+Vector2D mousePosition = InputHandler::getMousePosition();
+if (m_MarriedSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+{
+	m_ShowSpouseName = true;
+}
+else
+{
+	m_ShowSpouseName = false;
+}
+if (m_FatherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+{
+	m_ShowFatherName = true;
+}
+else
+{
+	m_ShowFatherName = false;
+}
+if (m_MotherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+{
+	m_ShowMotherName = true;
+}
+else
+{
+	m_ShowMotherName = false;
+}
+for (unsigned int index = 0; index < m_ChildrenShapes.size(); index++)
+{
+	if (index + 1 > m_ShowChildrenNames.size())
+	{
+		m_ShowChildrenNames.push_back(false);
+	}
+	if (m_ChildrenShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+	{
+		m_ShowChildrenNames[index] = true;
+	}
+	else
+	{
+		m_ShowChildrenNames[index] = false;
+	}
+}
 		}
 		if (InputHandler::getRightMouseReleased())
 		{
@@ -768,8 +768,18 @@ public:
 			{
 				if (!m_PlayerWars.empty() && m_PlayerWars.find(m_CurrentCharacterID) != m_PlayerWars.end())
 				{
+
+					War* war = WarManager::get().getWarAgainst(CharacterManager::get()->getPlayerCharacterID(), m_CurrentCharacterID);
+					if (war == nullptr)
+					{
+						m_PlayerWars.erase(m_CurrentCharacterID);
+						return;
+					}
+						
+
 					WarManager::get().endWar(m_PlayerWars.at(m_CurrentCharacterID), WarManager::get().getWar(m_PlayerWars.at(m_CurrentCharacterID))->m_Attacker);
 					m_PlayerWars.erase(m_CurrentCharacterID);
+
 					if (m_CurrentWars > 0)
 					{
 						m_CurrentWars--;

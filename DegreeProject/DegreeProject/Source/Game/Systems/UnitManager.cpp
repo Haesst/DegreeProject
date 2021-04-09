@@ -496,13 +496,17 @@ void UnitManager::unitSiege(Unit& unit)
 			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
 
 			MapRegion& region = Map::get().getRegionById(unit.m_SeizingRegionID);
-
 			if (Map::get().mapSquareDataContainsKey(region.m_RegionCapital))
 			{
 				if (neutralUnitAtSquare(unit.m_Owner, region.m_RegionCapital))
 				{
 					return;
 				}
+			}
+
+			if (region.m_OwnerID == unit.m_Owner)
+			{
+				return;
 			}
 
 			War* war = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OwnerID);
