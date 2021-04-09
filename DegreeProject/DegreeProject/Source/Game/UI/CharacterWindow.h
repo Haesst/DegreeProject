@@ -582,7 +582,12 @@ public:
 				m_ChildrenNames[index].setFont(m_Font);
 				m_ChildrenNames[index].setCharacterSize(m_CharacterSize / 2);
 				m_ChildrenNames[index].setStyle(m_Style);
-				if (m_CurrentCharacter->m_CharacterID == child.m_Mother)
+				if (child.m_CharacterTitle != Title::Unlanded)
+				{
+					m_ChildrenShapes[index].setOutlineColor(child.m_RegionColor);
+					m_ChildrenNames[index].setFillColor(child.m_RegionColor);
+				}
+				else if (m_CurrentCharacter->m_CharacterID == child.m_Mother)
 				{
 					Character& fatherChild = CharacterManager::get()->getCharacter(child.m_Father);
 					m_ChildrenShapes[index].setOutlineColor(fatherChild.m_RegionColor);
