@@ -173,6 +173,87 @@ void CharacterManager::start()
 void CharacterManager::update()
 {
 	m_Player->update();
+	
+	for (auto& character : m_Characters)
+	{
+		if (character.m_Dead)
+		{
+			continue;
+		}
+
+		if (m_LastDayUpdate < Time::m_GameDate.m_Date)
+		{
+			dailyUpdates(character);
+		}
+	}
+
+	m_LastDayUpdate = Time::m_GameDate.m_Date;
+}
+
+void CharacterManager::dailyUpdates(Character& character)
+{
+	tryForPregnancy(character);
+
+	if (character.m_Gender == Gender::Female)
+	{
+		progressPregnancy(character);
+	}
+}
+
+void CharacterManager::tryForPregnancy(Character& character)
+{
+
+	if (character.m_IsPlayerControlled)
+	{
+		bool treareaw = true;
+	}
+
+	if (character.m_Dead || character.m_Gender == Gender::Female)
+	{
+		return;
+	}
+
+	if (character.m_Spouse == INVALID_CHARACTER_ID)
+	{
+		return; // Later add support for lovers and remove this check
+	}
+
+	Character& spouse = getCharacter(character.m_Spouse);
+
+	if (spouse.m_Gender == character.m_Gender || hasTrait(spouse.m_CharacterID, getTrait("Pregnant")))
+	{
+		return;
+	}
+
+	float spouseAge = Time::m_GameDate.getAge(spouse.m_Birthday);
+	float spouseFertility = (((spouseAge - m_FertilityBarrenAge) * (m_FertilityBarrenAge - spouseAge) * (spouseAge - m_FertilityBarrenSmoother)) * m_OneOverFertilityCurveSteep) * spouse.m_Fertility;
+
+	float fertility = character.m_Fertility * spouse.m_Fertility;
+
+	bool success = chancePerPercent(fertility * 0.1); // Todo: This should absolutely not have a magic number.
+
+	if (success)
+	{
+		addTrait(character.m_Spouse, getTrait("Pregnant"));
+		spouse.m_PregnancyDay = Time::m_GameDate.m_Date;
+		spouse.m_LastChildFather = character.m_CharacterID;
+	}
+}
+
+void CharacterManager::progressPregnancy(Character& character)
+{
+	if (!hasTrait(character.m_CharacterID, getTrait("Pregnant")))
+	{
+		return;
+	}
+
+	int pregnancyDays = Time::m_GameDate.getDaysBetweenDates(character.m_PregnancyDay, Time::m_GameDate.m_Date);
+
+	if (pregnancyDays == 280) // Todo: Make this more random
+	{
+		createNewChild(character.m_CharacterID);
+		removeTrait(character.m_CharacterID, getTrait("Pregnant"));
+	}
 }
 
 void CharacterManager::render()
@@ -225,18 +306,18 @@ void CharacterManager::onMonthChange(Date)
 {
 	for (auto& character : m_Characters)
 	{
-		if (hasTrait(character.m_CharacterID, getTrait("Pregnant")))
-		{
-			Date currentDate = Time::m_GameDate.m_Date;
+		//if (hasTrait(character.m_CharacterID, getTrait("Pregnant")))
+		//{
+		//	Date currentDate = Time::m_GameDate.m_Date;
 
-			if ((currentDate.m_Month - character.m_PregnancyDay.m_Month) >= 9)
-			{
-				//Give birth
-				createNewChild(character.m_CharacterID);
+		//	if ((currentDate.m_Month - character.m_PregnancyDay.m_Month) >= 9)
+		//	{
+		//		//Give birth
+		//		createNewChild(character.m_CharacterID);
 
-				removeTrait(character.m_CharacterID, getTrait("Pregnant"));
-			}
-		}
+		//		removeTrait(character.m_CharacterID, getTrait("Pregnant"));
+		//	}
+		//}
 
 		float incomingGold = 0;
 
@@ -268,24 +349,24 @@ void CharacterManager::onMonthChange(Date)
 		character.m_Income = incomingGold; // Todo: Change to prediction for upcoming month instead of showing last month.
 		character.m_CurrentGold += incomingGold;
 
-		if (character.m_Gender == Gender::Male && !character.m_Dead && character.m_Spouse != INVALID_CHARACTER_ID)
-		{
-			Character& spouse = getCharacter(character.m_Spouse);
+		//if (character.m_Gender == Gender::Male && !character.m_Dead && character.m_Spouse != INVALID_CHARACTER_ID)
+		//{
+		//	Character& spouse = getCharacter(character.m_Spouse);
 
-			if (spouse.m_Gender == Gender::Female)
-			{
-				float fertilityWeight = character.m_Fertility + spouse.m_Fertility;
-				bool rand = weightedRandom(fertilityWeight);
+		//	if (spouse.m_Gender == Gender::Female)
+		//	{
+		//		float fertilityWeight = character.m_Fertility + spouse.m_Fertility;
+		//		bool rand = weightedRandom(fertilityWeight);
 
-				if (rand)
-				{
-					//Mark character as pregnant.
-					addTrait(character.m_Spouse, getTrait("Pregnant"));
-					spouse.m_PregnancyDay = Time::m_GameDate.m_Date;
-					spouse.m_LastChildFather = character.m_CharacterID;
-				}
-			}
-		}
+		//		if (rand)
+		//		{
+		//			//Mark character as pregnant.
+		//			addTrait(character.m_Spouse, getTrait("Pregnant"));
+		//			spouse.m_PregnancyDay = Time::m_GameDate.m_Date;
+		//			spouse.m_LastChildFather = character.m_CharacterID;
+		//		}
+		//	}
+		//}
 
 		if (!character.m_Dead)
 		{	
@@ -293,7 +374,7 @@ void CharacterManager::onMonthChange(Date)
 			if (age > character.m_DeadlyAge)
 			{
 				float dieChance = ((float)((age - character.m_DeadlyAge) * (age - character.m_DeadlyAge)) / (character.m_AgeMax * character.m_AgeMax)) * m_MortalityRate;
-				bool die = weightedRandom(dieChance);
+				bool die = chancePerPercent(dieChance);
 				if (die)
 				{
 					character.m_Dead = true;
@@ -402,11 +483,11 @@ void CharacterManager::handleInheritance(Character& character)
 	}
 }
 
-bool CharacterManager::weightedRandom(float weight)
+bool CharacterManager::chancePerPercent(float weight)
 {
 	float f = rand() * 1.0f / RAND_MAX;
-	float vv = weight / 10.0f;
-	return f < vv;
+	//float vv = weight / 10.0f;
+	return f < weight;
 }
 
 

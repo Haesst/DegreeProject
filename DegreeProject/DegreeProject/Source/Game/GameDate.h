@@ -58,6 +58,7 @@ struct GameDate
 {
 	const int m_MonthsInYear = 12;
 	size_t m_DaysInMonth[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
+	int m_DaysInAYear = 0;
 	char* m_MonthName[12] = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
 	const Date m_StartDate = { 1, 0, 1100 };
 	Date m_Date = { 1, 0, 1100 };
@@ -67,6 +68,14 @@ struct GameDate
 
 	std::vector<Callback> m_DayChangeSubscribers;
 	std::vector<std::function<void(Date)>> m_MonthChangeSubscribers;
+
+	GameDate()
+	{
+		for (auto& days : m_DaysInMonth)
+		{
+			m_DaysInAYear += days;
+		}
+	}
 
 	void update()
 	{
@@ -139,7 +148,7 @@ struct GameDate
 		return std::to_string(m_Date.m_Day) + getDaySuffix() + " of " + m_MonthName[m_Date.m_Month] + ". " + std::to_string(m_Date.m_Year) + " AD";
 	}
 
-	unsigned int getAge(Date birthday)
+	unsigned int getAge(const Date& birthday)
 	{
 		if ((m_Date.m_Month >= birthday.m_Month && m_Date.m_Day >= birthday.m_Day) || m_Date.m_Month > birthday.m_Month)
 		{
@@ -149,6 +158,30 @@ struct GameDate
 		{
 			return m_Date.m_Year - birthday.m_Year - 1;
 		}
+	}
+
+	unsigned int getDaysBetweenDates(const Date& lhs, const Date& rhs)
+	{
+		int yearDays = std::abs((int)lhs.m_Year - (int)rhs.m_Year) * m_DaysInAYear;
+		
+		int lhsDays = 0;
+		int rhsDays = 0;
+
+		for (size_t i = 0; i < lhs.m_Month; ++i)
+		{
+			lhsDays += m_DaysInMonth[i];
+		}
+		lhsDays += lhs.m_Day;
+
+		for (size_t i = 0; i < rhs.m_Month; ++i)
+		{
+			rhsDays += m_DaysInMonth[i];
+		}
+		rhsDays += rhs.m_Day;
+
+		int days = std::abs(lhsDays - rhsDays);
+
+		return yearDays + days;
 	}
 
 	void subscribeToMonthChange(std::function<void(Date)> action)
