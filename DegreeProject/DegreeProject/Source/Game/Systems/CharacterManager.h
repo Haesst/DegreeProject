@@ -40,10 +40,13 @@ public:
 	
 	CharacterID createCharacterWithRandomBirthday(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge);
 	CharacterID createCharacter(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday);
+	CharacterID createNewChild(CharacterID motherID);
 	void addTrait(CharacterID ID, Trait trait);
 	void removeTrait(CharacterID ID, Trait trait);
 	bool hasTrait(CharacterID ID, Trait trait);
 	Trait getTrait(const char* traitName);
+
+	void killCharacter(CharacterID characterID);
 
 private:
 	CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
@@ -54,7 +57,6 @@ private:
 	void dailyUpdates(Character& character);
 	void tryForPregnancy(Character& character);
 	void progressPregnancy(Character& character);
-	void createNewChild(CharacterID motherID);
 	void createUnlandedCharacters(size_t amount);
 
 	void handleInheritance(Character& character);

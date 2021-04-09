@@ -65,7 +65,7 @@ struct Character
 	unsigned int m_DeadlyAge = 50;
 	unsigned int m_AgeMax = 100;
 	bool m_Dead = false;
-
+	bool m_Inherited = false;
 	bool m_RecentlyAtWar = false;  //Flag for raising units when war starts // <- This might not be necessary
 
 	UnitID m_UnitEntity = INVALID_UNIT_ID; // Don't think this will be necessary but still keep it until fixed
