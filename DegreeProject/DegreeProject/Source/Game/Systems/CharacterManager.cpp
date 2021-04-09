@@ -470,9 +470,11 @@ void CharacterManager::handleInheritance(Character& character)
 	}
 	else if (character.m_Children.size() > 1)
 	{
-		float giveawayGold = character.m_CurrentGold / character.m_Children.size();
-		unsigned int giveawayArmy = character.m_MaxArmySize / character.m_Children.size();
-		float giveawayRegions = (float)character.m_OwnedRegionIDs.size() / character.m_Children.size();
+		unsigned int children = character.m_Children.size();
+		unsigned int regions = character.m_OwnedRegionIDs.size();
+		float giveawayGold = character.m_CurrentGold / children;
+		unsigned int giveawayArmy = character.m_MaxArmySize / children;
+		float giveawayRegions = (float)regions / children;
 		unsigned int numberOfLoops = 1;
 		if (giveawayRegions > 1)
 		{
@@ -512,7 +514,7 @@ void CharacterManager::handleInheritance(Character& character)
 			}
 			if (numberOfLoops - index != 1 && numberOfLoops > 1)
 			{
-				for (unsigned int i = 0; i < character.m_Children.size(); i++)
+				for (unsigned int i = 0; i < children; i++)
 				{
 					character.m_OwnedRegionIDs[i] = character.m_OwnedRegionIDs[character.m_OwnedRegionIDs.size() - 1];
 					character.m_OwnedRegionIDs.pop_back();
@@ -524,8 +526,19 @@ void CharacterManager::handleInheritance(Character& character)
 			Character& child = getCharacter(childID);
 			if (child.m_OwnedRegionIDs.size() > 0)
 			{
-				child.m_CurrentGold += giveawayGold;
-				child.m_MaxArmySize += giveawayArmy;
+				if (children > regions)
+				{
+					for (unsigned int ownedRegionID : child.m_OwnedRegionIDs)
+					{
+						child.m_CurrentGold += giveawayGold;
+						child.m_MaxArmySize += giveawayArmy;
+					}
+				}
+				else
+				{
+					child.m_CurrentGold += giveawayGold;
+					child.m_MaxArmySize += giveawayArmy;
+				}
 				updateTitle(child);
 				UIManager::get()->createUITextElement(Game::m_UIFont, childID, child.m_KingdomName, child.m_OwnedRegionIDs);
 				for (unsigned int childOwnedRegionID : child.m_OwnedRegionIDs)
