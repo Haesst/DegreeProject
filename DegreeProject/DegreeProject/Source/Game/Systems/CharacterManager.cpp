@@ -11,6 +11,7 @@
 #include "Game/Game.h"
 #include "Game/Player.h"
 #include <random>
+#include <math.h>
 
 #include <fstream>
 #include <json.hpp>
@@ -442,38 +443,64 @@ void CharacterManager::handleInheritance(Character& character)
 	{
 		float giveawayGold = character.m_CurrentGold / character.m_Children.size();
 		unsigned int giveawayArmy = character.m_MaxArmySize / character.m_Children.size();
-		unsigned int giveawayRegions = character.m_OwnedRegionIDs.size() / character.m_Children.size();
-		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
+		float giveawayRegions = (float)character.m_OwnedRegionIDs.size() / character.m_Children.size();
+		unsigned int numberOfLoops = 1;
+		if (giveawayRegions > 1)
 		{
+			numberOfLoops = (int)ceilf(giveawayRegions);
+		}
+		for (unsigned int index = 0; index < numberOfLoops; index++)
+		{
+			for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
+			{
+				for (CharacterID childID : character.m_Children)
+				{
+					Character& child = getCharacter(childID);
+					if (!child.m_Dead && !child.m_Inherited)
+					{
+						child.m_Inherited = true;
+						for (int warhandle : character.m_CurrentWars)
+						{
+							if (WarManager::get().getWar(warhandle)->m_WargoalRegion == (int)ownedRegionID)
+							{
+								child.m_CurrentWars.push_back(warhandle);
+								break;
+							}
+						}
+						if (child.m_RegionColor == sf::Color::Black)
+						{
+							child.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
+						}
+						addRegion(childID, ownedRegionID);
+						MapRegion& mapRegion = Map::get().getRegionById(ownedRegionID);
+						mapRegion.m_OwnerID = childID;
+						Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
+						if (numberOfLoops - index == 1)
+						{
+							child.m_CurrentGold += giveawayGold;
+							child.m_MaxArmySize += giveawayArmy;
+							std::stringstream stream;
+							stream << "Barony of " << mapRegion.m_RegionName;
+							child.m_KingdomName = stream.str();
+							child.m_CharacterTitle = Title::Baron;
+							UIManager::get()->createUITextElement(Game::m_UIFont, childID, child.m_KingdomName, child.m_OwnedRegionIDs);
+							for (unsigned int ownedRegionID : child.m_OwnedRegionIDs)
+							{
+								UIManager::get()->AdjustOwnership(childID, character.m_CharacterID, ownedRegionID);
+							}
+						}
+						break;
+					}
+				}
+			}
 			for (CharacterID childID : character.m_Children)
 			{
-				Character& child = getCharacter(childID);
-				if (!child.m_Dead && !child.m_Inherited)
-				{
-					child.m_Inherited = true;
-					for (int warhandle : character.m_CurrentWars)
-					{
-						if (WarManager::get().getWar(warhandle)->m_WargoalRegion == (int)ownedRegionID)
-						{
-							child.m_CurrentWars.push_back(warhandle);
-							break;
-						}
-					}
-					addRegion(childID, ownedRegionID);
-					MapRegion& mapRegion = Map::get().getRegionById(ownedRegionID);
-					mapRegion.m_OwnerID = childID;
-					child.m_CurrentGold = giveawayGold;
-					child.m_MaxArmySize = giveawayArmy;
-					child.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
-					std::stringstream stream;
-					stream << "Barony of " << mapRegion.m_RegionName;
-					child.m_KingdomName = stream.str();
-					child.m_CharacterTitle = Title::Baron;
-					Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
-					UIManager::get()->createUITextElement(Game::m_UIFont, childID, child.m_KingdomName, child.m_OwnedRegionIDs);
-					UIManager::get()->AdjustOwnership(childID, character.m_CharacterID, ownedRegionID);
-					break;
-				}
+				getCharacter(childID).m_Inherited = false;
+			}
+			for (unsigned int i = 0; i < character.m_Children.size(); i++)
+			{
+				character.m_OwnedRegionIDs[i] = character.m_OwnedRegionIDs[character.m_OwnedRegionIDs.size() - 1];
+				character.m_OwnedRegionIDs.pop_back();
 			}
 		}
 	}
@@ -498,8 +525,8 @@ void CharacterManager::handleInheritance(Character& character)
 					addRegion(otherCharacter.m_CharacterID, ownedRegionID);
 					MapRegion& mapRegion = Map::get().getRegionById(ownedRegionID);
 					mapRegion.m_OwnerID = otherCharacter.m_CharacterID;
-					otherCharacter.m_CurrentGold = giveawayGold;
-					otherCharacter.m_MaxArmySize = giveawayArmy;
+					otherCharacter.m_CurrentGold += giveawayGold;
+					otherCharacter.m_MaxArmySize += giveawayArmy;
 					otherCharacter.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
 					std::stringstream stream;
 					stream << "Barony of " << mapRegion.m_RegionName;
@@ -520,7 +547,7 @@ void CharacterManager::handleInheritance(Character& character)
 	//	UnitManager::get().dismissUnit(character.m_UnitEntity);
 	//	character.m_UnitEntity = INVALID_UNIT_ID;
 	//}
-	character.m_RegionColor = sf::Color::White;
+	character.m_RegionColor = sf::Color::Black;
 	character.m_KingdomName = "";
 	character.m_CurrentGold = 0;
 	character.m_MaxArmySize = 0;

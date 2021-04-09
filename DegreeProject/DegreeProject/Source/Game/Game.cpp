@@ -132,6 +132,10 @@ void Game::addEntitys()
 	CharacterManager::get()->getCharacter(char1).m_LastChildFather = char2;
 	CharacterManager::get()->createNewChild(char1);
 	CharacterManager::get()->createNewChild(char1);
+	CharacterManager::get()->createNewChild(char1);
+	CharacterManager::get()->createNewChild(char1);
+	CharacterManager::get()->createNewChild(char1);
+	CharacterManager::get()->createNewChild(char1);
 
 	//UI
 	Vector2D characterWindowPosition = { 10.0f, 10.0f };
