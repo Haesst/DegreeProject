@@ -3,9 +3,11 @@
 #include <vector>
 #include "Engine/Vector2D.h"
 #include "Game/Data/Types.h"
+#include "Game/GameDate.h"
 
 struct Unit;
 class AssetHandler;
+struct Date;
 
 class UnitManager
 {
@@ -41,6 +43,8 @@ private:
 	void displayProgressMeter(Unit& unit, float timeElapsed, float totalTime, sf::Vector2f offset, sf::Color fillColor);
 
 private:
+
+	Date m_LastDay;
 	static UnitID m_UnitIDs;
 	static UnitManager* m_Instance;
 	std::vector<Unit> m_Units;

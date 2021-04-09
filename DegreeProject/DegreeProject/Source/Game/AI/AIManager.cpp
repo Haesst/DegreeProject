@@ -212,7 +212,7 @@ void AIManager::update()
 				UnitManager::get().dismissUnit(UnitManager::get().getUnitOfCharacter(warmind.m_OwnerID).m_UnitID);
 			}
 
-			if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised) //TODO: Fix when units are using new system
+			if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
 			{
 				warmind.m_OrderAccu += Time::deltaTime();
 
@@ -225,7 +225,11 @@ void AIManager::update()
 
 			else
 			{
-				UnitManager::get().raiseUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity, Map::get().getRegionCapitalLocation(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_OwnedRegionIDs[0]));
+				if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_MaxArmySize * 0.5f)
+				{
+					LOG_INFO("{0} IS RAISING UNITS", CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_Name);
+					UnitManager::get().raiseUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity, Map::get().getRegionCapitalLocation(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_OwnedRegionIDs[0]));
+				}
 			}
 
 			warmind.m_TickAccu = 0;

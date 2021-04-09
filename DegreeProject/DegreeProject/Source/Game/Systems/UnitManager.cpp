@@ -19,11 +19,21 @@ void UnitManager::start()
 
 void UnitManager::update()
 {
+	Date currentDate = Time::m_GameDate.m_Date;
+
 	for (auto& unit : m_Units)
 	{
-		if (!unit.m_Raised && (unsigned int)unit.m_RepresentedForce != CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize)
+		if (!unit.m_Raised && (unsigned int)unit.m_RepresentedForce < CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize)
 		{
-			unit.m_RepresentedForce++;
+			if (m_LastDay < currentDate)
+			{
+				unit.m_RepresentedForce += 1;
+
+				if (unit.m_RepresentedForce > CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize)
+				{
+					unit.m_RepresentedForce = CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize;
+				}
+			}
 		}
 
 		if (!unit.m_Raised)
@@ -38,10 +48,13 @@ void UnitManager::update()
 		unitCombat(unit);
 		// Siege
 
-		if (CharacterManager::get()->getCharacter(unit.m_Owner).m_CurrentWars.size() > 0)
-		{
-			unitSiege(unit);
-		}
+		//if (unit.m_Owner == CharacterManager::get()->getPlayerCharacter().m_CharacterID)
+		//{
+		//	unitSiege(unit);
+		//}
+
+
+		unitSiege(unit);
 
 		updateSprite(unit);
 
@@ -55,6 +68,9 @@ void UnitManager::update()
 			}
 		}
 	}
+
+	m_LastDay = currentDate;
+
 }
 
 #pragma warning(push)
@@ -106,6 +122,11 @@ void UnitManager::render()
 			}
 
 			displayProgressMeter(unit, (float)unit.m_DaysSeizing, (float)daysToSiegeRegion, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
+		}
+
+		if(unit.m_InCombat)
+		{
+			displayProgressMeter(unit, (float)unit.m_CombatTimerAccu, (float)unit.m_CombatTimer, { m_CombatMeterOffset.x, m_CombatMeterOffset.y }, m_CombatMeterFillColor);
 		}
 	}
 }
@@ -175,7 +196,8 @@ Unit& UnitManager::getUnitWithId(UnitID id)
 void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 {
 	if (!Map::get().mapSquareDataContainsKey(location))
-	{		return;
+	{		
+		return;
 	}
 
 	Unit& unit = getUnitWithId(unitID);
@@ -197,6 +219,8 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 
 		squareData.addUnique(unitID);
 	}
+
+	CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_RaisedArmySize = unit.m_RepresentedForce;
 }
 
 void UnitManager::dismissUnit(UnitID unitID)
@@ -215,6 +239,8 @@ void UnitManager::dismissUnit(UnitID unitID)
 
 	unit.m_Moving = false;
 	unit.m_CurrentPath.clear();
+	unit.m_InCombat = false;
+	unit.m_SeizingRegionID = -1;
 	unit.m_Raised = false;
 }
 
@@ -450,6 +476,11 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	LOG_INFO("ARMY WEIGHT: {0}", armyWeight);
 	bool win = weightedRandomCombat(armyWeight);
 
+	if (CharacterManager::get()->getPlayerCharacterID() == getUnitWithId(unitID).m_Owner)
+	{
+		win = true;
+	}
+
 	if (win)
 	{
 		dismissUnit(enemyID);
@@ -471,6 +502,7 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 
 	else
 	{
+		LOG_INFO("{0} won the battle against {1}", CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get()->getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
 		dismissUnit(unitID);
 		getUnitWithId(unitID).m_RepresentedForce = 0;
 		
@@ -485,7 +517,6 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		}
 	}
 
-	LOG_INFO("{0} won the battle against {1}", CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get()->getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
 
 	getUnitWithId(unitID).m_FightingArmyID = INVALID_UNIT_ID;
 	getUnitWithId(enemyID).m_FightingArmyID = INVALID_UNIT_ID;
@@ -540,12 +571,12 @@ void UnitManager::unitSiege(Unit& unit)
 				daysToSiegeRegion += building.m_HoldingModifier;
 			}
 
-			if (Map::get().convertToMap(unit.m_Position) != region.m_RegionCapital)
-			{
-				unit.m_DaysSeizing = 0;
-				unit.m_SeizingRegionID = -1;
-				return;
-			}
+			/*	if (Map::get().convertToMap(unit.m_Position) != region.m_RegionCapital)
+				{
+					unit.m_DaysSeizing = 0;
+					unit.m_SeizingRegionID = -1;
+					return;
+				}*/
 
 			if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
 			{	
@@ -559,7 +590,7 @@ void UnitManager::unitSiege(Unit& unit)
 					return;
 				}
 
-				//Todo: Apply filter over region
+				
 				if (defender.m_CharacterID == region.m_OwnerID)
 				{
 					currentWar->m_AttackerOccupiedRegions.push_back(region.m_RegionId);
@@ -599,6 +630,13 @@ void UnitManager::startConquerRegion(Unit& unit)
 		{
 			unsigned int ownerID = Map::get().getRegionById(regionID).m_OwnerID;
 			if (ownerID == unit.m_Owner)
+			{
+				continue;
+			}
+
+			War* war = WarManager::get().getWarAgainst(unit.m_Owner, ownerID);
+
+			if (war == nullptr)
 			{
 				continue;
 			}
