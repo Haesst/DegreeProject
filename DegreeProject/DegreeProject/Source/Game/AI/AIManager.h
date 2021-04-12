@@ -41,6 +41,7 @@ public:
 	void addWarmind(CharacterID ID);
 	void initAI(CharacterID ID);
 	bool handleRecieveMarriageRequest(CharacterID reciever, CharacterID sender);
+	bool handlePeaceRequest(CharacterID winner, CharacterID loser);
 	void update();
 
 

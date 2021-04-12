@@ -120,6 +120,19 @@ bool AIManager::handleRecieveMarriageRequest(CharacterID reciever, CharacterID s
 	return false;
 }
 
+bool AIManager::handlePeaceRequest(CharacterID winner, CharacterID loser)
+{
+	//War* war = WarManager::get().getWarAgainst(winner, loser);
+	//ASSERT(war != nullptr, "This war doesn't exist");
+	//
+	//if(winner == war->getAttacker())
+	//{
+	//
+	//}
+
+	return false;
+}
+
 void AIManager::update()
 {
 	for (auto& data : m_AIDatas)
@@ -227,7 +240,7 @@ void AIManager::update()
 			{
 				if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_MaxArmySize * 0.5f)
 				{
-					LOG_INFO("{0} IS RAISING UNITS", CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_Name);
+					//LOG_INFO("{0} IS RAISING UNITS", CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_Name);
 					UnitManager::get().raiseUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity, Map::get().getRegionCapitalLocation(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_OwnedRegionIDs[0]));
 				}
 			}
