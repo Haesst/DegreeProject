@@ -245,7 +245,14 @@ void CharacterManager::progressPregnancy(Character& character)
 
 	int pregnancyDays = Time::m_GameDate.getDaysBetweenDates(character.m_PregnancyDay, Time::m_GameDate.m_Date);
 
-	if (pregnancyDays == 280) // Todo: Make this more random
+	if (pregnancyDays < m_PregnancyDays - m_MaxPrematureBirth)
+	{
+		return;
+	}
+
+	bool chance = chancePerPercent(m_BirthChance);
+
+	if (chance || pregnancyDays > m_PregnancyDays + m_MaxLateBirth) // Todo: Make this more random
 	{
 		createNewChild(character.m_CharacterID);
 		removeTrait(character.m_CharacterID, getTrait("Pregnant"));

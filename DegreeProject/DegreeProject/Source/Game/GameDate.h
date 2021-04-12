@@ -162,26 +162,21 @@ struct GameDate
 
 	unsigned int getDaysBetweenDates(const Date& lhs, const Date& rhs)
 	{
-		int yearDays = std::abs((int)lhs.m_Year - (int)rhs.m_Year) * m_DaysInAYear;
-		
-		int lhsDays = 0;
-		int rhsDays = 0;
+		long int n1 = lhs.m_Year * 365 + lhs.m_Day;
 
 		for (size_t i = 0; i < lhs.m_Month; ++i)
 		{
-			lhsDays += m_DaysInMonth[i];
+			n1 += m_DaysInMonth[i];
 		}
-		lhsDays += lhs.m_Day;
+
+		long int n2 = rhs.m_Year * 365 + rhs.m_Day;
 
 		for (size_t i = 0; i < rhs.m_Month; ++i)
 		{
-			rhsDays += m_DaysInMonth[i];
+			n2 += m_DaysInMonth[i];
 		}
-		rhsDays += rhs.m_Day;
 
-		int days = std::abs(lhsDays - rhsDays);
-
-		return yearDays + days;
+		return std::abs(n2 - n1);
 	}
 
 	void subscribeToMonthChange(std::function<void(Date)> action)

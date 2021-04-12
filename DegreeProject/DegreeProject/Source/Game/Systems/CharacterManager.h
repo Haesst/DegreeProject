@@ -75,6 +75,10 @@ private:
 	const unsigned int m_FertilityBarrenAge = 60;
 	const unsigned int m_FertilityBarrenSmoother = 59;
 	const unsigned int m_FertilityCurveSteepness = 75000;
+	const unsigned int m_PregnancyDays = 280;
+	const unsigned int m_MaxPrematureBirth = 14;
+	const unsigned int m_MaxLateBirth = 14;
+	const float m_BirthChance = 0.13f;
 	const float m_OneOverFertilityCurveSteep = 1.0f / m_FertilityCurveSteepness;
 
 	Player* m_Player = nullptr;
