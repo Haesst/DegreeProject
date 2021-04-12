@@ -693,7 +693,21 @@ void CharacterManager::constructBuilding(const CharacterID characterId, const in
 
 void CharacterManager::addRegion(const CharacterID characterId, const unsigned int regionId)
 {
-	getCharacter(characterId).m_OwnedRegionIDs.push_back(regionId);
+	Character& character = getCharacter(characterId);
+	character.m_OwnedRegionIDs.push_back(regionId);
+
+	MapRegion region = Map::get().getRegionById(regionId);
+	character.m_MaxArmySize += region.m_ManPower;
+
+	for (auto& buildingSlot : region.m_BuildingSlots)
+	{
+		if (buildingSlot.m_BuildingId == -1)
+		{
+			continue;
+		}
+
+		character.m_MaxArmySize += GameData::m_Buildings[buildingSlot.m_BuildingId].m_ArmyModifier;
+	}
 }
 
 void CharacterManager::removeRegion(const CharacterID characterId, const unsigned int regionId)
@@ -705,6 +719,18 @@ void CharacterManager::removeRegion(const CharacterID characterId, const unsigne
 		if (character.m_OwnedRegionIDs[i] == regionId)
 		{
 			character.m_OwnedRegionIDs.erase(character.m_OwnedRegionIDs.begin() + i);
+			MapRegion region = Map::get().getRegionById(regionId);
+			character.m_MaxArmySize -= region.m_ManPower;
+
+			for (auto& buildingSlot : region.m_BuildingSlots)
+			{
+				if (buildingSlot.m_BuildingId == -1)
+				{
+					continue;
+				}
+
+				character.m_MaxArmySize -= GameData::m_Buildings[buildingSlot.m_BuildingId].m_ArmyModifier;
+			}
 			break;
 		}
 	}
@@ -750,7 +776,7 @@ CharacterID CharacterManager::internalCreateCharacter(Character& character, cons
 	character.m_OwnedRegionIDs = ownedRegions;
 	character.m_KingdomName = realmName;
 
-	character.m_MaxArmySize = army;
+	//character.m_MaxArmySize = army;
 	character.m_CurrentMaxArmySize = army;
 
 	//Generate random number between 0 - 1, will be used as percent
@@ -765,6 +791,23 @@ CharacterID CharacterManager::internalCreateCharacter(Character& character, cons
 
 	character.m_Name = characterName;
 	character.m_UnitEntity = UnitManager::get().addUnit(id, army);
+
+	for (auto& regionid : ownedRegions)
+	{
+		MapRegion& region = Map::get().getRegionById(regionid);
+		character.m_MaxArmySize += region.m_ManPower;
+
+		for (auto& buildingSlot : region.m_BuildingSlots)
+		{
+			if (buildingSlot.m_BuildingId == -1)
+			{
+				continue;
+			}
+
+			character.m_MaxArmySize += GameData::m_Buildings[buildingSlot.m_BuildingId].m_ArmyModifier;
+		}
+	}
+
 	m_Characters.push_back(character);
 
 	if (playerControlled)

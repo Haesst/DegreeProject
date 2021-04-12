@@ -14,7 +14,7 @@
         "cost": 15,
         "regionStrength": 0,
         "regionIncome": -1,
-        "regionArmy": 100,
+        "regionArmy": 20,
         "daysToConstruct": 325
     },
     {

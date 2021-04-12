@@ -253,5 +253,6 @@
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
     <ClCompile Include="Source\Game\GameDate.cpp" />
+    <ClCompile Include="Source\Game\Map\RegionBuilding.cpp" />
   </ItemGroup>
 </Project>

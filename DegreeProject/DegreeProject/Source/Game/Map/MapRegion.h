@@ -10,6 +10,7 @@ struct MapRegion
 	unsigned int m_RegionId = INT_MAX;
 	CharacterID m_OccupiedBy = INVALID_CHARACTER_ID;
 	unsigned int m_RegionTax = 0;
+	unsigned int m_ManPower = 0;
 	bool m_Highlighted = false;
 	std::vector<Vector2DInt> m_MapSquares = {};
 	Vector2DInt m_RegionCapital = Vector2DInt();

@@ -99,6 +99,7 @@ void Map::loadAllRegions()
 		std::string mapCharString = element["mapchar"].get<std::string>();
 		region.m_RegionId = element["id"].get<unsigned int>();
 		region.m_RegionTax = element["tax"].get<unsigned int>();
+		region.m_ManPower = element["manPower"].get<unsigned int>();
 		region.m_RegionName = element["name"].get<std::string>();
 		region.m_RegionCapital.x = element["capitalx"].get<unsigned int>();
 		region.m_RegionCapital.y = element["capitaly"].get<unsigned int>();
@@ -304,6 +305,7 @@ void Map::startConstructionOfBuilding(int buildingId, int buildSlot, int regionI
 	ASSERT(characterGold >= (float)buildingCost, "Not enough money to build");
 
 	RegionBuilding& building = getRegionById(regionId).m_BuildingSlots[buildSlot];
+	getRegionById(regionId).m_BuildingSlots[buildSlot].m_RegionId = regionId;
 
 	if (building.m_BuildingId < 0)
 	{

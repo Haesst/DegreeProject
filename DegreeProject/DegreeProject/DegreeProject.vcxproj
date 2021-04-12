@@ -161,6 +161,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\Game\GameDate.cpp" />
     <ClCompile Include="Source\Game\HotReloader.cpp" />
     <ClCompile Include="Source\Game\Map\Map.cpp" />
+    <ClCompile Include="Source\Game\Map\RegionBuilding.cpp" />
     <ClCompile Include="Source\Game\Pathfinding.cpp" />
     <ClCompile Include="Source\Game\Player.cpp" />
     <ClCompile Include="Source\Game\StaticSpriteManager.cpp" />
