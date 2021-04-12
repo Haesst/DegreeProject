@@ -773,8 +773,8 @@ public:
 			{
 				if (!m_PlayerWars.empty() && m_PlayerWars.find(m_CurrentCharacterID) != m_PlayerWars.end())
 				{
-
-					War* war = WarManager::get().getWarAgainst(CharacterManager::get()->getPlayerCharacterID(), m_CurrentCharacterID);
+					CharacterManager::get()->sendPeaceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
+					/*War* war = WarManager::get().getWarAgainst(CharacterManager::get()->getPlayerCharacterID(), m_CurrentCharacterID);
 					if (war == nullptr)
 					{
 						m_PlayerWars.erase(m_CurrentCharacterID);
@@ -793,7 +793,7 @@ public:
 					{
 						m_BattleSound.stop();
 						Game::m_Sound.play();
-					}
+					}*/
 				}
 			}
 			else if (m_MarriageShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))

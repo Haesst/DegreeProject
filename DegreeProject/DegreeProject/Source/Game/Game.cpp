@@ -119,6 +119,7 @@ void Game::addEntitys()
 	std::vector<unsigned int> id0{ 1, 2, 3, 4, 5, 6, 7 };
 	CharacterID char0 = createCharacter(id0, Title::King, Gender::Male, "Kingdom of Milano", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(181, 54, 107));
 	UIManager::get()->createUITextElement(m_UIFont, char0, CharacterManager::get()->getCharacter(char0).m_KingdomName, id0);
+	CharacterManager::get()->addTrait(char0, CharacterManager::get()->getTrait("Ugly"));
 
 	std::vector<unsigned int> id1{ 8, 9, 10, 11, 12 };
 	CharacterID char1 = createCharacter(id1, Title::Emperor, Gender::Female, "Roman Empire", CharacterNamePool::getFemaleName(), 100, 10, false, sf::Color(54, 181, 105));
@@ -154,7 +155,8 @@ void Game::addEntitys()
 
 CharacterID Game::createCharacter(std::vector<unsigned int>& ownedRegions, Title title, Gender gender, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color)
 {
-	CharacterID character = CharacterManager::get()->createCharacterWithRandomBirthday(characterName, title, gender, ownedRegions, realmName, army, (float)gold, color, playerControlled, 24, 62);
+
+	CharacterID character = CharacterManager::get()->createCharacterWithRandomBirthday(characterName, title, gender, ownedRegions, realmName, army, (float)gold, color, playerControlled, 17, 63);
 
 	for (int i : ownedRegions)
 	{

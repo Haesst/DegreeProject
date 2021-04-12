@@ -12,5 +12,19 @@
     "attraction": 20,
     "fertility": 30,
     "spouseOpinion": 0
+  },
+  {
+    "debugName": "Ugly",
+    "generalOpinion": -10,
+    "attraction": -20,
+    "fertility": -30,
+    "spouseOpinion": 0
+  },
+  {
+    "debugName": "Sterile",
+    "generalOpinion": 0,
+    "attraction": 0,
+    "fertility": -90,
+    "spouseOpinion": 0
   }
 ]

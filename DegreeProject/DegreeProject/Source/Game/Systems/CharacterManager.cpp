@@ -280,7 +280,22 @@ void CharacterManager::tryForPregnancy(Character& character)
 	unsigned int spouseAge = Time::m_GameDate.getAge(spouse.m_Birthday);
 	float spouseFertility = (((spouseAge - m_FertilityBarrenAge) * (m_FertilityBarrenAge - spouseAge) * (spouseAge - m_FertilityBarrenSmoother)) * m_OneOverFertilityCurveSteep) * spouse.m_Fertility;
 
-	float fertility = character.m_Fertility * spouseFertility;
+	float traitFertility = 0.0f;
+
+	for (Trait& trait : character.m_Traits)
+	{
+		traitFertility += (float)trait.fertility;
+	}
+
+	for (Trait& trait : spouse.m_Traits)
+	{
+		traitFertility += (float)trait.fertility;
+	}
+
+	traitFertility *= 0.1;
+	traitFertility += 1.0f;
+
+	float fertility = (character.m_Fertility * spouseFertility) * traitFertility;
 
 	bool success = chancePerPercent(fertility * 0.1f); // Todo: This should absolutely not have a magic number.
 
@@ -591,6 +606,16 @@ void CharacterManager::handleInheritance(Character& character)
 					UIManager::get()->AdjustOwnership(childID, character.m_CharacterID, childOwnedRegionID);
 				}
 			}
+		}
+		Character& child = CharacterManager::get()->getCharacter(character.m_Children.front());
+		if (!child.m_IsPlayerControlled)
+		{
+			child.m_IsPlayerControlled = character.m_IsPlayerControlled;
+		}
+		if (child.m_IsPlayerControlled)
+		{
+			m_PlayerCharacterID = child.m_CharacterID;
+			m_PlayerCharacter = &child;
 		}
 	}
 	else
