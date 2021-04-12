@@ -201,7 +201,7 @@ void AIManager::update()
 
 		if (data.m_ConsiderationAccu > data.m_ConsiderationTimer)
 		{
-			if (data.m_CurrentAction == Action::War)
+			if (data.m_CurrentAction == Action::War || data.m_LastAction == Action::War)
 			{
 				data.m_ConsiderationAccu = 0;
 				continue;

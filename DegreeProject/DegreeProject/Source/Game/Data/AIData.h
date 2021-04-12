@@ -6,6 +6,7 @@ enum class Action
 	War,
 	Upgrade_Settlement,
 	Marriage,
+	Seek_Alliance,
 	NONE
 };
 
