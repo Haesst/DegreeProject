@@ -17,6 +17,11 @@ void WarManager::endWar(int warHandle, CharacterID winner)
 {
 	unsigned int index = 0;
 
+	if (getWar(warHandle) == nullptr)
+	{
+		return;
+	}
+
 	if (winner != INVALID_CHARACTER_ID)
 	{
 		if (!CharacterManager::get()->getCharacter(getWar(warHandle)->getAttacker()).m_IsPlayerControlled)
