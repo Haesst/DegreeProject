@@ -329,14 +329,12 @@ float AIManager::warDecision(CharacterID ID)
 	float actionScore = goldEvaluation * enemyArmyEvaluation;
 	//actionScore += personality.m_DeclareWarModifier;
 
-	War* war = nullptr; //m_WarManager->getWarAgainst(m_Characters[ent], m_Characters[m_Warminds[ent].m_Opponent]);
-
-	if (war == nullptr)
+	if (actionScore <= .5f)
 	{
-		return std::clamp(actionScore, 0.0f, 1.0f);
+		return 0.0f;
 	}
 
-	return 0.0f;
+	return std::clamp(actionScore, 0.0f, 1.0f);
 }
 
 float AIManager::expansionDecision(CharacterID ID)

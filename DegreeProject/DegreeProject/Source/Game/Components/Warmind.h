@@ -13,7 +13,7 @@ struct WarmindComponent
 	bool m_RecentlyAtWar = false; //Flag for starting war
 
 	float m_OrderAccu = 0.0f;
-	float m_OrderTimer = 5.0f;  //timer which the AI will evaluate new orders
+	float m_OrderTimer = 3.0f;  //timer which the AI will evaluate new orders
 
 	float m_AtWarTickRate = 2.0f;
 	float m_TickAccu = 0.0f;

@@ -5,5 +5,13 @@ enum class UIType
 	CharacterWindow,
 	RegionWindow,
 	StatBar,
-	DateBar
+	DateBar,
+	MarriageRequest,
+	AllianceRequest,
+	WarDeclaration,
+	PeaceRequest,
+	Gift,
+	Pregnant,
+	ChildBirth,
+	Death
 };

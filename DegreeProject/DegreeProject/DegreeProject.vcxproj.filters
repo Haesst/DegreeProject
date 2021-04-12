@@ -156,6 +156,9 @@
     <ClInclude Include="Source\Game\UI\DateBar.h">
       <Filter>Game\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\UI\EventWindow.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\UI\RegionWindow.h">
       <Filter>Game\UI</Filter>
     </ClInclude>
@@ -207,6 +210,9 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\GameData.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\GameDate.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\HotReloader.cpp">

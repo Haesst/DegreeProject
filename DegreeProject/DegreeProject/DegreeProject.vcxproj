@@ -139,6 +139,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Systems\UnitManager.h" />
     <ClInclude Include="Source\Game\UI\CharacterWindow.h" />
     <ClInclude Include="Source\Game\UI\DateBar.h" />
+    <ClInclude Include="Source\Game\UI\EventWindow.h" />
     <ClInclude Include="Source\Game\UI\RegionWindow.h" />
     <ClInclude Include="Source\Game\UI\StatBar.h" />
     <ClInclude Include="Source\Game\UI\UIManager.h" />

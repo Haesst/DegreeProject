@@ -4,6 +4,7 @@
 #include "Game/UI/StatBar.h"
 #include "Game/UI/DateBar.h"
 #include "Game/UI/UIText.h"
+#include "Game/UI/EventWindow.h"
 
 UIManager* UIManager::m_Instance = nullptr;
 UIID UIManager::m_UIElementsIDs = 1;
@@ -35,7 +36,21 @@ UIManager::~UIManager()
 	{
 		delete itr->second;
 	}
+	for (unsigned int i = 0; i < m_EventWindows.size(); i++)
+	{
+		delete m_EventWindows[i];
+	}
 	delete m_Instance;
+}
+
+UIID UIManager::createUIEventElement(CharacterID instigatorID, UIType type)
+{
+	UIID ID = m_UIElementsIDs++;
+	UIElement uiElement;
+	uiElement.m_Type = type;
+	m_EventWindows.push_back(new EventWindow(ID, Game::m_UIFont, instigatorID, type));
+	m_UIElements.push_back(uiElement);
+	return ID;
 }
 
 UIID UIManager::createUITextElement(sf::Font font, CharacterID charID, std::string countryName, std::vector<unsigned int> ownedRegions)
@@ -117,6 +132,13 @@ void UIManager::update()
 	m_RegionWindow->update();
 	m_StatBar->update();
 	m_DateBar->update();
+	for (unsigned int i = 0; i < m_EventWindows.size(); i++)
+	{
+		if (!m_EventWindows[i]->m_Dismissed)
+		{
+			m_EventWindows[i]->update();
+		}
+	}
 }
 
 void UIManager::render()
@@ -129,6 +151,13 @@ void UIManager::render()
 	m_RegionWindow->render();
 	m_StatBar->render();
 	m_DateBar->render();
+	for (unsigned int i = 0; i < m_EventWindows.size(); i++)
+	{
+		if (!m_EventWindows[i]->m_Dismissed)
+		{
+			m_EventWindows[i]->render();
+		}
+	}
 }
 
 #pragma warning(push)
