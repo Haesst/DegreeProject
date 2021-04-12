@@ -43,12 +43,12 @@ UIManager::~UIManager()
 	delete m_Instance;
 }
 
-UIID UIManager::createUIEventElement(CharacterID instigatorID, UIType type)
+UIID UIManager::createUIEventElement(CharacterID instigatorID, UIType type, float giftAmount)
 {
 	UIID ID = m_UIElementsIDs++;
 	UIElement uiElement;
 	uiElement.m_Type = type;
-	m_EventWindows.push_back(new EventWindow(ID, Game::m_UIFont, instigatorID, type));
+	m_EventWindows.push_back(new EventWindow(ID, Game::m_UIFont, instigatorID, type, giftAmount));
 	m_UIElements.push_back(uiElement);
 	return ID;
 }

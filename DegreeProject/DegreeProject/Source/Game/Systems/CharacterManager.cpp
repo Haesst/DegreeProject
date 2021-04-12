@@ -322,7 +322,7 @@ void CharacterManager::tryForPregnancy(Character& character)
 		traitFertility += (float)trait.fertility;
 	}
 
-	traitFertility *= 0.1;
+	traitFertility *= 0.1f;
 	traitFertility += 1.0f;
 
 	float fertility = (character.m_Fertility * spouseFertility) * traitFertility;
@@ -334,6 +334,10 @@ void CharacterManager::tryForPregnancy(Character& character)
 		addTrait(character.m_Spouse, getTrait("Pregnant"));
 		spouse.m_PregnancyDay = Time::m_GameDate.m_Date;
 		spouse.m_LastChildFather = character.m_CharacterID;
+		if (character.m_Spouse == getPlayerCharacterID() || character.m_CharacterID == getPlayerCharacterID())
+		{
+			UIManager::get()->createUIEventElement(character.m_Spouse, UIType::Pregnant);
+		}
 	}
 }
 
@@ -344,7 +348,7 @@ void CharacterManager::progressPregnancy(Character& character)
 		return;
 	}
 
-	int pregnancyDays = Time::m_GameDate.getDaysBetweenDates(character.m_PregnancyDay, Time::m_GameDate.m_Date);
+	unsigned int pregnancyDays = Time::m_GameDate.getDaysBetweenDates(character.m_PregnancyDay, Time::m_GameDate.m_Date);
 
 	if (pregnancyDays < m_PregnancyDays - m_MaxPrematureBirth)
 	{
@@ -357,6 +361,10 @@ void CharacterManager::progressPregnancy(Character& character)
 	{
 		createNewChild(character.m_CharacterID);
 		removeTrait(character.m_CharacterID, getTrait("Pregnant"));
+		if (character.m_Spouse == getPlayerCharacterID() || character.m_CharacterID == getPlayerCharacterID())
+		{
+			UIManager::get()->createUIEventElement(character.m_CharacterID, UIType::ChildBirth);
+		}
 	}
 }
 
@@ -471,8 +479,10 @@ void CharacterManager::killCharacter(CharacterID characterID)
 
 	Character& character = getCharacter(characterID);
 	character.m_Dead = true;
+
 	if (character.m_CharacterTitle != Title::Unlanded && character.m_OwnedRegionIDs.size() > 0)
 	{
+		UIManager::get()->createUIEventElement(characterID, UIType::Death);
 		handleInheritance(character);
 	}
 
@@ -618,7 +628,7 @@ void CharacterManager::handleInheritance(Character& character)
 			{
 				if (children > regions)
 				{
-					for (unsigned int ownedRegionID : child.m_OwnedRegionIDs)
+					for (unsigned int i = 0; i < child.m_OwnedRegionIDs.size(); i++)
 					{
 						child.m_CurrentGold += giveawayGold;
 						child.m_MaxArmySize += giveawayArmy;
@@ -786,13 +796,20 @@ void CharacterManager::marry(CharacterID character, CharacterID spouse)
 		{
 			characterManager->getCharacter(character).m_Spouse = spouse;
 			characterManager->getCharacter(spouse).m_Spouse = character;
+			if (characterManager->getCharacter(character).m_IsPlayerControlled)
+			{
+				UIManager::get()->createUIEventElement(spouse, UIType::MarriageAccepted);
+			}
+		}
+		else if(characterManager->getCharacter(character).m_IsPlayerControlled)
+		{
+			UIManager::get()->createUIEventElement(spouse, UIType::MarriageDeclined);
 		}
 	}
 
 	else
 	{
-		characterManager->getCharacter(character).m_Spouse = spouse;
-		characterManager->getCharacter(spouse).m_Spouse = character;
+		UIManager::get()->createUIEventElement(character, UIType::MarriageRequest);
 	}
 }
 

@@ -25,7 +25,7 @@ public:
 	void render();
 	UIID createUIWindowElement(sf::Font font, UIType type, Vector2D position, Vector2D size);
 	UIID createUITextElement(sf::Font font, CharacterID charID, std::string countryName, std::vector<unsigned int> ownedRegions);
-	UIID createUIEventElement(CharacterID instigatorID, UIType type);
+	UIID createUIEventElement(CharacterID instigatorID, UIType type, float giftAmount = 0.0f);
 	void AdjustOwnership(CharacterID conqueror, CharacterID loser, unsigned int regionID);
 	UIElement& getUIElement(UIID id);
 	UIText& getUIText(UIID id);
