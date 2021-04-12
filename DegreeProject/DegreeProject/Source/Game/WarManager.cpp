@@ -29,6 +29,11 @@ void WarManager::endWar(int warHandle, CharacterID winner)
 			AIManager::get().getAIDataofCharacter(getWar(warHandle)->getDefender()).m_CurrentAction = Action::NONE;
 		}
 	}
+
+	if (getWar(warHandle)->getAttacker() == winner)
+	{
+		invalidateWarsForRegionOnWonWar(*getWar(warHandle));
+	}
 	
 	getWar(warHandle)->endWar(winner);
 

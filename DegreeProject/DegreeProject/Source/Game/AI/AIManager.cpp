@@ -552,12 +552,10 @@ void AIManager::handleHighestEvaluation(AIData& data)
 	case Action::Upgrade_Settlement:
 		upgradeAction(data);
 		data.m_LastAction = Action::Upgrade_Settlement;
-		LOG_INFO("AI UPGRADING SETTLEMENT");
 		break;
 	case Action::Marriage:
 		marriageAction(data);
 		data.m_LastAction = Action::Marriage;
-		LOG_INFO("AI MARRIED");
 		break;
 	case Action::NONE:
 		data.m_PotentialSpouseID = INVALID_CHARACTER_ID;

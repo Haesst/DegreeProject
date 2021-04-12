@@ -208,7 +208,6 @@ void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever)
 		if (AIManager::get().handlePeaceRequest(sender, reciever))
 		{
 			WarManager::get().endWar(WarManager::get().getWarAgainst(sender, reciever)->getHandle(), sender);
-			WarManager::get().invalidateWarsForRegionOnWonWar(*WarManager::get().getWarAgainst(reciever, sender));
 		}
 	}
 }
