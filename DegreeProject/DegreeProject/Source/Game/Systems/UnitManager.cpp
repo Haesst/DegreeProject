@@ -487,11 +487,6 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	LOG_INFO("ARMY WEIGHT: {0}", armyWeight);
 	bool win = weightedRandomCombat(armyWeight);
 
-	if (CharacterManager::get()->getPlayerCharacterID() == getUnitWithId(unitID).m_Owner)
-	{
-		win = true;
-	}
-
 	if (win)
 	{
 		dismissUnit(enemyID);
