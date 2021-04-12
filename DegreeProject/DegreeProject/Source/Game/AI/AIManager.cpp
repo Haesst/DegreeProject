@@ -578,8 +578,6 @@ bool AIManager::weightedRandom(float weight)
 
 int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 {
-	// WarManager* warManager = &WarManager::get();
-
 	if (!CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty())
 	{
 		warmind.m_PrioritizedWarHandle = CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.front();
