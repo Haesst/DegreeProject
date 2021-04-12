@@ -128,6 +128,12 @@ void Game::addEntitys()
 	CharacterID char2 = createCharacter(id2, Title::King, Gender::Male, "Kingdom of Sicilies", CharacterNamePool::getMaleName(), 150, 15, true, sf::Color(200, 181, 105));
 	UIManager::get()->createUITextElement(m_UIFont, char2, CharacterManager::get()->getCharacter(char2).m_KingdomName, id2);
 
+	CharacterManager::get()->addTrait(char2, CharacterManager::get()->getTrait("Beautiful"));
+	Character& c = CharacterManager::get()->getCharacter(char1);
+	Character& c2 = CharacterManager::get()->getCharacter(char0);
+	LOG_INFO("{0}'s opinion of Player: {1}", c.m_Name, CharacterManager::get()->getCharacterOpinion(char1, char2));
+	LOG_INFO("{0}'s opinion of Player: {1}", c2.m_Name, CharacterManager::get()->getCharacterOpinion(char0, char2));
+
 	//UI
 	Vector2D characterWindowPosition = { 10.0f, 10.0f };
 	Vector2D characterWindowSize = { 600.0f, 1060.0f };

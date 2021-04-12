@@ -1,5 +1,16 @@
 [
   {
-	  "debugName": "Pregnant"
+	  "debugName": "Pregnant",
+    "generalOpinion": 0,
+    "attraction": 0,
+    "fertility": 0,
+    "spouseOpinion": 20
+  },
+  {
+    "debugName": "Beautiful",
+    "generalOpinion": 10,
+    "attraction": 20,
+    "fertility": 30,
+    "spouseOpinion": 0
   }
 ]

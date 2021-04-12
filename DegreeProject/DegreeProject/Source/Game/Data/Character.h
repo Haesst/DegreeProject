@@ -16,6 +16,9 @@ enum class Gender
 struct Trait
 {
 	std::string m_TraitName;
+	int attraction;
+	int fertility;
+	int generalOppinion;
 
 	Trait(std::string traitName)
 	{

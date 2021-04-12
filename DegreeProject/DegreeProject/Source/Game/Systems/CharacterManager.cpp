@@ -56,7 +56,16 @@ void CharacterManager::loadTraits(const char* path)
 	{
 		std::string traitName = element["debugName"].get<std::string>();
 
-		m_Traits.push_back(traitName);
+		int generalOppinion = element["generalOpinion"].get<int>();
+		int attraction = element["attraction"].get<int>();
+		int fertility = element["fertility"].get<int>();
+
+		Trait trait(traitName);
+		trait.generalOppinion = generalOppinion;
+		trait.attraction = attraction;
+		trait.fertility = fertility;
+
+		m_Traits.push_back(trait);
 	}
 
 	m_TraitMtx.unlock();
@@ -142,9 +151,41 @@ bool CharacterManager::hasTrait(CharacterID ID, Trait trait)
 	return false;
 }
 
-int CharacterManager::getCharacterOpinion(CharacterID character, CharacterID other)
+int CharacterManager::getCharacterOpinion(CharacterID characterID, CharacterID otherID)
 {
-	return 0;
+	Character& character = getCharacter(characterID);
+	Character& other = getCharacter(otherID);
+
+	bool useAttraction = character.m_Gender != other.m_Gender; // Todo: Allow other attraction types than just heterosexual
+
+	int opinion = 0;
+
+	for (auto& trait : other.m_Traits)
+	{
+		if (trait.m_TraitName == "INVALID")
+		{
+			continue;
+		}
+
+		opinion += trait.generalOppinion;
+
+		if (useAttraction)
+		{
+			opinion += trait.attraction;
+		}
+	}
+
+	if (character.m_Spouse == otherID)
+	{
+		opinion += 50;
+	}
+
+	if (character.m_Father == otherID || character.m_Mother == otherID)
+	{
+		opinion += 80;
+	}
+
+	return opinion;
 }
 
 Trait CharacterManager::getTrait(const char* traitName)
@@ -175,7 +216,6 @@ void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever)
 void CharacterManager::start()
 {
 	Time::m_GameDate.subscribeToMonthChange(std::bind(&CharacterManager::onMonthChange, this, std::placeholders::_1));
-	loadTraits("Assets\\Data\\Traits.json");
 
 	for (auto& character : m_Characters)
 	{
@@ -284,6 +324,7 @@ void CharacterManager::render()
 CharacterManager::CharacterManager()
 	: m_CharacterPool(CharacterPool(m_PoolInitSize, m_PoolGrowSize))
 {
+	loadTraits("Assets\\Data\\Traits.json");
 }
 
 CharacterManager::~CharacterManager()
@@ -326,19 +367,6 @@ void CharacterManager::onMonthChange(Date)
 {
 	for (auto& character : m_Characters)
 	{
-		//if (hasTrait(character.m_CharacterID, getTrait("Pregnant")))
-		//{
-		//	Date currentDate = Time::m_GameDate.m_Date;
-
-		//	if ((currentDate.m_Month - character.m_PregnancyDay.m_Month) >= 9)
-		//	{
-		//		//Give birth
-		//		createNewChild(character.m_CharacterID);
-
-		//		removeTrait(character.m_CharacterID, getTrait("Pregnant"));
-		//	}
-		//}
-
 		float incomingGold = 0;
 
 		for (unsigned int id : character.m_OwnedRegionIDs)
@@ -368,25 +396,6 @@ void CharacterManager::onMonthChange(Date)
 		incomingGold -= (character.m_RaisedArmySize * 0.1f); // Todo: Declare army cost somewhere
 		character.m_Income = incomingGold; // Todo: Change to prediction for upcoming month instead of showing last month.
 		character.m_CurrentGold += incomingGold;
-
-		//if (character.m_Gender == Gender::Male && !character.m_Dead && character.m_Spouse != INVALID_CHARACTER_ID)
-		//{
-		//	Character& spouse = getCharacter(character.m_Spouse);
-
-		//	if (spouse.m_Gender == Gender::Female)
-		//	{
-		//		float fertilityWeight = character.m_Fertility + spouse.m_Fertility;
-		//		bool rand = weightedRandom(fertilityWeight);
-
-		//		if (rand)
-		//		{
-		//			//Mark character as pregnant.
-		//			addTrait(character.m_Spouse, getTrait("Pregnant"));
-		//			spouse.m_PregnancyDay = Time::m_GameDate.m_Date;
-		//			spouse.m_LastChildFather = character.m_CharacterID;
-		//		}
-		//	}
-		//}
 
 		if (!character.m_Dead)
 		{	
