@@ -540,7 +540,6 @@ void CharacterManager::handleInheritance(Character& character)
 	{
 		Character& child = getCharacter(character.m_Children.front());
 		child.m_CurrentGold += character.m_CurrentGold;
-		child.m_MaxArmySize += character.m_MaxArmySize;
 		child.m_UnitEntity = character.m_UnitEntity;
 		child.m_RegionColor = character.m_RegionColor;
 		if (!child.m_IsPlayerControlled)
@@ -573,7 +572,6 @@ void CharacterManager::handleInheritance(Character& character)
 		unsigned int children = character.m_Children.size();
 		unsigned int regions = character.m_OwnedRegionIDs.size();
 		float giveawayGold = character.m_CurrentGold / children;
-		unsigned int giveawayArmy = character.m_MaxArmySize / children;
 		float giveawayRegions = (float)regions / children;
 		unsigned int numberOfLoops = 1;
 		if (giveawayRegions > 1)
@@ -631,13 +629,11 @@ void CharacterManager::handleInheritance(Character& character)
 					for (unsigned int i = 0; i < child.m_OwnedRegionIDs.size(); i++)
 					{
 						child.m_CurrentGold += giveawayGold;
-						child.m_MaxArmySize += giveawayArmy;
 					}
 				}
 				else
 				{
 					child.m_CurrentGold += giveawayGold;
-					child.m_MaxArmySize += giveawayArmy;
 				}
 				updateTitle(child);
 				UIManager::get()->createUITextElement(Game::m_UIFont, childID, child.m_KingdomName, child.m_OwnedRegionIDs);
@@ -661,7 +657,6 @@ void CharacterManager::handleInheritance(Character& character)
 	else
 	{
 		float giveawayGold = character.m_CurrentGold / character.m_OwnedRegionIDs.size();
-		unsigned int giveawayArmy = character.m_MaxArmySize / character.m_OwnedRegionIDs.size();
 		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
 		{
 			for (Character& otherCharacter : m_Characters)
@@ -678,7 +673,6 @@ void CharacterManager::handleInheritance(Character& character)
 					//}
 					addRegion(otherCharacter.m_CharacterID, ownedRegionID);
 					otherCharacter.m_CurrentGold += giveawayGold;
-					otherCharacter.m_MaxArmySize += giveawayArmy;
 					otherCharacter.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
 					updateTitle(otherCharacter);
 					Map::get().setRegionColor(ownedRegionID, otherCharacter.m_RegionColor);

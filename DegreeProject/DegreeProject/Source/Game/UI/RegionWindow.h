@@ -21,6 +21,7 @@ public:
 	float m_OutlineThickness = 10.0f;
 	sf::Text m_RegionNameText;
 	sf::Text m_RegionTaxText;
+	sf::Text m_RegionManpowerText;
 	sf::Text m_KingdomNameText;
 	sf::Font m_Font;
 	int m_CharacterSize = 50;
@@ -51,6 +52,7 @@ public:
 	bool m_PlayerRegion = false;
 
 	const std::string m_TaxString = "Tax: ";
+	const std::string m_ManPowerString = "Manpower: ";
 
 	float m_ProgressMeterWidth = 64.0f;
 	float m_ProgressMeterBorder = 1.0f;
@@ -111,6 +113,10 @@ public:
 		m_RegionTaxText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 		m_RegionTaxText.setStyle(m_Style);
 
+		m_RegionManpowerText.setFont(m_Font);
+		m_RegionManpowerText.setCharacterSize((int)(m_CharacterSize * 0.5f));
+		m_RegionManpowerText.setStyle(m_Style);
+
 		m_KingdomNameText.setFont(m_Font);
 		m_KingdomNameText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 		m_KingdomNameText.setStyle(m_Style);
@@ -143,7 +149,9 @@ public:
 
 			m_RegionNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.1f), positionY)));
 
-			m_RegionTaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.8f), positionY + (int)(m_SizeY * 0.5f))));
+			m_RegionTaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.1f), positionY + (int)(m_SizeY * 0.5f))));
+
+			m_RegionManpowerText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.1f), positionY + (int)(m_SizeY * 0.6f))));
 
 			m_KingdomNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.1f), positionY + (int)(m_SizeY * 0.1f))));
 		}
@@ -156,6 +164,7 @@ public:
 			m_Window->draw(m_WindowShape);
 			m_Window->draw(m_RegionNameText);
 			m_Window->draw(m_RegionTaxText);
+			m_Window->draw(m_RegionManpowerText);
 			m_Window->draw(m_KingdomNameText);
 			m_Window->draw(m_RaiseArmyShape);
 			for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
@@ -249,6 +258,9 @@ public:
 
 			m_RegionTaxText.setString(m_TaxString + std::to_string(m_CurrentMapRegion->m_RegionTax));
 			m_RegionTaxText.setFillColor(m_OwnerColor);
+
+			m_RegionManpowerText.setString(m_ManPowerString + std::to_string(m_CurrentMapRegion->m_ManPower));
+			m_RegionManpowerText.setFillColor(m_OwnerColor);
 
 			m_RegionNameText.setString(m_CurrentMapRegion->m_RegionName);
 			m_RegionNameText.setFillColor(m_OwnerColor);
