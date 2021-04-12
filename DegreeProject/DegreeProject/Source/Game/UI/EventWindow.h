@@ -25,7 +25,7 @@ public:
 	const std::string m_AgreeString = "Agree";
 
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
-	sf::Color m_OwnerColor = sf::Color::Red;
+	sf::Color m_OwnerColor = sf::Color::Black;
 	float m_SizeX = 400.0f;
 	float m_SizeY = 300.0f;
 	int m_PositionX = 0;
@@ -48,28 +48,32 @@ public:
 	std::string m_FemaleTitles[(unsigned int)Title::Baron + 1];
 
 	CharacterID m_InstigatorID = INVALID_CHARACTER_ID;
-	sf::RectangleShape m_InstigatorCharacterShape;
+	sf::RectangleShape m_InstigatorShape;
 	sf::Texture m_InstigatorTexture;
 	sf::Sprite m_InstigatorSprite;
-	sf::Vector2f m_InstigatorCharacterPosition = sf::Vector2f();
+	sf::Vector2f m_InstigatorPosition = sf::Vector2f();
+	sf::Color m_InstigatorColor = sf::Color::Black;
+
 	sf::Text m_MessageText;
 	sf::Vector2f m_MessageTextPosition = sf::Vector2f();
 
-	Character* m_PlayerCharacter = nullptr;
-	sf::RectangleShape m_PlayerCharacterShape;
-	sf::Texture m_PlayerCharacterTexture;
-	sf::Sprite m_PlayerCharacterSprite;
-	sf::Vector2f m_PlayerCharacterPosition = sf::Vector2f();
+	CharacterID m_SubjectID = INVALID_CHARACTER_ID;
+	sf::RectangleShape m_SubjectShape;
+	sf::Texture m_SubjectTexture;
+	sf::Sprite m_SubjectSprite;
+	sf::Vector2f m_SubjectPosition = sf::Vector2f();
+	sf::Color m_SubjectColor = sf::Color::Black;
 
 	sf::Texture m_MessageTypeTexture;
 	sf::Sprite m_MessageTypeSprite;
 	sf::Vector2f m_MessageTypePosition = sf::Vector2f();
 
-	EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, UIType type, float giftAmount = 0.0f)
+	EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, CharacterID subjectID, UIType type, float giftAmount = 0.0f)
 	{
 		m_OwnedUIWindow = ID;
 		m_Font = font;
 		m_InstigatorID = instigatorID;
+		m_SubjectID = subjectID;
 		m_MessageType = type;
 
 		m_MaleTitles[(unsigned int)Title::Emperor] = "Emperor ";
@@ -86,21 +90,33 @@ public:
 
 		m_Window = Window::getWindow();
 
-		m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
-		m_OwnerColor = m_PlayerCharacter->m_RegionColor;
+		Character& playerCharacter = CharacterManager::get()->getPlayerCharacter();
+		m_OwnerColor = playerCharacter.m_RegionColor;
 
 		Character& instigator = CharacterManager::get()->getCharacter(m_InstigatorID);
+		m_InstigatorColor = instigator.m_RegionColor;
 
-		m_InstigatorTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harriet.jpg");
-		m_PlayerCharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harold.jpg");
+		Character& subject = CharacterManager::get()->getCharacter(m_SubjectID);
+		m_SubjectColor = subject.m_RegionColor;
+
+		if (subject.m_Gender == Gender::Male)
+		{
+			m_SubjectTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harold.jpg");
+		}
+		else
+		{
+			m_SubjectTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harriet.jpg");
+		}
 
 		std::stringstream stream;
 		if (instigator.m_Gender == Gender::Male)
 		{
+			m_InstigatorTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harold.jpg");
 			stream << m_MaleTitles[(unsigned int)instigator.m_CharacterTitle];
 		}
 		else
 		{
+			m_InstigatorTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harriet.jpg");
 			stream << m_FemaleTitles[(unsigned int)instigator.m_CharacterTitle];
 		}
 		stream << instigator.m_Name;
@@ -114,68 +130,76 @@ public:
 				if (m_MessageType == UIType::MarriageRequest)
 				{
 					stream << "\nwants to marry you.\n\n               Do you accept?";
-					m_MessageText.setString(stream.str());
 				}
 				else if(m_MessageType == UIType::MarriageAccepted)
 				{
 					stream << "\naccepted your marriage proposal!";
-					m_MessageText.setString(stream.str());
 				}
 				else
 				{
 					stream << "\ndeclined your marriage proposal!";
-					m_MessageText.setString(stream.str());
 				}
+				m_MessageText.setString(stream.str());
 				break;
 			}
 			case UIType::AllianceRequest:
 			case UIType::AllianceAccepted:
 			case UIType::AllianceDeclined:
 			{
-				m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Male.png");
+				m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Alliance.png");
 				if (m_MessageType == UIType::AllianceRequest)
 				{
 					stream << "\nwants to ally you.\n\n               Do you accept?";
-					m_MessageText.setString(stream.str());
 				}
 				else if (m_MessageType == UIType::AllianceAccepted)
 				{
 					stream << "\naccepted your alliance proposal!";
-					m_MessageText.setString(stream.str());
 				}
 				else
 				{
 					stream << "\ndeclined your alliance proposal!";
-					m_MessageText.setString(stream.str());
 				}
+				m_MessageText.setString(stream.str());
 				break;
 			}
 			case UIType::PeaceRequest:
 			case UIType::PeaceAccepted:
 			case UIType::PeaceDeclined:
 			{
-				m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Female.png");
+				m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Peace.png");
 				if (m_MessageType == UIType::PeaceRequest)
 				{
 					stream << "\nwants peace.\n\n               Do you accept?";
-					m_MessageText.setString(stream.str());
 				}
 				else if (m_MessageType == UIType::PeaceAccepted)
 				{
 					stream << "\naccepted your peace offer!";
-					m_MessageText.setString(stream.str());
 				}
 				else
 				{
 					stream << "\ndeclined your peace offer!";
-					m_MessageText.setString(stream.str());
 				}
+				m_MessageText.setString(stream.str());
 				break;
 			}
 			case UIType::WarDeclaration:
 			{
-				m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/BarackIcon.png");
-				stream << "\ndeclared war on you!";
+				m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/War.png");
+				if (instigatorID == playerCharacter.m_CharacterID)
+				{
+					if (subject.m_Gender == Gender::Male)
+					{
+						stream << "\ndeclared war on\n" << m_MaleTitles[(unsigned int)subject.m_CharacterTitle] << subject.m_Name << "!";
+					}
+					else
+					{
+						stream << "\ndeclared war on\n" << m_FemaleTitles[(unsigned int)subject.m_CharacterTitle] << subject.m_Name << "!";
+					}
+				}
+				else
+				{
+					stream << "\ndeclared war on you!";
+				}
 				m_MessageText.setString(stream.str());
 				break;
 			}
@@ -213,6 +237,40 @@ public:
 				}
 				break;
 			}
+			case UIType::AssassinationSuccess:
+			{
+				m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Assassinate.png");
+				stream.str(std::string());
+				stream.clear();
+				if (subject.m_Gender == Gender::Male)
+				{
+					stream << m_MaleTitles[(unsigned int)subject.m_CharacterTitle];
+				}
+				else
+				{
+					stream << m_FemaleTitles[(unsigned int)subject.m_CharacterTitle];
+				}
+				stream << subject.m_Name << "\ndied under suspicious circumstances.";
+				m_MessageText.setString(stream.str());
+				break;
+			}
+			case UIType::AssassinationFailure:
+			{
+				m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Assassinate.png");
+				stream.str(std::string());
+				stream.clear();
+				if (subject.m_Gender == Gender::Male)
+				{
+					stream << m_MaleTitles[(unsigned int)subject.m_CharacterTitle];
+				}
+				else
+				{
+					stream << m_FemaleTitles[(unsigned int)subject.m_CharacterTitle];
+				}
+				stream << subject.m_Name << "\nevaded an assassination!";
+				m_MessageText.setString(stream.str());
+				break;
+			}
 			case UIType::Death:
 			{
 				m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Dead.png");
@@ -234,15 +292,15 @@ public:
 		m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
 		m_WindowShape.setOutlineColor(m_OwnerColor);
 
-		m_InstigatorCharacterShape.setFillColor(sf::Color::Transparent);
-		m_InstigatorCharacterShape.setOutlineThickness(m_OutlineThickness * 0.5f);
-		m_InstigatorCharacterShape.setOutlineColor(instigator.m_RegionColor);
-		m_InstigatorCharacterShape.setSize(sf::Vector2f(m_SpriteSize, m_SpriteSize));
+		m_InstigatorShape.setFillColor(sf::Color::Transparent);
+		m_InstigatorShape.setOutlineThickness(m_OutlineThickness * 0.5f);
+		m_InstigatorShape.setOutlineColor(instigator.m_RegionColor);
+		m_InstigatorShape.setSize(sf::Vector2f(m_SpriteSize, m_SpriteSize));
 
-		m_PlayerCharacterShape.setFillColor(sf::Color::Transparent);
-		m_PlayerCharacterShape.setOutlineThickness(m_OutlineThickness * 0.5f);
-		m_PlayerCharacterShape.setOutlineColor(m_PlayerCharacter->m_RegionColor);
-		m_PlayerCharacterShape.setSize(sf::Vector2f(m_SpriteSize, m_SpriteSize));
+		m_SubjectShape.setFillColor(sf::Color::Transparent);
+		m_SubjectShape.setOutlineThickness(m_OutlineThickness * 0.5f);
+		m_SubjectShape.setOutlineColor(m_SubjectColor);
+		m_SubjectShape.setSize(sf::Vector2f(m_SpriteSize, m_SpriteSize));
 
 		if (m_MessageType == UIType::MarriageRequest || m_MessageType == UIType::AllianceRequest || m_MessageType == UIType::PeaceRequest)
 		{
@@ -285,11 +343,11 @@ public:
 
 		m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_PositionX, m_PositionY)));
 
-		m_InstigatorCharacterPosition = sf::Vector2f(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 0.5f);
-		m_InstigatorCharacterShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_InstigatorCharacterPosition)));
+		m_InstigatorPosition = sf::Vector2f(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 0.5f);
+		m_InstigatorShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_InstigatorPosition)));
 
-		m_PlayerCharacterPosition = sf::Vector2f(m_PositionX + m_SizeX - m_SpriteSize * 1.5f, m_PositionY + m_SpriteSize * 0.5f);
-		m_PlayerCharacterShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_PlayerCharacterPosition)));
+		m_SubjectPosition = sf::Vector2f(m_PositionX + m_SizeX - m_SpriteSize * 1.5f, m_PositionY + m_SpriteSize * 0.5f);
+		m_SubjectShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_SubjectPosition)));
 
 		m_MessageTypePosition = sf::Vector2f(m_PositionX + m_SizeX * 0.5f - m_SpriteSize * 0.25f, m_PositionY + m_SpriteSize * 0.75f);
 
@@ -311,8 +369,8 @@ public:
 	void render()
 	{
 		m_Window->draw(m_WindowShape);
-		m_Window->draw(m_InstigatorCharacterShape);
-		m_Window->draw(m_PlayerCharacterShape);
+		m_Window->draw(m_InstigatorShape);
+		m_Window->draw(m_SubjectShape);
 		m_Window->draw(m_MessageText);
 		if (m_MessageType == UIType::MarriageRequest || m_MessageType == UIType::AllianceRequest || m_MessageType == UIType::PeaceRequest)
 		{
@@ -328,8 +386,8 @@ public:
 	{
 		Vector2D mousePosition = InputHandler::getMousePosition();
 		Vector2D diff = m_MousePosition - mousePosition;
-		m_PositionX -= diff.x;
-		m_PositionY -= diff.y;
+		m_PositionX -= (int)diff.x;
+		m_PositionY -= (int)diff.y;
 		m_MousePosition = mousePosition;
 	}
 
@@ -345,21 +403,20 @@ public:
 		{
 			case UIType::MarriageRequest:
 			{
-				if (m_PlayerCharacter->m_Spouse == INVALID_CHARACTER_ID)
+				if (CharacterManager::get()->getCharacter(m_SubjectID).m_Spouse == INVALID_CHARACTER_ID)
 				{
-					CharacterManager::get()->getCharacter(m_InstigatorID).m_Spouse = CharacterManager::get()->getPlayerCharacterID();
-					m_PlayerCharacter->m_Spouse = m_InstigatorID;
+					CharacterManager::get()->onMarriage(m_InstigatorID, CharacterManager::get()->getPlayerCharacterID());
 				}
 				break;
 			}
 			case UIType::AllianceRequest:
 			{
-				//CharacterManager::get()->ally(m_InstigatorID, m_PlayerCharacter->m_CharacterID);
+				CharacterManager::get()->onAllianceCreated(m_InstigatorID, CharacterManager::get()->getPlayerCharacterID());
 				break;
 			}
 			case UIType::PeaceRequest:
 			{
-				CharacterManager::get()->sendPeaceOffer(m_PlayerCharacter->m_CharacterID, m_InstigatorID);
+				CharacterManager::get()->onWarEnded(m_InstigatorID, CharacterManager::get()->getPlayerCharacterID());
 				break;
 			}
 			default:
@@ -399,16 +456,16 @@ public:
 		else if (InputHandler::getRightMouseReleased())
 		{
 			Vector2D mousePosition = InputHandler::getMousePosition();
-			if (m_InstigatorCharacterShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			if (m_InstigatorShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				UIManager::get()->m_CharacterWindow->m_CurrentCharacterID = m_InstigatorID;
 				UIManager::get()->m_CharacterWindow->checkIfPlayerCharacter();
 				UIManager::get()->m_CharacterWindow->updateInfo();
 				UIManager::get()->m_CharacterWindow->openWindow();
 			}
-			else if (m_PlayerCharacterShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			else if (m_SubjectShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				UIManager::get()->m_CharacterWindow->m_CurrentCharacterID = CharacterManager::get()->getPlayerCharacterID();
+				UIManager::get()->m_CharacterWindow->m_CurrentCharacterID = m_SubjectID;
 				UIManager::get()->m_CharacterWindow->checkIfPlayerCharacter();
 				UIManager::get()->m_CharacterWindow->updateInfo();
 				UIManager::get()->m_CharacterWindow->openWindow();
@@ -418,8 +475,8 @@ public:
 
 	void updateSprites()
 	{
-		updateSprite(m_InstigatorSprite, m_InstigatorTexture, sf::Vector2f(m_InstigatorCharacterPosition.x, m_InstigatorCharacterPosition.y));
-		updateSprite(m_PlayerCharacterSprite, m_PlayerCharacterTexture, sf::Vector2f(m_PlayerCharacterPosition.x, m_PlayerCharacterPosition.y));
+		updateSprite(m_InstigatorSprite, m_InstigatorTexture, sf::Vector2f(m_InstigatorPosition.x, m_InstigatorPosition.y));
+		updateSprite(m_SubjectSprite, m_SubjectTexture, sf::Vector2f(m_SubjectPosition.x, m_SubjectPosition.y));
 		updateSprite(m_MessageTypeSprite, m_MessageTypeTexture, sf::Vector2f(m_MessageTypePosition.x, m_MessageTypePosition.y), m_SpriteSize / 2);
 	}
 

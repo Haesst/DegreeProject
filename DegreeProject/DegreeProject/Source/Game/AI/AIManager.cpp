@@ -5,6 +5,7 @@
 #include "Game/Data/Unit.h"
 #include "Game\Pathfinding.h"
 #include <Game\Data\AIData.h>
+#include "Game/UI/UIManager.h"
 
 AIManager* AIManager::m_Instance = nullptr;
 
@@ -57,7 +58,7 @@ void AIManager::loadPersonalities(const char* path)
 
 #pragma warning(push)
 #pragma warning(disable: 4239 4172)
-WarmindComponent& AIManager::GetWarmindOfCharacter(int handle)
+WarmindComponent& AIManager::getWarmindOfCharacter(int handle)
 {
 	size_t convertedHandle = (size_t)handle;
 	for (auto& warmind : m_Warminds)
@@ -138,7 +139,7 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever)
 
 	else
 	{
-		acceptance -= .3;
+		acceptance -= .3f;
 	}
 
 	int senderArmySize = CharacterManager::get()->getCharacter(sender).m_RaisedArmySize;
@@ -357,8 +358,8 @@ float AIManager::warDecision(CharacterID ID)
 	goldConsideration.setContext(ID);
 	armySizeConsideration.setContext(ID);
 
-	float goldEvaluation = goldConsideration.evaluate(ID, GetWarmindOfCharacter(ID).m_Opponent);
-	float enemyArmyEvaluation = armySizeConsideration.evaluate(ID, GetWarmindOfCharacter(ID).m_Opponent);
+	float goldEvaluation = goldConsideration.evaluate(ID, getWarmindOfCharacter(ID).m_Opponent);
+	float enemyArmyEvaluation = armySizeConsideration.evaluate(ID, getWarmindOfCharacter(ID).m_Opponent);
 
 	float actionScore = goldEvaluation * enemyArmyEvaluation;
 	//actionScore += personality.m_DeclareWarModifier;
@@ -405,8 +406,8 @@ float AIManager::expansionDecision(CharacterID ID)
 		if (actionScorePerRegion[i].first > highest)
 		{
 			highest = actionScorePerRegion[i].first;
-			GetWarmindOfCharacter(ID).m_WargoalRegionId = actionScorePerRegion[i].second;
-			GetWarmindOfCharacter(ID).m_Opponent = Map::get().getRegionById(actionScorePerRegion[i].second).m_OwnerID;
+			getWarmindOfCharacter(ID).m_WargoalRegionId = actionScorePerRegion[i].second;
+			getWarmindOfCharacter(ID).m_Opponent = Map::get().getRegionById(actionScorePerRegion[i].second).m_OwnerID;
 			bestIndex = i;
 		}
 	}
@@ -425,7 +426,7 @@ float AIManager::marriageDecision(CharacterID ID, CharacterID spouse)
 	return marriage.evaluate(ID, spouse);
 }
 
-void AIManager::GiveAttackerOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit)
+void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit)
 {
 	FightEnemyArmyConsideration fightConsideration;
 	float fightEval = fightConsideration.evaluate(warmind.m_OwnerID, target);
@@ -454,7 +455,7 @@ void AIManager::GiveAttackerOrders(WarmindComponent& warmind, CharacterID target
 	}
 }
 
-void AIManager::GiveDefenderOrders(WarmindComponent& warmind, CharacterID /*target*/, Unit& unit, Unit& enemyUnit)
+void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*target*/, Unit& unit, Unit& enemyUnit)
 {
 	//FightEnemyArmyConsideration fightConsideration;
 	//float fightEval = fightConsideration.evaluate(warmind.m_OwnerID, target);
@@ -483,33 +484,33 @@ void AIManager::GiveDefenderOrders(WarmindComponent& warmind, CharacterID /*targ
 
 void AIManager::warAction(AIData& data)
 {
-	int warHandle = WarManager::get().createWar(data.m_OwnerID, GetWarmindOfCharacter(data.m_OwnerID).m_Opponent, GetWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
+	int warHandle = WarManager::get().createWar(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent, getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
 	War* war = WarManager::get().getWar(warHandle);
 	CharacterManager::get()->getCharacter(war->getAttacker()).m_CurrentWars.push_back(warHandle);
 	CharacterManager::get()->getCharacter(war->getDefender()).m_CurrentWars.push_back(warHandle);
 
-	GetWarmindOfCharacter(data.m_OwnerID).m_Active = true;
+	getWarmindOfCharacter(data.m_OwnerID).m_Active = true;
 
-	WarmindComponent& warmind = GetWarmindOfCharacter(data.m_OwnerID);
-
-	if (!CharacterManager::get()->getCharacter(warmind.m_Opponent).m_IsPlayerControlled)
-	{
-		GetWarmindOfCharacter(warmind.m_Opponent).m_Active = true;
-	}
+	WarmindComponent& warmind = getWarmindOfCharacter(data.m_OwnerID);
 
 	if (!CharacterManager::get()->getCharacter(warmind.m_Opponent).m_IsPlayerControlled)
 	{
-		GetWarmindOfCharacter(warmind.m_Opponent).m_Opponent = warmind.m_OwnerID;
+		getWarmindOfCharacter(warmind.m_Opponent).m_Active = true;
+		getWarmindOfCharacter(warmind.m_Opponent).m_Opponent = warmind.m_OwnerID;
+	}
+	else
+	{
+		UIManager::get()->createUIEventElement(warmind.m_OwnerID, CharacterManager::get()->getPlayerCharacterID(), UIType::WarDeclaration);
 	}
 
-	LOG_INFO("{0} Declared war against {1}", CharacterManager::get()->getCharacter(data.m_OwnerID).m_Name, CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Name);
+	LOG_INFO("{0} Declared war against {1}", CharacterManager::get()->getCharacter(data.m_OwnerID).m_Name, CharacterManager::get()->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Name);
 	data.m_LastAction = Action::War;
 	data.m_CurrentAction = Action::War;
 
-	if (!CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_IsPlayerControlled)
+	if (!CharacterManager::get()->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_IsPlayerControlled)
 	{
-		getAIDataofCharacter(CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_CurrentAction = Action::War;
-		getAIDataofCharacter(CharacterManager::get()->getCharacter(GetWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_LastAction = Action::War;
+		getAIDataofCharacter(CharacterManager::get()->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_CurrentAction = Action::War;
+		getAIDataofCharacter(CharacterManager::get()->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_LastAction = Action::War;
 	}
 }
 
@@ -632,12 +633,12 @@ void AIManager::considerOrders(WarmindComponent& warmind, Unit& unit, CharacterI
 
 	if (warManager->getWar(warmind.m_PrioritizedWarHandle)->isDefender(warmind.m_OwnerID))
 	{
-		GiveDefenderOrders(warmind, target, unit, enemyUnit);
+		giveDefenderOrders(warmind, target, unit, enemyUnit);
 	}
 
 	else if (warManager->getWar(warmind.m_PrioritizedWarHandle)->isAttacker(warmind.m_OwnerID))
 	{
-		GiveAttackerOrders(warmind, target, unit, enemyUnit);
+		giveAttackerOrders(warmind, target, unit, enemyUnit);
 	}
 }
 

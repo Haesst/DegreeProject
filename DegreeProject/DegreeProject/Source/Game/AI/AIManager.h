@@ -36,7 +36,7 @@ public:
 	void start();
 	void onFileChange(std::string path, FileStatus status);
 	void loadPersonalities(const char* path);
-	WarmindComponent& GetWarmindOfCharacter(int handle);
+	WarmindComponent& getWarmindOfCharacter(int handle);
 	AIData& getAIDataofCharacter(int handle);
 	void addWarmind(CharacterID ID);
 	void initAI(CharacterID ID);
@@ -54,8 +54,8 @@ private:
 
 	int considerPrioritizedWar(WarmindComponent& warmind);
 	void considerOrders(WarmindComponent& warmind, Unit& unit, CharacterID target);
-	void GiveAttackerOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit);
-	void GiveDefenderOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit);
+	void giveAttackerOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit);
+	void giveDefenderOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit);
 	CharacterID getPotentialSpouse(AIData& data);
 
 	void warAction(AIData& data);

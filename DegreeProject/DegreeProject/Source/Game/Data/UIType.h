@@ -19,5 +19,7 @@ enum class UIType
 	Gift,
 	Pregnant,
 	ChildBirth,
+	AssassinationSuccess,
+	AssassinationFailure,
 	Death
 };

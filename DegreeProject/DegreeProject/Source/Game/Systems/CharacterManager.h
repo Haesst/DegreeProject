@@ -34,6 +34,7 @@ public:
 	void addRegion(const CharacterID characterId, const unsigned int regionId);
 	void removeRegion(const CharacterID characterId, const unsigned int regionId);
 
+	void onMarriage(CharacterID sender, CharacterID reciever);
 	void marry(CharacterID character, CharacterID spouse);
 
 	static CharacterManager* get();
@@ -51,13 +52,15 @@ public:
 
 	void onAllianceCreated(CharacterID character, CharacterID other);
 	void sendAllianceOffer(CharacterID sender, CharacterID reciever);
+	void onWarEnded(CharacterID sender, CharacterID reciever);
 	void sendPeaceOffer(CharacterID sender, CharacterID reciever);
 	void killCharacter(CharacterID characterID);
+
+	bool chancePerPercent(float weight);
 
 private:
 	CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
 
-	bool chancePerPercent(float weight);
 	void loadTraits(const char* path);
 
 	void dailyUpdates(Character& character);

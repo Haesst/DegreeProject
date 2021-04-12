@@ -11,6 +11,7 @@
 #include <iomanip>
 #include "Game/AI/AIManager.h"
 #include "Game/WarManager.h"
+#include "Game/Data/AIData.h"
 
 #pragma warning(push)
 #pragma warning(disable: 26812)
@@ -755,12 +756,15 @@ public:
 				if (m_PlayerWars.find(m_CurrentCharacterID) == m_PlayerWars.end())
 				{
 					int warHandle = WarManager::get().createWar(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, m_CurrentRegionID);
-					m_PlayerWars.insert(std::pair(m_CurrentCharacterID, warHandle));
-					m_CurrentWars++;
 
+					m_PlayerCharacter->m_CurrentWars.push_back(warHandle);
 					m_CurrentCharacter->m_CurrentWars.push_back(warHandle);
-					AIManager::get().GetWarmindOfCharacter(m_CurrentCharacterID).m_Active = true;
-					AIManager::get().GetWarmindOfCharacter(m_CurrentCharacterID).m_Opponent = m_PlayerCharacter->m_CharacterID;
+					AIManager::get().getWarmindOfCharacter(m_CurrentCharacterID).m_Active = true;
+					AIManager::get().getWarmindOfCharacter(m_CurrentCharacterID).m_Opponent = m_PlayerCharacter->m_CharacterID;
+					AIManager::get().getAIDataofCharacter(m_CurrentCharacterID).m_CurrentAction = Action::War;
+					AIManager::get().getAIDataofCharacter(m_CurrentCharacterID).m_LastAction = Action::War;
+
+					UIManager::get()->createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::WarDeclaration);
 
 					Game::m_Sound.pause();
 					if (m_BattleSound.getStatus() != sf::SoundSource::Playing)
@@ -771,29 +775,15 @@ public:
 			}
 			else if (m_MakePeaceShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				if (!m_PlayerWars.empty() && m_PlayerWars.find(m_CurrentCharacterID) != m_PlayerWars.end())
+				if (!m_PlayerCharacter->m_CurrentWars.empty())
 				{
 					CharacterManager::get()->sendPeaceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
-					/*War* war = WarManager::get().getWarAgainst(CharacterManager::get()->getPlayerCharacterID(), m_CurrentCharacterID);
-					if (war == nullptr)
-					{
-						m_PlayerWars.erase(m_CurrentCharacterID);
-						return;
-					}
-						
-
-					WarManager::get().endWar(m_PlayerWars.at(m_CurrentCharacterID), WarManager::get().getWar(m_PlayerWars.at(m_CurrentCharacterID))->m_Attacker);
-					m_PlayerWars.erase(m_CurrentCharacterID);
-
-					if (m_CurrentWars > 0)
-					{
-						m_CurrentWars--;
-					}
-					if (m_BattleSound.getStatus() == sf::SoundSource::Playing && m_CurrentWars == 0)
+					
+					if (m_BattleSound.getStatus() == sf::SoundSource::Playing && m_PlayerCharacter->m_CurrentWars.size() == 0)
 					{
 						m_BattleSound.stop();
 						Game::m_Sound.play();
-					}*/
+					}
 				}
 			}
 			else if (m_MarriageShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
@@ -802,11 +792,19 @@ public:
 			}
 			else if (m_AllianceShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-
+				CharacterManager::get()->sendAllianceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 			}
 			else if (m_AssassinateShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				CharacterManager::get()->killCharacter(m_CurrentCharacterID);
+				if (CharacterManager::get()->chancePerPercent(0.5f))
+				{
+					CharacterManager::get()->killCharacter(m_CurrentCharacterID);
+					UIManager::get()->createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationSuccess);
+				}
+				else
+				{
+					UIManager::get()->createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationFailure);
+				}
 			}
 		}
 	}

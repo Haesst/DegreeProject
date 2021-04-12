@@ -85,12 +85,12 @@ void War::endWar(CharacterID winningCharacter)
 
 	if (CharacterManager::get()->getCharacter(m_Attacker).m_IsPlayerControlled == false)
 	{
-		AIManager::get().GetWarmindOfCharacter(m_Attacker).m_PrioritizedWarHandle = -1;
+		AIManager::get().getWarmindOfCharacter(m_Attacker).m_PrioritizedWarHandle = -1;
 	}
 
 	if (CharacterManager::get()->getCharacter(m_Defender).m_IsPlayerControlled == false)
 	{
-		AIManager::get().GetWarmindOfCharacter(m_Defender).m_PrioritizedWarHandle = -1;
+		AIManager::get().getWarmindOfCharacter(m_Defender).m_PrioritizedWarHandle = -1;
 	}
 
 	LOG_INFO("WAR IS OVER");

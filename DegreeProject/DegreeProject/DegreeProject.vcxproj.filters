@@ -221,6 +221,9 @@
     <ClCompile Include="Source\Game\Map\Map.cpp">
       <Filter>Game\Map</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Map\RegionBuilding.cpp">
+      <Filter>Game\Map</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Game\Pathfinding.cpp">
       <Filter>Game</Filter>
     </ClCompile>
@@ -258,7 +261,5 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Game\GameDate.cpp" />
-    <ClCompile Include="Source\Game\Map\RegionBuilding.cpp" />
   </ItemGroup>
 </Project>

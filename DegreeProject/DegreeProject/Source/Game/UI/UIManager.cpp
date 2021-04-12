@@ -43,31 +43,31 @@ UIManager::~UIManager()
 	delete m_Instance;
 }
 
-UIID UIManager::createUIEventElement(CharacterID instigatorID, UIType type, float giftAmount)
+UIID UIManager::createUIEventElement(CharacterID instigatorID, CharacterID subjectID, UIType type, float giftAmount)
 {
 	UIID ID = m_UIElementsIDs++;
 	UIElement uiElement;
 	uiElement.m_Type = type;
-	m_EventWindows.push_back(new EventWindow(ID, Game::m_UIFont, instigatorID, type, giftAmount));
+	m_EventWindows.push_back(new EventWindow(ID, Game::m_UIFont, instigatorID, subjectID, type, giftAmount));
 	m_UIElements.push_back(uiElement);
 	return ID;
 }
 
-UIID UIManager::createUITextElement(sf::Font font, CharacterID charID, std::string countryName, std::vector<unsigned int> ownedRegions)
+UIID UIManager::createUITextElement(sf::Font font, CharacterID characterID, std::string countryName, std::vector<unsigned int> ownedRegions)
 {
 	UIID id = m_UIElementsIDs++;
 	UIElement uiElement;
 	uiElement.m_UIElementID = id;
-	m_UITexts.insert(std::pair(charID, new UIText(id, font, countryName, ownedRegions)));
+	m_UITexts.insert(std::pair(characterID, new UIText(id, font, countryName, ownedRegions)));
 	m_UIElements.push_back(uiElement);
 	return id;
 }
 
-void UIManager::AdjustOwnership(CharacterID conqueror, CharacterID loser, unsigned int regionID)
+void UIManager::AdjustOwnership(CharacterID conquerorID, CharacterID loserID, unsigned int regionID)
 {
-	Map::get().getRegionById(regionID).m_OwnerID = conqueror;
-	m_UITexts[conqueror]->conquerRegion(regionID);
-	m_UITexts[loser]->loseRegion(regionID);
+	Map::get().getRegionById(regionID).m_OwnerID = conquerorID;
+	m_UITexts[conquerorID]->conquerRegion(regionID);
+	m_UITexts[loserID]->loseRegion(regionID);
 }
 
 

@@ -227,8 +227,25 @@ void CharacterManager::sendAllianceOffer(CharacterID sender, CharacterID recieve
 		if (AIManager::get().handleAllianceRequest(sender, reciever))
 		{
 			onAllianceCreated(sender, reciever);
+			if (getCharacter(sender).m_IsPlayerControlled)
+			{
+				UIManager::get()->createUIEventElement(reciever, sender, UIType::AllianceAccepted);
+			}
+		}
+		else if (getCharacter(sender).m_IsPlayerControlled)
+		{
+			UIManager::get()->createUIEventElement(reciever, sender, UIType::AllianceDeclined);
 		}
 	}
+	else
+	{
+		UIManager::get()->createUIEventElement(sender, reciever, UIType::AllianceRequest);
+	}
+}
+
+void CharacterManager::onWarEnded(CharacterID sender, CharacterID reciever)
+{
+	WarManager::get().endWar(WarManager::get().getWarAgainst(sender, reciever)->getHandle(), sender);
 }
 
 void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever)
@@ -237,8 +254,20 @@ void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever)
 	{
 		if (AIManager::get().handlePeaceRequest(sender, reciever))
 		{
-			WarManager::get().endWar(WarManager::get().getWarAgainst(sender, reciever)->getHandle(), sender);
+			onWarEnded(sender, reciever);
+			if (getCharacter(sender).m_IsPlayerControlled)
+			{
+				UIManager::get()->createUIEventElement(reciever, sender, UIType::PeaceAccepted);
+			}
 		}
+		else if (getCharacter(sender).m_IsPlayerControlled)
+		{
+			UIManager::get()->createUIEventElement(reciever, sender, UIType::PeaceDeclined);
+		}
+	}
+	else
+	{
+		UIManager::get()->createUIEventElement(sender, reciever, UIType::PeaceRequest);
 	}
 }
 
@@ -336,7 +365,7 @@ void CharacterManager::tryForPregnancy(Character& character)
 		spouse.m_LastChildFather = character.m_CharacterID;
 		if (character.m_Spouse == getPlayerCharacterID() || character.m_CharacterID == getPlayerCharacterID())
 		{
-			UIManager::get()->createUIEventElement(character.m_Spouse, UIType::Pregnant);
+			UIManager::get()->createUIEventElement(character.m_Spouse, character.m_CharacterID, UIType::Pregnant);
 		}
 	}
 }
@@ -363,7 +392,7 @@ void CharacterManager::progressPregnancy(Character& character)
 		removeTrait(character.m_CharacterID, getTrait("Pregnant"));
 		if (character.m_Spouse == getPlayerCharacterID() || character.m_CharacterID == getPlayerCharacterID())
 		{
-			UIManager::get()->createUIEventElement(character.m_CharacterID, UIType::ChildBirth);
+			UIManager::get()->createUIEventElement(character.m_CharacterID, character.m_Spouse, UIType::ChildBirth);
 		}
 	}
 }
@@ -482,7 +511,7 @@ void CharacterManager::killCharacter(CharacterID characterID)
 
 	if (character.m_CharacterTitle != Title::Unlanded && character.m_OwnedRegionIDs.size() > 0)
 	{
-		UIManager::get()->createUIEventElement(characterID, UIType::Death);
+		UIManager::get()->createUIEventElement(characterID, characterID, UIType::Death);
 		handleInheritance(character);
 	}
 
@@ -505,7 +534,7 @@ void CharacterManager::updateTitle(Character& character)
 	if (character.m_OwnedRegionIDs.size() == 0)
 	{
 		character.m_CharacterTitle = Title::Unlanded;
-		character.m_KingdomName = "NONAME";
+		character.m_KingdomName = "Unlanded ";
 	}
 	if (character.m_OwnedRegionIDs.size() == 1)
 	{
@@ -551,10 +580,6 @@ void CharacterManager::handleInheritance(Character& character)
 			m_PlayerCharacterID = child.m_CharacterID;
 			m_PlayerCharacter = &child;
 		}
-		//for (int warhandle : character.m_CurrentWars)
-		//{
-		//	child.m_OwnedRegionIDs.push_back(warhandle);
-		//}
 		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
 		{
 			child.m_OwnedRegionIDs.push_back(ownedRegionID);
@@ -588,14 +613,6 @@ void CharacterManager::handleInheritance(Character& character)
 					if (!child.m_Dead && !child.m_Inherited)
 					{
 						child.m_Inherited = true;
-						//for (int warhandle : character.m_CurrentWars)
-						//{
-						//	if (WarManager::get().getWar(warhandle)->m_WargoalRegion == (int)ownedRegionID)
-						//	{
-						//		child.m_CurrentWars.push_back(warhandle);
-						//		break;
-						//	}
-						//}
 						if (child.m_RegionColor == sf::Color::Black)
 						{
 							child.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
@@ -663,14 +680,6 @@ void CharacterManager::handleInheritance(Character& character)
 			{
 				if (otherCharacter.m_CharacterTitle == Title::Unlanded && !otherCharacter.m_Dead && otherCharacter.m_Father == INVALID_CHARACTER_ID && otherCharacter.m_Mother == INVALID_CHARACTER_ID)
 				{
-					//for (int warhandle : character.m_CurrentWars)
-					//{
-					//	if (WarManager::get().getWar(warhandle)->m_WargoalRegion == (int)ownedRegionID)
-					//	{
-					//		otherCharacter.m_CurrentWars.push_back(warhandle);
-					//		break;
-					//	}
-					//}
 					addRegion(otherCharacter.m_CharacterID, ownedRegionID);
 					otherCharacter.m_CurrentGold += giveawayGold;
 					otherCharacter.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
@@ -770,11 +779,15 @@ void CharacterManager::removeRegion(const CharacterID characterId, const unsigne
 	}
 }
 
+void CharacterManager::onMarriage(CharacterID sender, CharacterID reciever)
+{
+	getCharacter(sender).m_Spouse = reciever;
+	getCharacter(reciever).m_Spouse = sender;
+}
+
 void CharacterManager::marry(CharacterID character, CharacterID spouse)
 {
-	CharacterManager* characterManager = CharacterManager::get();
-
-	if (characterManager->getCharacter(spouse).m_Spouse != INVALID_CHARACTER_ID || characterManager->getCharacter(character).m_Spouse != INVALID_CHARACTER_ID)
+	if (getCharacter(spouse).m_Spouse != INVALID_CHARACTER_ID || getCharacter(character).m_Spouse != INVALID_CHARACTER_ID)
 	{
 		return;
 	}
@@ -784,26 +797,24 @@ void CharacterManager::marry(CharacterID character, CharacterID spouse)
 		return;
 	}
 
-	if (!characterManager->getCharacter(spouse).m_IsPlayerControlled)
+	if (!getCharacter(spouse).m_IsPlayerControlled)
 	{
 		if (AIManager::get().handleRecieveMarriageRequest(spouse, character))
 		{
-			characterManager->getCharacter(character).m_Spouse = spouse;
-			characterManager->getCharacter(spouse).m_Spouse = character;
-			if (characterManager->getCharacter(character).m_IsPlayerControlled)
+			onMarriage(character, spouse);
+			if (getCharacter(character).m_IsPlayerControlled)
 			{
-				UIManager::get()->createUIEventElement(spouse, UIType::MarriageAccepted);
+				UIManager::get()->createUIEventElement(spouse, character, UIType::MarriageAccepted);
 			}
 		}
-		else if(characterManager->getCharacter(character).m_IsPlayerControlled)
+		else if(getCharacter(character).m_IsPlayerControlled)
 		{
-			UIManager::get()->createUIEventElement(spouse, UIType::MarriageDeclined);
+			UIManager::get()->createUIEventElement(spouse, character, UIType::MarriageDeclined);
 		}
 	}
-
 	else
 	{
-		UIManager::get()->createUIEventElement(character, UIType::MarriageRequest);
+		UIManager::get()->createUIEventElement(character, spouse, UIType::MarriageRequest);
 	}
 }
 
