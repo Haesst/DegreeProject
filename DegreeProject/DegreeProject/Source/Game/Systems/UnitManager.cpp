@@ -7,6 +7,7 @@
 #include "Engine/Time.h"
 #include "Game/WarManager.h"
 #include "Game/UI/UIManager.h"
+#include "Game/AI/AIManager.h"
 
 UnitManager* UnitManager::m_Instance = nullptr;
 UnitID UnitManager::m_UnitIDs = INVALID_UNIT_ID + 1;
@@ -495,11 +496,13 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		if (war->isDefender(unitID))
 		{
 			war->addWarscore(getUnitWithId(unitID).m_Owner, 100);
+			CharacterManager::get()->sendPeaceOffer(war->getDefender(), war->getAttacker());
 		}
 
 		else
 		{
 			war->addWarscore(getUnitWithId(unitID).m_Owner, 50);
+			CharacterManager::get()->sendPeaceOffer(war->getAttacker(), war->getDefender());
 		}
 
 		LOG_INFO("{0} won the battle against {1}", CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get()->getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
@@ -515,11 +518,13 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		if (war->isDefender(enemyID))
 		{
 			war->addWarscore(getUnitWithId(enemyID).m_Owner, 100);
+			CharacterManager::get()->sendPeaceOffer(war->getDefender(), war->getAttacker());
 		}
 
 		else
 		{
 			war->addWarscore(getUnitWithId(enemyID).m_Owner, 50);
+			CharacterManager::get()->sendPeaceOffer(war->getAttacker(), war->getDefender());
 		}
 	}
 

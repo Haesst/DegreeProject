@@ -44,22 +44,12 @@ void War::addWarscore(CharacterID ID, int warScore)
 	{
 		m_AttackerWarscore += warScore;
 		m_DefenderWarscore -= warScore;
-		if (m_AttackerWarscore >= 100)
-		{
-			WarManager::get().invalidateWarsForRegionOnWonWar(*this);
-			WarManager::get().endWar(m_Handle, getAttacker());
-		}
 	}
 
 	else if(getDefender() == ID)
  	{
 		m_DefenderWarscore += warScore;
 		m_AttackerWarscore -= warScore;
-
-		if (m_DefenderWarscore >= 100)
-		{
-			WarManager::get().endWar(m_Handle, getDefender());
-		}
 	}
 }
 
@@ -165,4 +155,14 @@ CharacterID War::getAttacker()
 CharacterID War::getDefender()
 {
 	return m_Defender;
+}
+
+int War::getWarscoreFrom(CharacterID character)
+{
+	if (character == getAttacker())
+	{
+		return m_AttackerWarscore;
+	}
+
+	return m_DefenderWarscore;
 }

@@ -41,7 +41,7 @@ public:
 	void addWarmind(CharacterID ID);
 	void initAI(CharacterID ID);
 	bool handleRecieveMarriageRequest(CharacterID reciever, CharacterID sender);
-	bool handlePeaceRequest(CharacterID winner, CharacterID loser);
+	bool handlePeaceRequest(CharacterID sender, CharacterID reciever);
 	void update();
 
 
@@ -61,6 +61,8 @@ private:
 	void upgradeAction(AIData& data);
 	void marriageAction(AIData& data);
 	void handleHighestEvaluation(AIData& data);
+
+	bool weightedRandom(float weight);
 
 private:
 	static AIManager* m_Instance;

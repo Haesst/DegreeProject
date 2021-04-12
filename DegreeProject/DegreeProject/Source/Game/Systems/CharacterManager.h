@@ -46,6 +46,7 @@ public:
 	bool hasTrait(CharacterID ID, Trait trait);
 	Trait getTrait(const char* traitName);
 
+	void sendPeaceOffer(CharacterID sender, CharacterID reciever);
 	void killCharacter(CharacterID characterID);
 
 private:

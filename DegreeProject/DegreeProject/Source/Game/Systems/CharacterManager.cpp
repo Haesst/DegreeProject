@@ -155,6 +155,18 @@ Trait CharacterManager::getTrait(const char* traitName)
 	return Trait("INVALID");
 }
 
+void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever)
+{
+	if (!getCharacter(reciever).m_IsPlayerControlled)
+	{
+		if (AIManager::get().handlePeaceRequest(sender, reciever))
+		{
+			WarManager::get().endWar(WarManager::get().getWarAgainst(sender, reciever)->getHandle(), sender);
+			WarManager::get().invalidateWarsForRegionOnWonWar(*WarManager::get().getWarAgainst(reciever, sender));
+		}
+	}
+}
+
 void CharacterManager::start()
 {
 	Time::m_GameDate.subscribeToMonthChange(std::bind(&CharacterManager::onMonthChange, this, std::placeholders::_1));

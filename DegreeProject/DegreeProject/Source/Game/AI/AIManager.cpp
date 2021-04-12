@@ -12,7 +12,6 @@ AIManager::AIManager()
 {
 	loadPersonalities("Assets\\Data\\AI\\AIPersonalities.json");
 	HotReloader::get()->subscribeToFileChange("Assets\\Data\\AI\\AIPersonalities.json", std::bind(&AIManager::onFileChange, this, std::placeholders::_1, std::placeholders::_2));
-	m_WarManager = &WarManager::get();
 	m_UnitManager = &UnitManager::get();
 	m_Orders = WarOrders();
 }
@@ -120,17 +119,50 @@ bool AIManager::handleRecieveMarriageRequest(CharacterID reciever, CharacterID s
 	return false;
 }
 
-bool AIManager::handlePeaceRequest(CharacterID winner, CharacterID loser)
+bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever)
 {
-	//War* war = WarManager::get().getWarAgainst(winner, loser);
-	//ASSERT(war != nullptr, "This war doesn't exist");
-	//
-	//if(winner == war->getAttacker())
-	//{
-	//
-	//}
+	War* war = WarManager::get().getWarAgainst(sender, reciever);
+	ASSERT(war != NULL, "This war doesn't exist");
+	
+	float acceptance = 0.0f;
 
-	return false;
+	if (war->getWarscoreFrom(sender) > war->getWarscoreFrom(reciever))
+	{
+		acceptance += .3f;
+	}
+
+	else
+	{
+		acceptance -= .3;
+	}
+
+	int senderArmySize = CharacterManager::get()->getCharacter(sender).m_RaisedArmySize;
+	int recieverArmySize = CharacterManager::get()->getCharacter(reciever).m_RaisedArmySize;
+
+	if (senderArmySize > recieverArmySize)
+	{
+		acceptance += .3f;
+	}
+
+	else
+	{
+		acceptance -= .3f;
+	}
+
+	if (Map::get().getRegionById(war->m_WargoalRegion).m_OccupiedBy == war->getAttacker())
+	{
+		if (war->getAttacker() == sender)
+		{
+			acceptance += .5f;
+		}
+
+		else
+		{
+			acceptance -= .3f;
+		}
+	}
+
+	return weightedRandom(acceptance);
 }
 
 void AIManager::update()
@@ -406,7 +438,7 @@ void AIManager::GiveDefenderOrders(WarmindComponent& warmind, CharacterID /*targ
 	//	return;
 	//}
 
-	int regionID = m_WarManager->getWar(warmind.m_PrioritizedWarHandle)->m_WargoalRegion;
+	int regionID = WarManager::get().getWar(warmind.m_PrioritizedWarHandle)->m_WargoalRegion;
 	Vector2DInt regionPosition = Map::get().getRegionById(regionID).m_RegionCapital;
 	//Order unit to move
 	UnitManager::get().giveUnitPath(UnitManager::get().getUnitOfCharacter(warmind.m_OwnerID).m_UnitID, Pathfinding::get().findPath(Map::get().convertToMap(unitPosition), regionPosition));
@@ -534,6 +566,13 @@ void AIManager::handleHighestEvaluation(AIData& data)
 	data.m_Evaluations.clear();
 }
 
+bool AIManager::weightedRandom(float weight)
+{
+	float f = rand() * 1.0f / RAND_MAX;
+	float vv = weight / 10.0f;
+	return f < vv;
+}
+
 int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 {
 	// WarManager* warManager = &WarManager::get();
@@ -549,6 +588,8 @@ int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 
 void AIManager::considerOrders(WarmindComponent& warmind, Unit& unit, CharacterID target)
 {
+	WarManager* warManager = &WarManager::get();
+
 	if (warmind.m_PrioritizedWarHandle == -1)
 	{
 		considerPrioritizedWar(warmind);
@@ -556,12 +597,12 @@ void AIManager::considerOrders(WarmindComponent& warmind, Unit& unit, CharacterI
 
 	Unit& enemyUnit = UnitManager::get().getUnitOfCharacter(target);
 
-	if (m_WarManager->getWar(warmind.m_PrioritizedWarHandle)->isDefender(warmind.m_OwnerID))
+	if (warManager->getWar(warmind.m_PrioritizedWarHandle)->isDefender(warmind.m_OwnerID))
 	{
 		GiveDefenderOrders(warmind, target, unit, enemyUnit);
 	}
 
-	else if (m_WarManager->getWar(warmind.m_PrioritizedWarHandle)->isAttacker(warmind.m_OwnerID))
+	else if (warManager->getWar(warmind.m_PrioritizedWarHandle)->isAttacker(warmind.m_OwnerID))
 	{
 		GiveAttackerOrders(warmind, target, unit, enemyUnit);
 	}
