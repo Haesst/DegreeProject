@@ -142,6 +142,11 @@ bool CharacterManager::hasTrait(CharacterID ID, Trait trait)
 	return false;
 }
 
+int CharacterManager::getCharacterOpinion(CharacterID character, CharacterID other)
+{
+	return 0;
+}
+
 Trait CharacterManager::getTrait(const char* traitName)
 {
 	for (auto trait : m_Traits)

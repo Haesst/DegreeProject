@@ -44,6 +44,7 @@ public:
 	void addTrait(CharacterID ID, Trait trait);
 	void removeTrait(CharacterID ID, Trait trait);
 	bool hasTrait(CharacterID ID, Trait trait);
+	int getCharacterOpinion(CharacterID character, CharacterID other);
 	Trait getTrait(const char* traitName);
 
 	void sendPeaceOffer(CharacterID sender, CharacterID reciever);
