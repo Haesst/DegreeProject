@@ -307,21 +307,37 @@ void AIManager::update()
 
 CharacterID AIManager::getPotentialSpouse(AIData& data)
 {
+	std::vector<std::pair<float, int>> evalToSpouse;
+
 	for (auto& region : Map::get().getRegionIDs())
 	{
 		if (Map::get().getRegionById(region).m_OwnerID != data.m_OwnerID)
 		{
 			if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Gender != CharacterManager::get()->getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
 			{
-				if (marriageDecision(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID) > .4f)
+				float eval = marriageDecision(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID);
+
+				if (eval > .4f)
 				{
-					return Map::get().getRegionById(region).m_OwnerID;
+					evalToSpouse.push_back(std::make_pair(eval, Map::get().getRegionById(region).m_OwnerID));
 				}
 			}
 		}
 	}
 
-	return INVALID_CHARACTER_ID;
+	float highestEval = -1.f;
+	CharacterID bestSpouse = INVALID_CHARACTER_ID;
+
+	for (auto& pair : evalToSpouse)
+	{
+		if (pair.first > highestEval)
+		{
+			highestEval = pair.first;
+			bestSpouse = pair.second;
+		}
+	}
+
+	return bestSpouse;
 }
 
 float AIManager::upgradeDecision(CharacterID ID, int& outRegion)

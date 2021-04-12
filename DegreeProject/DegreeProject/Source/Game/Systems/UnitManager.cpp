@@ -106,7 +106,7 @@ void UnitManager::render()
 			Window::getWindow()->draw(unit.m_HighlightShape);
 		}
 
-		if (unit.m_SeizingRegionID > 0)
+		if (unit.m_SeizingRegionID != -1)
 		{
 			MapRegion& region = Map::get().getRegionById(unit.m_SeizingRegionID);
 			int daysToSiegeRegion = region.m_DaysToSeize;
