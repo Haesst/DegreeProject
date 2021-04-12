@@ -124,6 +124,11 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever)
 	War* war = WarManager::get().getWarAgainst(sender, reciever);
 	ASSERT(war != NULL, "This war doesn't exist");
 	
+	if (war->getWarscore(sender) == 100)
+	{
+		return true;
+	}
+
 	float acceptance = 0.0f;
 
 	if (war->getWarscoreFrom(sender) > war->getWarscoreFrom(reciever))
