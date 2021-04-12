@@ -201,6 +201,36 @@ Trait CharacterManager::getTrait(const char* traitName)
 	return Trait("INVALID");
 }
 
+bool CharacterManager::isAlliedWith(CharacterID character, CharacterID other)
+{
+	for (auto ID : getCharacter(character).m_Allies)
+	{
+		if (ID == other)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void CharacterManager::onAllianceCreated(CharacterID character, CharacterID other)
+{
+	getCharacter(character).m_Allies.push_back(character);
+	getCharacter(other).m_Allies.push_back(other);
+}
+
+void CharacterManager::sendAllianceOffer(CharacterID sender, CharacterID reciever)
+{
+	if (!getCharacter(reciever).m_IsPlayerControlled)
+	{
+		if (AIManager::get().handleAllianceRequest(sender, reciever))
+		{
+			onAllianceCreated(sender, reciever);
+		}
+	}
+}
+
 void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever)
 {
 	if (!getCharacter(reciever).m_IsPlayerControlled)

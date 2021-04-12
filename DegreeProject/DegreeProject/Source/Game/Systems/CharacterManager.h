@@ -47,6 +47,10 @@ public:
 	int getCharacterOpinion(CharacterID character, CharacterID other);
 	Trait getTrait(const char* traitName);
 
+	bool isAlliedWith(CharacterID character, CharacterID other);
+
+	void onAllianceCreated(CharacterID character, CharacterID other);
+	void sendAllianceOffer(CharacterID sender, CharacterID reciever);
 	void sendPeaceOffer(CharacterID sender, CharacterID reciever);
 	void killCharacter(CharacterID characterID);
 

@@ -47,6 +47,8 @@ struct Character
 	CharacterID m_Spouse = INVALID_CHARACTER_ID;
 	CharacterID m_Mother = INVALID_CHARACTER_ID;
 	CharacterID m_Father = INVALID_CHARACTER_ID;
+
+	std::vector<CharacterID> m_Allies = std::vector<CharacterID>();
 	std::vector<CharacterID> m_Children = std::vector<CharacterID>();
 
 	Gender m_Gender = Gender::Male;

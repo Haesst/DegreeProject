@@ -170,6 +170,24 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever)
 	return weightedRandom(acceptance);
 }
 
+bool AIManager::handleAllianceRequest(CharacterID sender, CharacterID reciever)
+{
+	GoldConsideration goldConsideration;
+	ArmySizeConsideration armyConsideration;
+
+	float goldEval = goldConsideration.evaluate(sender, reciever);
+	float armyEval = armyConsideration.evaluate(sender, reciever);
+	float actionScore = armyEval * goldEval;
+	
+	//Todo: Add opinion
+	if (actionScore > .5f)
+	{
+		return true;
+	}
+
+	return false;
+}
+
 void AIManager::update()
 {
 	for (auto& data : m_AIDatas)

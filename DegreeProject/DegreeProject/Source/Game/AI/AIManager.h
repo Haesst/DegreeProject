@@ -42,6 +42,7 @@ public:
 	void initAI(CharacterID ID);
 	bool handleRecieveMarriageRequest(CharacterID reciever, CharacterID sender);
 	bool handlePeaceRequest(CharacterID sender, CharacterID reciever);
+	bool handleAllianceRequest(CharacterID sender, CharacterID reciever);
 	void update();
 
 
