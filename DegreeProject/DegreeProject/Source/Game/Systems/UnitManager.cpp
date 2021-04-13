@@ -501,13 +501,11 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		if (war->isDefender(unitID))
 		{
 			war->addWarscore(getUnitWithId(unitID).m_Owner, 100);
-			CharacterManager::get()->sendPeaceOffer(war->getDefender(), war->getAttacker());
 		}
 
 		else
 		{
 			war->addWarscore(getUnitWithId(unitID).m_Owner, 50);
-			CharacterManager::get()->sendPeaceOffer(war->getAttacker(), war->getDefender());
 		}
 
 		LOG_INFO("{0} won the battle against {1}", CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get()->getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
@@ -523,13 +521,11 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		if (war->isDefender(enemyID))
 		{
 			war->addWarscore(getUnitWithId(enemyID).m_Owner, 100);
-			CharacterManager::get()->sendPeaceOffer(war->getDefender(), war->getAttacker());
 		}
 
 		else
 		{
 			war->addWarscore(getUnitWithId(enemyID).m_Owner, 50);
-			CharacterManager::get()->sendPeaceOffer(war->getAttacker(), war->getDefender());
 		}
 	}
 
@@ -569,7 +565,6 @@ void UnitManager::unitSiege(Unit& unit)
 			//}
 
 			War* war = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OwnerID);
-
 
 			bool skipWarCheck = region.m_OccupiedBy != INVALID_CHARACTER_ID && region.m_OwnerID == unit.m_Owner;
 
@@ -625,6 +620,7 @@ void UnitManager::unitSiege(Unit& unit)
 				if (defender.m_CharacterID == region.m_OwnerID)
 				{
 					currentWar->m_AttackerOccupiedRegions.push_back(region.m_RegionId);
+					currentWar->addWarscore(currentWar->getAttacker(), 50);
 					region.m_OccupiedBy = attacker.m_CharacterID;
 
 					//Loot
@@ -637,6 +633,7 @@ void UnitManager::unitSiege(Unit& unit)
 				else if (attacker.m_CharacterID == region.m_OwnerID)
 				{
 					currentWar->m_DefenderOccupiedRegions.push_back(region.m_RegionId);
+					currentWar->addWarscore(currentWar->getDefender(), 50);
 					region.m_OccupiedBy =defender.m_CharacterID;
 
 					//Loot

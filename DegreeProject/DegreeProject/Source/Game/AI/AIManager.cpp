@@ -120,12 +120,17 @@ bool AIManager::handleRecieveMarriageRequest(CharacterID reciever, CharacterID s
 	return false;
 }
 
-bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever)
+bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, PeaceType type)
 {
 	War* war = WarManager::get().getWarAgainst(sender, reciever);
 	ASSERT(war != NULL, "This war doesn't exist");
-	
-	if (war->getWarscore(sender) == 100)
+
+	if (type == PeaceType::Surrender)
+	{
+		return true;
+	}
+
+	if (type == PeaceType::Enforce_Demands && war->getWarscore(sender) >= 100)
 	{
 		return true;
 	}

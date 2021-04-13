@@ -248,11 +248,11 @@ void CharacterManager::onWarEnded(CharacterID sender, CharacterID reciever)
 	WarManager::get().endWar(WarManager::get().getWarAgainst(sender, reciever)->getHandle(), sender);
 }
 
-void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever)
+void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever, PeaceType type)
 {
 	if (!getCharacter(reciever).m_IsPlayerControlled)
 	{
-		if (AIManager::get().handlePeaceRequest(sender, reciever))
+		if (AIManager::get().handlePeaceRequest(sender, reciever, type))
 		{
 			onWarEnded(sender, reciever);
 			if (getCharacter(sender).m_IsPlayerControlled)

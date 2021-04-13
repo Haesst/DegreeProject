@@ -2,6 +2,13 @@
 #include <vector>
 #include <Game\War.h>
 
+enum class PeaceType
+{
+	Enforce_Demands,
+	White_Peace,
+	Surrender
+};
+
 class WarManager
 {
 public:

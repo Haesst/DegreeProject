@@ -10,7 +10,7 @@
 enum class Title;
 struct Date;
 class Player;
-
+enum class PeaceType;
 
 
 class CharacterManager
@@ -53,7 +53,7 @@ public:
 	void onAllianceCreated(CharacterID character, CharacterID other);
 	void sendAllianceOffer(CharacterID sender, CharacterID reciever);
 	void onWarEnded(CharacterID sender, CharacterID reciever);
-	void sendPeaceOffer(CharacterID sender, CharacterID reciever);
+	void sendPeaceOffer(CharacterID sender, CharacterID reciever, PeaceType type);
 	void killCharacter(CharacterID characterID);
 
 	bool chancePerPercent(float weight);

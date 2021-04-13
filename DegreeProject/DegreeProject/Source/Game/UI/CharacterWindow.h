@@ -778,7 +778,7 @@ public:
 			{
 				if (!m_PlayerCharacter->m_CurrentWars.empty())
 				{
-					CharacterManager::get()->sendPeaceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
+					CharacterManager::get()->sendPeaceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, PeaceType::Enforce_Demands);
 					
 					if (m_BattleSound.getStatus() == sf::SoundSource::Playing && m_PlayerCharacter->m_CurrentWars.size() == 0)
 					{
