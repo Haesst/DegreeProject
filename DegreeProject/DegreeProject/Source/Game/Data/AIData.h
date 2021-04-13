@@ -23,4 +23,5 @@ struct AIData
 
 	int m_SettlementToUpgrade = -1;
 	CharacterID m_PotentialSpouseID = INVALID_CHARACTER_ID;
+	CharacterID m_PotentialAllyID = INVALID_CHARACTER_ID;
 };

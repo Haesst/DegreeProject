@@ -228,6 +228,16 @@ void AIManager::update()
 				}
 			}
 
+			if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Allies.empty())
+			{
+				float eval = allianceDecision(data.m_OwnerID, getPotentialAlly(data));
+				
+				if(eval > .5f)
+				{
+					data.m_Evaluations.push_back(std::make_pair(eval, Action::Seek_Alliance));
+				}
+			}
+
 			int regionID = -1;
 			float settlementEval = upgradeDecision(data.m_OwnerID, regionID);
 			data.m_SettlementToUpgrade = regionID;
@@ -324,6 +334,11 @@ CharacterID AIManager::getPotentialSpouse(AIData& data)
 		{
 			if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Gender != CharacterManager::get()->getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
 			{
+				if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
+				{
+					continue;
+				}
+
 				float eval = marriageDecision(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID);
 
 				if (eval > .4f)
@@ -347,6 +362,44 @@ CharacterID AIManager::getPotentialSpouse(AIData& data)
 	}
 
 	return bestSpouse;
+}
+
+CharacterID AIManager::getPotentialAlly(AIData& data)
+{
+	std::vector<std::pair<float, int>> evalToAlly;
+
+	for (auto& region : Map::get().getRegionIDs())
+	{
+		if (Map::get().getRegionById(region).m_OwnerID != data.m_OwnerID)
+		{
+			if (WarManager::get().atWarWith(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID))
+			{
+				continue;
+			}
+
+			float eval = allianceDecision(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID);
+
+			if (eval > .4f)
+			{
+				evalToAlly.push_back(std::make_pair(eval, Map::get().getRegionById(region).m_OwnerID));
+			}
+		}
+	}
+
+	float highestEval = -1.f;
+	CharacterID bestAlly = INVALID_CHARACTER_ID;
+
+	for (auto& pair : evalToAlly)
+	{
+		if (pair.first > highestEval)
+		{
+			highestEval = pair.first;
+			bestAlly = pair.second;
+			data.m_PotentialAllyID = bestAlly;
+		}
+	}
+
+	return bestAlly;
 }
 
 float AIManager::upgradeDecision(CharacterID ID, int& outRegion)
@@ -432,6 +485,24 @@ float AIManager::marriageDecision(CharacterID ID, CharacterID spouse)
 {
 	MarriageConsideration marriage;
 	return marriage.evaluate(ID, spouse);
+}
+
+float AIManager::allianceDecision(CharacterID ID, CharacterID potentialAlly)
+{
+	GoldConsideration goldConsideration;
+	ArmySizeConsideration armyConsideration;
+
+	float goldEval = goldConsideration.evaluate(ID, potentialAlly);
+	float armyEval = armyConsideration.evaluate(ID, potentialAlly);
+	float actionScore = armyEval * goldEval;
+
+	//Todo: Add opinion
+	if (actionScore > .5f)
+	{
+		return actionScore;
+	}
+
+	return 0.0f;
 }
 
 void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit)
@@ -566,6 +637,16 @@ void AIManager::marriageAction(AIData& data)
 	CharacterManager::get()->marry(data.m_OwnerID, data.m_PotentialSpouseID);
 }
 
+void AIManager::allianceAction(AIData& data)
+{
+	if (data.m_PotentialAllyID == INVALID_CHARACTER_ID)
+	{
+		return;
+	}
+
+	CharacterManager::get()->sendAllianceOffer(data.m_OwnerID, data.m_PotentialAllyID);
+}
+
 void AIManager::handleHighestEvaluation(AIData& data)
 {
 	float highest = -1.0f;
@@ -580,9 +661,10 @@ void AIManager::handleHighestEvaluation(AIData& data)
 		}
 	}
 
-	if (highest < .3f)
+	if (highest < .5f)
 	{
 		data.m_CurrentAction = Action::NONE;
+		return;
 	}
 
 	switch (bestAction)
@@ -598,6 +680,11 @@ void AIManager::handleHighestEvaluation(AIData& data)
 	case Action::Marriage:
 		marriageAction(data);
 		data.m_LastAction = Action::Marriage;
+		break;
+
+	case Action::Seek_Alliance:
+		allianceAction(data);
+		data.m_LastAction = Action::Seek_Alliance;
 		break;
 	case Action::NONE:
 		data.m_PotentialSpouseID = INVALID_CHARACTER_ID;

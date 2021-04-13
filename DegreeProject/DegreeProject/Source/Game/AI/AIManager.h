@@ -52,16 +52,19 @@ private:
 	float warDecision(CharacterID ID);
 	float expansionDecision(CharacterID ID);
 	float marriageDecision(CharacterID ID, CharacterID spouse);
+	float allianceDecision(CharacterID ID, CharacterID potentialAlly);
 
 	int considerPrioritizedWar(WarmindComponent& warmind);
 	void considerOrders(WarmindComponent& warmind, Unit& unit, CharacterID target);
 	void giveAttackerOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit);
 	void giveDefenderOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit);
 	CharacterID getPotentialSpouse(AIData& data);
+	CharacterID getPotentialAlly(AIData& data);
 
 	void warAction(AIData& data);
 	void upgradeAction(AIData& data);
 	void marriageAction(AIData& data);
+	void allianceAction(AIData& data);
 	void handleHighestEvaluation(AIData& data);
 
 	bool weightedRandom(float weight);
