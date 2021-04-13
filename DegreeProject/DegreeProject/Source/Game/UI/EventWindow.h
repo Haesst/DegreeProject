@@ -5,6 +5,7 @@
 #include "Engine/InputHandler.h"
 #include "Game/Systems/CharacterManager.h"
 #include "Engine/AssetHandler.h"
+#include <sstream>
 #include "Game/Data/UIType.h"
 
 class EventWindow

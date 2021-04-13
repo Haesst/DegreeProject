@@ -3,6 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include "Engine/Window.h"
 #include "Game/Data/Character.h"
+#include <sstream>
 #include "Game/Systems/CharacterManager.h"
 #include <iomanip>
 

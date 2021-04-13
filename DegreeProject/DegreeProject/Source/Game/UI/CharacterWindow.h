@@ -9,6 +9,7 @@
 #include "Game/Systems/CharacterManager.h"
 #include "Game/Game.h"
 #include <iomanip>
+#include <sstream>
 #include "Game/AI/AIManager.h"
 #include "Game/WarManager.h"
 #include "Game/Data/AIData.h"
