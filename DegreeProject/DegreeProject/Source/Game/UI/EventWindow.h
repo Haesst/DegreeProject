@@ -399,24 +399,30 @@ public:
 
 	void acceptRequest()
 	{
+		Character& instigator = CharacterManager::get()->getCharacter(m_InstigatorID);
+		Character& subject = CharacterManager::get()->getCharacter(m_SubjectID);
 		switch (m_MessageType)
 		{
 			case UIType::MarriageRequest:
 			{
-				if (CharacterManager::get()->getCharacter(m_SubjectID).m_Spouse == INVALID_CHARACTER_ID)
+				if (!instigator.m_Dead && instigator.m_Spouse == INVALID_CHARACTER_ID
+					&& !subject.m_Dead && subject.m_Spouse == INVALID_CHARACTER_ID)
 				{
-					CharacterManager::get()->onMarriage(m_InstigatorID, CharacterManager::get()->getPlayerCharacterID());
+					CharacterManager::get()->onMarriage(m_InstigatorID, m_SubjectID);
 				}
 				break;
 			}
 			case UIType::AllianceRequest:
 			{
-				CharacterManager::get()->onAllianceCreated(m_InstigatorID, CharacterManager::get()->getPlayerCharacterID());
+				if (!instigator.m_Dead && !subject.m_Dead)
+				{
+					CharacterManager::get()->onAllianceCreated(m_InstigatorID, m_SubjectID);
+				}
 				break;
 			}
 			case UIType::PeaceRequest:
 			{
-				CharacterManager::get()->onWarEnded(m_InstigatorID, CharacterManager::get()->getPlayerCharacterID());
+				CharacterManager::get()->onWarEnded(m_InstigatorID, m_SubjectID);
 				break;
 			}
 			default:
