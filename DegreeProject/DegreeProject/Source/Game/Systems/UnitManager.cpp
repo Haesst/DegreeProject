@@ -555,15 +555,11 @@ void UnitManager::unitSiege(Unit& unit)
 			{
 				if (neutralUnitAtSquare(unit.m_Owner, region.m_RegionCapital))
 				{
+					unit.m_SeizingRegionID = -1;
+					unit.m_DaysSeizing = 0;
 					return;
 				}
 			}
-
-			//if (region.m_OwnerID == unit.m_Owner)
-			//{
-			//	return;
-			//}
-
 			War* war = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OwnerID);
 
 			bool skipWarCheck = region.m_OccupiedBy != INVALID_CHARACTER_ID && region.m_OwnerID == unit.m_Owner;
@@ -586,13 +582,6 @@ void UnitManager::unitSiege(Unit& unit)
 				daysToSiegeRegion += building.m_HoldingModifier;
 			}
 
-			/*	if (Map::get().convertToMap(unit.m_Position) != region.m_RegionCapital)
-				{
-					unit.m_DaysSeizing = 0;
-					unit.m_SeizingRegionID = -1;
-					return;
-				}*/
-
 			if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
 			{	
 				CharacterManager* characterManager = CharacterManager::get();
@@ -607,6 +596,13 @@ void UnitManager::unitSiege(Unit& unit)
 
 				if (unit.m_Owner == region.m_OwnerID)
 				{
+					War* war = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OccupiedBy);
+
+					if (war != nullptr)
+					{
+						war->addWarscore(region.m_OccupiedBy, -50);
+					}
+					
 					region.m_OccupiedBy = INVALID_CHARACTER_ID;
 
 					attacker.m_MaxArmySize += region.m_ManPower;
@@ -621,6 +617,11 @@ void UnitManager::unitSiege(Unit& unit)
 				{
 					currentWar->m_AttackerOccupiedRegions.push_back(region.m_RegionId);
 					currentWar->addWarscore(currentWar->getAttacker(), 50);
+					if (!CharacterManager::get()->getCharacter(currentWar->getAttacker()).m_IsPlayerControlled)
+					{
+						CharacterManager::get()->sendPeaceOffer(currentWar->getAttacker(), currentWar->getDefender(), PeaceType::Enforce_Demands);
+					}
+
 					region.m_OccupiedBy = attacker.m_CharacterID;
 
 					//Loot
@@ -634,6 +635,11 @@ void UnitManager::unitSiege(Unit& unit)
 				{
 					currentWar->m_DefenderOccupiedRegions.push_back(region.m_RegionId);
 					currentWar->addWarscore(currentWar->getDefender(), 50);
+
+					if (!CharacterManager::get()->getCharacter(currentWar->getDefender()).m_IsPlayerControlled)
+					{
+						CharacterManager::get()->sendPeaceOffer(currentWar->getDefender(), currentWar->getAttacker(), PeaceType::Enforce_Demands);
+					}
 					region.m_OccupiedBy =defender.m_CharacterID;
 
 					//Loot
@@ -664,6 +670,11 @@ void UnitManager::startConquerRegion(Unit& unit)
 			unsigned int ownerID = region.m_OwnerID;
 
 			if (ownerID == unit.m_Owner && region.m_OccupiedBy == INVALID_CHARACTER_ID)
+			{
+				continue;
+			}
+
+			if (region.m_OccupiedBy == unit.m_Owner)
 			{
 				continue;
 			}
