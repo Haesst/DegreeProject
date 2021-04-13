@@ -5,6 +5,8 @@
 #include "Game/UI/DateBar.h"
 #include "Game/UI/UIText.h"
 #include "Game/UI/EventWindow.h"
+#include "Game/UI/WarWindow.h"
+#include "Game/UI/WarIcon.h"
 
 UIManager* UIManager::m_Instance = nullptr;
 UIID UIManager::m_UIElementsIDs = 1;
@@ -24,6 +26,7 @@ UIManager::UIManager()
 	m_RegionWindow = nullptr;
 	m_StatBar = nullptr;
 	m_DateBar = nullptr;
+	m_WarWindow = nullptr;
 }
 
 UIManager::~UIManager()
@@ -32,6 +35,7 @@ UIManager::~UIManager()
 	delete m_RegionWindow;
 	delete m_StatBar;
 	delete m_DateBar;
+	delete m_WarWindow;
 	for (std::unordered_map<CharacterID, UIText*>::iterator itr = m_UITexts.begin(); itr != m_UITexts.end(); itr++)
 	{
 		delete itr->second;
@@ -39,6 +43,10 @@ UIManager::~UIManager()
 	for (unsigned int i = 0; i < m_EventWindows.size(); i++)
 	{
 		delete m_EventWindows[i];
+	}
+	for (unsigned int i = 0; i < m_WarIcons.size(); i++)
+	{
+		delete m_WarIcons[i];
 	}
 	delete m_Instance;
 }
@@ -49,6 +57,16 @@ UIID UIManager::createUIEventElement(CharacterID instigatorID, CharacterID subje
 	UIElement uiElement;
 	uiElement.m_Type = type;
 	m_EventWindows.push_back(new EventWindow(ID, Game::m_UIFont, instigatorID, subjectID, type, giftAmount));
+	m_UIElements.push_back(uiElement);
+	return ID;
+}
+
+UIID UIManager::createWarIcon(CharacterID attackerID, CharacterID defenderID, UIType type)
+{
+	UIID ID = m_UIElementsIDs++;
+	UIElement uiElement;
+	uiElement.m_Type = type;
+	m_WarIcons.push_back(new WarIcon(ID, Game::m_UIFont, attackerID, defenderID, type));
 	m_UIElements.push_back(uiElement);
 	return ID;
 }
@@ -91,6 +109,11 @@ UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D posit
 			m_RegionWindow = new RegionWindow(id, font, position, size);
 			break;
 		}
+		case UIType::WarWindow:
+		{
+			m_WarWindow = new WarWindow(id, font, position, size);
+			break;
+		}
 		case UIType::StatBar:
 		{
 			m_StatBar = new StatBar(id, font, position, size);
@@ -114,22 +137,29 @@ void UIManager::start()
 {
 	ASSERT(m_CharacterWindow != nullptr, "Character Window does not exist");
 	ASSERT(m_RegionWindow != nullptr, "Region Window does not exist");
+	ASSERT(m_WarWindow != nullptr, "War Window does not exist");
 	ASSERT(m_StatBar != nullptr, "Stat Bar does not exist");
 	ASSERT(m_DateBar != nullptr, "Date Bar does not exist");
 	for (std::pair<CharacterID, UIText*> uiTextPair : m_UITexts)
 	{
 		uiTextPair.second->start();
 	}
-	m_StatBar->start();
-	m_DateBar->start();
 	m_CharacterWindow->start();
 	m_RegionWindow->start();
+	m_WarWindow->start();
+	m_StatBar->start();
+	m_DateBar->start();
 }
 
 void UIManager::update()
 {
 	m_CharacterWindow->update();
 	m_RegionWindow->update();
+	for (unsigned int i = 0; i < m_WarIcons.size(); i++)
+	{
+		m_WarIcons[i]->update();
+	}
+	m_WarWindow->update();
 	m_StatBar->update();
 	m_DateBar->update();
 	for (unsigned int i = 0; i < m_EventWindows.size(); i++)
@@ -149,6 +179,11 @@ void UIManager::render()
 	}
 	m_CharacterWindow->render();
 	m_RegionWindow->render();
+	for (unsigned int i = 0; i < m_WarIcons.size(); i++)
+	{
+		m_WarIcons[i]->render();
+	}
+	m_WarWindow->render();
 	m_StatBar->render();
 	m_DateBar->render();
 	for (unsigned int i = 0; i < m_EventWindows.size(); i++)

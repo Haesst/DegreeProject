@@ -14,6 +14,7 @@ enum Inputs
 	EscapePressed,
 	CharacterWindowOpen,
 	RegionWindowOpen,
+	WarWindowOpen,
 	PlayerUnitSelected
 };
 
@@ -34,8 +35,10 @@ public:
 	static bool getEscapePressed();
 	static bool getCharacterWindowOpen();
 	static bool getRegionWindowOpen();
+	static bool getWarWindowOpen();
 	static void setPlayerUnitSelected(bool selected);
 	static void setCharacterWindowOpen(bool open);
+	static void setWarWindowOpen(bool open);
 	static void setRegionWindowOpen(bool open);
 	static float getZoomSpeed();
 private:

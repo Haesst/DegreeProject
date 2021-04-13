@@ -144,6 +144,10 @@ void Game::addEntitys()
 	Vector2D regionWindowSize = { 600.0f, 600.0f };
 	UIManager::get()->createUIWindowElement(m_UIFont, UIType::RegionWindow, regionWindowPosition, regionWindowSize);
 
+	Vector2D warWindowPosition = { 10.0f, Window::getWindow()->getSize().y - (300.0f + 10.0f) };
+	Vector2D warWindowSize = { 1900.0f, 300.0f };
+	UIManager::get()->createUIWindowElement(m_UIFont, UIType::WarWindow, warWindowPosition, warWindowSize);
+
 	Vector2D statBarPosition = { Window::getWindow()->getSize().x - (400.0f + 10.0f), 10.0f };
 	Vector2D statBarSize = { 400.0f, 50.0f };
 	UIManager::get()->createUIWindowElement(m_UIFont, UIType::StatBar, statBarPosition, statBarSize);

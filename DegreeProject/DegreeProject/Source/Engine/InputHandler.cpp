@@ -6,7 +6,7 @@
 
 static float mouseScrollDirection = 0.0f;
 static Vector2DInt viewMoveDirection = Vector2DInt();
-static const float MAX_ZOOM = 1000.0f;
+static const float MAX_ZOOM = 1500.0f;
 static const float MIN_ZOOM = 100.0f;
 static const float MOVE_SPEED = 25.0f;
 static const float ZOOM_SPEED = 0.1f;
@@ -96,7 +96,7 @@ void InputHandler::handleInputEvents()
 			case sf::Keyboard::Escape:
 			{
 				inputs[EscapePressed] = true;
-				if (!inputs[RegionWindowOpen] && !inputs[CharacterWindowOpen])
+				if (!inputs[RegionWindowOpen] && !inputs[CharacterWindowOpen] && !inputs[WarWindowOpen])
 				{
 					window.close();
 				}
@@ -380,6 +380,11 @@ bool InputHandler::getRegionWindowOpen()
 	return inputs[RegionWindowOpen];
 }
 
+bool InputHandler::getWarWindowOpen()
+{
+	return inputs[WarWindowOpen];
+}
+
 bool InputHandler::getMouseMoved()
 {
 	return inputs[MouseMoved];
@@ -403,6 +408,11 @@ void InputHandler::setCharacterWindowOpen(bool open)
 void InputHandler::setRegionWindowOpen(bool open)
 {
 	inputs[RegionWindowOpen] = open;
+}
+
+void InputHandler::setWarWindowOpen(bool open)
+{
+	inputs[WarWindowOpen] = open;
 }
 
 float InputHandler::getZoomSpeed()

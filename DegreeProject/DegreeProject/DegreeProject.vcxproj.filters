@@ -171,6 +171,12 @@
     <ClInclude Include="Source\Game\UI\UIText.h">
       <Filter>Game\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\UI\WarIcon.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\UI\WarWindow.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\War.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -252,6 +258,12 @@
       <Filter>Game\Systems</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\UI\UIManager.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\UI\WarIcon.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\UI\WarWindow.cpp">
       <Filter>Game\UI</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\War.cpp">

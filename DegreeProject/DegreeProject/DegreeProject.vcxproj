@@ -144,6 +144,8 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\UI\StatBar.h" />
     <ClInclude Include="Source\Game\UI\UIManager.h" />
     <ClInclude Include="Source\Game\UI\UIText.h" />
+    <ClInclude Include="Source\Game\UI\WarIcon.h" />
+    <ClInclude Include="Source\Game\UI\WarWindow.h" />
     <ClInclude Include="Source\Game\War.h" />
     <ClInclude Include="Source\Game\WarManager.h" />
   </ItemGroup>
@@ -173,6 +175,8 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\Game\Systems\HeraldicShieldManager.cpp" />
     <ClCompile Include="Source\Game\Systems\UnitManager.cpp" />
     <ClCompile Include="Source\Game\UI\UIManager.cpp" />
+    <ClCompile Include="Source\Game\UI\WarIcon.cpp" />
+    <ClCompile Include="Source\Game\UI\WarWindow.cpp" />
     <ClCompile Include="Source\Game\War.cpp" />
     <ClCompile Include="Source\Game\WarManager.cpp" />
     <ClCompile Include="Source\StrategyGame.cpp" />
@@ -180,4 +184,4 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project>
+</Project> 

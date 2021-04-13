@@ -4,6 +4,7 @@ enum class UIType
 {
 	CharacterWindow,
 	RegionWindow,
+	WarWindow,
 	StatBar,
 	DateBar,
 	MarriageRequest,
