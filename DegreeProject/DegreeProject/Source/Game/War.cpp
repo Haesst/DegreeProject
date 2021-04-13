@@ -161,6 +161,27 @@ void War::handleOccupiedRegions(CharacterID winningCharacter)
 	}
 }
 
+bool War::alliesInWar(CharacterID ID)
+{
+	if (ID == getAttacker())
+	{
+		if (CharacterManager::get()->getCharacter(ID).m_Allies.size() + 1 == m_Attackers.size())
+		{
+			return true;
+		}
+	}
+
+	if (ID == getAttacker())
+	{
+		if (CharacterManager::get()->getCharacter(ID).m_Allies.size() + 1 == m_Defenders.size())
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 
 bool War::isAttacker(CharacterID ent)
 {

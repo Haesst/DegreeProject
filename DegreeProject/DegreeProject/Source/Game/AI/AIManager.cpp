@@ -194,6 +194,20 @@ bool AIManager::handleAllianceRequest(CharacterID sender, CharacterID reciever)
 	return false;
 }
 
+bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, War& war)
+{
+	for (auto& handle : CharacterManager::get()->getCharacter(reciever).m_CurrentWars)
+	{
+		if (handle == war.getHandle())
+		{
+			//Already in that war
+			return false;
+		}
+	}
+
+	return true;
+}
+
 void AIManager::update()
 {
 	for (auto& data : m_AIDatas)
@@ -286,6 +300,8 @@ void AIManager::update()
 
 		if (warmind.m_TickAccu > warmind.m_AtWarTickRate)
 		{
+			War* war = WarManager::get().getWar(warmind.m_PrioritizedWarHandle);
+
 			if (CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
 			{
 				UnitManager::get().dismissUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity);
@@ -569,10 +585,14 @@ void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*targ
 
 void AIManager::warAction(AIData& data)
 {
+	CharacterManager* characterManager = CharacterManager::get();
+
 	int warHandle = WarManager::get().createWar(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent, getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
 	War* war = WarManager::get().getWar(warHandle);
-	CharacterManager::get()->getCharacter(war->getAttacker()).m_CurrentWars.push_back(warHandle);
-	CharacterManager::get()->getCharacter(war->getDefender()).m_CurrentWars.push_back(warHandle);
+
+	characterManager->getCharacter(war->getAttacker()).m_CurrentWars.push_back(warHandle);
+	characterManager->getCharacter(war->getDefender()).m_CurrentWars.push_back(warHandle);
+	characterManager->callAllies(data.m_OwnerID, warHandle);
 
 	getWarmindOfCharacter(data.m_OwnerID).m_Active = true;
 

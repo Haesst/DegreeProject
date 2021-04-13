@@ -49,6 +49,7 @@ public:
 	Trait getTrait(const char* traitName);
 
 	bool isAlliedWith(CharacterID character, CharacterID other);
+	void callAllies(CharacterID character, int war);
 
 	void onAllianceCreated(CharacterID character, CharacterID other);
 	void sendAllianceOffer(CharacterID sender, CharacterID reciever);
