@@ -421,8 +421,14 @@ float AIManager::warDecision(CharacterID ID)
 
 	float goldEvaluation = goldConsideration.evaluate(ID, getWarmindOfCharacter(ID).m_Opponent);
 	float enemyArmyEvaluation = armySizeConsideration.evaluate(ID, getWarmindOfCharacter(ID).m_Opponent);
+	float allyDebuff = 0.0f;
 
-	float actionScore = goldEvaluation * enemyArmyEvaluation;
+	if (CharacterManager::get()->isAlliedWith(ID, getWarmindOfCharacter(ID).m_Opponent))
+	{
+		allyDebuff -= .4f;
+	}
+
+	float actionScore = (goldEvaluation * enemyArmyEvaluation) - allyDebuff;
 	//actionScore += personality.m_DeclareWarModifier;
 
 	if (actionScore <= .5f)
