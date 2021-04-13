@@ -12,8 +12,8 @@ struct War
 	std::vector<int> m_AttackerOccupiedRegions;
 	std::vector<int> m_DefenderOccupiedRegions;
 
-	CharacterID m_Attacker = INVALID_CHARACTER_ID;
-	CharacterID m_Defender = INVALID_CHARACTER_ID;
+	std::vector<CharacterID> m_Attackers = std::vector<CharacterID>();
+	std::vector<CharacterID> m_Defenders = std::vector<CharacterID>();
 
 	int m_WargoalRegion = -1;
 
@@ -25,6 +25,9 @@ struct War
 	int getWarscore(CharacterID ID);
 	void addWarscore(CharacterID ID, int warScore);
 	void endWar(CharacterID winningEntity);
+
+	void addAttacker(CharacterID character);
+	void addDefender(CharacterID character);
 
 	void handleOccupiedRegions(CharacterID winningCharacter);
 

@@ -538,6 +538,7 @@ void AIManager::upgradeAction(AIData& data)
 			buildingId = pair.second.m_Id;
 			break;
 		}
+
 		++index;
 	}
 

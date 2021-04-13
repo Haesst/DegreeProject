@@ -7,8 +7,8 @@
 
 War::War(CharacterID attacker, CharacterID defender, int warGoalRegion, int handle)
 {
-	m_Attacker = attacker;
-	m_Defender = defender;
+	m_Attackers.push_back(attacker);
+	m_Defenders.push_back(defender);
 	m_WargoalRegion = warGoalRegion;
 	m_Handle = handle;
 }
@@ -55,51 +55,87 @@ void War::addWarscore(CharacterID ID, int warScore)
 
 void War::endWar(CharacterID winningCharacter)
 {
-	CharacterManager::get()->getCharacter(m_Attacker);
-	CharacterManager::get()->getCharacter(m_Defender);
-
 	unsigned int index = 0;
-	for (auto& war : CharacterManager::get()->getCharacter(m_Attacker).m_CurrentWars)
+	for (auto ID : m_Attackers)
 	{
-		if (WarManager::get().getWar(war) == this)
+		index = 0;
+
+		for (auto& war : CharacterManager::get()->getCharacter(ID).m_CurrentWars)
 		{
-			CharacterManager::get()->getCharacter(m_Attacker).m_CurrentWars.erase(CharacterManager::get()->getCharacter(m_Attacker).m_CurrentWars.begin() + index);
-			break;
+			if (WarManager::get().getWar(war) == this)
+			{
+				CharacterManager::get()->getCharacter(ID).m_CurrentWars.erase(CharacterManager::get()->getCharacter(ID).m_CurrentWars.begin() + index);
+
+				if (CharacterManager::get()->getCharacter(ID).m_IsPlayerControlled == false)
+				{
+					AIManager::get().getWarmindOfCharacter(ID).m_PrioritizedWarHandle = -1;
+				}
+
+				break;
+			}
+			index++;
 		}
-		index++;
 	}
 
-	index = 0;
-
-	for (auto& war : CharacterManager::get()->getCharacter(m_Defender).m_CurrentWars)
+	for (auto ID : m_Defenders)
 	{
-		if (WarManager::get().getWar(war) == this)
+		for (auto& war : CharacterManager::get()->getCharacter(ID).m_CurrentWars)
 		{
-			CharacterManager::get()->getCharacter(m_Defender).m_CurrentWars.erase(CharacterManager::get()->getCharacter(m_Defender).m_CurrentWars.begin() + index);
-			break;
+			index = 0;
+
+			if (WarManager::get().getWar(war) == this)
+			{
+				CharacterManager::get()->getCharacter(ID).m_CurrentWars.erase(CharacterManager::get()->getCharacter(ID).m_CurrentWars.begin() + index);
+
+				if (CharacterManager::get()->getCharacter(ID).m_IsPlayerControlled == false)
+				{
+					AIManager::get().getWarmindOfCharacter(ID).m_PrioritizedWarHandle = -1;
+				}
+
+				break;
+			}
+			index++;
 		}
-		index++;
 	}
+	
 
 	handleOccupiedRegions(winningCharacter);
-
-	if (CharacterManager::get()->getCharacter(m_Attacker).m_IsPlayerControlled == false)
-	{
-		AIManager::get().getWarmindOfCharacter(m_Attacker).m_PrioritizedWarHandle = -1;
-	}
-
-	if (CharacterManager::get()->getCharacter(m_Defender).m_IsPlayerControlled == false)
-	{
-		AIManager::get().getWarmindOfCharacter(m_Defender).m_PrioritizedWarHandle = -1;
-	}
 
 	LOG_INFO("WAR IS OVER");
 }
 
+void War::addAttacker(CharacterID character)
+{
+	for (auto ID : m_Attackers)
+	{
+		if (ID == character)
+		{
+			return;
+		}
+	}
+
+	m_Attackers.push_back(character);
+	CharacterManager::get()->getCharacter(character).m_CurrentWars.push_back(m_Handle);
+}
+
+void War::addDefender(CharacterID character)
+{
+	for (auto ID : m_Defenders)
+	{
+		if (ID == character)
+		{
+			return;
+		}
+	}
+
+	m_Defenders.push_back(character);
+	CharacterManager::get()->getCharacter(character).m_CurrentWars.push_back(m_Handle);
+}
+
 void War::handleOccupiedRegions(CharacterID winningCharacter)
 {
-	Character& attacker = CharacterManager::get()->getCharacter(m_Attacker);
-	Character& defender = CharacterManager::get()->getCharacter(m_Defender);
+	Character& attacker = CharacterManager::get()->getCharacter(m_Attackers[0]);
+	Character& defender = CharacterManager::get()->getCharacter(m_Defenders[0]);
 
 	for (auto& region : m_AttackerOccupiedRegions)
 	{
@@ -128,9 +164,12 @@ void War::handleOccupiedRegions(CharacterID winningCharacter)
 
 bool War::isAttacker(CharacterID ent)
 {
-	if (ent == m_Attacker)
+	for (auto ID : m_Attackers)
 	{
-		return true;
+		if (ent == ID)
+		{
+			return true;
+		}
 	}
 
 	return false;
@@ -138,9 +177,12 @@ bool War::isAttacker(CharacterID ent)
 
 bool War::isDefender(CharacterID ent)
 {
-	if (ent == m_Defender)
+	for (auto ID : m_Defenders)
 	{
-		return true;
+		if (ent == ID)
+		{
+			return true;
+		}
 	}
 
 	return false;
@@ -154,12 +196,12 @@ int War::getHandle()
 
 CharacterID War::getAttacker()
 {
-	return m_Attacker;
+	return m_Attackers[0];
 }
 
 CharacterID War::getDefender()
 {
-	return m_Defender;
+	return m_Defenders[0];
 }
 
 int War::getWarscoreFrom(CharacterID character)
