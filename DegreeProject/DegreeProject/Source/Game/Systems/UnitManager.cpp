@@ -201,6 +201,11 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 		return;
 	}
 
+	if (unitID == INVALID_UNIT_ID)
+	{
+		return; // Todo: This is wrong. Find out how an invalid id gets sent in
+	}
+
 	Unit& unit = getUnitWithId(unitID);
 
 	if (unit.m_RepresentedForce == 0)
@@ -227,6 +232,12 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 
 void UnitManager::dismissUnit(UnitID unitID)
 {
+
+	if (unitID == INVALID_UNIT_ID)
+	{
+		return; // Todo: This is wrong. Find out how an invalid id gets sent in
+	}
+
 	Unit& unit = getUnitWithId(unitID);
 
 	for (auto& squareData : Map::get().m_MapSquareData)
@@ -236,6 +247,7 @@ void UnitManager::dismissUnit(UnitID unitID)
 			continue;
 		}
 
+		LOG_WARN("Removing dismissed unit");
 		squareData.remove(unitID);
 	}
 

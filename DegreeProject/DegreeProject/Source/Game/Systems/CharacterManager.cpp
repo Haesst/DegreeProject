@@ -526,6 +526,9 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	}
 
 	Character& character = getCharacter(characterID);
+
+	UnitManager::get().dismissUnit(character.m_UnitEntity);
+
 	character.m_Dead = true;
 
 	if (character.m_CharacterTitle != Title::Unlanded && character.m_OwnedRegionIDs.size() > 0)
@@ -713,11 +716,12 @@ void CharacterManager::handleInheritance(Character& character)
 	}
 	character.m_CurrentWars.clear();
 	character.m_IsPlayerControlled = false;
-	//if (character.m_UnitEntity != INVALID_UNIT_ID)
-	//{
-	//	UnitManager::get().dismissUnit(character.m_UnitEntity);
-	//	character.m_UnitEntity = INVALID_UNIT_ID;
-	//}
+
+	if (character.m_UnitEntity != INVALID_UNIT_ID)
+	{
+		UnitManager::get().dismissUnit(character.m_UnitEntity);
+		character.m_UnitEntity = INVALID_UNIT_ID;
+	}
 }
 
 bool CharacterManager::chancePerPercent(float weight)
