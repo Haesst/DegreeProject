@@ -281,28 +281,31 @@ void AIManager::update()
 				UnitManager::get().dismissUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity);
 			}
 
-			if (warmind.m_PrioritizedWarHandle == -1)
+			if (warmind.m_PrioritizedWarHandle == -1 && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
 			{
 				UnitManager::get().dismissUnit(UnitManager::get().getUnitOfCharacter(warmind.m_OwnerID).m_UnitID);
 			}
-
-			if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
-			{
-				warmind.m_OrderAccu += Time::deltaTime();
-
-				if (warmind.m_OrderAccu >= warmind.m_OrderTimer)
-				{
-					warmind.m_OrderAccu = 0.0f;
-					considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warmind.m_Opponent);
-				}
-			}
-
 			else
 			{
-				if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_MaxArmySize * 0.5f)
+				if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
 				{
-					//LOG_INFO("{0} IS RAISING UNITS", CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_Name);
-					UnitManager::get().raiseUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity, Map::get().getRegionCapitalLocation(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_OwnedRegionIDs[0]));
+					warmind.m_OrderAccu += Time::deltaTime();
+
+					if (warmind.m_OrderAccu >= warmind.m_OrderTimer)
+					{
+						warmind.m_OrderAccu = 0.0f;
+						considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warmind.m_Opponent);
+					}
+				}
+
+				else
+				{
+					Character& character = CharacterManager::get()->getCharacter(warmind.m_OwnerID);
+					if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f)
+					{
+						//LOG_INFO("{0} IS RAISING UNITS", CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_Name);
+						UnitManager::get().raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
+					}
 				}
 			}
 
