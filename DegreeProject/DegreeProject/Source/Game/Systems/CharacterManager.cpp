@@ -160,6 +160,11 @@ int CharacterManager::getCharacterOpinion(CharacterID characterID, CharacterID o
 
 	int opinion = 0;
 
+	if (isAlliedWith(character.m_CharacterID, other.m_CharacterID))
+	{
+		opinion += 40;
+	}
+
 	for (auto& trait : other.m_Traits)
 	{
 		if (trait.m_TraitName == "INVALID")
