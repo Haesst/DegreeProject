@@ -177,12 +177,26 @@ int CharacterManager::getCharacterOpinion(CharacterID characterID, CharacterID o
 
 	if (character.m_Spouse == otherID)
 	{
-		opinion += 50;
+		opinion += m_SpouseOpinion;
 	}
 
 	if (character.m_Father == otherID || character.m_Mother == otherID)
 	{
-		opinion += 80;
+		opinion += m_ParentOpinion;
+	}
+
+	for (auto& child : character.m_Children)
+	{
+		if (getCharacter(child).m_CharacterID == otherID)
+		{
+			opinion += m_ChildOpinion;
+			break;
+		}
+	}
+
+	if (character.m_Father == otherID || character.m_Mother == otherID)
+	{
+		opinion += m_ParentOpinion;
 	}
 
 	return opinion;

@@ -90,6 +90,10 @@ private:
 	const float m_BirthChance = 0.13f;
 	const float m_OneOverFertilityCurveSteep = 1.0f / m_FertilityCurveSteepness;
 
+	const int m_SpouseOpinion = 50;
+	const int m_ParentOpinion = 80;
+	const int m_ChildOpinion = 80;
+
 	Player* m_Player = nullptr;
 	CharacterID m_PlayerCharacterID = INVALID_CHARACTER_ID;
 	Character* m_PlayerCharacter = nullptr;
