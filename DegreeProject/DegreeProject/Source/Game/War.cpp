@@ -98,9 +98,13 @@ void War::endWar(CharacterID winningCharacter)
 
 void War::handleOccupiedRegions(CharacterID winningCharacter)
 {
+	Character& attacker = CharacterManager::get()->getCharacter(m_Attacker);
+	Character& defender = CharacterManager::get()->getCharacter(m_Defender);
+
 	for (auto& region : m_AttackerOccupiedRegions)
 	{
 		Map::get().getRegionById(region).m_OccupiedBy = INVALID_CHARACTER_ID;
+		defender.m_MaxArmySize += Map::get().getRegionById(region).m_ManPower;
 	}
 
 	if (getAttacker() == winningCharacter)
@@ -117,6 +121,7 @@ void War::handleOccupiedRegions(CharacterID winningCharacter)
 	for (auto& region : m_DefenderOccupiedRegions)
 	{
 		Map::get().getRegionById(region).m_OccupiedBy = INVALID_CHARACTER_ID;
+		attacker.m_MaxArmySize += Map::get().getRegionById(region).m_ManPower;
 	}
 }
 

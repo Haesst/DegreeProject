@@ -488,6 +488,11 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	LOG_INFO("ARMY WEIGHT: {0}", armyWeight);
 	bool win = weightedRandomCombat(armyWeight);
 
+	if (CharacterManager::get()->getPlayerCharacterID() == getUnitWithId(unitID).m_Owner)
+	{
+		win = true;
+	}
+
 	if (win)
 	{
 		dismissUnit(enemyID);
@@ -564,7 +569,11 @@ void UnitManager::unitSiege(Unit& unit)
 			//}
 
 			War* war = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OwnerID);
-			if (war == nullptr)
+
+
+			bool skipWarCheck = region.m_OccupiedBy != INVALID_CHARACTER_ID && region.m_OwnerID == unit.m_Owner;
+
+			if (war == nullptr && !skipWarCheck)
 			{
 				return;
 			}
@@ -596,11 +605,22 @@ void UnitManager::unitSiege(Unit& unit)
 				Character& defender = characterManager->getCharacter(region.m_OwnerID);
 				War* currentWar = WarManager::get().getWarAgainst(attacker.m_CharacterID, defender.m_CharacterID);
 
-				if (currentWar == nullptr)
+				if (currentWar == nullptr && !skipWarCheck)
 				{
 					return;
 				}
 
+				if (unit.m_Owner == region.m_OwnerID)
+				{
+					region.m_OccupiedBy = INVALID_CHARACTER_ID;
+
+					attacker.m_MaxArmySize += region.m_ManPower;
+
+					unit.m_DaysSeizing = 0;
+					unit.m_SeizingRegionID = -1;
+
+					return;
+				}
 				
 				if (defender.m_CharacterID == region.m_OwnerID)
 				{
@@ -610,6 +630,8 @@ void UnitManager::unitSiege(Unit& unit)
 					//Loot
 					defender.m_CurrentGold -= region.m_RegionTax;
 					attacker.m_CurrentGold += region.m_RegionTax;
+
+					defender.m_MaxArmySize -= region.m_ManPower;
 				}
 
 				else if (attacker.m_CharacterID == region.m_OwnerID)
@@ -620,6 +642,8 @@ void UnitManager::unitSiege(Unit& unit)
 					//Loot
 					attacker.m_CurrentGold -= region.m_RegionTax;
 					defender.m_CurrentGold += region.m_RegionTax;
+
+					attacker.m_MaxArmySize -= region.m_ManPower;
 				}
 
 				unit.m_DaysSeizing = 0;
@@ -639,15 +663,19 @@ void UnitManager::startConquerRegion(Unit& unit)
 		Vector2DInt capitalPosition = Map::get().getRegionCapitalLocation(regionID);
 		if (currentMapPosition == capitalPosition)
 		{
-			unsigned int ownerID = Map::get().getRegionById(regionID).m_OwnerID;
-			if (ownerID == unit.m_Owner)
+			MapRegion& region = Map::get().getRegionById(regionID);
+			unsigned int ownerID = region.m_OwnerID;
+
+			if (ownerID == unit.m_Owner && region.m_OccupiedBy == INVALID_CHARACTER_ID)
 			{
 				continue;
 			}
 
+			bool skipWarCheck = region.m_OccupiedBy != INVALID_CHARACTER_ID;
+
 			War* war = WarManager::get().getWarAgainst(unit.m_Owner, ownerID);
 
-			if (war == nullptr)
+			if (war == nullptr && !skipWarCheck)
 			{
 				continue;
 			}
