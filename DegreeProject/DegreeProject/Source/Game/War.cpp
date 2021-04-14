@@ -25,50 +25,50 @@ bool War::isWinning(CharacterID ID, CharacterID enemyID)
 
 int War::getWarscore(CharacterID ID)
 {
-	if (getAttacker() == ID)
-	{
-		return m_AttackerWarscore;
-	}
+	if (!m_Attackers.empty() && !m_Defenders.empty()) //Todo: real solution
 
-	else if (getDefender() == ID)
-	{
-		return m_DefenderWarscore;
-	}
+
+		if (getAttacker() == ID)
+		{
+			return m_AttackerWarscore;
+		}
+
+		else if (getDefender() == ID)
+		{
+			return m_DefenderWarscore;
+		}
 
 	return -1;
 }
 
 void War::addWarscore(CharacterID ID, int warScore)
 {
-	if (!m_Attackers.empty() && !m_Defenders.empty()) //Todo: real solution
+	if (getAttacker() == ID)
 	{
-		if (getAttacker() == ID)
-		{
-			m_AttackerWarscore += warScore;
-			m_DefenderWarscore -= warScore;
+		m_AttackerWarscore += warScore;
+		m_DefenderWarscore -= warScore;
 
-			if (m_AttackerWarscore >= 100)
+		if (m_AttackerWarscore >= 100)
+		{
+			if (!CharacterManager::get()->getCharacter(getAttacker()).m_IsPlayerControlled)
 			{
-				if (!CharacterManager::get()->getCharacter(getAttacker()).m_IsPlayerControlled)
-				{
-					CharacterManager::get()->sendPeaceOffer(getAttacker(), getDefender(), PeaceType::Enforce_Demands);
-					return;
-				}
+				CharacterManager::get()->sendPeaceOffer(getAttacker(), getDefender(), PeaceType::Enforce_Demands);
+				return;
 			}
 		}
+	}
 
-		else if (getDefender() == ID)
+	else if (getDefender() == ID)
+	{
+		m_DefenderWarscore += warScore;
+		m_AttackerWarscore -= warScore;
+
+		if (m_DefenderWarscore >= 100)
 		{
-			m_DefenderWarscore += warScore;
-			m_AttackerWarscore -= warScore;
-
-			if (m_DefenderWarscore >= 100)
+			if (!CharacterManager::get()->getCharacter(getDefender()).m_IsPlayerControlled)
 			{
-				if (!CharacterManager::get()->getCharacter(getDefender()).m_IsPlayerControlled)
-				{
-					CharacterManager::get()->sendPeaceOffer(getDefender(), getAttacker(), PeaceType::Enforce_Demands);
-					return;
-				}
+				CharacterManager::get()->sendPeaceOffer(getDefender(), getAttacker(), PeaceType::Enforce_Demands);
+				return;
 			}
 		}
 	}
@@ -118,7 +118,7 @@ void War::endWar(CharacterID winningCharacter)
 			index++;
 		}
 	}
-	
+
 
 	handleOccupiedRegions(winningCharacter);
 
@@ -244,14 +244,4 @@ CharacterID War::getAttacker()
 CharacterID War::getDefender()
 {
 	return m_Defenders[0];
-}
-
-int War::getWarscoreFrom(CharacterID character)
-{
-	if (character == getAttacker())
-	{
-		return m_AttackerWarscore;
-	}
-
-	return m_DefenderWarscore;
 }

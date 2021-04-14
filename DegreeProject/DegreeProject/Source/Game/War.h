@@ -36,8 +36,6 @@ struct War
 	bool isAttacker(CharacterID ent);
 	bool isDefender(CharacterID ent);
 
-	int getWarscoreFrom(CharacterID character);
-
 	int getHandle();
 	CharacterID getAttacker();
 	CharacterID getDefender();

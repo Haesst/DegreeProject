@@ -152,7 +152,7 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, Pea
 
 	float acceptance = 0.0f;
 
-	if (war->getWarscoreFrom(sender) > war->getWarscoreFrom(reciever))
+	if (war->getWarscore(sender) > war->getWarscore(reciever))
 	{
 		acceptance += .4f;
 	}
@@ -209,11 +209,13 @@ bool AIManager::handleAllianceRequest(CharacterID sender, CharacterID reciever)
 	return false;
 }
 
-bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, War& war)
+bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, int war)
 {
+	War* currentWar = WarManager::get().getWar(war);
+
 	for (auto& handle : CharacterManager::get()->getCharacter(reciever).m_CurrentWars)
 	{
-		if (handle == war.getHandle())
+		if (handle == currentWar->getHandle())
 		{
 			//Already in that war
 			return false;
@@ -456,7 +458,7 @@ float AIManager::warDecision(CharacterID ID)
 
 	if (CharacterManager::get()->isAlliedWith(ID, getWarmindOfCharacter(ID).m_Opponent))
 	{
-		allyDebuff -= .4f;
+		return 0.0f;
 	}
 
 	float actionScore = (goldEvaluation * enemyArmyEvaluation) - allyDebuff;
@@ -540,7 +542,6 @@ float AIManager::allianceDecision(CharacterID ID, CharacterID potentialAlly)
 	float armyEval = armyConsideration.evaluate(ID, potentialAlly);
 	float actionScore = armyEval * goldEval;
 
-	//Todo: Add opinion
 	if (actionScore > .5f)
 	{
 		return actionScore;
@@ -563,7 +564,6 @@ void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target
 		if (distance < 100.0f)
 		{
 			//Hunt enemy army
-			//LOG_INFO("Warmind belonging to {0} decided to hunt the enemy army", m_Characters[warmind.m_OwnerID].m_Name);
 			m_Orders.orderFightEnemyArmy(warmind, unit);
 			return;
 		}
@@ -571,7 +571,6 @@ void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target
 		else
 		{
 			//Siege wargoal region
-			//LOG_INFO("Warmind belonging to {0} decided to siege the enemy capital", m_Characters[warmind].m_Name);
 			m_Orders.orderSiegeCapital(warmind, unit);
 			return;
 		}
@@ -580,24 +579,8 @@ void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target
 
 void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*target*/, Unit& unit, Unit& enemyUnit)
 {
-	//FightEnemyArmyConsideration fightConsideration;
-	//float fightEval = fightConsideration.evaluate(warmind.m_OwnerID, target);
-
-	//if (fightEval > 0.7)
-	//{
-	//	m_Orders.orderFightEnemyArmy(warmind, unit);
-	//	return;
-	//}
-
 	Vector2D unitPosition = unit.m_Position;
 	Vector2D enemyUnitPosition = enemyUnit.m_Position;
-
-	//float distance = (unitPosition - enemyUnitPosition).getLength();
-	//if (distance < 100.0f)
-	//{
-	//	m_Orders.orderFlee(warmind, unit);
-	//	return;
-	//}
 
 	int regionID = WarManager::get().getWar(warmind.m_PrioritizedWarHandle)->m_WargoalRegion;
 	Vector2DInt regionPosition = Map::get().getRegionById(regionID).m_RegionCapital;
