@@ -610,7 +610,7 @@ void AIManager::warAction(AIData& data)
 	CharacterManager* characterManager = CharacterManager::get();
 	int opponent = getWarmindOfCharacter(data.m_OwnerID).m_Opponent;
 
-	if (opponent == INT_MAX)
+	if (opponent == INT_MAX || opponent == CharacterManager::get()->getCharacter(data.m_OwnerID).m_Spouse)
 	{
 		return;
 	}
