@@ -40,32 +40,35 @@ int War::getWarscore(CharacterID ID)
 
 void War::addWarscore(CharacterID ID, int warScore)
 {
-	if (getAttacker() == ID)
+	if (!m_Attackers.empty() && !m_Defenders.empty()) //Todo: real solution
 	{
-		m_AttackerWarscore += warScore;
-		m_DefenderWarscore -= warScore;
-
-		if(m_AttackerWarscore >= 100)
+		if (getAttacker() == ID)
 		{
-			if (!CharacterManager::get()->getCharacter(getAttacker()).m_IsPlayerControlled)
+			m_AttackerWarscore += warScore;
+			m_DefenderWarscore -= warScore;
+
+			if (m_AttackerWarscore >= 100)
 			{
-				CharacterManager::get()->sendPeaceOffer(getAttacker(), getDefender(), PeaceType::Enforce_Demands);
-				return;
+				if (!CharacterManager::get()->getCharacter(getAttacker()).m_IsPlayerControlled)
+				{
+					CharacterManager::get()->sendPeaceOffer(getAttacker(), getDefender(), PeaceType::Enforce_Demands);
+					return;
+				}
 			}
 		}
-	}
 
-	else if(getDefender() == ID)
- 	{
-		m_DefenderWarscore += warScore;
-		m_AttackerWarscore -= warScore;
-
-		if (m_DefenderWarscore >= 100)
+		else if (getDefender() == ID)
 		{
-			if (!CharacterManager::get()->getCharacter(getDefender()).m_IsPlayerControlled)
+			m_DefenderWarscore += warScore;
+			m_AttackerWarscore -= warScore;
+
+			if (m_DefenderWarscore >= 100)
 			{
-				CharacterManager::get()->sendPeaceOffer(getDefender(), getAttacker(), PeaceType::Enforce_Demands);
-				return;
+				if (!CharacterManager::get()->getCharacter(getDefender()).m_IsPlayerControlled)
+				{
+					CharacterManager::get()->sendPeaceOffer(getDefender(), getAttacker(), PeaceType::Enforce_Demands);
+					return;
+				}
 			}
 		}
 	}
