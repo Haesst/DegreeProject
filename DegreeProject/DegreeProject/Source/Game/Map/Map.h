@@ -143,6 +143,6 @@ private:
 	// Unreachable land
 	std::vector<Vector2DInt> m_UnreachableLandSquares;
 	sf::VertexArray m_UnreachableVertexArray;
-	sf::Color m_UnreachableLandColor = sf::Color(10, 20, 10, 255);
+	sf::Color m_UnreachableLandColor = sf::Color(20, 60, 20, 255);
 };
 #pragma warning(pop)

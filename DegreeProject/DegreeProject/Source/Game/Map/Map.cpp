@@ -211,7 +211,7 @@ void Map::updateRegions()
 void Map::render()
 {
 	renderSquares(m_MountainVertexArray, m_MountainBaseColor, m_MountainAlternateColor, m_Data.m_LandTexture, false);
-	renderSquares(m_UnreachableVertexArray, sf::Color(20, 60, 20, 255), sf::Color(20, 60, 20, 255), m_Data.m_LandTexture, false);
+	renderSquares(m_UnreachableVertexArray, m_UnreachableLandColor, m_UnreachableLandColor, m_Data.m_LandTexture, false);
 
 	for (auto& region : m_Data.m_Regions)
 	{
