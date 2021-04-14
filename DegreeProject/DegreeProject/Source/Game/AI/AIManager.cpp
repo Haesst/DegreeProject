@@ -477,30 +477,38 @@ float AIManager::expansionDecision(CharacterID ID)
 		}
 
 		float eval = expansionConsideration.evaluate(ID, regionIndexes[i]);
-		auto pair = std::make_pair(eval, regionIndexes[i]);
-		actionScorePerRegion.push_back(pair);
-	}
 
-	float highest = -1.0f;
-	int bestIndex = -1;
-
-	for (unsigned int i = 0; i < actionScorePerRegion.size(); i++)
-	{
-		if (actionScorePerRegion[i].first > highest)
+		if (eval > .5f)
 		{
-			highest = actionScorePerRegion[i].first;
-			getWarmindOfCharacter(ID).m_WargoalRegionId = actionScorePerRegion[i].second;
-			getWarmindOfCharacter(ID).m_Opponent = Map::get().getRegionById(actionScorePerRegion[i].second).m_OwnerID;
-			bestIndex = i;
+			auto pair = std::make_pair(eval, regionIndexes[i]);
+			actionScorePerRegion.push_back(pair);
 		}
 	}
 
-	if (bestIndex == -1)
+	if (actionScorePerRegion.empty())
 	{
 		return 0.0f;
 	}
 
-	return actionScorePerRegion[bestIndex].first;
+	std::sort(actionScorePerRegion.begin(), actionScorePerRegion.end());
+
+	std::pair<float, int> region;
+
+	if (actionScorePerRegion.size() > 3)
+	{
+		region = actionScorePerRegion[rand() % 2];
+	}
+
+	else
+	{
+		region = actionScorePerRegion[0];
+	}
+
+
+	getWarmindOfCharacter(ID).m_WargoalRegionId = region.second;
+	getWarmindOfCharacter(ID).m_Opponent = Map::get().getRegionById(region.second).m_OwnerID;
+
+	return region.first;
 }
 
 float AIManager::marriageDecision(CharacterID ID, CharacterID spouse)
@@ -586,7 +594,7 @@ void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*targ
 void AIManager::warAction(AIData& data)
 {
 	CharacterManager* characterManager = CharacterManager::get();
-
+	int opponent = getWarmindOfCharacter(data.m_OwnerID).m_Opponent;
 	int warHandle = WarManager::get().createWar(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent, getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
 	War* war = WarManager::get().getWar(warHandle);
 
@@ -753,14 +761,17 @@ void AIManager::considerOrders(WarmindComponent& warmind, Unit& unit, CharacterI
 
 	Unit& enemyUnit = UnitManager::get().getUnitOfCharacter(target);
 
-	if (warManager->getWar(warmind.m_PrioritizedWarHandle)->isDefender(warmind.m_OwnerID))
+	if (warManager->getWar(warmind.m_PrioritizedWarHandle) != nullptr)
 	{
-		giveDefenderOrders(warmind, target, unit, enemyUnit);
-	}
+		if (warManager->getWar(warmind.m_PrioritizedWarHandle)->isDefender(warmind.m_OwnerID))
+		{
+			giveDefenderOrders(warmind, target, unit, enemyUnit);
+		}
 
-	else if (warManager->getWar(warmind.m_PrioritizedWarHandle)->isAttacker(warmind.m_OwnerID))
-	{
-		giveAttackerOrders(warmind, target, unit, enemyUnit);
+		else if (warManager->getWar(warmind.m_PrioritizedWarHandle)->isAttacker(warmind.m_OwnerID))
+		{
+			giveAttackerOrders(warmind, target, unit, enemyUnit);
+		}
 	}
 }
 

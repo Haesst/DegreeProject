@@ -17,7 +17,7 @@ struct AIData
 	Action m_LastAction = Action::NONE;
 
 	float m_ConsiderationAccu = 0.0f;
-	float m_ConsiderationTimer = 10.0f;
+	float m_ConsiderationTimer = 30.0f;
 
 	std::vector<std::pair<float, Action>> m_Evaluations;
 

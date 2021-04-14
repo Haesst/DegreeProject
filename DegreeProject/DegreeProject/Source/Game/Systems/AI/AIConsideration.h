@@ -217,19 +217,25 @@ struct ExpansionConsideration : public Consideration
 	{
 		float distanceWeight = 0.0f;
 
-		//for (int ownedRegion : characters[context].m_OwnedRegionIDs)
-		//{
-		//	if (std::abs(ownedRegion - regionIndex) > 1)
-		//	{
-		//		distanceWeight = -0.5f;
-		//	}
-		//
-		//	else
-		//	{
-		//		distanceWeight = 0.0f;
-		//		break;
-		//	}
-		//}
+		Vector2DInt wantedRegionPos = Map::get().getRegionById(regionIndex).m_RegionCapital;
+
+		for (int ownedRegion : CharacterManager::get()->getCharacter(context).m_OwnedRegionIDs)
+		{
+			Vector2DInt regionPos = Map::get().getRegionById(ownedRegion).m_RegionCapital;
+
+			float dist = (regionPos - wantedRegionPos).getLength();
+
+			if (dist > 3)
+			{
+				distanceWeight = -0.6f;
+			}
+
+			else
+			{
+				distanceWeight = 0.0f;
+				break;
+			}
+		}
 
 		//Consider potential gold gain
 		int wantedRegionTax = Map::get().getRegionById(regionIndex).m_RegionTax;
@@ -240,7 +246,7 @@ struct ExpansionConsideration : public Consideration
 			regionTax.push_back(Map::get().getRegionById(region).m_RegionTax);
 		}
 
-		float avgTax = 1.0f * std::accumulate(regionTax.begin(), regionTax.end(), 0LL) / regionTax.size();
+		float avgTax = std::accumulate(regionTax.begin(), regionTax.end(), 0LL) / regionTax.size();
 		float percentDiff = (float)wantedRegionTax / avgTax;
 
 		return std::clamp(std::pow(percentDiff, 2.0f) + distanceWeight, 0.0f, 1.0f);
