@@ -22,18 +22,18 @@ WarIcon::WarIcon(UIID ID, sf::Font font, unsigned int index, CharacterID attacke
 
 	m_Window = Window::getWindow();
 
-	m_WarIconPosition = Vector2DInt(m_Window->getSize().x - (int)(600 + m_SpriteSize + m_OutlineThickness * 5) - (m_SpriteSize + m_OutlineThickness * 4) * m_Index, m_Window->getSize().y - (int)(m_SpriteSize + m_OutlineThickness * 2));
+	m_WarIconPosition = Vector2DInt(m_Window->getSize().x - (int)(600 + m_SpriteSize + m_OutlineThickness * 5) - (int)(m_SpriteSize + m_OutlineThickness * 4) * m_Index, m_Window->getSize().y - (int)(m_SpriteSize + m_OutlineThickness * 2));
 	m_WarIconTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Charizard.png");
 
 	m_WarIconShape.setFillColor(m_WarIconOutlineColor);
-	m_WarIconShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
+	m_WarIconShape.setSize(sf::Vector2f((float)m_SizeX, (float)m_SizeY));
 	m_WarIconShape.setOutlineColor(m_WarIconOutlineColor);
 	m_WarIconShape.setOutlineThickness(m_OutlineThickness);
 
 	m_WarscoreText.setCharacterSize(m_CharacterSize);
 	m_WarscoreText.setFont(m_Font);
 	m_WarscoreText.setStyle(m_Style);
-	m_WarscoreTextPosition = Vector2DInt(m_WarIconPosition.x, m_WarIconPosition.y + m_SizeY * 0.5f);
+	m_WarscoreTextPosition = Vector2DInt(m_WarIconPosition.x, m_WarIconPosition.y + (int)(m_SizeY * 0.5f));
 
 	activate();
 }

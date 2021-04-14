@@ -9,6 +9,8 @@
 
 struct War;
 
+#pragma warning(push)
+#pragma warning(disable: 26812)
 class WarIcon
 {
 public:
@@ -57,3 +59,4 @@ private:
 	sf::Text m_WarscoreText;
 	Vector2DInt m_WarscoreTextPosition = Vector2DInt();
 };
+#pragma warning(pop)

@@ -78,6 +78,9 @@
     <ClInclude Include="Source\Game\Data\Titles.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Data\Trait.h">
+      <Filter>Game\Data</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Data\Types.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
@@ -183,7 +186,6 @@
     <ClInclude Include="Source\Game\WarManager.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Data\Trait.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">

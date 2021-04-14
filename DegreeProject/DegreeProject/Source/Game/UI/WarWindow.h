@@ -59,10 +59,6 @@ private:
 	sf::Texture m_FemaleCharacterTexture;
 	sf::Texture m_YoungMaleCharacterTexture;
 	sf::Texture m_YoungFemaleCharacterTexture;
-	sf::Sprite m_AttackerSprite;
-	sf::Sprite m_DefenderSprite;
-	Vector2DInt m_DefenderPortraitPosition;
-	Vector2DInt m_AttackerPortraitPosition;
 
 	sf::Texture m_ArmyTexture;
 	sf::Sprite m_AttackerArmySprite;
@@ -80,8 +76,6 @@ private:
 	Vector2DInt m_SendPosition;
 
 	sf::RectangleShape m_WindowShape;
-	sf::RectangleShape m_AttackerShape;
-	sf::RectangleShape m_DefenderShape;
 	sf::RectangleShape m_WarscoreShape;
 	sf::RectangleShape m_WarscoreProgressShape;
 	sf::RectangleShape m_SurrenderShape;
