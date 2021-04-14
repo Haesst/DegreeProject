@@ -491,10 +491,9 @@ float AIManager::expansionDecision(CharacterID ID)
 	}
 
 	std::sort(actionScorePerRegion.begin(), actionScorePerRegion.end());
-
 	std::pair<float, int> region;
 
-	if (actionScorePerRegion.size() > 3)
+	if (actionScorePerRegion.size() > 2)
 	{
 		region = actionScorePerRegion[rand() % 2];
 	}
@@ -595,6 +594,12 @@ void AIManager::warAction(AIData& data)
 {
 	CharacterManager* characterManager = CharacterManager::get();
 	int opponent = getWarmindOfCharacter(data.m_OwnerID).m_Opponent;
+
+	if (opponent == INT_MAX)
+	{
+		return;
+	}
+
 	int warHandle = WarManager::get().createWar(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent, getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
 	War* war = WarManager::get().getWar(warHandle);
 
