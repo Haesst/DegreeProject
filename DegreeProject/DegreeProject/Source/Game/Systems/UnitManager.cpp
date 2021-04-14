@@ -201,10 +201,10 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 		return;
 	}
 
-	if (unitID == INVALID_UNIT_ID)
-	{
-		return; // Todo: This is wrong. Find out how an invalid id gets sent in
-	}
+	//if (unitID == INVALID_UNIT_ID)
+	//{
+	//	return; // Todo: This is wrong. Find out how an invalid id gets sent in
+	//}
 
 	Unit& unit = getUnitWithId(unitID);
 
@@ -226,6 +226,8 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 
 		squareData.addUnique(unitID);
 	}
+
+	startConquerRegion(unit);
 
 	CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_RaisedArmySize = unit.m_RepresentedForce;
 }
@@ -641,6 +643,21 @@ void UnitManager::unitSiege(Unit& unit)
 					attacker.m_CurrentGold += region.m_RegionTax;
 
 					defender.m_MaxArmySize -= region.m_ManPower;
+
+					for (auto ID : CharacterManager::get()->getCharacter(currentWar->getDefender()).m_OwnedRegionIDs)
+					{
+						if (Map::get().getRegionById(ID).m_OccupiedBy != INVALID_CHARACTER_ID)
+						{
+							continue;
+						}
+
+						else
+						{
+							break;
+						}
+
+						currentWar->addWarscore(currentWar->getAttacker(), 100);
+					}
 				}
 
 				else if (attacker.m_CharacterID == region.m_OwnerID)

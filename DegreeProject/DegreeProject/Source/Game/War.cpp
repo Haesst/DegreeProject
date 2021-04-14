@@ -42,12 +42,30 @@ void War::addWarscore(CharacterID ID, int warScore)
 {
 	if (getAttacker() == ID)
 	{
+		if(m_AttackerWarscore >= 100)
+		{
+			if (!CharacterManager::get()->getCharacter(getAttacker()).m_IsPlayerControlled)
+			{
+				CharacterManager::get()->sendPeaceOffer(getAttacker(), getDefender(), PeaceType::Enforce_Demands);
+				return;
+			}
+		}
+
 		m_AttackerWarscore += warScore;
 		m_DefenderWarscore -= warScore;
 	}
 
 	else if(getDefender() == ID)
  	{
+		if (m_DefenderWarscore >= 100)
+		{
+			if (!CharacterManager::get()->getCharacter(getDefender()).m_IsPlayerControlled)
+			{
+				CharacterManager::get()->sendPeaceOffer(getDefender(), getAttacker(), PeaceType::Enforce_Demands);
+				return;
+			}
+		}
+
 		m_DefenderWarscore += warScore;
 		m_AttackerWarscore -= warScore;
 	}

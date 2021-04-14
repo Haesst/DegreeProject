@@ -130,6 +130,21 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, Pea
 		return true;
 	}
 
+	bool allRegionsSiezed = true;
+	for (auto ID : CharacterManager::get()->getCharacter(reciever).m_OwnedRegionIDs)
+	{
+		if (Map::get().getRegionById(ID).m_OccupiedBy == INVALID_CHARACTER_ID)
+		{
+			allRegionsSiezed = false;
+			break;
+		}
+	}
+
+	if (allRegionsSiezed)
+	{
+		return true;
+	}
+
 	if (type == PeaceType::Enforce_Demands && war->getWarscore(sender) >= 100)
 	{
 		return true;
@@ -139,12 +154,12 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, Pea
 
 	if (war->getWarscoreFrom(sender) > war->getWarscoreFrom(reciever))
 	{
-		acceptance += .3f;
+		acceptance += .4f;
 	}
 
 	else
 	{
-		acceptance -= .3f;
+		acceptance -= .4f;
 	}
 
 	int senderArmySize = CharacterManager::get()->getCharacter(sender).m_RaisedArmySize;
@@ -152,7 +167,7 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, Pea
 
 	if (senderArmySize > recieverArmySize)
 	{
-		acceptance += .3f;
+		acceptance += .5f;
 	}
 
 	else
@@ -327,7 +342,7 @@ void AIManager::update()
 				else
 				{
 					Character& character = CharacterManager::get()->getCharacter(warmind.m_OwnerID);
-					if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f)
+					if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f && character.m_MaxArmySize > 0)
 					{
 						//LOG_INFO("{0} IS RAISING UNITS", CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_Name);
 						UnitManager::get().raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
@@ -491,10 +506,9 @@ float AIManager::expansionDecision(CharacterID ID)
 	}
 
 	std::sort(actionScorePerRegion.begin(), actionScorePerRegion.end());
-
 	std::pair<float, int> region;
 
-	if (actionScorePerRegion.size() > 3)
+	if (actionScorePerRegion.size() > 2)
 	{
 		region = actionScorePerRegion[rand() % 2];
 	}
@@ -595,6 +609,12 @@ void AIManager::warAction(AIData& data)
 {
 	CharacterManager* characterManager = CharacterManager::get();
 	int opponent = getWarmindOfCharacter(data.m_OwnerID).m_Opponent;
+
+	if (opponent == INT_MAX)
+	{
+		return;
+	}
+
 	int warHandle = WarManager::get().createWar(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent, getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
 	War* war = WarManager::get().getWar(warHandle);
 
