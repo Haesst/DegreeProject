@@ -10,6 +10,7 @@
 #include "Game/UI/UIManager.h"
 #include "Game/Game.h"
 #include "Game/Player.h"
+#include "Game/Data/Trait.h"
 #include <random>
 #include <math.h>
 
@@ -59,11 +60,15 @@ void CharacterManager::loadTraits(const char* path)
 		int generalOppinion = element["generalOpinion"].get<int>();
 		int attraction = element["attraction"].get<int>();
 		int fertility = element["fertility"].get<int>();
+		bool inheritable = element["inheritable"].get<bool>();
+		bool canSpawnWith = element["canSpawnWith"].get<bool>();
 
 		Trait trait(traitName);
-		trait.generalOppinion = generalOppinion;
-		trait.attraction = attraction;
-		trait.fertility = fertility;
+		trait.m_GeneralOpinion = generalOppinion;
+		trait.m_Attraction = attraction;
+		trait.m_Fertility = fertility;
+		trait.m_Inheritable = inheritable;
+		trait.m_CanSpawnWith = canSpawnWith;
 
 		m_Traits.push_back(trait);
 	}
@@ -85,6 +90,33 @@ CharacterID CharacterManager::createNewChild(CharacterID motherID)
 	child.m_Father = father.m_CharacterID;
 	mother.m_Children.push_back(childID);
 	father.m_Children.push_back(childID);
+
+	for (Trait& trait : mother.m_Traits)
+	{
+		if (trait.m_Inheritable)
+		{
+			bool inherited = chancePerPercent(m_InheritTraitChance);
+
+			if (inherited && !hasTrait(childID, trait))
+			{
+				addTrait(childID, trait);
+			}
+		}
+	}
+
+	for (Trait& trait : father.m_Traits)
+	{
+		if (trait.m_Inheritable)
+		{
+			bool inherited = chancePerPercent(m_InheritTraitChance);
+
+			if (inherited && !hasTrait(childID, trait))
+			{
+				addTrait(childID, trait);
+			}
+		}
+	}
+
 	return childID;
 }
 
@@ -172,11 +204,11 @@ int CharacterManager::getCharacterOpinion(CharacterID characterID, CharacterID o
 			continue;
 		}
 
-		opinion += trait.generalOppinion;
+		opinion += trait.m_GeneralOpinion;
 
 		if (useAttraction)
 		{
-			opinion += trait.attraction;
+			opinion += trait.m_Attraction;
 		}
 	}
 
@@ -393,12 +425,12 @@ void CharacterManager::tryForPregnancy(Character& character)
 
 	for (Trait& trait : character.m_Traits)
 	{
-		traitFertility += (float)trait.fertility;
+		traitFertility += (float)trait.m_Fertility;
 	}
 
 	for (Trait& trait : spouse.m_Traits)
 	{
-		traitFertility += (float)trait.fertility;
+		traitFertility += (float)trait.m_Fertility;
 	}
 
 	traitFertility *= 0.1f;
@@ -915,6 +947,21 @@ CharacterID CharacterManager::internalCreateCharacter(Character& character, cons
 	}
 
 	m_Characters.push_back(character);
+
+	for (Trait trait : m_Traits)
+	{
+		if (!trait.m_CanSpawnWith)
+		{
+			continue;
+		}
+
+		bool chance = chancePerPercent(m_NewTraitChance);
+
+		if (chance && !hasTrait(id, trait))
+		{
+			addTrait(id, trait);
+		}
+	}
 
 	if (playerControlled)
 	{

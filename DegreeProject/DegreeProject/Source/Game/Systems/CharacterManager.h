@@ -95,6 +95,9 @@ private:
 	const int m_ParentOpinion = 80;
 	const int m_ChildOpinion = 80;
 
+	const float m_InheritTraitChance = 0.4f;
+	const float m_NewTraitChance = 0.05f;
+
 	Player* m_Player = nullptr;
 	CharacterID m_PlayerCharacterID = INVALID_CHARACTER_ID;
 	Character* m_PlayerCharacter = nullptr;

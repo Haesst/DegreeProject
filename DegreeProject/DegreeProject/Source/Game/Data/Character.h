@@ -2,6 +2,7 @@
 
 #include "Game/Data/Types.h"
 #include "Game/Data/Titles.h"
+#include "Game/Data/Trait.h"
 #include "Game/GameDate.h"
 
 #include <vector>
@@ -11,19 +12,6 @@ enum class Gender
 {
 	Male,
 	Female
-};
-
-struct Trait
-{
-	std::string m_TraitName;
-	int attraction;
-	int fertility;
-	int generalOppinion;
-
-	Trait(std::string traitName)
-	{
-		m_TraitName = traitName;
-	}
 };
 
 struct Character

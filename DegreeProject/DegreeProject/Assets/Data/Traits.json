@@ -1,6 +1,8 @@
 [
   {
 	  "debugName": "Pregnant",
+    "inheritable": false,
+    "canSpawnWith": false,
     "generalOpinion": 0,
     "attraction": 0,
     "fertility": 0,
@@ -8,6 +10,8 @@
   },
   {
     "debugName": "Beautiful",
+    "inheritable": true,
+    "canSpawnWith": true,
     "generalOpinion": 10,
     "attraction": 20,
     "fertility": 30,
@@ -15,6 +19,8 @@
   },
   {
     "debugName": "Ugly",
+    "inheritable": true,
+    "canSpawnWith": true,
     "generalOpinion": -10,
     "attraction": -20,
     "fertility": -30,
@@ -22,6 +28,8 @@
   },
   {
     "debugName": "Sterile",
+    "inheritable": true,
+    "canSpawnWith": true,
     "generalOpinion": 0,
     "attraction": 0,
     "fertility": -90,
