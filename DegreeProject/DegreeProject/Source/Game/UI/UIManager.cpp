@@ -61,12 +61,13 @@ UIID UIManager::createUIEventElement(CharacterID instigatorID, CharacterID subje
 	return ID;
 }
 
-UIID UIManager::createWarIcon(CharacterID attackerID, CharacterID defenderID, UIType type)
+UIID UIManager::createWarIcon(CharacterID attackerID, CharacterID defenderID)
 {
 	UIID ID = m_UIElementsIDs++;
 	UIElement uiElement;
-	uiElement.m_Type = type;
-	m_WarIcons.push_back(new WarIcon(ID, Game::m_UIFont, attackerID, defenderID, type));
+	uiElement.m_Type = UIType::WarIcon;
+	int index = m_WarIcons.size();
+	m_WarIcons.push_back(new WarIcon(ID, Game::m_UIFont, index, attackerID, defenderID));
 	m_UIElements.push_back(uiElement);
 	return ID;
 }
@@ -155,19 +156,42 @@ void UIManager::update()
 {
 	m_CharacterWindow->update();
 	m_RegionWindow->update();
-	for (unsigned int i = 0; i < m_WarIcons.size(); i++)
-	{
-		m_WarIcons[i]->update();
-	}
 	m_WarWindow->update();
 	m_StatBar->update();
 	m_DateBar->update();
+	m_ActiveWarIcons = false;
+	for (unsigned int i = 0; i < m_WarIcons.size(); i++)
+	{
+		if (m_WarIcons[i]->m_Active)
+		{
+			m_ActiveWarIcons = true;
+			m_WarIcons[i]->update();
+		}
+	}
+	if (!m_ActiveWarIcons)
+	{
+		for (unsigned int i = 0; i < m_WarIcons.size(); i++)
+		{
+			delete m_WarIcons[i];
+		}
+		m_WarIcons.clear();
+	}
+	m_ActiveEventWindows = false;
 	for (unsigned int i = 0; i < m_EventWindows.size(); i++)
 	{
 		if (!m_EventWindows[i]->m_Dismissed)
 		{
+			m_ActiveEventWindows = true;
 			m_EventWindows[i]->update();
 		}
+	}
+	if (!m_ActiveEventWindows)
+	{
+		for (unsigned int i = 0; i < m_EventWindows.size(); i++)
+		{
+			delete m_EventWindows[i];
+		}
+		m_EventWindows.clear();
 	}
 }
 
@@ -177,12 +201,15 @@ void UIManager::render()
 	{
 		uiTextPair.second->render();
 	}
-	m_CharacterWindow->render();
-	m_RegionWindow->render();
 	for (unsigned int i = 0; i < m_WarIcons.size(); i++)
 	{
-		m_WarIcons[i]->render();
+		if (m_WarIcons[i]->m_Active)
+		{
+			m_WarIcons[i]->render();
+		}
 	}
+	m_CharacterWindow->render();
+	m_RegionWindow->render();
 	m_WarWindow->render();
 	m_StatBar->render();
 	m_DateBar->render();

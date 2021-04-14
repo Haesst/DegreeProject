@@ -286,20 +286,29 @@ void CharacterManager::callAllies(CharacterID character, int war)
 					currentWar->m_Defenders.push_back(ID);
 					getCharacter(ID).m_CurrentWars.push_back(currentWar->getHandle());
 				}
+
+				if (character == m_PlayerCharacterID)
+				{
+					UIManager::get()->createUIEventElement(ID, character, UIType::CallToArmsAccepted);
+				}
+			}
+			else if (character == m_PlayerCharacterID)
+			{
+				UIManager::get()->createUIEventElement(ID, character, UIType::CallToArmsRejected);
 			}
 		}
 	
 		else
 		{
-			//Player UI stuff goes here
+			UIManager::get()->createUIEventElement(character, ID, UIType::CallToArmsRequest);
 		}
 	}
 }
 
 void CharacterManager::onAllianceCreated(CharacterID character, CharacterID other)
 {
-	getCharacter(character).m_Allies.push_back(character);
-	getCharacter(other).m_Allies.push_back(other);
+	getCharacter(character).m_Allies.push_back(other);
+	getCharacter(other).m_Allies.push_back(character);
 }
 
 void CharacterManager::sendAllianceOffer(CharacterID sender, CharacterID reciever)

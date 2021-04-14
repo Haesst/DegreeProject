@@ -35,7 +35,7 @@ public:
 	sf::Text::Style m_Style = sf::Text::Regular;
 	sf::RenderWindow* m_Window = nullptr;
 	unsigned int m_CurrentSpeedLevel = 3;
-
+	int m_DaySubscriptionHandle = 0;
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 
 	DateBar(UIID id, sf::Font font, Vector2D, Vector2D size)
@@ -56,7 +56,7 @@ public:
 
 	void start()
 	{
-		Time::m_GameDate.subscribeToDayChange([](void* data) { DateBar& datebar = *static_cast<DateBar*>(data); datebar.onDayChange(); }, static_cast<void*>(this));
+		m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { DateBar& datebar = *static_cast<DateBar*>(data); datebar.onDayChange(); }, static_cast<void*>(this));
 		Time::m_GameDate.subscribeToMonthChange(std::bind(&DateBar::onMonthChange, this));
 
 		m_Window = Window::getWindow();

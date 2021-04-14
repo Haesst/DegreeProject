@@ -163,6 +163,26 @@ public:
 				m_MessageText.setString(stream.str());
 				break;
 			}
+			case UIType::CallToArmsRequest:
+			case UIType::CallToArmsAccepted:
+			case UIType::CallToArmsRejected:
+			{
+				m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Alliance.png");
+				if (m_MessageType == UIType::CallToArmsRequest)
+				{
+					stream << "\nis calling you to arms.\n\n               Do you honor it?";
+				}
+				else if (m_MessageType == UIType::CallToArmsAccepted)
+				{
+					stream << "\naccepted your call to arms!";
+				}
+				else
+				{
+					stream << "\ndeclined your call to arms!";
+				}
+				m_MessageText.setString(stream.str());
+				break;
+			}
 			case UIType::PeaceRequest:
 			case UIType::PeaceAccepted:
 			case UIType::PeaceDeclined:

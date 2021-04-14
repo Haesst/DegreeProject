@@ -67,8 +67,6 @@ public:
 
 	bool m_Open = false;
 
-	std::unordered_map<int, int> m_PlayerWars;
-
 	sf::RenderWindow* m_Window = nullptr;
 	Character* m_PlayerCharacter = nullptr;
 	Character* m_CurrentCharacter = nullptr;
@@ -754,7 +752,8 @@ public:
 			Vector2D mousePosition = InputHandler::getMousePosition();
 			if (m_DeclareWarShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				if (m_PlayerWars.find(m_CurrentCharacterID) == m_PlayerWars.end())
+				War* war = WarManager::get().getWarAgainst(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
+				if (war == nullptr)
 				{
 					int warHandle = WarManager::get().createWar(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, m_CurrentRegionID);
 
@@ -766,6 +765,9 @@ public:
 					AIManager::get().getAIDataofCharacter(m_CurrentCharacterID).m_LastAction = Action::War;
 
 					UIManager::get()->createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::WarDeclaration);
+					UIManager::get()->createWarIcon(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
+
+					CharacterManager::get()->callAllies(m_PlayerCharacter->m_CharacterID, warHandle);
 
 					Game::m_Sound.pause();
 					if (m_BattleSound.getStatus() != sf::SoundSource::Playing)

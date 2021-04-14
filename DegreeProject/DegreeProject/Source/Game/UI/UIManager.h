@@ -28,11 +28,14 @@ public:
 	UIID createUIWindowElement(sf::Font font, UIType type, Vector2D position, Vector2D size);
 	UIID createUITextElement(sf::Font font, CharacterID characterID, std::string countryName, std::vector<unsigned int> ownedRegions);
 	UIID createUIEventElement(CharacterID instigatorID, CharacterID subjectID, UIType type, float giftAmount = 0.0f);
-	UIID createWarIcon(CharacterID attackerID, CharacterID defenderID, UIType type);
+	UIID createWarIcon(CharacterID attackerID, CharacterID defenderID);
 	void AdjustOwnership(CharacterID conquerorID, CharacterID loserID, unsigned int regionID);
 	UIElement& getUIElement(UIID ID);
 	UIText& getUIText(UIID ID);
 	CharacterWindow* m_CharacterWindow = nullptr;
+	WarWindow* m_WarWindow = nullptr;
+	bool m_ActiveWarIcons = false;
+	bool m_ActiveEventWindows = false;
 private:
 	static UIManager* m_Instance;
 	static UIID m_UIElementsIDs;
@@ -43,5 +46,4 @@ private:
 	RegionWindow* m_RegionWindow = nullptr;
 	StatBar* m_StatBar = nullptr;
 	DateBar* m_DateBar = nullptr;
-	WarWindow* m_WarWindow = nullptr;
 };
