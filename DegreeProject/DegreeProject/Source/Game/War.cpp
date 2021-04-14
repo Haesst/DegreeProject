@@ -25,6 +25,9 @@ bool War::isWinning(CharacterID ID, CharacterID enemyID)
 
 int War::getWarscore(CharacterID ID)
 {
+	if (!m_Attackers.empty() && !m_Defenders.empty()) //Todo: real solution
+
+
 	if (getAttacker() == ID)
 	{
 		return m_AttackerWarscore;
@@ -244,14 +247,4 @@ CharacterID War::getAttacker()
 CharacterID War::getDefender()
 {
 	return m_Defenders[0];
-}
-
-int War::getWarscoreFrom(CharacterID character)
-{
-	if (character == getAttacker())
-	{
-		return m_AttackerWarscore;
-	}
-
-	return m_DefenderWarscore;
 }
