@@ -44,7 +44,7 @@ public:
 	bool handleRecieveMarriageRequest(CharacterID reciever, CharacterID sender);
 	bool handlePeaceRequest(CharacterID sender, CharacterID reciever, PeaceType type);
 	bool handleAllianceRequest(CharacterID sender, CharacterID reciever);
-	bool handleWarCallRequest(CharacterID sender, CharacterID reciever, War& war);
+	bool handleWarCallRequest(CharacterID sender, CharacterID reciever, int war);
 	void update();
 
 

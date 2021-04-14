@@ -209,11 +209,13 @@ bool AIManager::handleAllianceRequest(CharacterID sender, CharacterID reciever)
 	return false;
 }
 
-bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, War& war)
+bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, int war)
 {
+	War* currentWar = WarManager::get().getWar(war);
+
 	for (auto& handle : CharacterManager::get()->getCharacter(reciever).m_CurrentWars)
 	{
-		if (handle == war.getHandle())
+		if (handle == currentWar->getHandle())
 		{
 			//Already in that war
 			return false;
