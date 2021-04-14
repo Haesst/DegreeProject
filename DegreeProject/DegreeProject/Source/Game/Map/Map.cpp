@@ -150,6 +150,14 @@ void Map::loadMap()
 
 					m_MapSquareData.push_back(data);
 				}
+				else if (character == '^')
+				{
+					m_MountainSquares.push_back({ x,y });
+				}
+				else if (character == 'O')
+				{
+					m_UnreachableLandSquares.push_back({ x,y });
+				}
 
 				x++;
 			}
@@ -202,6 +210,20 @@ void Map::updateRegions()
 
 void Map::render()
 {
+	m_Data.m_Shader.setUniform("u_Color", sf::Glsl::Vec4(m_MountainBaseColor));
+	m_Data.m_Shader.setUniform("u_OccupiedColor", sf::Glsl::Vec4(m_MountainAlternateColor));
+	m_Data.m_Shader.setUniform("u_Texture", m_Data.m_LandTexture);
+	m_Data.m_Shader.setUniform("u_Highlighted", false);
+
+	Window::getWindow()->draw(m_MountainVertexArray, m_Data.m_RenderStates);
+
+	m_Data.m_Shader.setUniform("u_Color", sf::Glsl::Vec4(m_UnreachableLandColor));
+	m_Data.m_Shader.setUniform("u_OccupiedColor", sf::Glsl::Vec4(m_UnreachableLandColor));
+	m_Data.m_Shader.setUniform("u_Texture", m_Data.m_LandTexture);
+	m_Data.m_Shader.setUniform("u_Highlighted", false);
+
+	Window::getWindow()->draw(m_UnreachableVertexArray, m_Data.m_RenderStates);
+
 	for (auto& region : m_Data.m_Regions)
 	{
 		m_Data.m_Shader.setUniform("u_Color", sf::Glsl::Vec4(region.m_HighlightColor));
@@ -252,6 +274,9 @@ void Map::clearRegionMapTiles()
 	{
 		region.m_MapSquares.clear();
 	}
+
+	m_MountainSquares.clear();
+	m_UnreachableLandSquares.clear();
 }
 
 void Map::createVertexArrays()
@@ -285,6 +310,60 @@ void Map::createVertexArrays()
 			region.m_VertexArray.append(v3);
 			region.m_VertexArray.append(v4);
 		}
+	}
+
+	m_MountainVertexArray.setPrimitiveType(sf::Triangles);
+
+	for (auto& square : m_MountainSquares)
+	{
+		sf::Vertex v1;
+		sf::Vertex v2;
+		sf::Vertex v3;
+		sf::Vertex v4;
+
+		v1.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top left
+		v2.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top right
+		v3.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom right
+		v4.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom Left
+
+		v1.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) };
+		v2.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) };
+		v3.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) + m_TileSize };
+		v4.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) + m_TileSize };
+
+		m_MountainVertexArray.append(v1);
+		m_MountainVertexArray.append(v2);
+		m_MountainVertexArray.append(v3);
+		m_MountainVertexArray.append(v1);
+		m_MountainVertexArray.append(v3);
+		m_MountainVertexArray.append(v4);
+	}
+
+	m_UnreachableVertexArray.setPrimitiveType(sf::Triangles);
+
+	for (auto& square : m_UnreachableLandSquares)
+	{
+		sf::Vertex v1;
+		sf::Vertex v2;
+		sf::Vertex v3;
+		sf::Vertex v4;
+
+		v1.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top left
+		v2.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top right
+		v3.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom right
+		v4.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom Left
+
+		v1.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) };
+		v2.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) };
+		v3.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) + m_TileSize };
+		v4.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) + m_TileSize };
+
+		m_UnreachableVertexArray.append(v1);
+		m_UnreachableVertexArray.append(v2);
+		m_UnreachableVertexArray.append(v3);
+		m_UnreachableVertexArray.append(v1);
+		m_UnreachableVertexArray.append(v3);
+		m_UnreachableVertexArray.append(v4);
 	}
 }
 

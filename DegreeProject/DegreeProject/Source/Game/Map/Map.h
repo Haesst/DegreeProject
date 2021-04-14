@@ -132,5 +132,16 @@ struct Map
 
 private:
 	int getRegionPositionFromRegionId(const unsigned int id);
+
+	// Mountains
+	std::vector<Vector2DInt> m_MountainSquares;
+	sf::VertexArray m_MountainVertexArray;
+	sf::Color m_MountainBaseColor = sf::Color(80, 80, 80, 255);
+	sf::Color m_MountainAlternateColor = sf::Color(100, 100, 100, 255);
+
+	// Unreachable land
+	std::vector<Vector2DInt> m_UnreachableLandSquares;
+	sf::VertexArray m_UnreachableVertexArray;
+	sf::Color m_UnreachableLandColor = sf::Color(10, 20, 10, 255);
 };
 #pragma warning(pop)
