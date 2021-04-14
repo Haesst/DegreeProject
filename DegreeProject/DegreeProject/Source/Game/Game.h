@@ -18,7 +18,7 @@ enum class FileStatus;
 enum class Title;
 
 const static unsigned int BUILDING_SLOTS = 4;
-const static unsigned int NUMBER_OF_REGIONS = 17;
+const static unsigned int NUMBER_OF_REGIONS = 26;
 
 class Game
 {
