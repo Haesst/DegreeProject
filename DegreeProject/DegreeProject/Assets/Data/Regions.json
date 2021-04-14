@@ -168,5 +168,95 @@
 	"manPower": 60,
 	"capitalx" : 66,
 	"capitaly" : 33
+	},
+	{
+	"name": "Krain",
+	"id": 18,
+	"mapchar": "K",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 60,
+	"capitalx" : 55,
+	"capitaly" : 2
+	},
+	{
+	"name": "Slavonia",
+	"id": 19,
+	"mapchar": "V",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 60,
+	"capitalx" : 66,
+	"capitaly" : 5
+	},
+	{
+	"name": "Istria",
+	"id": 20,
+	"mapchar": "I",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 60,
+	"capitalx" : 54,
+	"capitaly" : 8
+	},
+	{
+	"name": "Croatia",
+	"id": 21,
+	"mapchar": "T",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 60,
+	"capitalx" : 59,
+	"capitaly" : 8
+	},
+	{
+	"name": "Lower Bosnia",
+	"id": 22,
+	"mapchar": "W",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 60,
+	"capitalx" : 82,
+	"capitaly" : 11
+	},
+	{
+	"name": "Upper Bosnia",
+	"id": 23,
+	"mapchar": "E",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 60,
+	"capitalx" : 78,
+	"capitaly" : 13
+	},
+	{
+	"name": "Dalmatia",
+	"id": 24,
+	"mapchar": "D",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 60,
+	"capitalx" : 66,
+	"capitaly" : 12
+	},
+	{
+	"name": "Zachlumia",
+	"id": 25,
+	"mapchar": "Z",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 60,
+	"capitalx" : 81,
+	"capitaly" : 15
+	},
+	{
+	"name": "Dubrovnik",
+	"id": 26,
+	"mapchar": "d",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 60,
+	"capitalx" : 80,
+	"capitaly" : 17
 	}
 ]

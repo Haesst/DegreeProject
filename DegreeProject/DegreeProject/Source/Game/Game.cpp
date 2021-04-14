@@ -135,6 +135,35 @@ void Game::addEntitys()
 	LOG_INFO("{0}'s opinion of Player: {1}", c.m_Name, CharacterManager::get()->getCharacterOpinion(char1, char2));
 	LOG_INFO("{0}'s opinion of Player: {1}", c2.m_Name, CharacterManager::get()->getCharacterOpinion(char0, char2));
 
+	std::vector<unsigned int> characterFourRegions{ 18, 20 };
+	std::vector<unsigned int> characterFiveRegions{ 19 };
+	std::vector<unsigned int> characterSixRegions{ 21 };
+	std::vector<unsigned int> characterSevenRegions{ 22 };
+	std::vector<unsigned int> characterEightRegions{ 24, 26 };
+	std::vector<unsigned int> characterNineRegions{ 25 };
+	std::vector<unsigned int> characterTenRegions{ 23 };
+
+	CharacterID char4 = createCharacter(characterFourRegions, Title::Duke, Gender::Male, "Duchy of Krain", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(16, 181, 191));
+	UIManager::get()->createUITextElement(m_UIFont, char4, CharacterManager::get()->getCharacter(char4).m_KingdomName, characterFourRegions);
+
+	CharacterID char5 = createCharacter(characterFiveRegions, Title::Duke, Gender::Male, "Duchy of Slavonia", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(216, 153, 65));
+	UIManager::get()->createUITextElement(m_UIFont, char5, CharacterManager::get()->getCharacter(char5).m_KingdomName, characterFiveRegions);
+
+	CharacterID char6 = createCharacter(characterSixRegions, Title::Duke, Gender::Male, "Duchy of Croatia", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(37, 130, 198));
+	UIManager::get()->createUITextElement(m_UIFont, char6, CharacterManager::get()->getCharacter(char6).m_KingdomName, characterSixRegions);
+
+	CharacterID char7 = createCharacter(characterSevenRegions, Title::Duke, Gender::Male, "Duchy of Lower Bosnia", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(151, 160, 90));
+	UIManager::get()->createUITextElement(m_UIFont, char7, CharacterManager::get()->getCharacter(char7).m_KingdomName, characterSevenRegions);
+
+	CharacterID char8 = createCharacter(characterEightRegions, Title::Duke, Gender::Male, "Duchy of Dubrovnik", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(240, 140, 149));
+	UIManager::get()->createUITextElement(m_UIFont, char8, CharacterManager::get()->getCharacter(char8).m_KingdomName, characterEightRegions);
+
+	CharacterID char9 = createCharacter(characterNineRegions, Title::Duke, Gender::Male, "Duchy of Zachlumia", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(179, 226, 163));
+	UIManager::get()->createUITextElement(m_UIFont, char9, CharacterManager::get()->getCharacter(char9).m_KingdomName, characterNineRegions);
+
+	CharacterID char10 = createCharacter(characterTenRegions, Title::Duke, Gender::Male, "Duchy of Upper Bosnia", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(24, 225, 191));
+	UIManager::get()->createUITextElement(m_UIFont, char10, CharacterManager::get()->getCharacter(char10).m_KingdomName, characterTenRegions);
+
 	//UI
 	Vector2D characterWindowPosition = { 10.0f, 10.0f };
 	Vector2D characterWindowSize = { 600.0f, 1060.0f };
