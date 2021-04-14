@@ -210,39 +210,32 @@ void Map::updateRegions()
 
 void Map::render()
 {
-	m_Data.m_Shader.setUniform("u_Color", sf::Glsl::Vec4(m_MountainBaseColor));
-	m_Data.m_Shader.setUniform("u_OccupiedColor", sf::Glsl::Vec4(m_MountainAlternateColor));
-	m_Data.m_Shader.setUniform("u_Texture", m_Data.m_LandTexture);
-	m_Data.m_Shader.setUniform("u_Highlighted", false);
-
-	Window::getWindow()->draw(m_MountainVertexArray, m_Data.m_RenderStates);
-
-	m_Data.m_Shader.setUniform("u_Color", sf::Glsl::Vec4(m_UnreachableLandColor));
-	m_Data.m_Shader.setUniform("u_OccupiedColor", sf::Glsl::Vec4(m_UnreachableLandColor));
-	m_Data.m_Shader.setUniform("u_Texture", m_Data.m_LandTexture);
-	m_Data.m_Shader.setUniform("u_Highlighted", false);
-
-	Window::getWindow()->draw(m_UnreachableVertexArray, m_Data.m_RenderStates);
+	renderSquares(m_MountainVertexArray, m_MountainBaseColor, m_MountainAlternateColor, m_Data.m_LandTexture, false);
+	renderSquares(m_UnreachableVertexArray, sf::Color(20, 60, 20, 255), sf::Color(20, 60, 20, 255), m_Data.m_LandTexture, false);
 
 	for (auto& region : m_Data.m_Regions)
 	{
-		m_Data.m_Shader.setUniform("u_Color", sf::Glsl::Vec4(region.m_HighlightColor));
-		m_Data.m_Shader.setUniform("u_Texture", m_Data.m_LandTexture);
-		m_Data.m_Shader.setUniform("u_Highlighted", region.m_Highlighted);
+		sf::Color occupiedColor = region.m_HighlightColor;
 
-		if (region.m_OccupiedBy == INVALID_CHARACTER_ID)
+		if (region.m_OccupiedBy != INVALID_CHARACTER_ID)
 		{
-			m_Data.m_Shader.setUniform("u_OccupiedColor", sf::Glsl::Vec4(region.m_HighlightColor));
-		}
-		else
-		{
-			m_Data.m_Shader.setUniform("u_OccupiedColor", sf::Glsl::Vec4(CharacterManager::get()->getCharacter(region.m_OccupiedBy).m_RegionColor));
+			occupiedColor = CharacterManager::get()->getCharacter(region.m_OccupiedBy).m_RegionColor;
 		}
 
-		Window::getWindow()->draw(region.m_VertexArray, m_Data.m_RenderStates);
+		renderSquares(region.m_VertexArray, region.m_HighlightColor, occupiedColor, m_Data.m_LandTexture, region.m_Highlighted);
 		
 		HeraldicShieldManager::renderShield(region.m_HeraldicShield, convertToScreen(region.m_RegionCapital) + Vector2D(0.0f, -32.0f));
 	}
+}
+
+void Map::renderSquares(const sf::VertexArray& vertexArray, const sf::Color& color, const sf::Color& highlightColor, const sf::Texture& texture, const bool& highlighted)
+{
+	m_Data.m_Shader.setUniform("u_Color", sf::Glsl::Vec4(color));
+	m_Data.m_Shader.setUniform("u_OccupiedColor", sf::Glsl::Vec4(highlightColor));
+	m_Data.m_Shader.setUniform("u_Texture", texture);
+	m_Data.m_Shader.setUniform("u_Highlighted", highlighted);
+
+	Window::getWindow()->draw(vertexArray, m_Data.m_RenderStates);
 }
 
 void Map::setRegionColor(int regionId, sf::Color color)

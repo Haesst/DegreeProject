@@ -132,6 +132,7 @@ struct Map
 
 private:
 	int getRegionPositionFromRegionId(const unsigned int id);
+	void renderSquares(const sf::VertexArray& vertexArray, const sf::Color& color, const sf::Color& highlightColor, const sf::Texture& texture, const bool& highlighted);
 
 	// Mountains
 	std::vector<Vector2DInt> m_MountainSquares;
