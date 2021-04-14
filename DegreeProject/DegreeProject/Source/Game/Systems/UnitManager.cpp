@@ -201,10 +201,10 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 		return;
 	}
 
-	if (unitID == INVALID_UNIT_ID)
-	{
-		return; // Todo: This is wrong. Find out how an invalid id gets sent in
-	}
+	//if (unitID == INVALID_UNIT_ID)
+	//{
+	//	return; // Todo: This is wrong. Find out how an invalid id gets sent in
+	//}
 
 	Unit& unit = getUnitWithId(unitID);
 
@@ -226,6 +226,8 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 
 		squareData.addUnique(unitID);
 	}
+
+	startConquerRegion(unit);
 
 	CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_RaisedArmySize = unit.m_RepresentedForce;
 }

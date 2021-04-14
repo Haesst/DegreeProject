@@ -130,6 +130,21 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, Pea
 		return true;
 	}
 
+	bool allRegionsSiezed = true;
+	for (auto ID : CharacterManager::get()->getCharacter(reciever).m_OwnedRegionIDs)
+	{
+		if (Map::get().getRegionById(ID).m_OccupiedBy == INVALID_CHARACTER_ID)
+		{
+			allRegionsSiezed = false;
+			break;
+		}
+	}
+
+	if (allRegionsSiezed)
+	{
+		return true;
+	}
+
 	if (type == PeaceType::Enforce_Demands && war->getWarscore(sender) >= 100)
 	{
 		return true;
@@ -139,12 +154,12 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, Pea
 
 	if (war->getWarscoreFrom(sender) > war->getWarscoreFrom(reciever))
 	{
-		acceptance += .3f;
+		acceptance += .4f;
 	}
 
 	else
 	{
-		acceptance -= .3f;
+		acceptance -= .4f;
 	}
 
 	int senderArmySize = CharacterManager::get()->getCharacter(sender).m_RaisedArmySize;
@@ -152,7 +167,7 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, Pea
 
 	if (senderArmySize > recieverArmySize)
 	{
-		acceptance += .3f;
+		acceptance += .5f;
 	}
 
 	else
@@ -327,7 +342,7 @@ void AIManager::update()
 				else
 				{
 					Character& character = CharacterManager::get()->getCharacter(warmind.m_OwnerID);
-					if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f)
+					if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f && character.m_MaxArmySize > 0)
 					{
 						//LOG_INFO("{0} IS RAISING UNITS", CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_Name);
 						UnitManager::get().raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
