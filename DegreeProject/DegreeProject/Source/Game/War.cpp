@@ -42,6 +42,9 @@ void War::addWarscore(CharacterID ID, int warScore)
 {
 	if (getAttacker() == ID)
 	{
+		m_AttackerWarscore += warScore;
+		m_DefenderWarscore -= warScore;
+
 		if(m_AttackerWarscore >= 100)
 		{
 			if (!CharacterManager::get()->getCharacter(getAttacker()).m_IsPlayerControlled)
@@ -50,13 +53,13 @@ void War::addWarscore(CharacterID ID, int warScore)
 				return;
 			}
 		}
-
-		m_AttackerWarscore += warScore;
-		m_DefenderWarscore -= warScore;
 	}
 
 	else if(getDefender() == ID)
  	{
+		m_DefenderWarscore += warScore;
+		m_AttackerWarscore -= warScore;
+
 		if (m_DefenderWarscore >= 100)
 		{
 			if (!CharacterManager::get()->getCharacter(getDefender()).m_IsPlayerControlled)
@@ -65,9 +68,6 @@ void War::addWarscore(CharacterID ID, int warScore)
 				return;
 			}
 		}
-
-		m_DefenderWarscore += warScore;
-		m_AttackerWarscore -= warScore;
 	}
 }
 

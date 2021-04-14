@@ -235,10 +235,10 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 void UnitManager::dismissUnit(UnitID unitID)
 {
 
-	if (unitID == INVALID_UNIT_ID)
-	{
-		return; // Todo: This is wrong. Find out how an invalid id gets sent in
-	}
+	//if (unitID == INVALID_UNIT_ID)
+	//{
+	//	return; // Todo: This is wrong. Find out how an invalid id gets sent in
+	//}
 
 	Unit& unit = getUnitWithId(unitID);
 
@@ -546,6 +546,8 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 
 	getUnitWithId(unitID).m_FightingArmyID = INVALID_UNIT_ID;
 	getUnitWithId(enemyID).m_FightingArmyID = INVALID_UNIT_ID;
+	getUnitWithId(unitID).m_CombatTimerAccu = 0.0f;
+	getUnitWithId(enemyID).m_CombatTimerAccu = 0.0f;
 	getUnitWithId(unitID).m_InCombat = false;
 	getUnitWithId(enemyID).m_InCombat = false;
 }
@@ -644,18 +646,17 @@ void UnitManager::unitSiege(Unit& unit)
 
 					defender.m_MaxArmySize -= region.m_ManPower;
 
+					bool allRegionsSiezed = true;
 					for (auto ID : CharacterManager::get()->getCharacter(currentWar->getDefender()).m_OwnedRegionIDs)
 					{
-						if (Map::get().getRegionById(ID).m_OccupiedBy != INVALID_CHARACTER_ID)
+						if (Map::get().getRegionById(ID).m_OccupiedBy == INVALID_CHARACTER_ID)
 						{
-							continue;
+							allRegionsSiezed = false;
 						}
+					}
 
-						else
-						{
-							break;
-						}
-
+					if (allRegionsSiezed)
+					{
 						currentWar->addWarscore(currentWar->getAttacker(), 100);
 					}
 				}
@@ -726,7 +727,7 @@ void UnitManager::startConquerRegion(Unit& unit)
 bool UnitManager::weightedRandomCombat(float weight)
 {
 	float f = rand() * 1.0f / RAND_MAX;
-	float vv = weight / 10.0f;
+	float vv = weight / 5.0f;
 	return f < vv;
 }
 
