@@ -224,6 +224,17 @@ public:
 				m_MessageText.setString(stream.str());
 				break;
 			}
+			case UIType::TriedToDeclareWarOnAlly:
+			{
+				m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/War.png");
+
+				stream.str(std::string());
+				stream.clear();
+				stream << "You can't declare war on an ally!";
+				m_MessageText.setString(stream.str());
+
+				break;
+			}
 			case UIType::Gift:
 			{
 				m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Coins.png");
