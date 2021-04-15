@@ -1,4 +1,5 @@
 #include "UIManager.h"
+#include "Game/UI/MainMenu.h"
 #include "Game/UI/CharacterWindow.h"
 #include "Game/UI/RegionWindow.h"
 #include "Game/UI/StatBar.h"
@@ -22,6 +23,7 @@ UIManager* UIManager::get()
 
 UIManager::UIManager()
 {
+	m_MainMenu = nullptr;
 	m_CharacterWindow = nullptr;
 	m_RegionWindow = nullptr;
 	m_StatBar = nullptr;
@@ -31,6 +33,7 @@ UIManager::UIManager()
 
 UIManager::~UIManager()
 {
+	delete m_MainMenu;
 	delete m_CharacterWindow;
 	delete m_RegionWindow;
 	delete m_StatBar;
@@ -89,7 +92,6 @@ void UIManager::AdjustOwnership(CharacterID conquerorID, CharacterID loserID, un
 	m_UITexts[loserID]->loseRegion(regionID);
 }
 
-
 UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D position, Vector2D size)
 {
 	UIID id = m_UIElementsIDs++;
@@ -100,6 +102,11 @@ UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D posit
 	uiElement.m_Type = type;
 	switch (type)
 	{
+		case UIType::MainMenu:
+		{
+			m_MainMenu = new MainMenu(id, font, position, size);
+			break;
+		}
 		case UIType::CharacterWindow:
 		{
 			m_CharacterWindow = new CharacterWindow(id, font, position, size);
@@ -136,6 +143,7 @@ UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D posit
 
 void UIManager::start()
 {
+	ASSERT(m_MainMenu != nullptr, "Main Menu does not exist");
 	ASSERT(m_CharacterWindow != nullptr, "Character Window does not exist");
 	ASSERT(m_RegionWindow != nullptr, "Region Window does not exist");
 	ASSERT(m_WarWindow != nullptr, "War Window does not exist");
@@ -193,6 +201,7 @@ void UIManager::update()
 		}
 		m_EventWindows.clear();
 	}
+	m_MainMenu->update();
 }
 
 void UIManager::render()
@@ -220,6 +229,7 @@ void UIManager::render()
 			m_EventWindows[i]->render();
 		}
 	}
+	m_MainMenu->render();
 }
 
 #pragma warning(push)

@@ -15,6 +15,7 @@ class UIText;
 class EventWindow;
 class WarWindow;
 class WarIcon;
+class MainMenu;
 
 class UIManager
 {
@@ -34,6 +35,7 @@ public:
 	UIText& getUIText(UIID ID);
 	CharacterWindow* m_CharacterWindow = nullptr;
 	WarWindow* m_WarWindow = nullptr;
+	MainMenu* m_MainMenu = nullptr;
 	bool m_ActiveWarIcons = false;
 	bool m_ActiveEventWindows = false;
 private:

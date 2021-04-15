@@ -165,6 +165,10 @@ void Game::addEntitys()
 	UIManager::get()->createUITextElement(m_UIFont, char10, CharacterManager::get()->getCharacter(char10).m_KingdomName, characterTenRegions);
 
 	//UI
+	Vector2D mainMenuPosition = { 960.0f, 540.0f };
+	Vector2D mainMenuSize = { 300.0f, 500.0f };
+	UIManager::get()->createUIWindowElement(m_UIFont, UIType::MainMenu, mainMenuPosition, mainMenuSize);
+
 	Vector2D characterWindowPosition = { 10.0f, 10.0f };
 	Vector2D characterWindowSize = { 600.0f, 1060.0f };
 	UIManager::get()->createUIWindowElement(m_UIFont, UIType::CharacterWindow, characterWindowPosition, characterWindowSize);

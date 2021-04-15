@@ -96,10 +96,6 @@ void InputHandler::handleInputEvents()
 			case sf::Keyboard::Escape:
 			{
 				inputs[EscapePressed] = true;
-				if (!inputs[RegionWindowOpen] && !inputs[CharacterWindowOpen] && !inputs[WarWindowOpen])
-				{
-					window.close();
-				}
 				break;
 			}
 			case sf::Keyboard::Space:

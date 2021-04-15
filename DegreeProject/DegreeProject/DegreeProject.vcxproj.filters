@@ -162,6 +162,9 @@
     <ClInclude Include="Source\Game\UI\EventWindow.h">
       <Filter>Game\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\UI\MainMenu.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\UI\RegionWindow.h">
       <Filter>Game\UI</Filter>
     </ClInclude>
@@ -259,6 +262,9 @@
     </ClCompile>
     <ClCompile Include="Source\Game\Systems\UnitManager.cpp">
       <Filter>Game\Systems</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\UI\MainMenu.cpp">
+      <Filter>Game\UI</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\UI\UIManager.cpp">
       <Filter>Game\UI</Filter>
