@@ -22,7 +22,18 @@ void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 
 	else if(!enemyUnit.m_Raised)
 	{
-		battlefieldIntPosition = Map::get().getRegionById(WarManager::get().getWar(warmind.m_PrioritizedWarHandle)->m_WargoalRegion).m_RegionCapital;
+		War* war = WarManager::get().getWar(warmind.m_PrioritizedWarHandle);
+		
+		if(Map::get().getRegionById(war->m_WargoalRegion).m_OccupiedBy == INVALID_CHARACTER_ID)
+		{
+			battlefieldIntPosition = Map::get().getRegionById(war->m_WargoalRegion).m_RegionCapital;
+		}
+
+		else
+		{
+			int randomRegion = rand() % CharacterManager::get()->getCharacter(war->getOpponent(warmind.m_OwnerID)).m_OwnedRegionIDs.size();
+			battlefieldIntPosition = Map::get().getRegionById(randomRegion).m_RegionCapital;
+		}
 	}
 
 	else
