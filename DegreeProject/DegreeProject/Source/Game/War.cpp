@@ -83,7 +83,7 @@ void War::endWar(CharacterID winningCharacter)
 
 		for (auto& war : CharacterManager::get()->getCharacter(ID).m_CurrentWars)
 		{
-			if (WarManager::get().getWar(war) == this)
+			if (war == getHandle())
 			{
 				CharacterManager::get()->getCharacter(ID).m_CurrentWars.erase(CharacterManager::get()->getCharacter(ID).m_CurrentWars.begin() + index);
 
@@ -104,7 +104,7 @@ void War::endWar(CharacterID winningCharacter)
 		{
 			index = 0;
 
-			if (WarManager::get().getWar(war) == this)
+			if (war == getHandle())
 			{
 				CharacterManager::get()->getCharacter(ID).m_CurrentWars.erase(CharacterManager::get()->getCharacter(ID).m_CurrentWars.begin() + index);
 

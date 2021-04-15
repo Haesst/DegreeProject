@@ -620,6 +620,11 @@ void AIManager::warAction(AIData& data)
 		return;
 	}
 
+	if (CharacterManager::get()->isAlliedWith(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
+	{
+		return;
+	}
+
 	int warHandle = WarManager::get().createWar(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent, getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
 	War* war = WarManager::get().getWar(warHandle);
 
@@ -766,11 +771,23 @@ bool AIManager::weightedRandom(float weight)
 
 int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 {
-	if (!CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty())
+	WarManager* warManager = &WarManager::get();
+	Character& character = CharacterManager::get()->getCharacter(warmind.m_OwnerID);
+
+	if (!character.m_CurrentWars.empty())
 	{
-		warmind.m_PrioritizedWarHandle = CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.front();
-		warmind.m_Opponent = WarManager::get().getWar(warmind.m_PrioritizedWarHandle)->getOpponent(warmind.m_OwnerID);
-		return warmind.m_PrioritizedWarHandle;
+		warmind.m_PrioritizedWarHandle = character.m_CurrentWars.front();
+
+		if (warManager->getWar(warmind.m_PrioritizedWarHandle) != nullptr)
+		{
+			warmind.m_Opponent = warManager->getWar(warmind.m_PrioritizedWarHandle)->getOpponent(warmind.m_OwnerID);
+			return warmind.m_PrioritizedWarHandle;
+		}
+
+		else
+		{
+			character.m_CurrentWars.erase(character.m_CurrentWars.begin());
+		}
 	}
 
 	return -1;

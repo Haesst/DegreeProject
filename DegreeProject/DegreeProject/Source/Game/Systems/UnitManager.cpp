@@ -48,7 +48,7 @@ void UnitManager::update()
 		// Engage enemy
 		unitCombat(unit);
 		// Siege
-
+		
 		//if (unit.m_Owner == CharacterManager::get()->getPlayerCharacter().m_CharacterID)
 		//{
 		//	unitSiege(unit);
@@ -633,11 +633,6 @@ void UnitManager::unitSiege(Unit& unit)
 				{
 					currentWar->m_AttackerOccupiedRegions.push_back(region.m_RegionId);
 					currentWar->addWarscore(currentWar->getAttacker(), 50);
-					if (!CharacterManager::get()->getCharacter(currentWar->getAttacker()).m_IsPlayerControlled)
-					{
-						CharacterManager::get()->sendPeaceOffer(currentWar->getAttacker(), currentWar->getDefender(), PeaceType::Enforce_Demands);
-					}
-
 					region.m_OccupiedBy = attacker.m_CharacterID;
 
 					//Loot
@@ -665,12 +660,7 @@ void UnitManager::unitSiege(Unit& unit)
 				{
 					currentWar->m_DefenderOccupiedRegions.push_back(region.m_RegionId);
 					currentWar->addWarscore(currentWar->getDefender(), 50);
-
-					if (!CharacterManager::get()->getCharacter(currentWar->getDefender()).m_IsPlayerControlled)
-					{
-						CharacterManager::get()->sendPeaceOffer(currentWar->getDefender(), currentWar->getAttacker(), PeaceType::Enforce_Demands);
-					}
-					region.m_OccupiedBy =defender.m_CharacterID;
+					region.m_OccupiedBy = defender.m_CharacterID;
 
 					//Loot
 					attacker.m_CurrentGold -= region.m_RegionTax;
