@@ -212,7 +212,30 @@ bool AIManager::handleAllianceRequest(CharacterID sender, CharacterID reciever)
 bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, int war)
 {
 	War* currentWar = WarManager::get().getWar(war);
+	CharacterManager* characterManager = CharacterManager::get();
 
+	if (currentWar->getAttacker() == characterManager->getCharacter(sender).m_CharacterID)
+	{
+		for (auto ally : CharacterManager::get()->getCharacter(reciever).m_Allies)
+		{
+			if (ally == currentWar->getDefender())
+			{
+				return false;
+			}
+		}
+	}
+
+	else if (currentWar->getDefender() == characterManager->getCharacter(sender).m_CharacterID)
+	{
+		for (auto ally : CharacterManager::get()->getCharacter(reciever).m_Allies)
+		{
+			if (ally == currentWar->getAttacker())
+			{
+				return false;
+			}
+		}
+	}
+	
 	for (auto& handle : CharacterManager::get()->getCharacter(reciever).m_CurrentWars)
 	{
 		if (handle == currentWar->getHandle())
@@ -447,8 +470,7 @@ float AIManager::warDecision(CharacterID ID)
 	GoldConsideration goldConsideration;
 	ArmySizeConsideration armySizeConsideration;
 
-	//Personality personality = m_AIManager->m_Personalities[characterComponents->m_PersonalityIndex];
-
+	//Personality personality = m_Personalities[CharacterManager::get()->getCharacter(ID).m_PersonalityIndex];
 	goldConsideration.setContext(ID);
 	armySizeConsideration.setContext(ID);
 
