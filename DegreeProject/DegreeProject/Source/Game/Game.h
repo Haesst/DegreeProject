@@ -31,7 +31,7 @@ private:
 	AssetHandler* m_AssetHandler = nullptr;
 	HotReloader* m_HotReloader = nullptr;
 	sf::SoundBuffer m_SoundBuffer;
-	float volume = 5.0f;
+	float volume = 1.0f;
 
 public:
 	static sf::Sound m_Sound;

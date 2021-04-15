@@ -426,6 +426,11 @@ CharacterID AIManager::getPotentialAlly(AIData& data)
 	{
 		if (Map::get().getRegionById(region).m_OwnerID != data.m_OwnerID)
 		{
+			if (CharacterManager::get()->getCharacter(Map::get().getRegionById(region).m_OwnerID).m_CharacterTitle == Title::Unlanded)
+			{
+				continue;
+			}
+
 			if (WarManager::get().atWarWith(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID))
 			{
 				continue;

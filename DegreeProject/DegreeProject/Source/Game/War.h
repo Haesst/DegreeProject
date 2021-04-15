@@ -17,8 +17,6 @@ struct War
 
 	int m_WargoalRegion = -1;
 
-	War() {};
-
 	War(CharacterID attacker, CharacterID defender, int warGoalRegion, int handle);
 
 	bool isWinning(CharacterID ID, CharacterID enemyID);

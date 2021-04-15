@@ -555,10 +555,9 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 			{
 				war->addWarscore(getUnitWithId(unitID).m_Owner, 50);
 			}
+
+			LOG_INFO("{0} won the battle against {1}", CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get()->getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
 		}
-		
-		LOG_INFO("{0} won the battle against {1}", CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get()->getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
-		war->addWarscore(getUnitWithId(enemyID).m_Owner, -50);
 	}
 
 	else

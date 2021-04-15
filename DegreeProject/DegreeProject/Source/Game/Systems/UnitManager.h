@@ -43,7 +43,7 @@ private:
 
 	void updateSprite(Unit& unit);
 	void displayProgressMeter(Unit& unit, float timeElapsed, float totalTime, sf::Vector2f offset, sf::Color fillColor);
-
+	
 private:
 
 	Date m_LastDay;
