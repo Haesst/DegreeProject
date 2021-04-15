@@ -36,6 +36,8 @@ struct War
 	bool isAttacker(CharacterID ent);
 	bool isDefender(CharacterID ent);
 
+	
+
 	int getHandle();
 
 	//Get opposing force

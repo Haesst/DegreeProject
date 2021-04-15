@@ -3,6 +3,7 @@
 #include "Game/AI/AIManager.h"
 #include "Game/Data/AIData.h"
 #include "Game/Data/Character.h"
+#include "Game/Data/Unit.h"
 
 WarManager* WarManager::m_Instance = nullptr;
 
@@ -107,6 +108,67 @@ void WarManager::invalidateWarsForRegion(int regionID)
 			endWar(war.second.getHandle(), INVALID_CHARACTER_ID);
 		}
 	}
+}
+
+bool WarManager::isEnemyOfEnemy(Unit& unit, Unit& enemyUnit)
+{
+	std::vector<CharacterID> enemies = getOpposingSide(unit.m_Owner);
+	std::vector<CharacterID> enemyEnemies = getOpposingSide(enemyUnit.m_Owner);
+
+	for (auto& character : enemies)
+	{
+		for (auto& enemy : enemyEnemies)
+		{
+			if (character == enemy)
+			{
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
+std::vector<War> WarManager::getWarsOfCharacter(CharacterID ID)
+{
+	std::vector<War> wars;
+
+	for (auto& war : m_Wars)
+	{
+		if (war.second.isAttacker(ID) || war.second.isDefender(ID))
+		{
+			wars.push_back(war.second);
+		}
+	}
+
+	return wars;
+}
+
+std::vector<CharacterID> WarManager::getOpposingSide(CharacterID ID)
+{
+	std::vector<CharacterID> enemies;
+	std::vector<War> wars = getWarsOfCharacter(ID);
+
+	for (auto& war : wars)
+	{
+		if (war.isAttacker(ID))
+		{
+			for (auto defender : war.m_Defenders)
+			{
+				enemies.push_back(defender);
+			}
+		}
+
+		if (war.isDefender(ID))
+		{
+			for (auto attacker : war.m_Attackers)
+			{
+				enemies.push_back(attacker);
+			}
+		}
+	}
+
+	return enemies;
 }
 
 War* WarManager::getWarAgainst(CharacterID character, CharacterID enemy)

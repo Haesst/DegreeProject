@@ -2,6 +2,8 @@
 #include <vector>
 #include <Game\War.h>
 
+struct Unit;
+
 enum class PeaceType
 {
 	Enforce_Demands,
@@ -22,6 +24,11 @@ public:
 	bool atWarWith(CharacterID character, CharacterID enemy); 
 	void invalidateWarsForRegionOnWonWar(War& wonWar);
 	void invalidateWarsForRegion(int regionID);
+	bool isEnemyOfEnemy(Unit& unit, Unit& enemyUnit);
+
+	std::vector<War> getWarsOfCharacter(CharacterID ID);
+
+	std::vector<CharacterID> getOpposingSide(CharacterID ID);
 
 	inline static WarManager& get()
 	{

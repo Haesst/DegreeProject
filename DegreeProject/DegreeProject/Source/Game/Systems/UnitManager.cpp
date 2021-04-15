@@ -399,11 +399,12 @@ void UnitManager::unitCombat(Unit& unit)
 		return;
 	}
 
-	if (WarManager::get().atWarWith(unit.m_Owner, getUnitWithId(id).m_Owner))
+	if (WarManager::get().atWarWith(unit.m_Owner, getUnitWithId(id).m_Owner) || WarManager::get().isEnemyOfEnemy(unit, getUnitWithId(id)))
 	{
 		unit.m_FightingArmyID = id;
 		getUnitWithId(id).m_FightingArmyID = unit.m_UnitID;
 		startCombatTimer(unit.m_UnitID, id);
+		return;
 	}
 }
 
@@ -518,11 +519,6 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	WarManager* warManager = &WarManager::get();
 	War* war = warManager->getWarAgainst(getUnitWithId(unitID).m_Owner, getUnitWithId(enemyID).m_Owner);
 
-	if (war == nullptr)
-	{
-		return;
-	}
-
 	float armyWeight;
 
 	if (getUnitWithId(unitID).m_RepresentedForce > 0 && getUnitWithId(enemyID).m_RepresentedForce > 0)
@@ -548,16 +544,19 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		dismissUnit(enemyID);
 		getUnitWithId(enemyID).m_RepresentedForce = 0;
 
-		if (war->isDefender(unitID))
+		if (war != nullptr)
 		{
-			war->addWarscore(getUnitWithId(unitID).m_Owner, 100);
-		}
+			if (war->isDefender(unitID))
+			{
+				war->addWarscore(getUnitWithId(unitID).m_Owner, 100);
+			}
 
-		else
-		{
-			war->addWarscore(getUnitWithId(unitID).m_Owner, 50);
+			else
+			{
+				war->addWarscore(getUnitWithId(unitID).m_Owner, 50);
+			}
 		}
-
+		
 		LOG_INFO("{0} won the battle against {1}", CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get()->getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
 		war->addWarscore(getUnitWithId(enemyID).m_Owner, -50);
 	}
@@ -568,14 +567,17 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		dismissUnit(unitID);
 		getUnitWithId(unitID).m_RepresentedForce = 0;
 		
-		if (war->isDefender(enemyID))
+		if (war != nullptr)
 		{
-			war->addWarscore(getUnitWithId(enemyID).m_Owner, 100);
-		}
+			if (war->isDefender(enemyID))
+			{
+				war->addWarscore(getUnitWithId(enemyID).m_Owner, 100);
+			}
 
-		else
-		{
-			war->addWarscore(getUnitWithId(enemyID).m_Owner, 50);
+			else
+			{
+				war->addWarscore(getUnitWithId(enemyID).m_Owner, 50);
+			}
 		}
 	}
 
