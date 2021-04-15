@@ -236,6 +236,19 @@ int War::getHandle()
 	return m_Handle;
 }
 
+CharacterID War::getOpponent(CharacterID character)
+{
+	if (isAttacker(character))
+	{
+		return getDefender();
+	}
+
+	else if (isDefender(character))
+	{
+		return getAttacker();
+	}
+}
+
 CharacterID War::getAttacker()
 {
 	return m_Attackers[0];
