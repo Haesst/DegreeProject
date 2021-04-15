@@ -8,6 +8,7 @@
 struct Unit;
 class AssetHandler;
 struct Date;
+struct Character;
 
 class UnitManager
 {
@@ -34,8 +35,9 @@ private:
 	void showPath(Unit& unit);
 	void startCombatTimer(UnitID unit, UnitID enemyUnit);
 	UnitID unitAtSquare(Vector2DInt square, UnitID unitID);
+	std::vector<UnitID> getAlliesAtSquare(const Character& character, Vector2DInt square);
 	void determineCombat(UnitID unitID, UnitID enemyID);
-	bool neutralUnitAtSquare(CharacterID character, Vector2DInt square);
+	bool neutralUnitAtSquare(Character& character, Vector2DInt square);
 	bool weightedRandomCombat(float weight);
 	void startConquerRegion(Unit& unit);
 

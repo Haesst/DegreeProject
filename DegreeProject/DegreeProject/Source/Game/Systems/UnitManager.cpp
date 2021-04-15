@@ -54,6 +54,7 @@ void UnitManager::update()
 		//	unitSiege(unit);
 		//}
 
+		startConquerRegion(unit);
 
 		unitSiege(unit);
 
@@ -384,7 +385,6 @@ void UnitManager::moveUnit(Unit& unit)
 		}
 		else
 		{
-			startConquerRegion(unit);
 			unit.m_Moving = false;
 		}
 	}
@@ -442,7 +442,33 @@ UnitID UnitManager::unitAtSquare(Vector2DInt square, UnitID unitID)
 	return INVALID_UNIT_ID;
 }
 
-bool UnitManager::neutralUnitAtSquare(CharacterID character, Vector2DInt square)
+std::vector<UnitID> UnitManager::getAlliesAtSquare(const Character& character, Vector2DInt square)
+{
+	std::vector<UnitID> alliesInSquare;
+
+	for (const auto& squareData : Map::get().m_MapSquareData)
+	{
+		if (squareData.m_Position == square)
+		{
+			for (const auto& ID : squareData.m_EntitiesInSquare)
+			{
+				for (const CharacterID& ally : character.m_Allies)
+				{
+					if (ally == getUnitWithId(ID).m_Owner)
+					{
+						alliesInSquare.push_back(ID);
+					}
+				}
+			}
+
+			break;
+		}
+	}
+
+	return alliesInSquare;
+}
+
+bool UnitManager::neutralUnitAtSquare(Character& character, Vector2DInt square)
 {
 	for (auto& squareData : Map::get().m_MapSquareData)
 	{
@@ -453,13 +479,23 @@ bool UnitManager::neutralUnitAtSquare(CharacterID character, Vector2DInt square)
 			for (auto& ID : squareData.m_EntitiesInSquare)
 			{
 				Unit& unit = getUnitWithId(ID);
+				bool allyInSquare = false;
 
-				if (unit.m_Owner == character)
+				for (const CharacterID& ally : character.m_Allies)
+				{
+					if (unit.m_Owner == ally)
+					{
+						allyInSquare = true;
+						break;
+					}
+				}
+
+				if (unit.m_Owner == character.m_CharacterID || allyInSquare)
 				{
 					continue;
 				}
 
-				War* potentialWar = warManager->getWarAgainst(character, unit.m_Owner);
+				War* potentialWar = warManager->getWarAgainst(character.m_CharacterID, unit.m_Owner);
 
 				if (potentialWar == nullptr)
 				{
@@ -561,15 +597,16 @@ void UnitManager::unitSiege(Unit& unit)
 
 	if (unit.m_LastSeizeDate < Time::m_GameDate.m_Date)
 	{
-		if (!unit.m_InCombat)
+		MapRegion& region = Map::get().getRegionById(unit.m_SeizingRegionID);
+
+		if (!unit.m_InCombat || neutralUnitAtSquare(CharacterManager::get()->getCharacter(unit.m_Owner), region.m_RegionCapital))
 		{
 			unit.m_DaysSeizing++;
 			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
 
-			MapRegion& region = Map::get().getRegionById(unit.m_SeizingRegionID);
 			if (Map::get().mapSquareDataContainsKey(region.m_RegionCapital))
 			{
-				if (neutralUnitAtSquare(unit.m_Owner, region.m_RegionCapital))
+				if (neutralUnitAtSquare(CharacterManager::get()->getCharacter(unit.m_Owner), region.m_RegionCapital))
 				{
 					unit.m_SeizingRegionID = -1;
 					unit.m_DaysSeizing = 0;
@@ -678,6 +715,11 @@ void UnitManager::unitSiege(Unit& unit)
 
 void UnitManager::startConquerRegion(Unit& unit)
 {
+	if (unit.m_Moving || unit.m_SeizingRegionID != -1)
+	{
+		return;
+	}
+
 	std::vector<int> regionIDs = Map::get().getRegionIDs();
 	Vector2DInt currentMapPosition = Map::convertToMap(unit.m_Position);
 
@@ -694,7 +736,34 @@ void UnitManager::startConquerRegion(Unit& unit)
 				continue;
 			}
 
+			if (region.m_OccupiedBy != INVALID_CHARACTER_ID && CharacterManager::get()->isAlliedWith(region.m_OccupiedBy, unit.m_Owner))
+			{
+				continue;
+			}
+
 			if (region.m_OccupiedBy == unit.m_Owner)
+			{
+				continue;
+			}
+
+			bool allyFoundSieging = false;
+			Character& unitOwner = CharacterManager::get()->getCharacter(unit.m_Owner);
+
+			std::vector alliesInSquare = getAlliesAtSquare(unitOwner, currentMapPosition);
+
+			if (alliesInSquare.size() > 0)
+			{
+				for (const UnitID& ally : alliesInSquare)
+				{
+					if (getUnitWithId(ally).m_SeizingRegionID == regionID)
+					{
+						allyFoundSieging = true;
+						break;
+					}
+				}
+			}
+
+			if (allyFoundSieging)
 			{
 				continue;
 			}
