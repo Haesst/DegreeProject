@@ -337,6 +337,43 @@ void CharacterManager::sendAllianceOffer(CharacterID sender, CharacterID recieve
 	}
 }
 
+void CharacterManager::breakAlliance(CharacterID characterID, CharacterID otherID)
+{
+	removeAlly(characterID, otherID);
+	removeAlly(otherID, characterID);
+
+	if (otherID == m_PlayerCharacterID)
+	{
+		UIManager::get()->createUIEventElement(m_PlayerCharacterID, characterID, UIType::AllianceBroken);
+	}
+	else if (characterID == m_PlayerCharacterID)
+	{
+		UIManager::get()->createUIEventElement(m_PlayerCharacterID, otherID, UIType::AllianceBroken);
+	}
+}
+
+void CharacterManager::removeAlly(CharacterID characterID, CharacterID otherID)
+{
+	Character& character = getCharacter(characterID);
+	Character& other = getCharacter(otherID);
+
+	int indexOfOther = 0;
+	bool foundOther = false;
+	for (const CharacterID& ally : character.m_Allies)
+	{
+		if (ally == otherID)
+		{
+			foundOther = true;
+			break;
+		}
+		indexOfOther++;
+	}
+
+	ASSERT(foundOther, "Trying to break up a non-existing alliance");
+	
+	character.m_Allies.erase(character.m_Allies.begin() + indexOfOther);
+}
+
 void CharacterManager::onWarEnded(CharacterID sender, CharacterID reciever)
 {
 	WarManager::get().endWar(WarManager::get().getWarAgainst(sender, reciever)->getHandle(), sender);
@@ -619,6 +656,12 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	character.m_RaisedArmySize = 0;
 	character.m_OwnedRegionIDs.clear();
 	character.m_CharacterTitle = Title::Unlanded;
+
+	for (const CharacterID& ally : character.m_Allies)
+	{
+		breakAlliance(characterID, ally);
+	}
+
 	if (character.m_Spouse != INVALID_CHARACTER_ID)
 	{
 		getCharacter(character.m_Spouse).m_Spouse = INVALID_CHARACTER_ID;

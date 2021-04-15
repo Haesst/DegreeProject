@@ -163,6 +163,17 @@ public:
 				m_MessageText.setString(stream.str());
 				break;
 			}
+			case UIType::AllianceBroken:
+			{
+				m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Alliance.png");
+
+				stream.str(std::string());
+				stream.clear();
+				stream << "You're alliance with " << subject.m_Name << " is broken.";
+				m_MessageText.setString(stream.str());
+
+				break;
+			}
 			case UIType::CallToArmsRequest:
 			case UIType::CallToArmsAccepted:
 			case UIType::CallToArmsRejected:

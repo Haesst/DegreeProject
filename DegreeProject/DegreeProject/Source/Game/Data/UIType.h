@@ -14,6 +14,7 @@ enum class UIType
 	AllianceRequest,
 	AllianceAccepted,
 	AllianceDeclined,
+	AllianceBroken,
 	CallToArmsRequest,
 	CallToArmsAccepted,
 	CallToArmsRejected,
