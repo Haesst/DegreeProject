@@ -113,12 +113,12 @@ War* WarManager::getWarAgainst(CharacterID character, CharacterID enemy)
 {
 	for (auto& pair : m_Wars)
 	{
-		if (pair.second.getAttacker() == character && pair.second.getDefender() == enemy)
+		if (pair.second.isAttacker(character) && pair.second.isDefender(enemy))
 		{
 			return &pair.second;
 		}
 
-		else if (pair.second.getDefender() == character && pair.second.getAttacker() == enemy)
+		else if (pair.second.isDefender(character) && pair.second.isAttacker(enemy))
 		{
 			return &pair.second;
 		}
