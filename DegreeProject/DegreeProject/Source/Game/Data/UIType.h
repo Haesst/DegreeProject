@@ -26,5 +26,6 @@ enum class UIType
 	ChildBirth,
 	AssassinationSuccess,
 	AssassinationFailure,
-	Death
+	Death,
+	TriedToDeclareWarOnAlly
 };

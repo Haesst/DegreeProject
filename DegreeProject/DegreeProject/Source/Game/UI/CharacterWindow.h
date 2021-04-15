@@ -752,6 +752,14 @@ public:
 			Vector2D mousePosition = InputHandler::getMousePosition();
 			if (m_DeclareWarShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				for (auto& ally : m_PlayerCharacter->m_Allies)
+				{
+					if (ally == m_CurrentCharacterID)
+					{
+						UIManager::get()->createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::TriedToDeclareWarOnAlly);
+						return;
+					}
+				}
 				War* war = WarManager::get().getWarAgainst(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 				if (war == nullptr)
 				{
