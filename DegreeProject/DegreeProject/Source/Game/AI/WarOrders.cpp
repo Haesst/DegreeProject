@@ -76,6 +76,62 @@ void WarOrders::orderSiegeCapital(WarmindComponent& warmind, Unit& unit)
 	UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(startingPosition, capitalPosition));
 }
 
-void WarOrders::orderFlee(WarmindComponent&, Unit&)
+void WarOrders::orderDefendWargoal(WarmindComponent& warmind, Unit& unit, Unit& enemyUnit)
 {
+	Vector2D unitPosition = unit.m_Position;
+	Vector2D enemyUnitPosition = enemyUnit.m_Position;
+
+	int regionID = WarManager::get().getWar(warmind.m_PrioritizedWarHandle)->m_WargoalRegion;
+	Vector2DInt regionPosition = Map::get().getRegionById(regionID).m_RegionCapital;
+
+	//Order unit to move
+	UnitManager::get().giveUnitPath(UnitManager::get().getUnitOfCharacter(warmind.m_OwnerID).m_UnitID, Pathfinding::get().findPath(Map::get().convertToMap(unitPosition), regionPosition));
+}
+
+void WarOrders::orderAttackArmy(Unit& unit, Unit& enemyUnit)
+{
+	Vector2DInt enemyPosition;
+
+	if (enemyUnit.m_CurrentPath.size() > 0)
+	{
+		enemyPosition = enemyUnit.m_CurrentPath.front();
+	}
+
+	else
+	{
+		enemyPosition = Map::get().convertToMap(enemyUnit.m_Position);
+	}
+
+	UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(Map::get().convertToMap(unit.m_Position), enemyPosition));
+
+}
+
+void WarOrders::orderAttackEnemyRegion(Unit& unit, Unit& enemyUnit)
+{
+	CharacterManager* characterManager = CharacterManager::get();
+	Character& enemyCharacter = characterManager->getCharacter(enemyUnit.m_Owner);
+	Character& character = characterManager->getCharacter(unit.m_Owner);
+
+	Vector2DInt bestRegion;
+	float shortestDistance = FLT_MAX;
+
+	for (auto region : enemyCharacter.m_OwnedRegionIDs)
+	{
+		Vector2DInt regionPos = Map::get().getRegionById(region).m_RegionCapital;
+
+		for (auto ownedRegion : character.m_OwnedRegionIDs)
+		{
+			float dist = (regionPos - Map::get().getRegionById(ownedRegion).m_RegionCapital).getLength();
+
+			if (dist < shortestDistance)
+			{
+				bestRegion = regionPos;
+				shortestDistance = dist;
+			}
+		}
+	}
+
+	ASSERT(shortestDistance != FLT_MAX, "This should not happen :(");
+	
+	UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(Map::get().convertToMap(unit.m_Position), bestRegion));
 }

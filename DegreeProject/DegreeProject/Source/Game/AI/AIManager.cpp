@@ -340,8 +340,6 @@ void AIManager::update()
 
 		if (warmind.m_TickAccu > warmind.m_AtWarTickRate)
 		{
-			War* war = WarManager::get().getWar(warmind.m_PrioritizedWarHandle);
-
 			if (CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
 			{
 				UnitManager::get().dismissUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity);
@@ -592,28 +590,39 @@ void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target
 
 		else
 		{
+			if (Map::get().regionOccupiedByFriendlies(CharacterManager::get()->getCharacter(unit.m_Owner), warmind.m_WargoalRegionId))
+			{
+				m_Orders.orderAttackEnemyRegion(unit, enemyUnit);
+				return;
+			}
+
 			//Siege wargoal region
 			m_Orders.orderSiegeCapital(warmind, unit);
-			return;
 		}
 	}
 }
 
 void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*target*/, Unit& unit, Unit& enemyUnit)
 {
-	Vector2D unitPosition = unit.m_Position;
-	Vector2D enemyUnitPosition = enemyUnit.m_Position;
+	if (CharacterManager::get()->ownsRegion(unit.m_Owner, enemyUnit.m_SeizingRegionID))
+	{
+		m_Orders.orderAttackArmy(unit, enemyUnit);
+		return;
+	}
 
-	int regionID = WarManager::get().getWar(warmind.m_PrioritizedWarHandle)->m_WargoalRegion;
-	Vector2DInt regionPosition = Map::get().getRegionById(regionID).m_RegionCapital;
-	//Order unit to move
-	UnitManager::get().giveUnitPath(UnitManager::get().getUnitOfCharacter(warmind.m_OwnerID).m_UnitID, Pathfinding::get().findPath(Map::get().convertToMap(unitPosition), regionPosition));
+	if (enemyUnit.m_RepresentedForce < unit.m_RepresentedForce)
+	{
+		m_Orders.orderAttackEnemyRegion(unit, enemyUnit);
+		return;
+	}
+
+	m_Orders.orderDefendWargoal(warmind, unit, enemyUnit);
 }
 
 void AIManager::warAction(AIData& data)
 {
 	CharacterManager* characterManager = CharacterManager::get();
-	int opponent = getWarmindOfCharacter(data.m_OwnerID).m_Opponent;
+	unsigned int opponent = getWarmindOfCharacter(data.m_OwnerID).m_Opponent;
 
 	if (opponent == INT_MAX || opponent == CharacterManager::get()->getCharacter(data.m_OwnerID).m_Spouse)
 	{

@@ -247,6 +247,8 @@ CharacterID War::getOpponent(CharacterID character)
 	{
 		return getAttacker();
 	}
+
+	return INVALID_CHARACTER_ID;
 }
 
 CharacterID War::getAttacker()

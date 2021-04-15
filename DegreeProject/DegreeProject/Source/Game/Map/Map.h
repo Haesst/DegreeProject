@@ -130,6 +130,8 @@ struct Map
 	std::vector<int> getRegionIDs();
 	Vector2DInt getMapSize();
 
+	bool regionOccupiedByFriendlies(Character& character, int regionID);
+
 private:
 	int getRegionPositionFromRegionId(const unsigned int id);
 	void renderSquares(const sf::VertexArray& vertexArray, const sf::Color& color, const sf::Color& highlightColor, const sf::Texture& texture, const bool& highlighted);

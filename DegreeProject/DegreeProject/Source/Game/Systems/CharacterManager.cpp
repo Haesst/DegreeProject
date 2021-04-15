@@ -355,7 +355,6 @@ void CharacterManager::breakAlliance(CharacterID characterID, CharacterID otherI
 void CharacterManager::removeAlly(CharacterID characterID, CharacterID otherID)
 {
 	Character& character = getCharacter(characterID);
-	Character& other = getCharacter(otherID);
 
 	int indexOfOther = 0;
 	bool foundOther = false;
@@ -847,6 +846,24 @@ bool CharacterManager::chancePerPercent(float weight)
 	float f = rand() * 1.0f / RAND_MAX;
 	//float vv = weight / 10.0f;
 	return f < weight;
+}
+
+bool CharacterManager::ownsRegion(CharacterID ID, int regionIndex)
+{
+	if (regionIndex == -1)
+	{
+		return false;
+	}
+
+	for (auto regionID : getCharacter(ID).m_OwnedRegionIDs)
+	{
+		if(regionID == (unsigned int)regionIndex)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 

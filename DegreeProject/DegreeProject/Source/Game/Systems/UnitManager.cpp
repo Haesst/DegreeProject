@@ -649,11 +649,11 @@ void UnitManager::unitSiege(Unit& unit)
 
 				if (unit.m_Owner == region.m_OwnerID)
 				{
-					War* war = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OccupiedBy);
+					War* siegedWar = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OccupiedBy);
 
-					if (war != nullptr)
+					if (siegedWar != nullptr)
 					{
-						war->addWarscore(region.m_OccupiedBy, -50);
+						siegedWar->addWarscore(region.m_OccupiedBy, -50);
 					}
 					
 					region.m_OccupiedBy = INVALID_CHARACTER_ID;

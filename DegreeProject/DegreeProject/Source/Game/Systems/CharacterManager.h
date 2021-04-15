@@ -61,6 +61,8 @@ public:
 
 	bool chancePerPercent(float weight);
 
+	bool ownsRegion(CharacterID ID, int regionIndex);
+
 private:
 	CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
 

@@ -246,7 +246,7 @@ struct ExpansionConsideration : public Consideration
 			regionTax.push_back(Map::get().getRegionById(region).m_RegionTax);
 		}
 
-		float avgTax = std::accumulate(regionTax.begin(), regionTax.end(), 0LL) / regionTax.size();
+		float avgTax = std::accumulate(regionTax.begin(), regionTax.end(), 0LL) / (float)regionTax.size();
 		float percentDiff = (float)wantedRegionTax / avgTax;
 
 		return std::clamp(std::pow(percentDiff, 2.0f) + distanceWeight, 0.0f, 1.0f);

@@ -467,4 +467,24 @@ Vector2DInt Map::getMapSize()
 {
 	return Vector2DInt(width, height);
 }
+bool Map::regionOccupiedByFriendlies(Character& character, int regionID)
+{
+	MapRegion& region = getRegionById(regionID);
+
+
+	if (region.m_OccupiedBy == character.m_CharacterID)
+	{
+		return true;
+	}
+
+	for (const auto& ally : character.m_Allies)
+	{
+		if (region.m_OccupiedBy == ally)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
 #pragma warning(pop)
