@@ -268,21 +268,24 @@ bool CharacterManager::isAlliedWith(CharacterID character, CharacterID other)
 void CharacterManager::callAllies(CharacterID character, int war)
 {
 	War* currentWar = WarManager::get().getWar(war);
-	
+	AIManager* aiManager = &AIManager::get();
+
 	for (auto ID : getCharacter(character).m_Allies)
 	{
 		if (!getCharacter(ID).m_IsPlayerControlled)
 		{
-			if (AIManager::get().handleWarCallRequest(character, ID, war))
+			if (aiManager->handleWarCallRequest(character, ID, war))
 			{
 				if (character == currentWar->getAttacker())
 				{
+					aiManager->getWarmindOfCharacter(ID).m_Active = true;
 					currentWar->m_Attackers.push_back(ID);
 					getCharacter(ID).m_CurrentWars.push_back(currentWar->getHandle());
 				}
 	
 				else if (character == currentWar->getDefender())
 				{
+					aiManager->getWarmindOfCharacter(ID).m_Active = true;
 					currentWar->m_Defenders.push_back(ID);
 					getCharacter(ID).m_CurrentWars.push_back(currentWar->getHandle());
 				}
