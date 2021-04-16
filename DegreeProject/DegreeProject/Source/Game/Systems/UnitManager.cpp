@@ -250,7 +250,7 @@ void UnitManager::dismissUnit(UnitID unitID)
 			continue;
 		}
 
-		LOG_WARN("Removing dismissed unit");
+		//LOG_WARN("Removing dismissed unit");
 		squareData.remove(unitID);
 	}
 
@@ -680,6 +680,7 @@ void UnitManager::unitSiege(Unit& unit)
 					defender.m_MaxArmySize -= region.m_ManPower;
 
 					bool allRegionsSiezed = true;
+
 					for (auto ID : CharacterManager::get()->getCharacter(currentWar->getDefender()).m_OwnedRegionIDs)
 					{
 						if (Map::get().getRegionById(ID).m_OccupiedBy == INVALID_CHARACTER_ID)
@@ -688,7 +689,7 @@ void UnitManager::unitSiege(Unit& unit)
 						}
 					}
 
-					if (allRegionsSiezed)
+					if (allRegionsSiezed && currentWar->m_AttackerWarscore < 100)
 					{
 						currentWar->addWarscore(currentWar->getAttacker(), 100);
 					}

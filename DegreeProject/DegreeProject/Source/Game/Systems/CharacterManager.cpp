@@ -661,6 +661,8 @@ void CharacterManager::killCharacter(CharacterID characterID)
 		breakAlliance(characterID, ally);
 	}
 
+	character.m_Allies.clear();
+
 	if (character.m_Spouse != INVALID_CHARACTER_ID)
 	{
 		getCharacter(character.m_Spouse).m_Spouse = INVALID_CHARACTER_ID;

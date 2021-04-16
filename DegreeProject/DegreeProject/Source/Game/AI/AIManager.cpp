@@ -617,8 +617,11 @@ void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*targ
 
 	if (enemyUnit.m_RepresentedForce < unit.m_RepresentedForce)
 	{
-		m_Orders.orderAttackEnemyRegion(unit, enemyUnit);
-		return;
+		if (CharacterManager::get()->getCharacter(enemyUnit.m_Owner).m_OwnedRegionIDs.size() > 0)
+		{
+			m_Orders.orderAttackEnemyRegion(unit, enemyUnit);
+			return;
+		}
 	}
 
 	m_Orders.orderDefendWargoal(warmind, unit, enemyUnit);
