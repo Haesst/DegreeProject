@@ -28,7 +28,7 @@ private:
 	void handleWindow();
 	void clickButton();
 	void sendPeaceOffer(PeaceType type);
-	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, Vector2DInt position, unsigned int spriteSize = m_SpriteSize);
+	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize = m_SpriteSize);
 
 private:
 	sf::RenderWindow* m_Window = nullptr;
@@ -66,17 +66,17 @@ private:
 	sf::Texture m_ArmyTexture;
 	sf::Sprite m_AttackerArmySprite;
 	sf::Sprite m_DefenderArmySprite;
-	Vector2DInt m_DefenderArmyPosition;
-	Vector2DInt m_AttackerArmyPosition;
+	sf::Vector2f m_DefenderArmyPosition;
+	sf::Vector2f m_AttackerArmyPosition;
 
-	Vector2DInt m_AttackerPosition;
-	Vector2DInt m_DefenderPosition;
-	Vector2DInt m_WarscorePosition;
-	Vector2DInt m_WarscoreProgressPosition;
-	Vector2DInt m_SurrenderPosition;
-	Vector2DInt m_WhitePeacePosition;
-	Vector2DInt m_EnforceDemandsPosition;
-	Vector2DInt m_SendPosition;
+	sf::Vector2f m_AttackerPosition;
+	sf::Vector2f m_DefenderPosition;
+	sf::Vector2f m_WarscorePosition;
+	sf::Vector2f m_WarscoreProgressPosition;
+	sf::Vector2f m_SurrenderPosition;
+	sf::Vector2f m_WhitePeacePosition;
+	sf::Vector2f m_EnforceDemandsPosition;
+	sf::Vector2f m_SendPosition;
 
 	sf::RectangleShape m_WindowShape;
 	sf::RectangleShape m_WarscoreShape;
@@ -103,22 +103,22 @@ private:
 	sf::Text m_DefenderAlliesText;
 	sf::Text m_AttackerAlliesText;
 
-	Vector2DInt m_WarNameTextPosition;
-	Vector2DInt m_DurationTextPosition;
-	Vector2DInt m_WarscoreTextPosition;
-	Vector2DInt m_WarscoreAmountTextPosition;
-	Vector2DInt m_SurrenderTextPosition;
-	Vector2DInt m_WhitePeaceTextPosition;
-	Vector2DInt m_EnforceDemandsTextPosition;
-	Vector2DInt m_SendTextPosition;
-	Vector2DInt m_AttackersTextPosition;
-	Vector2DInt m_AttackerArmyTextPosition;
-	Vector2DInt m_AttackerArmyStrengthTextPosition;
-	Vector2DInt m_DefendersTextPosition;
-	Vector2DInt m_DefenderArmyTextPosition;
-	Vector2DInt m_DefenderArmyStrengthTextPosition;
-	Vector2DInt m_AttackerAlliesTextPosition;
-	Vector2DInt m_DefenderAlliesTextPosition;
+	sf::Vector2f m_WarNameTextPosition;
+	sf::Vector2f m_DurationTextPosition;
+	sf::Vector2f m_WarscoreTextPosition;
+	sf::Vector2f m_WarscoreAmountTextPosition;
+	sf::Vector2f m_SurrenderTextPosition;
+	sf::Vector2f m_WhitePeaceTextPosition;
+	sf::Vector2f m_EnforceDemandsTextPosition;
+	sf::Vector2f m_SendTextPosition;
+	sf::Vector2f m_AttackersTextPosition;
+	sf::Vector2f m_AttackerArmyTextPosition;
+	sf::Vector2f m_AttackerArmyStrengthTextPosition;
+	sf::Vector2f m_DefendersTextPosition;
+	sf::Vector2f m_DefenderArmyTextPosition;
+	sf::Vector2f m_DefenderArmyStrengthTextPosition;
+	sf::Vector2f m_AttackerAlliesTextPosition;
+	sf::Vector2f m_DefenderAlliesTextPosition;
 
 	const std::string m_Surrender = "Surrender";
 	const std::string m_WhitePeace = "White Peace";
@@ -146,11 +146,11 @@ private:
 	std::vector<sf::RectangleShape> m_DefenderCharacterShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_DefenderCharacterSprites = std::vector<sf::Sprite>();
 	std::vector<sf::Texture> m_DefenderCharacterTextures = std::vector<sf::Texture>();
-	std::vector<Vector2DInt> m_DefenderCharacterPositions = std::vector<Vector2DInt>();
+	std::vector<sf::Vector2f> m_DefenderCharacterPositions = std::vector<sf::Vector2f>();
 
 	std::vector<CharacterID> m_AttackerCharacterIDs = std::vector<CharacterID>();
 	std::vector<sf::RectangleShape> m_AttackerCharacterShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_AttackerCharacterSprites = std::vector<sf::Sprite>();
 	std::vector<sf::Texture> m_AttackerCharacterTextures = std::vector<sf::Texture>();
-	std::vector<Vector2DInt> m_AttackerCharacterPositions = std::vector<Vector2DInt>();
+	std::vector<sf::Vector2f> m_AttackerCharacterPositions = std::vector<sf::Vector2f>();
 };

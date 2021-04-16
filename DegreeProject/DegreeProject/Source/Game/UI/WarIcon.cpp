@@ -22,7 +22,7 @@ WarIcon::WarIcon(UIID ID, sf::Font font, unsigned int index, CharacterID attacke
 
 	m_Window = Window::getWindow();
 
-	m_WarIconPosition = Vector2DInt(m_Window->getSize().x - (int)(600 + m_SpriteSize + m_OutlineThickness * 5) - (int)(m_SpriteSize + m_OutlineThickness * 4) * m_Index, m_Window->getSize().y - (int)(m_SpriteSize + m_OutlineThickness * 2));
+	m_WarIconPosition = sf::Vector2f(m_Window->getSize().x - (int)(600 + m_SpriteSize + m_OutlineThickness * 5) - (int)(m_SpriteSize + m_OutlineThickness * 4) * m_Index, m_Window->getSize().y - (int)(m_SpriteSize + m_OutlineThickness * 2));
 	m_WarIconTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Charizard.png");
 
 	m_WarIconShape.setFillColor(m_WarIconOutlineColor);
@@ -33,7 +33,7 @@ WarIcon::WarIcon(UIID ID, sf::Font font, unsigned int index, CharacterID attacke
 	m_WarscoreText.setCharacterSize(m_CharacterSize);
 	m_WarscoreText.setFont(m_Font);
 	m_WarscoreText.setStyle(m_Style);
-	m_WarscoreTextPosition = Vector2DInt(m_WarIconPosition.x, m_WarIconPosition.y + (int)(m_SizeY * 0.5f));
+	m_WarscoreTextPosition = sf::Vector2f(m_WarIconPosition.x, m_WarIconPosition.y + (int)(m_SizeY * 0.5f));
 
 	activate();
 }
@@ -126,8 +126,8 @@ void WarIcon::update()
 	if (m_Active)
 	{
 		clickButton();
-		m_WarIconShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_WarIconPosition.x, m_WarIconPosition.y)));
-		m_WarscoreText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_WarscoreTextPosition.x, m_WarscoreTextPosition.y)));
+		m_WarIconShape.setPosition(sf::Vector2f(m_WarIconPosition.x, m_WarIconPosition.y));
+		m_WarscoreText.setPosition(sf::Vector2f(m_WarscoreTextPosition.x, m_WarscoreTextPosition.y));
 	}
 }
 
@@ -145,7 +145,7 @@ void WarIcon::clickButton()
 {
 	if (InputHandler::getLeftMouseReleased())
 	{
-		Vector2D mousePosition = InputHandler::getMousePosition();
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_WarIconShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			UIManager::get()->m_WarWindow->openWindow(m_AttackerID, m_DefenderID, m_WarStartDate);
@@ -153,10 +153,10 @@ void WarIcon::clickButton()
 	}
 }
 
-void WarIcon::updateSprite(sf::Sprite& sprite, sf::Texture& texture, Vector2DInt position, unsigned int spriteSize)
+void WarIcon::updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize)
 {
 	sprite.setTexture(texture, true);
-	sprite.setPosition(Window::getWindow()->mapPixelToCoords(sf::Vector2i(position.x, position.y)));
+	sprite.setPosition(position);
 
 	sf::FloatRect localSize = sprite.getLocalBounds();
 

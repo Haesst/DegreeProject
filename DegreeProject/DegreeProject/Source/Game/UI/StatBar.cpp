@@ -60,15 +60,15 @@ void StatBar::update()
 	int positionX = m_Window->getSize().x - (int)(m_SizeX + m_OutlineThickness);
 	int positionY = (int)m_OutlineThickness;
 
-	m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX, positionY)));
+	m_WindowShape.setPosition(sf::Vector2f(positionX, positionY));
 
-	m_CurrentGoldText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.2f), positionY)));
+	m_CurrentGoldText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.2f), positionY));
 
-	m_CurrentIncomeText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.2f), positionY * 4)));
+	m_CurrentIncomeText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.2f), positionY * 4));
 
-	m_MaxArmyText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.6f), positionY)));
+	m_MaxArmyText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.6f), positionY));
 
-	m_CurrentMaxArmyText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.625f), positionY * 4)));
+	m_CurrentMaxArmyText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.625f), positionY * 4));
 }
 
 void StatBar::render()
@@ -127,7 +127,7 @@ void StatBar::updateStats()
 void StatBar::updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize)
 {
 	sprite.setTexture(texture, true);
-	sprite.setPosition(Window::getWindow()->mapPixelToCoords(sf::Vector2i((int)position.x, (int)position.y)));
+	sprite.setPosition(position);
 
 	sf::FloatRect localSize = sprite.getLocalBounds();
 

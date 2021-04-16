@@ -38,6 +38,11 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	m_ChildrenTextures.clear();
 	m_ChildrenNames.clear();
 	m_ShowChildrenNames.clear();
+
+	m_AlliesShapes.clear();
+	m_AlliesSprites.clear();
+	m_AlliesTextures.clear();
+	m_AlliesPositions.clear();
 }
 
 void CharacterWindow::start()
@@ -191,46 +196,51 @@ void CharacterWindow::update()
 	{
 		clickButton();
 
-		m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)m_OutlineThickness, (int)m_OutlineThickness)));
+		m_WindowShape.setPosition(sf::Vector2f((int)m_OutlineThickness, (int)m_OutlineThickness));
 
-		m_DeclareWarShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.2f))));
-		m_DeclareWarText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.208f))));
+		m_DeclareWarShape.setPosition(sf::Vector2f((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.2f)));
+		m_DeclareWarText.setPosition(sf::Vector2f((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.208f)));
 
-		m_MakePeaceShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.3f))));
-		m_MakePeaceText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.308f))));
+		m_MakePeaceShape.setPosition(sf::Vector2f((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.3f)));
+		m_MakePeaceText.setPosition(sf::Vector2f((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.308f)));
 
-		m_AllianceShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.4f))));
-		m_AllianceText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.408f))));
+		m_AllianceShape.setPosition(sf::Vector2f((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.4f)));
+		m_AllianceText.setPosition(sf::Vector2f((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.408f)));
 
-		m_MarriageShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.5f))));
-		m_MarriageText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.508f))));
+		m_MarriageShape.setPosition(sf::Vector2f((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.5f)));
+		m_MarriageText.setPosition(sf::Vector2f((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.508f)));
 
-		m_AssassinateShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.6f))));
-		m_AssassinateText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.608f))));
+		m_AssassinateShape.setPosition(sf::Vector2f((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.6f)));
+		m_AssassinateText.setPosition(sf::Vector2f((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.608f)));
 
-		m_CharacterNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.25f), (int)(m_SizeY * 0.025f))));
+		m_CharacterNameText.setPosition(sf::Vector2f((int)(m_SizeX * 0.25f), (int)(m_SizeY * 0.025f)));
 
-		m_RealmNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.1f))));
+		m_RealmNameText.setPosition(sf::Vector2f((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.1f)));
 
-		m_ArmyText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.2f))));
+		m_ArmyText.setPosition(sf::Vector2f((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.2f)));
 
-		m_GoldText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.3f))));
+		m_GoldText.setPosition(sf::Vector2f((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.3f)));
 
-		m_CharacterAgeText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.4f))));
+		m_CharacterAgeText.setPosition(sf::Vector2f((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.4f)));
 
 		for (unsigned int index = 0; index < m_ChildrenShapes.size(); index++)
 		{
-			m_ChildrenShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f))));
-			m_ChildrenNames[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f))));
+			m_ChildrenShapes[index].setPosition(sf::Vector2f((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f)));
+			m_ChildrenNames[index].setPosition(sf::Vector2f((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f)));
 		}
 
-		m_SpouseName.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_MarriedPosition.x + m_SizeX * 0.1f), (int)(m_MarriedPosition.y))));
+		for (unsigned int index = 0; index < m_AlliesShapes.size(); index++)
+		{
+			m_AlliesShapes[index].setPosition(sf::Vector2f((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f)));
+		}
 
-		m_FatherShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_FatherPosition.x), (int)(m_FatherPosition.y))));
-		m_FatherName.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_FatherPosition.x + m_SizeX * 0.1f), (int)(m_FatherPosition.y))));
+		m_SpouseName.setPosition(sf::Vector2f((int)(m_MarriedPosition.x + m_SizeX * 0.1f), (int)(m_MarriedPosition.y)));
 
-		m_MotherShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_MotherPosition.x), (int)(m_MotherPosition.y))));
-		m_MotherName.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_MotherPosition.x + m_SizeX * 0.1f), (int)(m_MotherPosition.y))));
+		m_FatherShape.setPosition(sf::Vector2f((int)(m_FatherPosition.x), (int)(m_FatherPosition.y)));
+		m_FatherName.setPosition(sf::Vector2f((int)(m_FatherPosition.x + m_SizeX * 0.1f), (int)(m_FatherPosition.y)));
+
+		m_MotherShape.setPosition(sf::Vector2f((int)(m_MotherPosition.x), (int)(m_MotherPosition.y)));
+		m_MotherName.setPosition(sf::Vector2f((int)(m_MotherPosition.x + m_SizeX * 0.1f), (int)(m_MotherPosition.y)));
 	}
 }
 
@@ -300,6 +310,11 @@ void CharacterWindow::render()
 				m_Window->draw(m_ChildrenNames[index]);
 			}
 		}
+		for (unsigned int index = 0; index < m_AlliesShapes.size(); index++)
+		{
+			m_Window->draw(m_AlliesShapes[index]);
+			updateSprite(m_AlliesSprites[index], m_AlliesTextures[index], sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f), m_SpriteSize / 2);
+		}
 		if (!m_IsPlayerCharacter)
 		{
 			if (m_CurrentCharacter->m_CharacterTitle != Title::Unlanded)
@@ -323,7 +338,7 @@ void CharacterWindow::clickOnMap()
 {
 	if (InputHandler::getRightMouseClicked() && !InputHandler::getPlayerUnitSelected())
 	{
-		Vector2D mousePosition = InputHandler::getMousePosition();
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			Vector2DInt mouseMapPosition = InputHandler::getMouseMapPosition();
@@ -355,7 +370,7 @@ void CharacterWindow::clickOnMap()
 	}
 	else if (InputHandler::getLeftMouseClicked() && !InputHandler::getPlayerUnitSelected() && m_Visible)
 	{
-		Vector2D mousePosition = InputHandler::getMousePosition();
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			closeWindow();
@@ -475,6 +490,27 @@ void CharacterWindow::updateInfo()
 			}
 		}
 
+		m_AlliesShapes.clear();
+		m_AlliesSprites.clear();
+		m_AlliesTextures.clear();
+		m_AlliesPositions.clear();
+		for (unsigned int index = 0; index < WarManager::get().getAlliances(m_CurrentCharacterID).size(); index++)
+		{
+			Character& ally = CharacterManager::get()->getCharacter(WarManager::get().getAlliances(m_CurrentCharacterID)[index]);
+			m_AlliesShapes.push_back(sf::RectangleShape());
+			m_AlliesSprites.push_back(sf::Sprite());
+			if (ally.m_Gender == Gender::Male)
+			{
+				m_AlliesTextures.push_back(m_MaleCharacterTexture);
+			}
+			else
+			{
+				m_AlliesTextures.push_back(m_FemaleCharacterTexture);
+			}
+			m_AlliesShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
+			m_AlliesShapes[index].setSize(sf::Vector2f(m_SpriteSize / 2, m_SpriteSize / 2));
+		}
+
 		if (m_Gender == Gender::Male)
 		{
 			m_Pregnant = false;
@@ -548,7 +584,7 @@ void CharacterWindow::clickButton()
 {
 	if (InputHandler::getLeftMouseReleased())
 	{
-		Vector2D mousePosition = InputHandler::getMousePosition();
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_MarriedSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			m_ShowSpouseName = true;
@@ -591,7 +627,7 @@ void CharacterWindow::clickButton()
 	}
 	if (InputHandler::getRightMouseReleased())
 	{
-		Vector2D mousePosition = InputHandler::getMousePosition();
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_MarriedSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			m_CurrentCharacterID = m_SpouseID;
@@ -620,10 +656,17 @@ void CharacterWindow::clickButton()
 				break;
 			}
 		}
+		for (unsigned int index = 0; index < m_AlliesShapes.size(); index++)
+		{
+			if (m_AlliesShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				break;
+			}
+		}
 	}
 	if (InputHandler::getLeftMouseReleased() && !m_IsPlayerCharacter)
 	{
-		Vector2D mousePosition = InputHandler::getMousePosition();
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_DeclareWarShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			for (auto& ally : WarManager::get().getAlliances(m_PlayerCharacter->m_CharacterID))
@@ -702,7 +745,7 @@ bool CharacterWindow::checkIfPlayerCharacter()
 void CharacterWindow::updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize)
 {
 	sprite.setTexture(texture, true);
-	sprite.setPosition(Window::getWindow()->mapPixelToCoords(sf::Vector2i((int)position.x, (int)position.y)));
+	sprite.setPosition(position);
 
 	sf::FloatRect localSize = sprite.getLocalBounds();
 

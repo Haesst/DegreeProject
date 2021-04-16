@@ -18,6 +18,13 @@ void UIText::start()
 	adjustText();
 }
 
+void UIText::update()
+{
+	if (!m_Conquered)
+	{
+		m_CountryNameText.setPosition(sf::Vector2f(m_Window->mapCoordsToPixel(sf::Vector2f(m_PositionX, m_PositionY))));
+	}
+}
 void UIText::render()
 {
 	if (!m_Conquered)

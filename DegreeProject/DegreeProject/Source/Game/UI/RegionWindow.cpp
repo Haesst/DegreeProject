@@ -80,7 +80,7 @@ void RegionWindow::update()
 		int positionX = (int)m_OutlineThickness;
 		int positionY = m_Window->getSize().y - (int)(m_SizeY + m_OutlineThickness);
 
-		m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX, positionY)));
+		m_WindowShape.setPosition(sf::Vector2f(positionX, positionY));
 
 		int iconSlotPositionX = (int)(m_SizeX - m_SpriteSize - m_OutlineThickness);
 		int iconSlotPositionOffset = (int)(m_SpriteSize + m_OutlineThickness * 2);
@@ -88,18 +88,18 @@ void RegionWindow::update()
 
 		for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
 		{
-			m_BuildingSlotShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i(iconSlotPositionX - iconSlotPositionOffset * index, iconSlotPositionY)));
+			m_BuildingSlotShapes[index].setPosition(sf::Vector2f(iconSlotPositionX - iconSlotPositionOffset * index, iconSlotPositionY));
 		}
 
-		m_RaiseArmyShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(iconSlotPositionX, iconSlotPositionY - iconSlotPositionOffset)));
+		m_RaiseArmyShape.setPosition(sf::Vector2f(iconSlotPositionX, iconSlotPositionY - iconSlotPositionOffset));
 
-		m_RegionNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.1f), positionY)));
+		m_RegionNameText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.1f), positionY));
 
-		m_RegionTaxText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.1f), positionY + (int)(m_SizeY * 0.5f))));
+		m_RegionTaxText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.1f), positionY + (int)(m_SizeY * 0.5f)));
 
-		m_RegionManpowerText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.1f), positionY + (int)(m_SizeY * 0.6f))));
+		m_RegionManpowerText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.1f), positionY + (int)(m_SizeY * 0.6f)));
 
-		m_KingdomNameText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.1f), positionY + (int)(m_SizeY * 0.1f))));
+		m_KingdomNameText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.1f), positionY + (int)(m_SizeY * 0.1f)));
 	}
 }
 
@@ -126,7 +126,7 @@ void RegionWindow::clickOnMap()
 {
 	if (InputHandler::getLeftMouseClicked() && !InputHandler::getPlayerUnitSelected() && !InputHandler::getCharacterWindowOpen())
 	{
-		Vector2D mousePosition = InputHandler::getMousePosition();
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			Vector2DInt mouseMapPosition = InputHandler::getMouseMapPosition();
@@ -159,7 +159,7 @@ void RegionWindow::clickOnMap()
 	}
 	else if (InputHandler::getRightMouseClicked() && !InputHandler::getPlayerUnitSelected() && m_Visible)
 	{
-		Vector2D mousePosition = InputHandler::getMousePosition();
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			closeWindow();
@@ -275,7 +275,7 @@ void RegionWindow::clickButton()
 {
 	if (InputHandler::getLeftMouseReleased() && m_PlayerRegion)
 	{
-		Vector2D mousePosition = InputHandler::getMousePosition();
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_RaiseArmyShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			Unit& unit = UnitManager::get().getUnitWithId(m_PlayerCharacter->m_UnitEntity);
@@ -334,7 +334,7 @@ void RegionWindow::updateSprites()
 void RegionWindow::updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize)
 {
 	sprite.setTexture(texture, true);
-	sprite.setPosition(Window::getWindow()->mapPixelToCoords(sf::Vector2i((int)position.x, (int)position.y)));
+	sprite.setPosition(position);
 
 	sf::FloatRect localSize = sprite.getLocalBounds();
 

@@ -163,6 +163,10 @@ void UIManager::start()
 
 void UIManager::update()
 {
+	for (std::pair<CharacterID, UIText*> uiTextPair : m_UITexts)
+	{
+		uiTextPair.second->update();
+	}
 	m_CharacterWindow->update();
 	m_RegionWindow->update();
 	m_WarWindow->update();

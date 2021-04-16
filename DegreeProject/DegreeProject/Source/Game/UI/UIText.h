@@ -11,6 +11,7 @@ public:
 	UIText(UIID id, sf::Font font, std::string countryName, std::vector<unsigned int> ownedRegions);
 
 	void start();
+	void update();
 	void render();
 	void adjustText();
 	void conquerRegion(unsigned int regionID);

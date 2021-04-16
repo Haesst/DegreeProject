@@ -94,38 +94,38 @@ public:
 	sf::Texture m_FemaleCharacterTexture;
 	sf::Sprite m_CharacterSprite;
 	const static int m_SpriteSize = 64;
-	sf::Vector2f m_CharacterPosition = sf::Vector2f();
+	sf::Vector2f m_CharacterPosition;
 
 	sf::Texture m_GoldTexture;
 	sf::Sprite m_GoldSprite;
-	sf::Vector2f m_GoldPosition = sf::Vector2f();
+	sf::Vector2f m_GoldPosition;
 
 	sf::Texture m_ArmyTexture;
 	sf::Sprite m_ArmySprite;
-	sf::Vector2f m_ArmyPosition = sf::Vector2f();
+	sf::Vector2f m_ArmyPosition;
 
 	sf::Texture m_AgeTexture;
 	sf::Sprite m_AgeSprite;
-	sf::Vector2f m_AgePosition = sf::Vector2f();
+	sf::Vector2f m_AgePosition;
 
 	sf::Texture m_MaleGenderTexture;
 	sf::Texture m_FemaleGenderTexture;
 	sf::Sprite m_GenderSprite;
-	sf::Vector2f m_GenderPosition = sf::Vector2f();
+	sf::Vector2f m_GenderPosition;
 
 	sf::Texture m_PregnantTexture;
 	sf::Sprite m_Pregnantprite;
-	sf::Vector2f m_PregnantPosition = sf::Vector2f();
+	sf::Vector2f m_PregnantPosition;
 
 	sf::Texture m_MarriedTexture;
 	sf::Sprite m_MarriedSprite;
-	sf::Vector2f m_MarriedPosition = sf::Vector2f();
+	sf::Vector2f m_MarriedPosition;
 	sf::Text m_SpouseName;
 
 	sf::RectangleShape m_MotherShape;
 	sf::Texture m_MotherTexture;
 	sf::Sprite m_MotherSprite;
-	sf::Vector2f m_MotherPosition = sf::Vector2f();
+	sf::Vector2f m_MotherPosition;
 	sf::Text m_MotherName;
 	bool m_ShowMotherName = false;
 	CharacterID m_MotherID = INVALID_CHARACTER_ID;
@@ -133,7 +133,7 @@ public:
 	sf::RectangleShape m_FatherShape;
 	sf::Texture m_FatherTexture;
 	sf::Sprite m_FatherSprite;
-	sf::Vector2f m_FatherPosition = sf::Vector2f();
+	sf::Vector2f m_FatherPosition;
 	sf::Text m_FatherName;
 	bool m_ShowFatherName = false;
 	CharacterID m_FatherID = INVALID_CHARACTER_ID;
@@ -145,7 +145,7 @@ public:
 
 	sf::Texture m_DeadTexture;
 	sf::Sprite m_DeadSprite;
-	sf::Vector2f m_DeadPosition = sf::Vector2f();
+	sf::Vector2f m_DeadPosition;
 	bool m_Dead = false;
 };
 #pragma warning(pop)

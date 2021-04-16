@@ -326,29 +326,29 @@ void EventWindow::update()
 		moveWindow();
 	}
 
-	m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_PositionX, m_PositionY)));
+	m_WindowShape.setPosition(sf::Vector2f(m_PositionX, m_PositionY));
 
 	m_InstigatorPosition = sf::Vector2f(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 0.5f);
-	m_InstigatorShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_InstigatorPosition)));
+	m_InstigatorShape.setPosition(sf::Vector2f(m_InstigatorPosition));
 
 	m_SubjectPosition = sf::Vector2f(m_PositionX + m_SizeX - m_SpriteSize * 1.5f, m_PositionY + m_SpriteSize * 0.5f);
-	m_SubjectShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_SubjectPosition)));
+	m_SubjectShape.setPosition(sf::Vector2f(m_SubjectPosition));
 
 	m_MessageTypePosition = sf::Vector2f(m_PositionX + m_SizeX * 0.5f - m_SpriteSize * 0.25f, m_PositionY + m_SpriteSize * 0.75f);
 
 	m_MessageTextPosition = sf::Vector2f(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 1.6f);
-	m_MessageText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_MessageTextPosition)));
+	m_MessageText.setPosition(sf::Vector2f(m_MessageTextPosition));
 
 	if (m_MessageType == UIType::MarriageRequest || m_MessageType == UIType::AllianceRequest || m_MessageType == UIType::PeaceRequest)
 	{
 		m_AgreePosition = sf::Vector2f(m_PositionX + m_SizeX - m_SpriteSize * 1.75f, m_PositionY + m_SizeY - m_SpriteSize);
-		m_AgreeShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_AgreePosition)));
-		m_AgreeText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_AgreePosition)));
+		m_AgreeShape.setPosition(sf::Vector2f(m_AgreePosition));
+		m_AgreeText.setPosition(sf::Vector2f(m_AgreePosition));
 	}
 
 	m_DismissPosition = sf::Vector2f(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SizeY - m_SpriteSize);
-	m_DismissText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_DismissPosition)));
-	m_DismissShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_DismissPosition)));
+	m_DismissText.setPosition(sf::Vector2f(m_DismissPosition));
+	m_DismissShape.setPosition(sf::Vector2f(m_DismissPosition));
 }
 
 void EventWindow::render()
@@ -369,7 +369,7 @@ void EventWindow::render()
 
 void EventWindow::moveWindow()
 {
-	Vector2D mousePosition = InputHandler::getMousePosition();
+	Vector2D mousePosition = InputHandler::getUIMousePosition();
 	Vector2D diff = m_MousePosition - mousePosition;
 	m_PositionX -= (int)diff.x;
 	m_PositionY -= (int)diff.y;
@@ -401,7 +401,6 @@ void EventWindow::acceptRequest()
 	{
 		if (!instigator.m_Dead && !subject.m_Dead)
 		{
-			//CharacterManager::get()->onAllianceCreated(m_InstigatorID, m_SubjectID);
 			WarManager::get().createAlliance(m_InstigatorID, m_SubjectID);
 		}
 		break;
@@ -422,7 +421,7 @@ void EventWindow::clickButton()
 {
 	if (InputHandler::getLeftMouseClicked())
 	{
-		m_MousePosition = InputHandler::getMousePosition();
+		m_MousePosition = InputHandler::getUIMousePosition();
 		if (m_WindowShape.getGlobalBounds().contains(m_MousePosition.x, m_MousePosition.y))
 		{
 			m_MovingWindow = true;
@@ -430,7 +429,7 @@ void EventWindow::clickButton()
 	}
 	if (InputHandler::getLeftMouseReleased())
 	{
-		Vector2D mousePosition = InputHandler::getMousePosition();
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_DismissShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			closeWindow();
@@ -447,7 +446,7 @@ void EventWindow::clickButton()
 	}
 	else if (InputHandler::getRightMouseReleased())
 	{
-		Vector2D mousePosition = InputHandler::getMousePosition();
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_InstigatorShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			UIManager::get()->m_CharacterWindow->m_CurrentCharacterID = m_InstigatorID;
@@ -467,15 +466,15 @@ void EventWindow::clickButton()
 
 void EventWindow::updateSprites()
 {
-	updateSprite(m_InstigatorSprite, m_InstigatorTexture, sf::Vector2f(m_InstigatorPosition.x, m_InstigatorPosition.y));
-	updateSprite(m_SubjectSprite, m_SubjectTexture, sf::Vector2f(m_SubjectPosition.x, m_SubjectPosition.y));
-	updateSprite(m_MessageTypeSprite, m_MessageTypeTexture, sf::Vector2f(m_MessageTypePosition.x, m_MessageTypePosition.y), m_SpriteSize / 2);
+	updateSprite(m_InstigatorSprite, m_InstigatorTexture, m_InstigatorPosition);
+	updateSprite(m_SubjectSprite, m_SubjectTexture, m_SubjectPosition);
+	updateSprite(m_MessageTypeSprite, m_MessageTypeTexture, m_MessageTypePosition, m_SpriteSize / 2);
 }
 
 void EventWindow::updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize)
 {
 	sprite.setTexture(texture, true);
-	sprite.setPosition(Window::getWindow()->mapPixelToCoords(sf::Vector2i((int)position.x, (int)position.y)));
+	sprite.setPosition(position);
 
 	sf::FloatRect localSize = sprite.getLocalBounds();
 
