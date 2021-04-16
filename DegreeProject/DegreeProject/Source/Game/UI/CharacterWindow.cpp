@@ -13,6 +13,7 @@
 #include "Game/WarManager.h"
 #include "Game/Data/AIData.h"
 #include "Game/UI/UIManager.h"
+#include "Game/UI/WarWindow.h"
 
 CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 {
@@ -528,27 +529,27 @@ void CharacterWindow::updateInfo()
 			m_AlliesShapes[index].setSize(sf::Vector2f(m_SpriteSize / 2, m_SpriteSize / 2));
 		}
 
-		//m_WarShapes.clear();
-		//m_WarSprites.clear();
-		//m_WarTextures.clear();
-		//m_WarPositions.clear();
-		//for (unsigned int index = 0; index < m_CurrentCharacter->m_CurrentWars.size(); index++)
-		//{
-		//	Character& ally = CharacterManager::get()->getCharacter(WarManager::get().getAlliances(m_CurrentCharacterID)[index]);
-		//	m_AlliesShapes.push_back(sf::RectangleShape());
-		//	m_AlliesSprites.push_back(sf::Sprite());
-		//	if (ally.m_Gender == Gender::Male)
-		//	{
-		//		m_AlliesTextures.push_back(m_MaleCharacterTexture);
-		//	}
-		//	else
-		//	{
-		//		m_AlliesTextures.push_back(m_FemaleCharacterTexture);
-		//	}
-		//	m_AlliesShapes[index].setOutlineColor(ally.m_RegionColor);
-		//	m_AlliesShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
-		//	m_AlliesShapes[index].setSize(sf::Vector2f(m_SpriteSize / 2, m_SpriteSize / 2));
-		//}
+		m_WarShapes.clear();
+		m_WarSprites.clear();
+		m_WarTextures.clear();
+		m_WarPositions.clear();
+		for (unsigned int index = 0; index < m_CurrentCharacter->m_CurrentWars.size(); index++)
+		{
+			Character& enemy = CharacterManager::get()->getCharacter(WarManager::get().getWar(m_CurrentCharacter->m_CurrentWars[index])->getOpponent(m_CurrentCharacterID));
+			m_WarShapes.push_back(sf::RectangleShape());
+			m_WarSprites.push_back(sf::Sprite());
+			if (enemy.m_Gender == Gender::Male)
+			{
+				m_WarTextures.push_back(m_MaleCharacterTexture);
+			}
+			else
+			{
+				m_WarTextures.push_back(m_FemaleCharacterTexture);
+			}
+			m_WarShapes[index].setOutlineColor(enemy.m_RegionColor);
+			m_WarShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
+			m_WarShapes[index].setSize(sf::Vector2f(m_SpriteSize / 2, m_SpriteSize / 2));
+		}
 
 		if (m_Gender == Gender::Male)
 		{
@@ -717,7 +718,9 @@ void CharacterWindow::clickButton()
 		{
 			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				//UIManager::get()->m_WarWindow->openWindow()
+				m_CurrentCharacterID = WarManager::get().getWar(m_CurrentCharacter->m_CurrentWars[index])->getOpponent(m_CurrentCharacterID);
+				checkIfPlayerCharacter();
+				updateInfo();
 				break;
 			}
 		}
@@ -790,6 +793,14 @@ void CharacterWindow::clickButton()
 			else
 			{
 				UIManager::get()->createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationFailure);
+			}
+		}
+		for (unsigned int index = 0; index < m_WarShapes.size(); index++)
+		{
+			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				UIManager::get()->m_WarWindow->openWindow(WarManager::get().getWar(m_CurrentCharacter->m_CurrentWars[index])->getOpponent(m_CurrentCharacterID), m_CurrentCharacterID, Time::m_GameDate.m_Date);
+				break;
 			}
 		}
 	}
