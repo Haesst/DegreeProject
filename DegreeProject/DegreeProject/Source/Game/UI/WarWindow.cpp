@@ -354,6 +354,14 @@ void WarWindow::updateInfo()
 		if (m_AttackerCharacterIDs.front() == playerCharacterID)
 		{
 			int warscore = m_War->getWarscore(m_AttackerCharacterIDs.front());
+			if (warscore > 100)
+			{
+				warscore = 100;
+			}
+			if (warscore < -100)
+			{
+				warscore = -100;
+			}
 			if (warscore > 0 || warscore == 0)
 			{
 				m_WarscoreAmountText.setFillColor(m_PositiveColor);
@@ -370,6 +378,14 @@ void WarWindow::updateInfo()
 		else if (m_DefenderCharacterIDs.front() == playerCharacterID)
 		{
 			int warscore = m_War->getWarscore(m_DefenderCharacterIDs.front());
+			if (warscore > 100)
+			{
+				warscore = 100;
+			}
+			if (warscore < -100)
+			{
+				warscore = -100;
+			}
 			if (warscore > 0 || warscore == 0)
 			{
 				m_WarscoreAmountText.setFillColor(m_PositiveColor);

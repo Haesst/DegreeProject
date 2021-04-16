@@ -69,6 +69,14 @@ void WarIcon::updateInfo()
 		if (m_AttackerID == playerCharacterID)
 		{
 			int warscore = m_War->getWarscore(m_AttackerID);
+			if (warscore > 100)
+			{
+				warscore = 100;
+			}
+			if (warscore < -100)
+			{
+				warscore = -100;
+			}
 			if (warscore > 0 || warscore == 0)
 			{
 				m_WarscoreText.setFillColor(m_PositiveColor);
@@ -83,6 +91,14 @@ void WarIcon::updateInfo()
 		else if (m_DefenderID == playerCharacterID)
 		{
 			int warscore = m_War->getWarscore(m_DefenderID);
+			if (warscore > 100)
+			{
+				warscore = 100;
+			}
+			if (warscore < -100)
+			{
+				warscore = -100;
+			}
 			if (warscore > 0 || warscore == 0)
 			{
 				m_WarscoreText.setFillColor(m_PositiveColor);

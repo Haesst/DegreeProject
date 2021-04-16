@@ -344,7 +344,7 @@ public:
 				{
 					Vector2DInt capitalPosition = Map::get().getRegionCapitalLocation(m_CurrentRegionID);
 					UnitManager::get().raiseUnit(unit.m_UnitID, capitalPosition);
-					m_PlayerCharacter->m_RaisedArmySize = m_PlayerCharacter->m_MaxArmySize;
+					m_PlayerCharacter->m_RaisedArmySize = unit.m_RepresentedForce;
 					m_RaiseArmyShape.setFillColor(m_OwnerColor);
 					m_RaiseArmySprite.setColor(m_OwnerColor);
 				}

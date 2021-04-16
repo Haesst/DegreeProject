@@ -16,6 +16,11 @@ void UnitManager::start()
 {
 	m_UnitTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/soldier unit.png");
 	m_UnitSprite.setTexture(m_UnitTexture);
+
+	for (auto& unit : m_Units)
+	{
+		unit.m_RepresentedForce = CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize;
+	}
 }
 
 void UnitManager::update()
@@ -525,11 +530,6 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	
 	LOG_INFO("ARMY WEIGHT: {0}", armyWeight);
 	bool win = weightedRandomCombat(armyWeight);
-
-	if (CharacterManager::get()->getPlayerCharacterID() == getUnitWithId(unitID).m_Owner)
-	{
-		win = true;
-	}
 
 	if (win)
 	{

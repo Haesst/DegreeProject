@@ -689,6 +689,9 @@ void AIManager::warAction(AIData& data)
 	else
 	{
 		UIManager::get()->createUIEventElement(warmind.m_OwnerID, CharacterManager::get()->getPlayerCharacterID(), UIType::WarDeclaration);
+		UIManager::get()->createWarIcon(warmind.m_OwnerID, CharacterManager::get()->getPlayerCharacterID());
+		CharacterManager::get()->callAllies(warmind.m_OwnerID, warHandle);
+		CharacterManager::get()->callAllies(CharacterManager::get()->getPlayerCharacterID(), warHandle);
 	}
 
 	LOG_INFO("{0} Declared war against {1}", CharacterManager::get()->getCharacter(data.m_OwnerID).m_Name, CharacterManager::get()->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Name);
