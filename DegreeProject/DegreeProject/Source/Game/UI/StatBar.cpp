@@ -17,7 +17,7 @@ StatBar::StatBar(UIID id, sf::Font font, Vector2D, Vector2D size)
 
 void StatBar::start()
 {
-	Time::m_GameDate.subscribeToMonthChange(std::bind(&StatBar::onMonthChange, this));
+	m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { StatBar& statBar = *static_cast<StatBar*>(data); statBar.onDayChange(); }, static_cast<void*>(this));
 
 	m_Window = Window::getWindow();
 
@@ -82,7 +82,7 @@ void StatBar::render()
 	m_Window->draw(m_CurrentMaxArmyText);
 }
 
-void StatBar::onMonthChange()
+void StatBar::onDayChange()
 {
 	updateStats();
 }

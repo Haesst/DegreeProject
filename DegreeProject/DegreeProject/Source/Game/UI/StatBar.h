@@ -14,7 +14,7 @@ public:
 	void start();
 	void update();
 	void render();
-	void onMonthChange();
+	void onDayChange();
 	void updateStats();
 	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize = m_SpriteSize);
 
@@ -44,4 +44,5 @@ public:
 	const static int m_SpriteSize = 32;
 	sf::Vector2f m_CoinPosition = sf::Vector2f();
 	sf::Vector2f m_ArmyPosition = sf::Vector2f();
+	int m_DaySubscriptionHandle = 0;
 };

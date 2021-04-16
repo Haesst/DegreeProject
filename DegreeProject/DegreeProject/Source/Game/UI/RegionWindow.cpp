@@ -18,8 +18,6 @@ RegionWindow::RegionWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 
 void RegionWindow::start()
 {
-	m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { RegionWindow& regionWindow = *static_cast<RegionWindow*>(data); regionWindow.onDayChange(); }, static_cast<void*>(this));
-
 	m_Window = Window::getWindow();
 
 	m_BuildingSlotTextures[0] = AssetHandler::get().getTextureAtPath("Assets/Graphics/FortIcon.png");
@@ -169,7 +167,10 @@ void RegionWindow::clickOnMap()
 
 void RegionWindow::onDayChange()
 {
-	updateInfo();
+	if (m_Visible)
+	{
+		updateInfo();
+	}
 }
 
 void RegionWindow::displayProgressMeter(unsigned int index)
@@ -260,15 +261,23 @@ void RegionWindow::handleWindow()
 
 void RegionWindow::openWindow()
 {
-	m_Visible = true;
-	m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
+	if (!m_Visible)
+	{
+		m_Visible = true;
+		m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
+		m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { RegionWindow& regionWindow = *static_cast<RegionWindow*>(data); regionWindow.onDayChange(); }, static_cast<void*>(this));
+	}
 }
 
 void RegionWindow::closeWindow()
 {
-	m_Open = false;
-	m_Visible = false;
-	m_WindowShape.setSize(sf::Vector2f());
+	if (m_Visible)
+	{
+		m_Open = false;
+		m_Visible = false;
+		m_WindowShape.setSize(sf::Vector2f());
+		Time::m_GameDate.unsubscribeToDayChange(m_DaySubscriptionHandle);
+	}
 }
 
 void RegionWindow::clickButton()

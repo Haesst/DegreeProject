@@ -43,6 +43,11 @@ public:
 	std::vector<sf::Texture> m_AlliesTextures = std::vector<sf::Texture>();
 	std::vector<Vector2DInt> m_AlliesPositions = std::vector<Vector2DInt>();
 
+	std::vector<sf::RectangleShape> m_WarShapes = std::vector<sf::RectangleShape>();
+	std::vector<sf::Sprite> m_WarSprites = std::vector<sf::Sprite>();
+	std::vector<sf::Texture> m_WarTextures = std::vector<sf::Texture>();
+	std::vector<Vector2DInt> m_WarPositions = std::vector<Vector2DInt>();
+
 	sf::Texture m_MaleChildTexture;
 	sf::Texture m_FemaleChildTexture;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);

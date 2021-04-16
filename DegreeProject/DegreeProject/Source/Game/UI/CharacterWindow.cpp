@@ -43,12 +43,15 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	m_AlliesSprites.clear();
 	m_AlliesTextures.clear();
 	m_AlliesPositions.clear();
+
+	m_WarShapes.clear();
+	m_WarSprites.clear();
+	m_WarTextures.clear();
+	m_WarPositions.clear();
 }
 
 void CharacterWindow::start()
 {
-	m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { CharacterWindow& characterWindow = *static_cast<CharacterWindow*>(data); characterWindow.onDayChange(); }, static_cast<void*>(this));
-
 	m_Window = Window::getWindow();
 
 	m_MaleCharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/MalePortrait.jpg");
@@ -231,7 +234,12 @@ void CharacterWindow::update()
 
 		for (unsigned int index = 0; index < m_AlliesShapes.size(); index++)
 		{
-			m_AlliesShapes[index].setPosition(sf::Vector2f((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f)));
+			m_AlliesShapes[index].setPosition(sf::Vector2f((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f)));
+		}
+
+		for (unsigned int index = 0; index < m_WarShapes.size(); index++)
+		{
+			m_WarShapes[index].setPosition(sf::Vector2f((int)(m_SizeX * 0.3f), (int)(m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f)));
 		}
 
 		m_SpouseName.setPosition(sf::Vector2f((int)(m_MarriedPosition.x + m_SizeX * 0.1f), (int)(m_MarriedPosition.y)));
@@ -313,7 +321,12 @@ void CharacterWindow::render()
 		for (unsigned int index = 0; index < m_AlliesShapes.size(); index++)
 		{
 			m_Window->draw(m_AlliesShapes[index]);
-			updateSprite(m_AlliesSprites[index], m_AlliesTextures[index], sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f), m_SpriteSize / 2);
+			updateSprite(m_AlliesSprites[index], m_AlliesTextures[index], sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f), m_SpriteSize / 2);
+		}
+		for (unsigned int index = 0; index < m_WarShapes.size(); index++)
+		{
+			m_Window->draw(m_WarShapes[index]);
+			updateSprite(m_WarSprites[index], m_WarTextures[index], sf::Vector2f(m_SizeX * 0.3f, m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f), m_SpriteSize / 2);
 		}
 		if (!m_IsPlayerCharacter)
 		{
@@ -380,7 +393,10 @@ void CharacterWindow::clickOnMap()
 
 void CharacterWindow::onDayChange()
 {
-	updateInfo();
+	if (m_Visible)
+	{
+		updateInfo();
+	}
 }
 
 void CharacterWindow::updateInfo()
@@ -507,9 +523,32 @@ void CharacterWindow::updateInfo()
 			{
 				m_AlliesTextures.push_back(m_FemaleCharacterTexture);
 			}
+			m_AlliesShapes[index].setOutlineColor(ally.m_RegionColor);
 			m_AlliesShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
 			m_AlliesShapes[index].setSize(sf::Vector2f(m_SpriteSize / 2, m_SpriteSize / 2));
 		}
+
+		//m_WarShapes.clear();
+		//m_WarSprites.clear();
+		//m_WarTextures.clear();
+		//m_WarPositions.clear();
+		//for (unsigned int index = 0; index < m_CurrentCharacter->m_CurrentWars.size(); index++)
+		//{
+		//	Character& ally = CharacterManager::get()->getCharacter(WarManager::get().getAlliances(m_CurrentCharacterID)[index]);
+		//	m_AlliesShapes.push_back(sf::RectangleShape());
+		//	m_AlliesSprites.push_back(sf::Sprite());
+		//	if (ally.m_Gender == Gender::Male)
+		//	{
+		//		m_AlliesTextures.push_back(m_MaleCharacterTexture);
+		//	}
+		//	else
+		//	{
+		//		m_AlliesTextures.push_back(m_FemaleCharacterTexture);
+		//	}
+		//	m_AlliesShapes[index].setOutlineColor(ally.m_RegionColor);
+		//	m_AlliesShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
+		//	m_AlliesShapes[index].setSize(sf::Vector2f(m_SpriteSize / 2, m_SpriteSize / 2));
+		//}
 
 		if (m_Gender == Gender::Male)
 		{
@@ -569,15 +608,23 @@ void CharacterWindow::handleWindow()
 
 void CharacterWindow::openWindow()
 {
-	m_Visible = true;
-	m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
+	if (!m_Visible)
+	{
+		m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
+		m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { CharacterWindow& characterWindow = *static_cast<CharacterWindow*>(data); characterWindow.onDayChange(); }, static_cast<void*>(this));
+		m_Visible = true;
+	}
 }
 
 void CharacterWindow::closeWindow()
 {
-	m_Open = false;
-	m_Visible = false;
-	m_WindowShape.setSize(sf::Vector2f());
+	if (m_Visible)
+	{
+		Time::m_GameDate.unsubscribeToDayChange(m_DaySubscriptionHandle);
+		m_WindowShape.setSize(sf::Vector2f());
+		m_Open = false;
+		m_Visible = false;
+	}
 }
 
 void CharacterWindow::clickButton()
@@ -660,6 +707,17 @@ void CharacterWindow::clickButton()
 		{
 			if (m_AlliesShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				m_CurrentCharacterID = WarManager::get().getAlliances(m_CurrentCharacterID)[index];
+				checkIfPlayerCharacter();
+				updateInfo();
+				break;
+			}
+		}
+		for (unsigned int index = 0; index < m_WarShapes.size(); index++)
+		{
+			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				//UIManager::get()->m_WarWindow->openWindow()
 				break;
 			}
 		}
