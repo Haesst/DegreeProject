@@ -396,7 +396,7 @@ int Map::getRegionPositionFromMapCharacter(const char& c)
 		}
 	}
 
-	return -1;
+	return INVALID_REGION_ID;
 }
 
 int Map::getRegionPositionFromRegionId(const unsigned int id)
@@ -409,7 +409,7 @@ int Map::getRegionPositionFromRegionId(const unsigned int id)
 		}
 	}
 
-	return -1;
+	return INVALID_REGION_ID;
 }
 
 MapRegion& Map::getRegionById(unsigned int regionId)

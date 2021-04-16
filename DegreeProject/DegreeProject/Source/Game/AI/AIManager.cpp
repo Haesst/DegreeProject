@@ -323,7 +323,7 @@ void AIManager::update()
 				}
 			}
 
-			int regionID = -1;
+			int regionID = INVALID_REGION_ID;
 			float settlementEval = upgradeDecision(data.m_OwnerID, regionID);
 			data.m_SettlementToUpgrade = regionID;
 			data.m_Evaluations.push_back(std::make_pair(settlementEval, Action::War));
@@ -707,14 +707,14 @@ void AIManager::warAction(AIData& data)
 
 void AIManager::upgradeAction(AIData& data)
 {
-	if (data.m_SettlementToUpgrade == -1)
+	if (data.m_SettlementToUpgrade == INVALID_REGION_ID)
 	{
 		return;
 	}
 
 	int buildingIndex = rand() % GameData::m_Buildings.size();
 
-	int buildingId = -1;
+	int buildingId = INVALID_BUILDING_ID;
 
 	int index = 0;
 	for (auto& pair : GameData::m_Buildings)
@@ -730,7 +730,7 @@ void AIManager::upgradeAction(AIData& data)
 
 	for (int i = 0; i < 4; i++)
 	{
-		if (Map::get().getRegionById(data.m_SettlementToUpgrade).m_BuildingSlots[i].m_BuildingId == -1)
+		if (Map::get().getRegionById(data.m_SettlementToUpgrade).m_BuildingSlots[i].m_BuildingId == INVALID_BUILDING_ID)
 		{
 			CharacterManager::get()->constructBuilding(data.m_OwnerID, buildingId, data.m_SettlementToUpgrade, i);
 			data.m_LastAction = Action::Upgrade_Settlement;
@@ -800,7 +800,7 @@ void AIManager::handleHighestEvaluation(AIData& data)
 		break;
 	case Action::NONE:
 		data.m_PotentialSpouseID = INVALID_CHARACTER_ID;
-		data.m_SettlementToUpgrade = -1;
+		data.m_SettlementToUpgrade = INVALID_REGION_ID;
 		break;
 
 	default:

@@ -112,14 +112,14 @@ void UnitManager::render()
 			Window::getWindow()->draw(unit.m_HighlightShape);
 		}
 
-		if (unit.m_SeizingRegionID != -1)
+		if (unit.m_SeizingRegionID != INVALID_REGION_ID)
 		{
 			MapRegion& region = Map::get().getRegionById(unit.m_SeizingRegionID);
 			int daysToSiegeRegion = region.m_DaysToSeize;
 
 			for (auto& slot : region.m_BuildingSlots)
 			{
-				if (slot.m_BuildingId == -1)
+				if (slot.m_BuildingId == INVALID_BUILDING_ID)
 				{
 					continue;
 				}
@@ -258,7 +258,7 @@ void UnitManager::dismissUnit(UnitID unitID)
 	unit.m_Moving = false;
 	unit.m_CurrentPath.clear();
 	unit.m_InCombat = false;
-	unit.m_SeizingRegionID = -1;
+	unit.m_SeizingRegionID = INVALID_REGION_ID;
 	unit.m_Raised = false;
 }
 
@@ -298,7 +298,7 @@ void UnitManager::giveUnitPath(UnitID unitID, std::vector<Vector2DInt> path)
 
 	if (unit.m_SeizingRegionID > 0)
 	{
-		unit.m_SeizingRegionID = -1;
+		unit.m_SeizingRegionID = INVALID_REGION_ID;
 		unit.m_DaysSeizing = 0;
 	}
 }
@@ -601,7 +601,7 @@ void UnitManager::unitSiege(Unit& unit)
 			{
 				if (neutralUnitAtSquare(CharacterManager::get()->getCharacter(unit.m_Owner), region.m_RegionCapital))
 				{
-					unit.m_SeizingRegionID = -1;
+					unit.m_SeizingRegionID = INVALID_REGION_ID;
 					unit.m_DaysSeizing = 0;
 					return;
 				}
@@ -622,7 +622,7 @@ void UnitManager::unitSiege(Unit& unit)
 
 			for (auto& slot : region.m_BuildingSlots)
 			{
-				if (slot.m_BuildingId == -1)
+				if (slot.m_BuildingId == INVALID_BUILDING_ID)
 				{
 					continue;
 				}
@@ -657,7 +657,7 @@ void UnitManager::unitSiege(Unit& unit)
 					attacker.m_MaxArmySize += region.m_ManPower;
 
 					unit.m_DaysSeizing = 0;
-					unit.m_SeizingRegionID = -1;
+					unit.m_SeizingRegionID = INVALID_REGION_ID;
 
 					return;
 				}
@@ -714,7 +714,7 @@ void UnitManager::unitSiege(Unit& unit)
 				}
 
 				unit.m_DaysSeizing = 0;
-				unit.m_SeizingRegionID = -1;
+				unit.m_SeizingRegionID = INVALID_REGION_ID;
 			}
 		}
 	}
@@ -722,7 +722,7 @@ void UnitManager::unitSiege(Unit& unit)
 
 void UnitManager::startConquerRegion(Unit& unit)
 {
-	if (unit.m_Moving || unit.m_SeizingRegionID != -1)
+	if (unit.m_Moving || unit.m_SeizingRegionID != INVALID_REGION_ID)
 	{
 		return;
 	}

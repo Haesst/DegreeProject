@@ -556,7 +556,7 @@ void CharacterManager::onMonthChange(Date)
 
 			for (auto& slot : region.m_BuildingSlots)
 			{
-				if (slot.m_BuildingId == -1)
+				if (slot.m_BuildingId == INVALID_BUILDING_ID)
 				{
 					continue;
 				}
@@ -826,7 +826,7 @@ bool CharacterManager::chancePerPercent(float weight)
 
 bool CharacterManager::ownsRegion(CharacterID ID, int regionIndex)
 {
-	if (regionIndex == -1)
+	if (regionIndex == INVALID_REGION_ID)
 	{
 		return false;
 	}
@@ -859,7 +859,7 @@ void CharacterManager::constructBuilding(const CharacterID characterId, const in
 		return;
 	}
 
-	if (region.m_BuildingSlots[buildingSlot].m_BuildingId != -1)
+	if (region.m_BuildingSlots[buildingSlot].m_BuildingId != INVALID_BUILDING_ID)
 	{
 		return;
 	}
@@ -878,7 +878,7 @@ void CharacterManager::addRegion(const CharacterID characterId, const unsigned i
 
 	for (auto& buildingSlot : region.m_BuildingSlots)
 	{
-		if (buildingSlot.m_BuildingId == -1)
+		if (buildingSlot.m_BuildingId == INVALID_BUILDING_ID)
 		{
 			continue;
 		}
@@ -901,7 +901,7 @@ void CharacterManager::removeRegion(const CharacterID characterId, const unsigne
 
 			for (auto& buildingSlot : region.m_BuildingSlots)
 			{
-				if (buildingSlot.m_BuildingId == -1)
+				if (buildingSlot.m_BuildingId == INVALID_BUILDING_ID)
 				{
 					continue;
 				}
@@ -985,7 +985,7 @@ CharacterID CharacterManager::internalCreateCharacter(Character& character, cons
 
 		for (auto& buildingSlot : region.m_BuildingSlots)
 		{
-			if (buildingSlot.m_BuildingId == -1)
+			if (buildingSlot.m_BuildingId == INVALID_BUILDING_ID)
 			{
 				continue;
 			}
