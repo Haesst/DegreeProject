@@ -281,9 +281,14 @@ bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, i
 
 void AIManager::update()
 {
+	CharacterManager* characterManager = CharacterManager::get();
+	WarManager& warManager = WarManager::get();
+	UnitManager& unitManager = UnitManager::get();
+	Map& map = Map::get();
+
 	for (auto& data : m_AIDatas)
 	{
-		if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_CharacterTitle == Title::Unlanded)
+		if (characterManager->getCharacter(data.m_OwnerID).m_CharacterTitle == Title::Unlanded)
 		{
 			continue;
 		}
@@ -298,7 +303,7 @@ void AIManager::update()
 				continue;
 			}
 
-			if (data.m_CurrentAction != Action::War && CharacterManager::get()->getCharacter(data.m_OwnerID).m_CurrentWars.size() == 0)
+			if (data.m_CurrentAction != Action::War && characterManager->getCharacter(data.m_OwnerID).m_CurrentWars.size() == 0)
 			{
 				if (expansionDecision(data.m_OwnerID) > .3f)
 				{
@@ -313,7 +318,7 @@ void AIManager::update()
 				}
 			}
 
-			if (WarManager::get().getAlliances(data.m_OwnerID).empty())
+			if (warManager.getAlliances(data.m_OwnerID).empty())
 			{
 				float eval = allianceDecision(data.m_OwnerID, getPotentialAlly(data));
 				
@@ -328,7 +333,7 @@ void AIManager::update()
 			data.m_SettlementToUpgrade = regionID;
 			data.m_Evaluations.push_back(std::make_pair(settlementEval, Action::War));
 
-			if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
+			if (characterManager->getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
 			{
 				CharacterID potentialSpouse = getPotentialSpouse(data);
 
@@ -371,9 +376,9 @@ void AIManager::update()
 
 		if (warmind.m_TickAccu > warmind.m_AtWarTickRate)
 		{
-			if (CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
+			if (characterManager->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
 			{
-				UnitManager::get().dismissUnit(UnitManager::get().getUnitOfCharacter(warmind.m_OwnerID).m_UnitID);
+				unitManager.dismissUnit(unitManager.getUnitOfCharacter(warmind.m_OwnerID).m_UnitID);
 				warmind.m_Active = false;
 			}
 
@@ -386,17 +391,17 @@ void AIManager::update()
 					if (warmind.m_OrderAccu >= warmind.m_OrderTimer)
 					{
 						warmind.m_OrderAccu = 0.0f;
-						considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), WarManager::get().getWar(warmind.m_PrioritizedWarHandle)->getOpponent(warmind.m_OwnerID));
+						considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warManager.getWar(warmind.m_PrioritizedWarHandle)->getOpponent(warmind.m_OwnerID));
 					}
 				}
 
 				else
 				{
-					Character& character = CharacterManager::get()->getCharacter(warmind.m_OwnerID);
+					Character& character = characterManager->getCharacter(warmind.m_OwnerID);
 					if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f && character.m_MaxArmySize > 0)
 					{
-						LOG_INFO("{0} IS RAISING UNITS", CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_Name);
-						UnitManager::get().raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
+						LOG_INFO("{0} IS RAISING UNITS", characterManager->getCharacter(warmind.m_OwnerID).m_Name);
+						unitManager.raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
 					}
 				}
 			}
