@@ -25,6 +25,7 @@ public:
 	void invalidateWarsForRegionOnWonWar(War& wonWar);
 	void invalidateWarsForRegion(int regionID);
 	bool isEnemyOfEnemy(Unit& unit, Unit& enemyUnit);
+	bool isValidWar(War& war);
 
 	std::vector<War> getWarsOfCharacter(CharacterID ID);
 

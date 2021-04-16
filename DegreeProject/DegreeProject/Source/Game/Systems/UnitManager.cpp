@@ -226,6 +226,7 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 		}
 
 		squareData.addUnique(unitID);
+		break;
 	}
 
 	startConquerRegion(unit);
@@ -235,12 +236,6 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 
 void UnitManager::dismissUnit(UnitID unitID)
 {
-
-	//if (unitID == INVALID_UNIT_ID)
-	//{
-	//	return; // Todo: This is wrong. Find out how an invalid id gets sent in
-	//}
-
 	Unit& unit = getUnitWithId(unitID);
 
 	for (auto& squareData : Map::get().m_MapSquareData)
@@ -250,8 +245,9 @@ void UnitManager::dismissUnit(UnitID unitID)
 			continue;
 		}
 
-		//LOG_WARN("Removing dismissed unit");
+		LOG_WARN("Removing dismissed unit");
 		squareData.remove(unitID);
+		break;
 	}
 
 	unit.m_Moving = false;
@@ -378,10 +374,6 @@ void UnitManager::moveUnit(Unit& unit)
 			}
 
 			unit.m_CurrentPath.erase(unit.m_CurrentPath.begin());
-			/*if (unit.m_TargetPath.size() > 0)
-			{
-				unit.m_TargetPath.pop_front();
-			}*/
 		}
 		else
 		{
@@ -620,6 +612,9 @@ void UnitManager::unitSiege(Unit& unit)
 
 			if (war == nullptr && !skipWarCheck)
 			{
+				unit.m_DaysSeizing = 0;
+				unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
+				dismissUnit(unit.m_UnitID);
 				return;
 			}
 
@@ -670,7 +665,17 @@ void UnitManager::unitSiege(Unit& unit)
 				if (defender.m_CharacterID == region.m_OwnerID)
 				{
 					currentWar->m_AttackerOccupiedRegions.push_back(region.m_RegionId);
-					currentWar->addWarscore(currentWar->getAttacker(), 50);
+
+					if (currentWar->m_AttackerWarscore < 100)
+					{
+						currentWar->addWarscore(currentWar->getAttacker(), 50);
+					}
+
+					if (!WarManager::get().isValidWar(*currentWar))
+					{
+						return;
+					}
+
 					region.m_OccupiedBy = attacker.m_CharacterID;
 
 					//Loot

@@ -668,6 +668,11 @@ void CharacterManager::killCharacter(CharacterID characterID)
 		getCharacter(character.m_Spouse).m_Spouse = INVALID_CHARACTER_ID;
 		character.m_Spouse = INVALID_CHARACTER_ID;
 	}
+
+	if (!character.m_IsPlayerControlled)
+	{
+		AIManager::get().deactivateAI(characterID);
+	}
 }
 
 void CharacterManager::updateTitle(Character& character)
@@ -716,16 +721,20 @@ void CharacterManager::handleInheritance(Character& character)
 		{
 			child.m_IsPlayerControlled = character.m_IsPlayerControlled;
 		}
+
 		if (child.m_IsPlayerControlled)
 		{
 			m_PlayerCharacterID = child.m_CharacterID;
 			m_PlayerCharacter = &child;
+
+			AIManager::get().deactivateAI(child.m_CharacterID);
 		}
 		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
 		{
 			child.m_OwnedRegionIDs.push_back(ownedRegionID);
 			Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
 		}
+
 		updateTitle(child);
 		UIManager::get()->createUITextElement(Game::m_UIFont, child.m_CharacterID, child.m_KingdomName, child.m_OwnedRegionIDs);
 		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
@@ -810,6 +819,7 @@ void CharacterManager::handleInheritance(Character& character)
 		{
 			m_PlayerCharacterID = child.m_CharacterID;
 			m_PlayerCharacter = &child;
+			AIManager::get().deactivateAI(child.m_CharacterID);
 		}
 	}
 	else

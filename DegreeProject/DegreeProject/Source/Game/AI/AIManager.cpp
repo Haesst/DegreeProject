@@ -107,6 +107,37 @@ void AIManager::initAI(CharacterID ID)
 	m_AIDatas.push_back(data);
 }
 
+void AIManager::deactivateAI(CharacterID ID)
+{
+	unsigned int index = 0;
+
+	for (auto& warmind : m_Warminds)
+	{
+		if (warmind.m_OwnerID == ID)
+		{
+			break;
+		}
+
+		index++;
+	}
+
+	m_Warminds.erase(m_Warminds.begin() + index);
+
+	index = 0;
+
+	for (auto& data : m_AIDatas)
+	{
+		if (data.m_OwnerID == ID)
+		{
+			break;
+		}
+
+		index++;
+	}
+
+	m_AIDatas.erase(m_AIDatas.begin() + index);
+}
+
 bool AIManager::handleRecieveMarriageRequest(CharacterID reciever, CharacterID sender)
 {
 	MarriageConsideration consideration;
@@ -331,7 +362,7 @@ void AIManager::update()
 			continue;
 		}
 
-		else if (warmind.m_Active)
+		else if (warmind.m_Active && warmind.m_PrioritizedWarHandle == -1)
 		{
 			warmind.m_PrioritizedWarHandle = considerPrioritizedWar(warmind);
 		}
@@ -342,13 +373,10 @@ void AIManager::update()
 		{
 			if (CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
 			{
-				UnitManager::get().dismissUnit(CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_UnitEntity);
+				UnitManager::get().dismissUnit(UnitManager::get().getUnitOfCharacter(warmind.m_OwnerID).m_UnitID);
+				warmind.m_Active = false;
 			}
 
-			if (warmind.m_PrioritizedWarHandle == -1 && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
-			{
-				UnitManager::get().dismissUnit(UnitManager::get().getUnitOfCharacter(warmind.m_OwnerID).m_UnitID);
-			}
 			else
 			{
 				if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
@@ -367,7 +395,7 @@ void AIManager::update()
 					Character& character = CharacterManager::get()->getCharacter(warmind.m_OwnerID);
 					if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f && character.m_MaxArmySize > 0)
 					{
-						//LOG_INFO("{0} IS RAISING UNITS", CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_Name);
+						LOG_INFO("{0} IS RAISING UNITS", CharacterManager::get()->getCharacter(warmind.m_OwnerID).m_Name);
 						UnitManager::get().raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
 					}
 				}

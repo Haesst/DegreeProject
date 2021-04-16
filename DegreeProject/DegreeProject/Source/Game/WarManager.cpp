@@ -73,8 +73,8 @@ bool WarManager::atWarWith(CharacterID character, CharacterID enemy)
 {
 	for (auto& war : m_Wars)
 	{
-		if ((war.second.getAttacker() == character || war.second.getDefender() == character) && 
-			(war.second.getAttacker() == enemy || war.second.getDefender() == enemy))
+		if ((war.second.isAttacker(character) || war.second.isDefender(character)) && 
+			(war.second.isAttacker(enemy) || war.second.isDefender(enemy)))
 		{
 			return true;
 		}
@@ -123,6 +123,19 @@ bool WarManager::isEnemyOfEnemy(Unit& unit, Unit& enemyUnit)
 			{
 				return true;
 			}
+		}
+	}
+
+	return false;
+}
+
+bool WarManager::isValidWar(War& war)
+{
+	for (auto ID : m_Wars)
+	{
+		if (ID.first == war.getHandle())
+		{
+			return true;
 		}
 	}
 
