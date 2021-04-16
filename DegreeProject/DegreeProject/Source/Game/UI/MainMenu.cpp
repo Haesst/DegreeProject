@@ -55,15 +55,15 @@ void MainMenu::update()
 
 	if (m_Visible)
 	{
-		m_BackgroundShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i()));
+		m_BackgroundShape.setPosition(sf::Vector2f());
 
-		m_MainMenuShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_MainMenuPosition.x, m_MainMenuPosition.y)));
-		m_MainMenuText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i((int)(m_MainMenuPosition.x + m_SizeX * 0.25f), m_MainMenuPosition.y)));
+		m_MainMenuShape.setPosition(sf::Vector2f(m_MainMenuPosition.x, m_MainMenuPosition.y));
+		m_MainMenuText.setPosition(sf::Vector2f((int)(m_MainMenuPosition.x + m_SizeX * 0.25f), m_MainMenuPosition.y));
 
 		for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 		{
-			m_ButtonShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_ButtonPositions[index].x, m_ButtonPositions[index].y)));
-			m_ButtonTexts[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i(m_ButtonPositions[index].x, m_ButtonPositions[index].y)));
+			m_ButtonShapes[index].setPosition(sf::Vector2f(m_ButtonPositions[index].x, m_ButtonPositions[index].y));
+			m_ButtonTexts[index].setPosition(sf::Vector2f(m_ButtonPositions[index].x, m_ButtonPositions[index].y));
 		}
 
 		clickButton();
@@ -114,7 +114,7 @@ void MainMenu::clickButton()
 {
 	if (InputHandler::getLeftMouseReleased())
 	{
-		Vector2D mousePosition = InputHandler::getMousePosition();
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 		{
 			if (m_ButtonShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))

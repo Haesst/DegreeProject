@@ -36,7 +36,9 @@ void Game::run()
 	sf::RenderWindow* internalWindow = m_Window->getWindow();
 	sf::Vector2f floatResolution = sf::Vector2f((float)m_Resolution.x, (float)m_Resolution.y);
 	sf::View view(floatResolution * 0.5f, floatResolution);
+	sf::View uiView(floatResolution * 0.5f, floatResolution);
 	internalWindow->setView(view);
+	InputHandler::setUIView(uiView);
 
 	//Start
 	CharacterManager::get()->start();
@@ -53,7 +55,7 @@ void Game::run()
 		// Events
 		InputHandler::handleInputEvents();
 
-		// Update		
+		// Update
 		StaticSpriteManager::get()->update();
 		UnitManager::get().update();
 		CharacterManager::get()->update();
@@ -69,7 +71,11 @@ void Game::run()
 		CharacterManager::get()->render();
 		StaticSpriteManager::get()->render();
 		UnitManager::get().render();
+
+		view = Window::getWindow()->getView();
+		Window::getWindow()->setView(uiView);
 		UIManager::get()->render();
+		Window::getWindow()->setView(view);
 
 		Window::getWindow()->display();
 	}

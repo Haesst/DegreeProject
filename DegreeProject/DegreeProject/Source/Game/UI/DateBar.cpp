@@ -87,16 +87,16 @@ void DateBar::update()
 	int positionX = m_Window->getSize().x - (int)(m_SizeX + m_OutlineThickness);
 	int positionY = m_Window->getSize().y - (int)(m_SizeY + m_OutlineThickness);
 
-	m_WindowShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX, positionY)));
+	m_WindowShape.setPosition(sf::Vector2f(positionX, positionY));
 
 	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 	{
-		m_ButtonShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_ButtonThickness * 1.25f + m_ButtonThickness * 4.5f * index), positionY + (int)(m_SizeY * 0.25f - m_ButtonThickness * 0.25f))));
+		m_ButtonShapes[index].setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 1.25f + m_ButtonThickness * 4.5f * index), positionY + (int)(m_SizeY * 0.25f - m_ButtonThickness * 0.25f)));
 	}
 
 	for (unsigned int index = 0; index < m_NumberOfSpeeds; index++)
 	{
-		m_SpeedShapes[index].setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_ButtonThickness * 14.5f + m_ButtonThickness * 2.5f * index), positionY + (int)(m_SizeY * 0.25f - m_ButtonThickness * 0.25f))));
+		m_SpeedShapes[index].setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 14.5f + m_ButtonThickness * 2.5f * index), positionY + (int)(m_SizeY * 0.25f - m_ButtonThickness * 0.25f)));
 		if (index < m_CurrentSpeedLevel && Time::gamePaused())
 		{
 			m_SpeedShapes[index].setFillColor(sf::Color::Red);
@@ -111,17 +111,17 @@ void DateBar::update()
 		}
 	}
 
-	m_PauseLeftShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_ButtonThickness * 2), positionY + (int)(m_SizeY * 0.25f))));
+	m_PauseLeftShape.setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 2), positionY + (int)(m_SizeY * 0.25f)));
 
-	m_PauseRightShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_ButtonThickness * 3), positionY + (int)(m_SizeY * 0.25f))));
+	m_PauseRightShape.setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 3), positionY + (int)(m_SizeY * 0.25f)));
 
-	m_DecreaseSpeedShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_ButtonThickness * 8.5f), positionY + (int)(m_SizeY * 0.5f - m_ButtonThickness * 0.25f))));
+	m_DecreaseSpeedShape.setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 8.5f), positionY + (int)(m_SizeY * 0.5f - m_ButtonThickness * 0.25f)));
 
-	m_IncreaseSpeedHorizontalShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_ButtonThickness * 13), positionY + (int)(m_SizeY * 0.5f - m_ButtonThickness * 0.25f))));
+	m_IncreaseSpeedHorizontalShape.setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 13), positionY + (int)(m_SizeY * 0.5f - m_ButtonThickness * 0.25f)));
 
-	m_IncreaseSpeedVerticalShape.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_ButtonThickness * 11.5f), positionY + (int)(m_SizeY * 0.25f))));
+	m_IncreaseSpeedVerticalShape.setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 11.5f), positionY + (int)(m_SizeY * 0.25f)));
 
-	m_DateText.setPosition(m_Window->mapPixelToCoords(sf::Vector2i(positionX + (int)(m_SizeX * 0.475f), positionY + (int)(m_OutlineThickness * 0.5f))));
+	m_DateText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.475f), positionY + (int)(m_OutlineThickness * 0.5f)));
 }
 
 void DateBar::render()
@@ -187,7 +187,7 @@ void DateBar::clickButton()
 {
 	if (InputHandler::getLeftMouseReleased())
 	{
-		Vector2D mousePosition = InputHandler::getMousePosition();
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 		{
 			if (m_ButtonShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))

@@ -27,6 +27,7 @@ public:
 	static bool getLeftMouseReleased();
 	static bool getRightMouseReleased();
 	static Vector2D getMousePosition();
+	static Vector2D getUIMousePosition();
 	static Vector2DInt getMouseMapPosition();
 	static float getMouseScrollDirection();
 	static bool getMouseScrolled();
@@ -41,10 +42,14 @@ public:
 	static void setWarWindowOpen(bool open);
 	static void setRegionWindowOpen(bool open);
 	static float getZoomSpeed();
+	static void setUIView(sf::View& uiView);
 private:
 	static void moveView(sf::RenderWindow& window, sf::View& view);
 	static void setMousePosition(int xPosition, int yPosition, const sf::RenderWindow& window);
 	static bool allowedToZoomView(const sf::View& view);
 	static void zoomView(sf::RenderWindow& window, sf::View& view);
 	static bool allowedToMoveView(const sf::View& view);
+
+private:
+	static sf::View& m_UIView;
 };

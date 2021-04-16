@@ -11,8 +11,11 @@ static const float MIN_ZOOM = 100.0f;
 static const float MOVE_SPEED = 25.0f;
 static const float ZOOM_SPEED = 0.1f;
 static Vector2D mousePosition = Vector2D(0.0f, 0.0f);
+static Vector2D mousePositionUI = Vector2D(0.0f, 0.0f);
 static Vector2DInt mouseMapPosition = Vector2DInt(0, 0);
 static bool inputs[Inputs::PlayerUnitSelected + 1];
+
+sf::View& InputHandler::m_UIView = sf::View();
 
 void InputHandler::handleInputEvents()
 {
@@ -288,6 +291,11 @@ void InputHandler::handleInputEvents()
 	}
 }
 
+void InputHandler::setUIView(sf::View& uiView)
+{
+	m_UIView = uiView;
+}
+
 void InputHandler::zoomView(sf::RenderWindow& window, sf::View& view)
 {
 	view.zoom(1.0f - mouseScrollDirection * ZOOM_SPEED);
@@ -312,6 +320,7 @@ void InputHandler::setMousePosition(int xPosition, int yPosition, const sf::Rend
 {
 	mouseMapPosition = Vector2DInt(xPosition, yPosition);
 	mousePosition = window.mapPixelToCoords(sf::Vector2i(mouseMapPosition.x, mouseMapPosition.y));
+	mousePositionUI = window.mapPixelToCoords(sf::Vector2i(mouseMapPosition.x, mouseMapPosition.y), m_UIView);
 	mouseMapPosition = Map::convertToMap(mousePosition);
 }
 
@@ -344,6 +353,11 @@ bool InputHandler::getRightMouseReleased()
 Vector2D InputHandler::getMousePosition()
 {
 	return mousePosition;
+}
+
+Vector2D InputHandler::getUIMousePosition()
+{
+	return mousePositionUI;
 }
 
 Vector2DInt InputHandler::getMouseMapPosition()
