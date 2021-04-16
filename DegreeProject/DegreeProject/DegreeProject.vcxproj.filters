@@ -263,10 +263,28 @@
     <ClCompile Include="Source\Game\Systems\UnitManager.cpp">
       <Filter>Game\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\UI\CharacterWindow.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\UI\DateBar.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\UI\EventWindow.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Game\UI\MainMenu.cpp">
       <Filter>Game\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\UI\RegionWindow.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\UI\StatBar.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Game\UI\UIManager.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\UI\UIText.cpp">
       <Filter>Game\UI</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\UI\WarIcon.cpp">

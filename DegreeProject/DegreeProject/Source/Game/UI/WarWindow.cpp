@@ -13,6 +13,7 @@
 #include <sstream>
 #include "Game/WarManager.h"
 #include "Game/Map/Map.h"
+#include "Game/Game.h"
 
 WarWindow::WarWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 {

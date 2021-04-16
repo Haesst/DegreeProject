@@ -176,8 +176,14 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\Game\Systems\Characters\CharacterPool.cpp" />
     <ClCompile Include="Source\Game\Systems\HeraldicShieldManager.cpp" />
     <ClCompile Include="Source\Game\Systems\UnitManager.cpp" />
+    <ClCompile Include="Source\Game\UI\CharacterWindow.cpp" />
+    <ClCompile Include="Source\Game\UI\DateBar.cpp" />
+    <ClCompile Include="Source\Game\UI\EventWindow.cpp" />
     <ClCompile Include="Source\Game\UI\MainMenu.cpp" />
+    <ClCompile Include="Source\Game\UI\RegionWindow.cpp" />
+    <ClCompile Include="Source\Game\UI\StatBar.cpp" />
     <ClCompile Include="Source\Game\UI\UIManager.cpp" />
+    <ClCompile Include="Source\Game\UI\UIText.cpp" />
     <ClCompile Include="Source\Game\UI\WarIcon.cpp" />
     <ClCompile Include="Source\Game\UI\WarWindow.cpp" />
     <ClCompile Include="Source\Game\War.cpp" />

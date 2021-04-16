@@ -8,6 +8,7 @@
 #include "Game/UI/EventWindow.h"
 #include "Game/UI/WarWindow.h"
 #include "Game/UI/WarIcon.h"
+#include "Game/Game.h"
 
 UIManager* UIManager::m_Instance = nullptr;
 UIID UIManager::m_UIElementsIDs = 1;
