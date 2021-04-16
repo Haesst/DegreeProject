@@ -6,6 +6,7 @@
 #include "Engine/FileWatcher.h"
 #include "Game/Systems/HeraldicShieldManager.h"
 #include "Game/Data/HeraldicShield.h"
+#include "Game/WarManager.h"
 
 const int   Map::m_XOffset = -300;
 const int   Map::m_YOffset = -100;
@@ -477,7 +478,7 @@ bool Map::regionOccupiedByFriendlies(Character& character, int regionID)
 		return true;
 	}
 
-	for (const auto& ally : character.m_Allies)
+	for (const auto& ally : WarManager::get().getAlliances(character.m_CharacterID))
 	{
 		if (region.m_OccupiedBy == ally)
 		{

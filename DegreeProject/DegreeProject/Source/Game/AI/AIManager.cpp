@@ -247,7 +247,7 @@ bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, i
 
 	if (currentWar->getAttacker() == characterManager->getCharacter(sender).m_CharacterID)
 	{
-		for (auto ally : CharacterManager::get()->getCharacter(reciever).m_Allies)
+		for (auto ally : WarManager::get().getAlliances(sender))
 		{
 			if (ally == currentWar->getDefender())
 			{
@@ -258,7 +258,7 @@ bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, i
 
 	else if (currentWar->getDefender() == characterManager->getCharacter(sender).m_CharacterID)
 	{
-		for (auto ally : CharacterManager::get()->getCharacter(reciever).m_Allies)
+		for (auto ally : WarManager::get().getAlliances(reciever))
 		{
 			if (ally == currentWar->getAttacker())
 			{
@@ -313,7 +313,7 @@ void AIManager::update()
 				}
 			}
 
-			if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Allies.empty())
+			if (WarManager::get().getAlliances(data.m_OwnerID).empty())
 			{
 				float eval = allianceDecision(data.m_OwnerID, getPotentialAlly(data));
 				

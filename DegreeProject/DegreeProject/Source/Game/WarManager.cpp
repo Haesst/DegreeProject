@@ -201,3 +201,39 @@ War* WarManager::getWarAgainst(CharacterID character, CharacterID enemy)
 
 	return nullptr;
 }
+
+void WarManager::createAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID)
+{
+	m_Alliances[characterOneID].push_back(characterTwoID);
+	m_Alliances[characterTwoID].push_back(characterOneID);
+}
+
+void WarManager::breakAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID)
+{
+	removeAlly(characterOneID, characterTwoID);
+	removeAlly(characterTwoID, characterOneID);
+}
+
+std::vector<CharacterID> WarManager::getAlliances(const CharacterID& character)
+{
+	return m_Alliances[character];
+}
+
+void WarManager::removeAlly(CharacterID character, CharacterID ally)
+{
+	int index = 0;
+	bool foundAlly = false;
+	for (const CharacterID& c : m_Alliances[character])
+	{
+		if (c == ally)
+		{
+			foundAlly = true;
+			break;
+		}
+		index++;
+	}
+
+	ASSERT(foundAlly, "Given alliance doesn't exist");
+
+	m_Alliances[character].erase(m_Alliances[character].begin() + index);
+}

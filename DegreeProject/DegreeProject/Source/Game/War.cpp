@@ -186,7 +186,7 @@ bool War::alliesInWar(CharacterID ID)
 {
 	if (ID == getAttacker())
 	{
-		if (CharacterManager::get()->getCharacter(ID).m_Allies.size() + 1 == m_Attackers.size())
+		if (WarManager::get().getAlliances(ID).size() + 1 == m_Attackers.size())
 		{
 			return true;
 		}
@@ -194,7 +194,7 @@ bool War::alliesInWar(CharacterID ID)
 
 	if (ID == getAttacker())
 	{
-		if (CharacterManager::get()->getCharacter(ID).m_Allies.size() + 1 == m_Defenders.size())
+		if (WarManager::get().getAlliances(ID).size() + 1 == m_Defenders.size())
 		{
 			return true;
 		}

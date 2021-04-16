@@ -254,7 +254,7 @@ Trait CharacterManager::getTrait(const char* traitName)
 
 bool CharacterManager::isAlliedWith(CharacterID character, CharacterID other)
 {
-	for (auto ID : getCharacter(character).m_Allies)
+	for (auto ID : WarManager::get().getAlliances(character))
 	{
 		if (ID == other)
 		{
@@ -270,7 +270,7 @@ void CharacterManager::callAllies(CharacterID character, int war)
 	War* currentWar = WarManager::get().getWar(war);
 	AIManager* aiManager = &AIManager::get();
 
-	for (auto ID : getCharacter(character).m_Allies)
+	for (auto ID : WarManager::get().getAlliances(character))
 	{
 		if (!getCharacter(ID).m_IsPlayerControlled)
 		{
@@ -308,11 +308,11 @@ void CharacterManager::callAllies(CharacterID character, int war)
 	}
 }
 
-void CharacterManager::onAllianceCreated(CharacterID character, CharacterID other)
-{
-	getCharacter(character).m_Allies.push_back(other);
-	getCharacter(other).m_Allies.push_back(character);
-}
+//void CharacterManager::onAllianceCreated(CharacterID character, CharacterID other)
+//{
+//	getCharacter(character).m_Allies.push_back(other);
+//	getCharacter(other).m_Allies.push_back(character);
+//}
 
 void CharacterManager::sendAllianceOffer(CharacterID sender, CharacterID reciever)
 {
@@ -320,7 +320,8 @@ void CharacterManager::sendAllianceOffer(CharacterID sender, CharacterID recieve
 	{
 		if (AIManager::get().handleAllianceRequest(sender, reciever))
 		{
-			onAllianceCreated(sender, reciever);
+			//onAllianceCreated(sender, reciever);
+			WarManager::get().createAlliance(sender, reciever);
 			if (getCharacter(sender).m_IsPlayerControlled)
 			{
 				UIManager::get()->createUIEventElement(reciever, sender, UIType::AllianceAccepted);
@@ -335,42 +336,6 @@ void CharacterManager::sendAllianceOffer(CharacterID sender, CharacterID recieve
 	{
 		UIManager::get()->createUIEventElement(sender, reciever, UIType::AllianceRequest);
 	}
-}
-
-void CharacterManager::breakAlliance(CharacterID characterID, CharacterID otherID)
-{
-	removeAlly(characterID, otherID);
-	removeAlly(otherID, characterID);
-
-	if (otherID == m_PlayerCharacterID)
-	{
-		UIManager::get()->createUIEventElement(m_PlayerCharacterID, characterID, UIType::AllianceBroken);
-	}
-	else if (characterID == m_PlayerCharacterID)
-	{
-		UIManager::get()->createUIEventElement(m_PlayerCharacterID, otherID, UIType::AllianceBroken);
-	}
-}
-
-void CharacterManager::removeAlly(CharacterID characterID, CharacterID otherID)
-{
-	Character& character = getCharacter(characterID);
-
-	int indexOfOther = 0;
-	bool foundOther = false;
-	for (const CharacterID& ally : character.m_Allies)
-	{
-		if (ally == otherID)
-		{
-			foundOther = true;
-			break;
-		}
-		indexOfOther++;
-	}
-
-	ASSERT(foundOther, "Trying to break up a non-existing alliance");
-	
-	character.m_Allies.erase(character.m_Allies.begin() + indexOfOther);
 }
 
 void CharacterManager::onWarEnded(CharacterID sender, CharacterID reciever)
@@ -656,12 +621,11 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	character.m_OwnedRegionIDs.clear();
 	character.m_CharacterTitle = Title::Unlanded;
 
-	for (const CharacterID& ally : character.m_Allies)
+	for (const CharacterID& ally : WarManager::get().getAlliances(characterID))
 	{
-		breakAlliance(characterID, ally);
+		//breakAlliance(characterID, ally);
+		WarManager::get().breakAlliance(characterID, ally);
 	}
-
-	character.m_Allies.clear();
 
 	if (character.m_Spouse != INVALID_CHARACTER_ID)
 	{

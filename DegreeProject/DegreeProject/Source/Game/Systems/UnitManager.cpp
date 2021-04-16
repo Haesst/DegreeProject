@@ -445,7 +445,7 @@ std::vector<UnitID> UnitManager::getAlliesAtSquare(const Character& character, V
 		{
 			for (const auto& ID : squareData.m_EntitiesInSquare)
 			{
-				for (const CharacterID& ally : character.m_Allies)
+				for (const CharacterID& ally : WarManager::get().getAlliances(character.m_CharacterID))
 				{
 					if (ally == getUnitWithId(ID).m_Owner)
 					{
@@ -474,7 +474,7 @@ bool UnitManager::neutralUnitAtSquare(Character& character, Vector2DInt square)
 				Unit& unit = getUnitWithId(ID);
 				bool allyInSquare = false;
 
-				for (const CharacterID& ally : character.m_Allies)
+				for (const CharacterID& ally : warManager->getAlliances(character.m_CharacterID))
 				{
 					if (unit.m_Owner == ally)
 					{

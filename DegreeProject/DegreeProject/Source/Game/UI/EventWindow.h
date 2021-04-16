@@ -4,6 +4,7 @@
 #include "Engine/Window.h"
 #include "Engine/InputHandler.h"
 #include "Game/Systems/CharacterManager.h"
+#include "Game/WarManager.h"
 #include "Engine/AssetHandler.h"
 #include <sstream>
 #include "Game/Data/UIType.h"
@@ -459,7 +460,8 @@ public:
 			{
 				if (!instigator.m_Dead && !subject.m_Dead)
 				{
-					CharacterManager::get()->onAllianceCreated(m_InstigatorID, m_SubjectID);
+					//CharacterManager::get()->onAllianceCreated(m_InstigatorID, m_SubjectID);
+					WarManager::get().createAlliance(m_InstigatorID, m_SubjectID);
 				}
 				break;
 			}

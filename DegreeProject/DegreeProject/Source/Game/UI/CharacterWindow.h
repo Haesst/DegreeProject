@@ -745,7 +745,7 @@ public:
 			Vector2D mousePosition = InputHandler::getMousePosition();
 			if (m_DeclareWarShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				for (auto& ally : m_PlayerCharacter->m_Allies)
+				for (auto& ally : WarManager::get().getAlliances(m_PlayerCharacter->m_CharacterID))
 				{
 					if (ally == m_CurrentCharacterID)
 					{

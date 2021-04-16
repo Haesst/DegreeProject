@@ -1,5 +1,6 @@
 #pragma once
 #include <vector>
+#include <map>
 #include <Game\War.h>
 
 struct Unit;
@@ -31,6 +32,11 @@ public:
 
 	std::vector<CharacterID> getOpposingSide(CharacterID ID);
 
+	// Alliances
+	void createAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID);
+	void breakAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID);
+	std::vector<CharacterID> getAlliances(const CharacterID& character);
+
 	inline static WarManager& get()
 	{
 		if (m_Instance == nullptr)
@@ -45,4 +51,8 @@ private:
 	int m_Warhandle = 0;
 	std::vector<std::pair<int, War>> m_Wars = std::vector<std::pair<int, War>>();
 	static WarManager* m_Instance;
+	void removeAlly(CharacterID character, CharacterID ally);
+
+	// Alliances
+	std::map<CharacterID, std::vector<CharacterID>> m_Alliances;
 };
