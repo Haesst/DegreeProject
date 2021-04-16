@@ -364,6 +364,8 @@ void WarWindow::updateInfo()
 				m_WarscoreAmountText.setFillColor(m_NegativeColor);
 				stream << warscore;
 			}
+			m_WarscoreProgressShape.setSize(sf::Vector2f(m_WarscoreShape.getSize().x * 0.5f + m_WarscoreShape.getSize().x * 0.005f * warscore, m_WarscoreProgressShape.getSize().y));
+
 		}
 		else if (m_DefenderCharacterIDs.front() == playerCharacterID)
 		{
@@ -378,6 +380,7 @@ void WarWindow::updateInfo()
 				m_WarscoreText.setFillColor(m_NegativeColor);
 				stream << warscore;
 			}
+			m_WarscoreProgressShape.setSize(sf::Vector2f(m_WarscoreShape.getSize().x * 0.5f + m_WarscoreShape.getSize().x * 0.005f * warscore, m_WarscoreProgressShape.getSize().y));
 		}
 		stream << m_PercentSign;
 		m_WarscoreAmountText.setString(stream.str());
@@ -583,9 +586,76 @@ void WarWindow::closeWindow()
 	m_Visible = false;
 }
 
+void WarWindow::sendPeaceOffer(PeaceType type)
+{
+	Character& playerCharacter = CharacterManager::get()->getPlayerCharacter();
+	CharacterID enemy = INVALID_CHARACTER_ID;
+	if (m_AttackerCharacterIDs.front() == playerCharacter.m_CharacterID)
+	{
+		enemy = m_DefenderCharacterIDs.front();
+	}
+	else if (m_DefenderCharacterIDs.front() == playerCharacter.m_CharacterID)
+	{
+		enemy = m_AttackerCharacterIDs.front();
+	}
+	if (!playerCharacter.m_CurrentWars.empty())
+	{
+		CharacterManager::get()->sendPeaceOffer(playerCharacter.m_CharacterID, enemy, type);
+
+		if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && playerCharacter.m_CurrentWars.size() == 0)
+		{
+			Game::m_BattleSound.stop();
+			Game::m_Sound.play();
+		}
+	}
+}
+
 void WarWindow::clickButton()
 {
-	if (InputHandler::getRightMouseReleased())
+	if (InputHandler::getLeftMouseReleased())
+	{
+		Vector2D mousePosition = InputHandler::getMousePosition();
+		if (m_SurrenderShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		{
+			m_CurrentPeaceType = PeaceType::Surrender;
+			m_SurrenderShape.setFillColor(m_OwnerColor);
+			m_WhitePeaceShape.setFillColor(sf::Color::Transparent);
+			m_EnforceDemandsShape.setFillColor(sf::Color::Transparent);
+			m_SendShape.setFillColor(m_OwnerColor);
+			return;
+		}
+		else if (m_WhitePeaceShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		{
+			m_CurrentPeaceType = PeaceType::White_Peace;
+			m_SurrenderShape.setFillColor(sf::Color::Transparent);
+			m_WhitePeaceShape.setFillColor(m_OwnerColor);
+			m_EnforceDemandsShape.setFillColor(sf::Color::Transparent);
+			m_SendShape.setFillColor(m_OwnerColor);
+			return;
+		}
+		else if (m_EnforceDemandsShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		{
+			m_CurrentPeaceType = PeaceType::Enforce_Demands;
+			m_SurrenderShape.setFillColor(sf::Color::Transparent);
+			m_WhitePeaceShape.setFillColor(sf::Color::Transparent);
+			m_EnforceDemandsShape.setFillColor(m_OwnerColor);
+			m_SendShape.setFillColor(m_OwnerColor);
+			return;
+		}
+		else if (m_SendShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		{
+			if (m_CurrentPeaceType == PeaceType::Surrender || m_CurrentPeaceType == PeaceType::White_Peace || m_CurrentPeaceType == PeaceType::Enforce_Demands)
+			{
+				sendPeaceOffer(m_CurrentPeaceType);
+				m_SurrenderShape.setFillColor(sf::Color::Transparent);
+				m_WhitePeaceShape.setFillColor(sf::Color::Transparent);
+				m_EnforceDemandsShape.setFillColor(sf::Color::Transparent);
+				m_SendShape.setFillColor(sf::Color::Transparent);
+				return;
+			}
+		}
+	}
+	else if (InputHandler::getRightMouseReleased())
 	{
 		Vector2D mousePosition = InputHandler::getMousePosition();
 		for (unsigned int index = 0; index < m_AttackerCharacterShapes.size(); index++)
@@ -607,7 +677,7 @@ void WarWindow::clickButton()
 				UIManager::get()->m_CharacterWindow->checkIfPlayerCharacter();
 				UIManager::get()->m_CharacterWindow->updateInfo();
 				UIManager::get()->m_CharacterWindow->openWindow();
-				break;
+				return;
 			}
 		}
 	}

@@ -72,9 +72,6 @@ public:
 	Character* m_CurrentCharacter = nullptr;
 	bool m_IsPlayerCharacter = false;
 
-	sf::Sound m_BattleSound;
-	sf::SoundBuffer m_BattleSoundBuffer;
-	float m_Volume = 5.0f;
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	unsigned int m_CurrentWars = 0;
 
@@ -222,10 +219,6 @@ public:
 		m_SpouseName.setFont(m_Font);
 		m_SpouseName.setCharacterSize(m_CharacterSize / 2);
 		m_SpouseName.setStyle(m_Style);
-
-		m_BattleSound = AssetHandler::get().loadAudioFile("Assets/Audio/battle.wav", m_BattleSoundBuffer);
-		m_BattleSound.setLoop(true);
-		m_BattleSound.setVolume(m_Volume);
 
 		m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
 
@@ -778,9 +771,9 @@ public:
 					CharacterManager::get()->callAllies(m_PlayerCharacter->m_CharacterID, warHandle);
 
 					Game::m_Sound.pause();
-					if (m_BattleSound.getStatus() != sf::SoundSource::Playing)
+					if (Game::m_BattleSound.getStatus() != sf::SoundSource::Playing)
 					{
-						m_BattleSound.play();
+						Game::m_BattleSound.play();
 					}
 				}
 			}
@@ -790,9 +783,9 @@ public:
 				{
 					CharacterManager::get()->sendPeaceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, PeaceType::Enforce_Demands);
 					
-					if (m_BattleSound.getStatus() == sf::SoundSource::Playing && m_PlayerCharacter->m_CurrentWars.size() == 0)
+					if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && m_PlayerCharacter->m_CurrentWars.size() == 0)
 					{
-						m_BattleSound.stop();
+						Game::m_BattleSound.stop();
 						Game::m_Sound.play();
 					}
 				}

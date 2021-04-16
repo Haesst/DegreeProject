@@ -9,6 +9,7 @@
 struct Character;
 struct War;
 struct Date;
+enum class PeaceType;
 
 class WarWindow
 {
@@ -26,6 +27,7 @@ private:
 	void updateInfo();
 	void handleWindow();
 	void clickButton();
+	void sendPeaceOffer(PeaceType type);
 	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, Vector2DInt position, unsigned int spriteSize = m_SpriteSize);
 
 private:
@@ -52,6 +54,7 @@ private:
 	sf::Color m_NegativeColor = sf::Color::Red;
 	sf::Color m_PositiveColor = sf::Color::Green;
 	Date m_WarStartDate;
+	PeaceType m_CurrentPeaceType;
 
 	const std::string m_MaleTitles[(unsigned int)Title::Baron + 1] = { "Emperor ", "King ", "Duke ", "Count ", "Baron " };
 	const std::string m_FemaleTitles[(unsigned int)Title::Baron + 1] = { "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness " };

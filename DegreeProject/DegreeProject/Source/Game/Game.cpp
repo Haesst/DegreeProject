@@ -13,6 +13,7 @@
 #include "Game/Systems/Characters/CharacterNamePool.h"
 
 sf::Sound Game::m_Sound;
+sf::Sound Game::m_BattleSound;
 sf::Font Game::m_UIFont;
 
 Game::~Game()
@@ -96,9 +97,13 @@ void Game::initAssets()
 
 void Game::initSound()
 {
+	m_BattleSound = m_AssetHandler->loadAudioFile("Assets/Audio/battle.wav", m_BattleSoundBuffer);
+	m_BattleSound.setLoop(true);
+	m_BattleSound.setVolume(m_Volume);
+
 	m_Sound = m_AssetHandler->loadAudioFile("Assets/Audio/Minstrel_Dance.wav", m_SoundBuffer);
 	m_Sound.setLoop(true);
-	m_Sound.setVolume(volume);
+	m_Sound.setVolume(m_Volume);
 	m_Sound.play();
 }
 
