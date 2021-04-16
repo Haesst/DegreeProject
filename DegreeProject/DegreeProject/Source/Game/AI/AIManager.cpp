@@ -660,12 +660,12 @@ void AIManager::warAction(AIData& data)
 	CharacterManager* characterManager = CharacterManager::get();
 	unsigned int opponent = getWarmindOfCharacter(data.m_OwnerID).m_Opponent;
 
-	if (opponent == INT_MAX || opponent == CharacterManager::get()->getCharacter(data.m_OwnerID).m_Spouse)
+	if (opponent == INT_MAX || opponent == characterManager->getCharacter(data.m_OwnerID).m_Spouse)
 	{
 		return;
 	}
 
-	if (CharacterManager::get()->isAlliedWith(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
+	if (characterManager->isAlliedWith(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
 	{
 		return;
 	}
@@ -681,27 +681,27 @@ void AIManager::warAction(AIData& data)
 
 	WarmindComponent& warmind = getWarmindOfCharacter(data.m_OwnerID);
 
-	if (!CharacterManager::get()->getCharacter(warmind.m_Opponent).m_IsPlayerControlled)
+	if (!characterManager->getCharacter(warmind.m_Opponent).m_IsPlayerControlled)
 	{
 		getWarmindOfCharacter(warmind.m_Opponent).m_Active = true;
 		getWarmindOfCharacter(warmind.m_Opponent).m_Opponent = warmind.m_OwnerID;
 	}
 	else
 	{
-		UIManager::get()->createUIEventElement(warmind.m_OwnerID, CharacterManager::get()->getPlayerCharacterID(), UIType::WarDeclaration);
-		UIManager::get()->createWarIcon(warmind.m_OwnerID, CharacterManager::get()->getPlayerCharacterID());
-		CharacterManager::get()->callAllies(warmind.m_OwnerID, warHandle);
-		CharacterManager::get()->callAllies(CharacterManager::get()->getPlayerCharacterID(), warHandle);
+		UIManager::get()->createUIEventElement(warmind.m_OwnerID, characterManager->getPlayerCharacterID(), UIType::WarDeclaration);
+		UIManager::get()->createWarIcon(warmind.m_OwnerID, characterManager->getPlayerCharacterID());
+		characterManager->callAllies(warmind.m_OwnerID, warHandle);
+		characterManager->callAllies(characterManager->getPlayerCharacterID(), warHandle);
 	}
 
-	LOG_INFO("{0} Declared war against {1}", CharacterManager::get()->getCharacter(data.m_OwnerID).m_Name, CharacterManager::get()->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Name);
+	LOG_INFO("{0} Declared war against {1}", characterManager->getCharacter(data.m_OwnerID).m_Name, characterManager->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Name);
 	data.m_LastAction = Action::War;
 	data.m_CurrentAction = Action::War;
 
-	if (!CharacterManager::get()->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_IsPlayerControlled)
+	if (!characterManager->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_IsPlayerControlled)
 	{
-		getAIDataofCharacter(CharacterManager::get()->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_CurrentAction = Action::War;
-		getAIDataofCharacter(CharacterManager::get()->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_LastAction = Action::War;
+		getAIDataofCharacter(characterManager->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_CurrentAction = Action::War;
+		getAIDataofCharacter(characterManager->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_LastAction = Action::War;
 	}
 }
 
