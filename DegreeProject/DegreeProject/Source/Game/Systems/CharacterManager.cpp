@@ -349,7 +349,24 @@ void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever, 
 	{
 		if (AIManager::get().handlePeaceRequest(sender, reciever, type))
 		{
-			onWarEnded(sender, reciever);
+			switch (type)
+			{
+			case PeaceType::Enforce_Demands:
+				onWarEnded(sender, reciever);
+				break;
+
+			case PeaceType::White_Peace:
+				WarManager::get().endWar(WarManager::get().getWarAgainst(sender, reciever)->getHandle(), INVALID_CHARACTER_ID);
+				break;
+
+			case PeaceType::Surrender:
+				onWarEnded(reciever, sender);
+				break;
+			default:
+				break;
+			}
+
+
 			if (getCharacter(sender).m_IsPlayerControlled)
 			{
 				UIManager::get()->createUIEventElement(reciever, sender, UIType::PeaceAccepted);
