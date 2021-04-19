@@ -30,8 +30,8 @@ public:
 private:
 	UIID m_OwnerUIElement;
 	sf::Font m_Font;
-	int m_SizeX = 64;
-	int m_SizeY = 64;
+	float m_SizeX = 64.0f;
+	float m_SizeY = 64.0f;
 	float m_OutlineThickness = 5.0f;
 	int m_CharacterSize = 25;
 	sf::Text::Style m_Style = sf::Text::Regular;

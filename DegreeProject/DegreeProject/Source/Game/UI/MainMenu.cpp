@@ -15,24 +15,28 @@ MainMenu::MainMenu(UIID id, sf::Font font, Vector2D, Vector2D size)
 
 	m_BackgroundShape.setFillColor(m_BackgroundFillColor);
 	m_BackgroundShape.setSize(sf::Vector2f((float)m_Window->getSize().x, (float)m_Window->getSize().y));
+	m_BackgroundShape.setPosition(sf::Vector2f());
 
-	m_MainMenuPosition = Vector2DInt((int)(m_PositionX - m_SizeX * 0.5f), (int)(m_PositionY - m_SizeY * 0.5f));
+	m_MainMenuPosition = sf::Vector2f(m_PositionX - m_SizeX * 0.5f, m_PositionY - m_SizeY * 0.5f);
 	m_MainMenuShape.setFillColor(m_FillColor);
 	m_MainMenuShape.setOutlineThickness(m_OutlineThickness);
 	m_MainMenuShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
+	m_MainMenuShape.setPosition(m_MainMenuPosition);
 
 	m_MainMenuText.setFont(m_Font);
 	m_MainMenuText.setCharacterSize(m_CharacterSize);
 	m_MainMenuText.setStyle(m_Style);
 	m_MainMenuText.setString(m_MainMenuString);
-	
+	m_MainMenuText.setPosition(sf::Vector2f(m_MainMenuPosition.x + m_SizeX * 0.25f, m_MainMenuPosition.y));
+
 	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 	{
-		m_ButtonPositions.push_back(Vector2DInt((int)(m_MainMenuPosition.x + m_SizeX * 0.25f), (int)(m_MainMenuPosition.y + 100 + 100 * index)));
+		sf::Vector2f buttonPosition = sf::Vector2f(m_MainMenuPosition.x + m_SizeX * 0.25f, m_MainMenuPosition.y + 100 + 100 * index);
 
 		sf::RectangleShape buttonShape(sf::Vector2f(m_SizeX * 0.25f, m_SizeY * 0.1f));
 		buttonShape.setFillColor(sf::Color::Transparent);
 		buttonShape.setOutlineThickness(m_OutlineThickness);
+		buttonShape.setPosition(buttonPosition);
 		m_ButtonShapes.push_back(buttonShape);
 
 		sf::Text buttonText;
@@ -40,13 +44,9 @@ MainMenu::MainMenu(UIID id, sf::Font font, Vector2D, Vector2D size)
 		buttonText.setCharacterSize(m_CharacterSize);
 		buttonText.setStyle(m_Style);
 		buttonText.setString(m_ButtonStrings[index]);
+		buttonText.setPosition(buttonPosition);
 		m_ButtonTexts.push_back(buttonText);
 	}
-}
-
-void MainMenu::start()
-{
-
 }
 
 void MainMenu::update()
@@ -55,17 +55,6 @@ void MainMenu::update()
 
 	if (m_Visible)
 	{
-		m_BackgroundShape.setPosition(sf::Vector2f());
-
-		m_MainMenuShape.setPosition(sf::Vector2f(m_MainMenuPosition.x, m_MainMenuPosition.y));
-		m_MainMenuText.setPosition(sf::Vector2f((int)(m_MainMenuPosition.x + m_SizeX * 0.25f), m_MainMenuPosition.y));
-
-		for (unsigned int index = 0; index < m_NumberOfButtons; index++)
-		{
-			m_ButtonShapes[index].setPosition(sf::Vector2f(m_ButtonPositions[index].x, m_ButtonPositions[index].y));
-			m_ButtonTexts[index].setPosition(sf::Vector2f(m_ButtonPositions[index].x, m_ButtonPositions[index].y));
-		}
-
 		clickButton();
 	}
 }

@@ -36,10 +36,14 @@ void DateBar::start()
 
 	m_OwnerColor = CharacterManager::get()->getPlayerCharacter().m_RegionColor;
 
+	float positionX = m_Window->getSize().x - m_SizeX - m_OutlineThickness;
+	float positionY = m_Window->getSize().y - m_SizeY - m_OutlineThickness;
+
 	m_WindowShape.setFillColor(m_FillColor);
 	m_WindowShape.setOutlineColor(m_OwnerColor);
 	m_WindowShape.setOutlineThickness(m_OutlineThickness);
 	m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
+	m_WindowShape.setPosition(sf::Vector2f(positionX, positionY));
 
 	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 	{
@@ -47,6 +51,7 @@ void DateBar::start()
 		m_ButtonShapes[index].setOutlineColor(m_OwnerColor);
 		m_ButtonShapes[index].setOutlineThickness(m_ButtonThickness * 0.25f);
 		m_ButtonShapes[index].setSize(sf::Vector2f(sizeY + sizeX, sizeY + sizeX));
+		m_ButtonShapes[index].setPosition(sf::Vector2f(positionX + m_ButtonThickness * 1.25f + m_ButtonThickness * 4.5f * index, positionY + m_SizeY * 0.25f - m_ButtonThickness * 0.25f));
 	}
 
 	for (unsigned int index = 0; index < m_NumberOfSpeeds; index++)
@@ -55,73 +60,41 @@ void DateBar::start()
 		m_SpeedShapes[index].setOutlineColor(m_OwnerColor);
 		m_SpeedShapes[index].setOutlineThickness(m_ButtonThickness * 0.25f);
 		m_SpeedShapes[index].setSize(sf::Vector2f(sizeY * 0.5f + sizeX, sizeY + sizeX));
+		m_SpeedShapes[index].setPosition(sf::Vector2f(positionX + m_ButtonThickness * 14.5f + m_ButtonThickness * 2.5f * index, positionY + m_SizeY * 0.25f - m_ButtonThickness * 0.25f));
 	}
 
 	m_PauseLeftShape.setFillColor(m_OwnerColor);
 	m_PauseLeftShape.setSize(sf::Vector2f(sizeX, sizeY));
+	m_PauseLeftShape.setPosition(sf::Vector2f(positionX + m_ButtonThickness * 2, positionY + m_SizeY * 0.25f));
 
 	m_PauseRightShape.setFillColor(m_OwnerColor);
 	m_PauseRightShape.setSize(sf::Vector2f(sizeX, sizeY));
+	m_PauseRightShape.setPosition(sf::Vector2f(positionX + m_ButtonThickness * 3, positionY + m_SizeY * 0.25f));
 
 	m_DecreaseSpeedShape.setFillColor(m_OwnerColor);
 	m_DecreaseSpeedShape.setSize(sf::Vector2f(sizeX, sizeY));
 	m_DecreaseSpeedShape.setRotation(90.0f);
+	m_DecreaseSpeedShape.setPosition(sf::Vector2f(positionX + m_ButtonThickness * 8.5f, positionY + m_SizeY * 0.5f - m_ButtonThickness * 0.25f));
 
 	m_IncreaseSpeedHorizontalShape.setFillColor(m_OwnerColor);
 	m_IncreaseSpeedHorizontalShape.setSize(sf::Vector2f(sizeX, sizeY));
 	m_IncreaseSpeedHorizontalShape.setRotation(90.0f);
+	m_IncreaseSpeedHorizontalShape.setPosition(sf::Vector2f(positionX + m_ButtonThickness * 13, positionY + m_SizeY * 0.5f - m_ButtonThickness * 0.25f));
 
 	m_IncreaseSpeedVerticalShape.setFillColor(m_OwnerColor);
 	m_IncreaseSpeedVerticalShape.setSize(sf::Vector2f(sizeX, sizeY));
+	m_IncreaseSpeedVerticalShape.setPosition(sf::Vector2f(positionX + m_ButtonThickness * 11.5f, positionY + m_SizeY * 0.25f));
 
 	m_DateText.setFont(m_Font);
 	m_DateText.setCharacterSize(m_CharacterSize);
 	m_DateText.setStyle(m_Style);
 	m_DateText.setFillColor(m_OwnerColor);
+	m_DateText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.475f, positionY + m_OutlineThickness * 0.5f));
 }
 
 void DateBar::update()
 {
 	clickButton();
-
-	int positionX = m_Window->getSize().x - (int)(m_SizeX + m_OutlineThickness);
-	int positionY = m_Window->getSize().y - (int)(m_SizeY + m_OutlineThickness);
-
-	m_WindowShape.setPosition(sf::Vector2f(positionX, positionY));
-
-	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
-	{
-		m_ButtonShapes[index].setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 1.25f + m_ButtonThickness * 4.5f * index), positionY + (int)(m_SizeY * 0.25f - m_ButtonThickness * 0.25f)));
-	}
-
-	for (unsigned int index = 0; index < m_NumberOfSpeeds; index++)
-	{
-		m_SpeedShapes[index].setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 14.5f + m_ButtonThickness * 2.5f * index), positionY + (int)(m_SizeY * 0.25f - m_ButtonThickness * 0.25f)));
-		if (index < m_CurrentSpeedLevel && Time::gamePaused())
-		{
-			m_SpeedShapes[index].setFillColor(sf::Color::Red);
-		}
-		else if (index < m_CurrentSpeedLevel)
-		{
-			m_SpeedShapes[index].setFillColor(m_SpeedColor);
-		}
-		else
-		{
-			m_SpeedShapes[index].setFillColor(sf::Color::Transparent);
-		}
-	}
-
-	m_PauseLeftShape.setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 2), positionY + (int)(m_SizeY * 0.25f)));
-
-	m_PauseRightShape.setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 3), positionY + (int)(m_SizeY * 0.25f)));
-
-	m_DecreaseSpeedShape.setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 8.5f), positionY + (int)(m_SizeY * 0.5f - m_ButtonThickness * 0.25f)));
-
-	m_IncreaseSpeedHorizontalShape.setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 13), positionY + (int)(m_SizeY * 0.5f - m_ButtonThickness * 0.25f)));
-
-	m_IncreaseSpeedVerticalShape.setPosition(sf::Vector2f(positionX + (int)(m_ButtonThickness * 11.5f), positionY + (int)(m_SizeY * 0.25f)));
-
-	m_DateText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.475f), positionY + (int)(m_OutlineThickness * 0.5f)));
 }
 
 void DateBar::render()
@@ -215,6 +188,21 @@ void DateBar::clickButton()
 					}
 				}
 			}
+		}
+	}
+	for (unsigned int index = 0; index < m_NumberOfSpeeds; index++)
+	{
+		if (index < m_CurrentSpeedLevel && Time::gamePaused())
+		{
+			m_SpeedShapes[index].setFillColor(sf::Color::Red);
+		}
+		else if (index < m_CurrentSpeedLevel)
+		{
+			m_SpeedShapes[index].setFillColor(m_SpeedColor);
+		}
+		else
+		{
+			m_SpeedShapes[index].setFillColor(sf::Color::Transparent);
 		}
 	}
 }

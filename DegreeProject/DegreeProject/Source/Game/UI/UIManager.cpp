@@ -170,7 +170,6 @@ void UIManager::update()
 	m_CharacterWindow->update();
 	m_RegionWindow->update();
 	m_WarWindow->update();
-	m_StatBar->update();
 	m_DateBar->update();
 	m_ActiveWarIcons = false;
 	for (unsigned int i = 0; i < m_WarIcons.size(); i++)

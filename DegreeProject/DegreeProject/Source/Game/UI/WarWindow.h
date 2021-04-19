@@ -38,8 +38,8 @@ private:
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	float m_SizeX = 1900.0f;
 	float m_SizeY = 300.0f;
-	int m_PositionX = 0;
-	int m_PositionY = 0;
+	float m_PositionX = 0.0f;
+	float m_PositionY = 0.0f;
 	float m_OutlineThickness = 10.0f;
 	int m_CharacterSize = 25;
 	const static unsigned int m_SpriteSize = 32;

@@ -37,6 +37,10 @@ void RegionWindow::start()
 
 	m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
 
+	float positionX = m_OutlineThickness;
+	float positionY = m_Window->getSize().y - m_SizeY - m_OutlineThickness;
+
+	m_WindowShape.setPosition(sf::Vector2f(positionX, positionY));
 	m_WindowShape.setFillColor(m_FillColor);
 	m_WindowShape.setOutlineThickness(m_OutlineThickness);
 
@@ -44,19 +48,24 @@ void RegionWindow::start()
 	{
 		m_BuildingSlotShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
 		m_BuildingSlotShapes[index].setSize(sf::Vector2f((float)m_SpriteSize, (float)m_SpriteSize));
+		m_BuildingSlotShapes[index].setPosition(sf::Vector2f(m_IconSlotPositionX - m_IconSlotPositionOffset * index, m_IconSlotPositionY));
 	}
 
+	m_RaiseArmyShape.setPosition(sf::Vector2f(m_IconSlotPositionX, m_IconSlotPositionY - m_IconSlotPositionOffset));
 	m_RaiseArmyShape.setOutlineThickness(m_OutlineThickness * 0.5f);
 	m_RaiseArmyShape.setSize(sf::Vector2f((float)m_SpriteSize, (float)m_SpriteSize));
 
+	m_RegionNameText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.1f, positionY));
 	m_RegionNameText.setFont(m_Font);
 	m_RegionNameText.setCharacterSize(m_CharacterSize);
 	m_RegionNameText.setStyle(m_Style);
 
+	m_RegionTaxText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.1f, positionY + m_SizeY * 0.5f));
 	m_RegionTaxText.setFont(m_Font);
 	m_RegionTaxText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 	m_RegionTaxText.setStyle(m_Style);
 
+	m_RegionManpowerText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.1f, positionY + m_SizeY * 0.6f));
 	m_RegionManpowerText.setFont(m_Font);
 	m_RegionManpowerText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 	m_RegionManpowerText.setStyle(m_Style);
@@ -64,6 +73,7 @@ void RegionWindow::start()
 	m_KingdomNameText.setFont(m_Font);
 	m_KingdomNameText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 	m_KingdomNameText.setStyle(m_Style);
+	m_KingdomNameText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.1f, positionY + m_SizeY * 0.1f));
 }
 
 void RegionWindow::update()
@@ -74,30 +84,6 @@ void RegionWindow::update()
 	if (m_Visible)
 	{
 		clickButton();
-
-		int positionX = (int)m_OutlineThickness;
-		int positionY = m_Window->getSize().y - (int)(m_SizeY + m_OutlineThickness);
-
-		m_WindowShape.setPosition(sf::Vector2f(positionX, positionY));
-
-		int iconSlotPositionX = (int)(m_SizeX - m_SpriteSize - m_OutlineThickness);
-		int iconSlotPositionOffset = (int)(m_SpriteSize + m_OutlineThickness * 2);
-		int iconSlotPositionY = (int)(m_Window->getSize().y - m_SpriteSize - m_OutlineThickness * 3);
-
-		for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
-		{
-			m_BuildingSlotShapes[index].setPosition(sf::Vector2f(iconSlotPositionX - iconSlotPositionOffset * index, iconSlotPositionY));
-		}
-
-		m_RaiseArmyShape.setPosition(sf::Vector2f(iconSlotPositionX, iconSlotPositionY - iconSlotPositionOffset));
-
-		m_RegionNameText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.1f), positionY));
-
-		m_RegionTaxText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.1f), positionY + (int)(m_SizeY * 0.5f)));
-
-		m_RegionManpowerText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.1f), positionY + (int)(m_SizeY * 0.6f)));
-
-		m_KingdomNameText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.1f), positionY + (int)(m_SizeY * 0.1f)));
 	}
 }
 

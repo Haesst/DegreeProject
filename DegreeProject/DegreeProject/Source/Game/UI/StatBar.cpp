@@ -29,46 +29,38 @@ void StatBar::start()
 
 	updateStats();
 
+	float positionX = m_Window->getSize().x - m_SizeX + m_OutlineThickness;
+	float positionY = m_OutlineThickness;
+
+	m_WindowShape.setPosition(sf::Vector2f(positionX, positionY));
 	m_WindowShape.setFillColor(m_FillColor);
 	m_WindowShape.setOutlineColor(m_OwnerColor);
 	m_WindowShape.setOutlineThickness(m_OutlineThickness);
 	m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
 
+	m_CurrentGoldText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.2f, positionY));
 	m_CurrentGoldText.setFont(m_Font);
 	m_CurrentGoldText.setCharacterSize(m_CharacterSize);
 	m_CurrentGoldText.setStyle(m_Style);
 	m_CurrentGoldText.setFillColor(m_OwnerColor);
 
+	m_CurrentIncomeText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.2f, positionY * 4));
 	m_CurrentIncomeText.setFont(m_Font);
 	m_CurrentIncomeText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 	m_CurrentIncomeText.setStyle(m_Style);
 	m_CurrentIncomeText.setFillColor(m_OwnerColor);
 
+	m_MaxArmyText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.6f, positionY));
 	m_MaxArmyText.setFont(m_Font);
 	m_MaxArmyText.setCharacterSize(m_CharacterSize);
 	m_MaxArmyText.setStyle(m_Style);
 	m_MaxArmyText.setFillColor(m_OwnerColor);
 
+	m_CurrentMaxArmyText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.625f, positionY * 4));
 	m_CurrentMaxArmyText.setFont(m_Font);
 	m_CurrentMaxArmyText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 	m_CurrentMaxArmyText.setStyle(m_Style);
 	m_CurrentMaxArmyText.setFillColor(m_OwnerColor);
-}
-
-void StatBar::update()
-{
-	int positionX = m_Window->getSize().x - (int)(m_SizeX + m_OutlineThickness);
-	int positionY = (int)m_OutlineThickness;
-
-	m_WindowShape.setPosition(sf::Vector2f(positionX, positionY));
-
-	m_CurrentGoldText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.2f), positionY));
-
-	m_CurrentIncomeText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.2f), positionY * 4));
-
-	m_MaxArmyText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.6f), positionY));
-
-	m_CurrentMaxArmyText.setPosition(sf::Vector2f(positionX + (int)(m_SizeX * 0.625f), positionY * 4));
 }
 
 void StatBar::render()
