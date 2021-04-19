@@ -402,6 +402,11 @@ void UnitManager::unitCombat(Unit& unit)
 		return;
 	}
 
+	if (getUnitWithId(id).m_OnWater || unit.m_OnWater)
+	{
+		return;
+	}
+
 	if (WarManager::get().atWarWith(unit.m_Owner, getUnitWithId(id).m_Owner) || WarManager::get().isEnemyOfEnemy(unit, getUnitWithId(id)))
 	{
 		unit.m_FightingArmyID = id;
