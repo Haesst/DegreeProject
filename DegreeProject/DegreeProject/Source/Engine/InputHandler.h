@@ -48,8 +48,13 @@ private:
 	static void setMousePosition(int xPosition, int yPosition, const sf::RenderWindow& window);
 	static bool allowedToZoomView(const sf::View& view);
 	static void zoomView(sf::RenderWindow& window, sf::View& view);
-	static bool allowedToMoveView(const sf::View& view);
 
 private:
 	static sf::View& m_UIView;
+
+	static float maxCenterXPosition;
+	static float minCenterXPosition;
+
+	static float maxCenterYPosition;
+	static float minCenterYPosition;
 };

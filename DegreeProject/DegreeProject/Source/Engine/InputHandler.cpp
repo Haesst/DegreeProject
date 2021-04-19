@@ -17,6 +17,11 @@ static bool inputs[Inputs::PlayerUnitSelected + 1];
 
 sf::View& InputHandler::m_UIView = sf::View();
 
+float InputHandler::maxCenterXPosition = 2610.0f;
+float InputHandler::minCenterXPosition = -140.0f;
+float InputHandler::maxCenterYPosition = 1015.0f;
+float InputHandler::minCenterYPosition = -85.0f;
+
 void InputHandler::handleInputEvents()
 {
 	inputs[LeftMouseClicked] = false;
@@ -48,40 +53,29 @@ void InputHandler::handleInputEvents()
 			case sf::Keyboard::W:
 			{
 				viewMoveDirection = Vector2DInt(0, -1);
-				if (allowedToMoveView(view))
-				{
-					moveView(window, view);
-				}
+				moveView(window, view);
 				break;
 			}
 			case sf::Keyboard::Left:
 			case sf::Keyboard::A:
 			{
 				viewMoveDirection = Vector2DInt(-1, 0);
-				if (allowedToMoveView(view))
-				{
-					moveView(window, view);
-				}
+				
+				moveView(window, view);
 				break;
 			}
 			case sf::Keyboard::Down:
 			case sf::Keyboard::S:
 			{
 				viewMoveDirection = Vector2DInt(0, 1);
-				if (allowedToMoveView(view))
-				{
-					moveView(window, view);
-				}
+				moveView(window, view);
 				break;
 			}
 			case sf::Keyboard::Right:
 			case sf::Keyboard::D:
 			{
 				viewMoveDirection = Vector2DInt(1, 0);
-				if (allowedToMoveView(view))
-				{
-					moveView(window, view);
-				}
+				moveView(window, view);
 				break;
 			}
 			case sf::Keyboard::Equal:
@@ -308,14 +302,6 @@ bool InputHandler::allowedToZoomView(const sf::View& view)
 		|| (mouseScrollDirection <= 0.0f && (view.getSize().x < MAX_ZOOM || view.getSize().y < MAX_ZOOM));
 }
 
-bool InputHandler::allowedToMoveView(const sf::View& view)
-{
-	return (viewMoveDirection.y == -1 && view.getCenter().y > sf::VideoMode::getDesktopMode().height * 0.1f)
-		|| (viewMoveDirection.y == 1 && view.getCenter().y < sf::VideoMode::getDesktopMode().height * 0.9f)
-		|| (viewMoveDirection.x == 1 && view.getCenter().x < sf::VideoMode::getDesktopMode().width * 0.9f)
-		|| (viewMoveDirection.x == -1 && view.getCenter().x > sf::VideoMode::getDesktopMode().width * 0.1f);
-}
-
 void InputHandler::setMousePosition(int xPosition, int yPosition, const sf::RenderWindow& window)
 {
 	mouseMapPosition = Vector2DInt(xPosition, yPosition);
@@ -326,7 +312,24 @@ void InputHandler::setMousePosition(int xPosition, int yPosition, const sf::Rend
 
 void InputHandler::moveView(sf::RenderWindow& window, sf::View& view)
 {
-	view.move(viewMoveDirection.x * MOVE_SPEED, viewMoveDirection.y * MOVE_SPEED);
+	float xMovement = viewMoveDirection.x * MOVE_SPEED;
+	float yMovement = viewMoveDirection.y * MOVE_SPEED;
+
+	float newX = view.getCenter().x + xMovement;
+	float newY = view.getCenter().y + yMovement;
+
+	if (newX >= maxCenterXPosition || newX <= minCenterXPosition)
+	{
+		xMovement = 0;
+	}
+
+	if (newY >= maxCenterYPosition || newY <= minCenterYPosition)
+	{
+		yMovement = 0;
+	}
+
+	view.move(xMovement, yMovement);
+
 	window.setView(view);
 }
 
