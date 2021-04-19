@@ -82,6 +82,9 @@ private:
 	const size_t m_PoolGrowSize = 10000;
 	const size_t m_UnlandedCharactersAtStart = 200;
 
+	const unsigned int m_LowerBaseFertility = 15;
+	const unsigned int m_UpperBaseFertility = 40;
+	const float m_OneOverOneHundred = 1.0f / 100.0f;
 	const unsigned int m_AgeOfConsent = 16;
 	const unsigned int m_FertilityBarrenAge = 60;
 	const unsigned int m_FertilityBarrenSmoother = 59;

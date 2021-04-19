@@ -982,8 +982,7 @@ CharacterID CharacterManager::internalCreateCharacter(Character& character, cons
 	//character.m_MaxArmySize = army;
 	character.m_CurrentMaxArmySize = army;
 
-	//Generate random number between 0 - 1, will be used as percent
-	character.m_Fertility = static_cast <float> (rand()) / static_cast <float> (RAND_MAX);
+	character.m_Fertility = (rand() % (m_UpperBaseFertility - m_LowerBaseFertility) + m_LowerBaseFertility) * m_OneOverOneHundred;
 	character.m_Gender = gender;
 
 	character.m_CurrentGold = gold;
