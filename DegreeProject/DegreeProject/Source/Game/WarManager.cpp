@@ -149,7 +149,10 @@ void WarManager::update()
 	{
 		if (Map::get().getRegionById(war.second.m_WargoalRegion).m_OccupiedBy == INVALID_CHARACTER_ID)
 		{
-			war.second.warGoalRegionTimerAccu += Time::deltaTime();
+			if (isValidWar(war.second))
+			{
+				war.second.warGoalRegionTimerAccu += Time::deltaTime();
+			}
 
 			if (war.second.warGoalRegionTimerAccu >= war.second.warGoalRegionCapturedTimer)
 			{
