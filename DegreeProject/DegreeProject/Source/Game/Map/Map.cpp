@@ -278,86 +278,40 @@ void Map::createVertexArrays()
 	for (auto& region : m_Data.m_Regions)
 	{
 		ASSERT(region.m_VertexArray.getVertexCount() <= 0, "Vertex array is not cleared");
-		region.m_VertexArray.setPrimitiveType(sf::Triangles);
-
-		for (auto& square : region.m_MapSquares)
-		{
-			sf::Vertex v1;
-			sf::Vertex v2;
-			sf::Vertex v3;
-			sf::Vertex v4;
-
-			v1.position = { (square.x * m_TileSize) -m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top left
-			v2.position = { (square.x * m_TileSize) +m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top right
-			v3.position = { (square.x * m_TileSize) +m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom right
-			v4.position = { (square.x * m_TileSize) -m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom Left
-
-			v1.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) };
-			v2.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) };
-			v3.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) + m_TileSize };
-			v4.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) + m_TileSize };
-
-			region.m_VertexArray.append(v1);
-			region.m_VertexArray.append(v2);
-			region.m_VertexArray.append(v3);
-			region.m_VertexArray.append(v1);
-			region.m_VertexArray.append(v3);
-			region.m_VertexArray.append(v4);
-		}
+		createVertexArray(region.m_VertexArray, region.m_MapSquares);
 	}
 
-	m_MountainVertexArray.setPrimitiveType(sf::Triangles);
+	createVertexArray(m_MountainVertexArray, m_MountainSquares);
+	createVertexArray(m_UnreachableVertexArray, m_UnreachableLandSquares);
+}
 
-	for (auto& square : m_MountainSquares)
+void Map::createVertexArray(sf::VertexArray& vertexArray, const std::vector<Vector2DInt>& squares)
+{
+	vertexArray.setPrimitiveType(sf::Triangles);
+
+	for (auto& square : squares)
 	{
 		sf::Vertex v1;
 		sf::Vertex v2;
 		sf::Vertex v3;
 		sf::Vertex v4;
 
-		v1.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top left
-		v2.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top right
-		v3.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom right
-		v4.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom Left
+		v1.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (((square.y * m_TileSize) - m_HalfTileSize) * m_AspectRatio) + m_YOffset }; // Top left
+		v2.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (((square.y * m_TileSize) - m_HalfTileSize) * m_AspectRatio) + m_YOffset }; // Top right
+		v3.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (((square.y * m_TileSize) + m_HalfTileSize) * m_AspectRatio) + m_YOffset }; // Bottom right
+		v4.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (((square.y * m_TileSize) + m_HalfTileSize) * m_AspectRatio) + m_YOffset }; // Bottom Left
 
 		v1.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) };
 		v2.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) };
 		v3.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) + m_TileSize };
 		v4.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) + m_TileSize };
 
-		m_MountainVertexArray.append(v1);
-		m_MountainVertexArray.append(v2);
-		m_MountainVertexArray.append(v3);
-		m_MountainVertexArray.append(v1);
-		m_MountainVertexArray.append(v3);
-		m_MountainVertexArray.append(v4);
-	}
-
-	m_UnreachableVertexArray.setPrimitiveType(sf::Triangles);
-
-	for (auto& square : m_UnreachableLandSquares)
-	{
-		sf::Vertex v1;
-		sf::Vertex v2;
-		sf::Vertex v3;
-		sf::Vertex v4;
-
-		v1.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top left
-		v2.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (square.y * m_TileSize) - m_HalfTileSize + m_YOffset }; // Top right
-		v3.position = { (square.x * m_TileSize) + m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom right
-		v4.position = { (square.x * m_TileSize) - m_HalfTileSize + m_XOffset, (square.y * m_TileSize) + m_HalfTileSize + m_YOffset }; // Bottom Left
-
-		v1.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) };
-		v2.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) };
-		v3.texCoords = { (square.x * m_TileSize) + m_TileSize, (square.y * m_TileSize) + m_TileSize };
-		v4.texCoords = { (square.x * m_TileSize), (square.y * m_TileSize) + m_TileSize };
-
-		m_UnreachableVertexArray.append(v1);
-		m_UnreachableVertexArray.append(v2);
-		m_UnreachableVertexArray.append(v3);
-		m_UnreachableVertexArray.append(v1);
-		m_UnreachableVertexArray.append(v3);
-		m_UnreachableVertexArray.append(v4);
+		vertexArray.append(v1);
+		vertexArray.append(v2);
+		vertexArray.append(v3);
+		vertexArray.append(v1);
+		vertexArray.append(v3);
+		vertexArray.append(v4);
 	}
 }
 
