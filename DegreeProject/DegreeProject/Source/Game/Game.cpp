@@ -156,6 +156,8 @@ void Game::addEntitys()
 	std::vector<unsigned int> characterEightRegions{ 24, 26 };
 	std::vector<unsigned int> characterNineRegions{ 25 };
 	std::vector<unsigned int> characterTenRegions{ 23 };
+	std::vector<unsigned int> characterElevenRegions{ 27 };
+	std::vector<unsigned int> characterTwelveRegions{ 28 };
 
 	CharacterID char4 = createCharacter(characterFourRegions, Title::Count, Gender::Male, "County of Krain", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(16, 181, 191));
 	UIManager::get()->createUITextElement(m_UIFont, char4, CharacterManager::get()->getCharacter(char4).m_KingdomName, characterFourRegions);
@@ -177,6 +179,11 @@ void Game::addEntitys()
 
 	CharacterID char10 = createCharacter(characterTenRegions, Title::Baron, Gender::Male, "Barony of Upper Bosnia", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(24, 225, 191));
 	UIManager::get()->createUITextElement(m_UIFont, char10, CharacterManager::get()->getCharacter(char10).m_KingdomName, characterTenRegions);
+
+	CharacterID char11 = createCharacter(characterElevenRegions, Title::Baron, Gender::Male, "Barony of Corsica", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(86, 175, 125));
+	UIManager::get()->createUITextElement(m_UIFont, char11, CharacterManager::get()->getCharacter(char11).m_KingdomName, characterElevenRegions);
+	CharacterID char12 = createCharacter(characterTwelveRegions, Title::Baron, Gender::Female, "Barony of Sardinia", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(24, 125, 223));
+	UIManager::get()->createUITextElement(m_UIFont, char12, CharacterManager::get()->getCharacter(char12).m_KingdomName, characterTwelveRegions);
 
 	//UI
 	Vector2D mainMenuPosition = { 960.0f, 540.0f };

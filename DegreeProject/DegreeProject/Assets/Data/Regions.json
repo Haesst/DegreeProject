@@ -174,8 +174,8 @@
 	"id": 18,
 	"mapchar": "K",
 	"color": "Yellow",
-	"tax": 5,
-	"manPower": 60,
+	"tax": 3,
+	"manPower": 30,
 	"capitalx" : 55,
 	"capitaly" : 2
 	},
@@ -184,8 +184,8 @@
 	"id": 19,
 	"mapchar": "V",
 	"color": "Yellow",
-	"tax": 5,
-	"manPower": 60,
+	"tax": 3,
+	"manPower": 40,
 	"capitalx" : 66,
 	"capitaly" : 5
 	},
@@ -194,8 +194,8 @@
 	"id": 20,
 	"mapchar": "I",
 	"color": "Yellow",
-	"tax": 5,
-	"manPower": 60,
+	"tax": 2,
+	"manPower": 30,
 	"capitalx" : 54,
 	"capitaly" : 8
 	},
@@ -205,7 +205,7 @@
 	"mapchar": "T",
 	"color": "Yellow",
 	"tax": 5,
-	"manPower": 60,
+	"manPower": 40,
 	"capitalx" : 59,
 	"capitaly" : 8
 	},
@@ -214,8 +214,8 @@
 	"id": 22,
 	"mapchar": "W",
 	"color": "Yellow",
-	"tax": 5,
-	"manPower": 60,
+	"tax": 2,
+	"manPower": 30,
 	"capitalx" : 82,
 	"capitaly" : 11
 	},
@@ -224,8 +224,8 @@
 	"id": 23,
 	"mapchar": "E",
 	"color": "Yellow",
-	"tax": 5,
-	"manPower": 60,
+	"tax": 3,
+	"manPower": 30,
 	"capitalx" : 78,
 	"capitaly" : 13
 	},
@@ -234,8 +234,8 @@
 	"id": 24,
 	"mapchar": "D",
 	"color": "Yellow",
-	"tax": 5,
-	"manPower": 60,
+	"tax": 3,
+	"manPower": 40,
 	"capitalx" : 66,
 	"capitaly" : 12
 	},
@@ -244,8 +244,8 @@
 	"id": 25,
 	"mapchar": "Z",
 	"color": "Yellow",
-	"tax": 5,
-	"manPower": 60,
+	"tax": 4,
+	"manPower": 50,
 	"capitalx" : 81,
 	"capitaly" : 15
 	},
@@ -258,5 +258,25 @@
 	"manPower": 60,
 	"capitalx" : 80,
 	"capitaly" : 17
+	},
+	{
+	"name": "Corsica",
+	"id": 27,
+	"mapchar": "c",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 30,
+	"capitalx" : 26,
+	"capitaly" : 17
+	},
+	{
+	"name": "Sardinia",
+	"id": 28,
+	"mapchar": "s",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 50,
+	"capitalx" : 27,
+	"capitaly" : 28
 	}
 ]
