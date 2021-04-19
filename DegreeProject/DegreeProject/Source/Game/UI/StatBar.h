@@ -12,7 +12,6 @@ public:
 	StatBar(UIID id, sf::Font font, Vector2D, Vector2D size);
 
 	void start();
-	void update();
 	void render();
 	void onDayChange();
 	void updateStats();

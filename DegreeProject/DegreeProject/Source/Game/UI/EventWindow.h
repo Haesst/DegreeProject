@@ -41,8 +41,8 @@ public:
 	sf::Color m_OwnerColor = sf::Color::Black;
 	float m_SizeX = 400.0f;
 	float m_SizeY = 300.0f;
-	int m_PositionX = 0;
-	int m_PositionY = 0;
+	float m_PositionX = 0.0f;
+	float m_PositionY = 0.0f;
 	float m_OutlineThickness = 10.0f;
 	sf::Font m_Font;
 	int m_CharacterSize = 50;

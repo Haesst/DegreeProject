@@ -14,8 +14,8 @@ public:
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	float m_SizeX = 300.0f;
 	float m_SizeY = 500.0f;
-	int m_PositionX = 960;
-	int m_PositionY = 540;
+	float m_PositionX = 960.0f;
+	float m_PositionY = 540.0f;
 	float m_OutlineThickness = 10.0f;
 	int m_CharacterSize = 25;
 	bool m_Visible = false;
@@ -25,7 +25,7 @@ public:
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Black;
 
-	Vector2DInt m_MainMenuPosition;
+	sf::Vector2f m_MainMenuPosition;
 	sf::RectangleShape m_MainMenuShape;
 	sf::Text m_MainMenuText;
 	const std::string m_MainMenuString = "Main Menu";
@@ -33,14 +33,12 @@ public:
 	sf::RectangleShape m_BackgroundShape;
 
 	const unsigned int m_NumberOfButtons = 3;
-	std::vector<Vector2DInt> m_ButtonPositions;
 	std::vector<sf::RectangleShape> m_ButtonShapes;
 	std::vector<sf::Text> m_ButtonTexts;
 	std::vector<const char*> m_ButtonStrings = { "Resume", "Options", "Exit" };
 
 	MainMenu(UIID id, sf::Font font, Vector2D, Vector2D size);
 
-	void start();
 	void update();
 	void render();
 	void openWindow();

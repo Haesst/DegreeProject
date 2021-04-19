@@ -49,6 +49,7 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	m_WarSprites.clear();
 	m_WarTextures.clear();
 	m_WarPositions.clear();
+	m_WarDefenders.clear();
 }
 
 void CharacterWindow::start()
@@ -90,18 +91,22 @@ void CharacterWindow::start()
 	m_FatherShape.setFillColor(sf::Color::Transparent);
 	m_FatherShape.setOutlineThickness(m_OutlineThickness * 0.5f);
 	m_FatherShape.setSize(sf::Vector2f(m_SpriteSize / 2, m_SpriteSize / 2));
+	m_FatherShape.setPosition(sf::Vector2f(m_FatherPosition.x, m_FatherPosition.y));
 
 	m_MotherShape.setFillColor(sf::Color::Transparent);
 	m_MotherShape.setOutlineThickness(m_OutlineThickness * 0.5f);
 	m_MotherShape.setSize(sf::Vector2f(m_SpriteSize / 2, m_SpriteSize / 2));
+	m_MotherShape.setPosition(sf::Vector2f(m_MotherPosition.x, m_MotherPosition.y));
 
 	m_FatherName.setFont(m_Font);
 	m_FatherName.setCharacterSize(m_CharacterSize / 2);
 	m_FatherName.setStyle(m_Style);
+	m_FatherName.setPosition(sf::Vector2f(m_FatherPosition.x + m_SizeX * 0.1f, m_FatherPosition.y));
 
 	m_MotherName.setFont(m_Font);
 	m_MotherName.setCharacterSize(m_CharacterSize / 2);
 	m_MotherName.setStyle(m_Style);
+	m_MotherName.setPosition(sf::Vector2f(m_MotherPosition.x + m_SizeX * 0.1f, m_MotherPosition.y));
 
 	m_MarriedTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Married.png");
 	m_MarriedPosition = sf::Vector2f(m_SizeX * 0.4f, m_SizeY * 0.42f);
@@ -109,86 +114,103 @@ void CharacterWindow::start()
 	m_SpouseName.setFont(m_Font);
 	m_SpouseName.setCharacterSize(m_CharacterSize / 2);
 	m_SpouseName.setStyle(m_Style);
+	m_SpouseName.setPosition(sf::Vector2f(m_MarriedPosition.x + m_SizeX * 0.1f, m_MarriedPosition.y));
 
 	m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
 
 	m_WindowShape.setFillColor(m_FillColor);
 	m_WindowShape.setOutlineThickness(m_OutlineThickness);
+	m_WindowShape.setPosition(sf::Vector2f(m_OutlineThickness, m_OutlineThickness));
 
 	m_DeclareWarShape.setFillColor(sf::Color::Transparent);
 	m_DeclareWarShape.setOutlineColor(m_DeclareWarColor);
 	m_DeclareWarShape.setOutlineThickness(m_OutlineThickness);
 	m_DeclareWarShape.setSize(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f));
+	m_DeclareWarShape.setPosition(sf::Vector2f(m_SizeX * 0.775f, m_SizeY * 0.2f));
 
 	m_DeclareWarText.setFont(m_Font);
 	m_DeclareWarText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 	m_DeclareWarText.setStyle(m_Style);
 	m_DeclareWarText.setString(m_DeclareWar);
 	m_DeclareWarText.setFillColor(m_DeclareWarColor);
+	m_DeclareWarText.setPosition(sf::Vector2f(m_SizeX * 0.785f, m_SizeY * 0.208f));
 
 	m_MakePeaceShape.setFillColor(sf::Color::Transparent);
 	m_MakePeaceShape.setOutlineColor(m_MakePeaceColor);
 	m_MakePeaceShape.setOutlineThickness(m_OutlineThickness);
 	m_MakePeaceShape.setSize(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f));
+	m_MakePeaceShape.setPosition(sf::Vector2f(m_SizeX * 0.775f, m_SizeY * 0.3f));
 
 	m_MakePeaceText.setFont(m_Font);
 	m_MakePeaceText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 	m_MakePeaceText.setStyle(m_Style);
 	m_MakePeaceText.setString(m_MakePeace);
 	m_MakePeaceText.setFillColor(m_MakePeaceColor);
+	m_MakePeaceText.setPosition(sf::Vector2f(m_SizeX * 0.785f, m_SizeY * 0.308f));
 
 	m_MarriageShape.setFillColor(sf::Color::Transparent);
 	m_MarriageShape.setOutlineColor(m_MakePeaceColor);
 	m_MarriageShape.setOutlineThickness(m_OutlineThickness);
 	m_MarriageShape.setSize(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f));
+	m_MarriageShape.setPosition(sf::Vector2f(m_SizeX * 0.775f, m_SizeY * 0.5f));
 
 	m_MarriageText.setFont(m_Font);
 	m_MarriageText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 	m_MarriageText.setStyle(m_Style);
 	m_MarriageText.setString(m_Marriage);
 	m_MarriageText.setFillColor(m_MakePeaceColor);
+	m_MarriageText.setPosition(sf::Vector2f(m_SizeX * 0.785f, m_SizeY * 0.508f));
 
 	m_AllianceShape.setFillColor(sf::Color::Transparent);
 	m_AllianceShape.setOutlineColor(m_MakePeaceColor);
 	m_AllianceShape.setOutlineThickness(m_OutlineThickness);
 	m_AllianceShape.setSize(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f));
+	m_AllianceShape.setPosition(sf::Vector2f(m_SizeX * 0.775f, m_SizeY * 0.4f));
 
 	m_AllianceText.setFont(m_Font);
 	m_AllianceText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 	m_AllianceText.setStyle(m_Style);
 	m_AllianceText.setString(m_Alliance);
 	m_AllianceText.setFillColor(m_MakePeaceColor);
+	m_AllianceText.setPosition(sf::Vector2f(m_SizeX * 0.785f, m_SizeY * 0.408f));
 
 	m_AssassinateShape.setFillColor(sf::Color::Transparent);
 	m_AssassinateShape.setOutlineColor(m_DeclareWarColor);
 	m_AssassinateShape.setOutlineThickness(m_OutlineThickness);
 	m_AssassinateShape.setSize(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f));
+	m_AssassinateShape.setPosition(sf::Vector2f(m_SizeX * 0.775f, m_SizeY * 0.6f));
 
 	m_AssassinateText.setFont(m_Font);
 	m_AssassinateText.setCharacterSize((int)(m_CharacterSize * 0.5f));
 	m_AssassinateText.setStyle(m_Style);
 	m_AssassinateText.setString(m_Assassinate);
 	m_AssassinateText.setFillColor(m_DeclareWarColor);
+	m_AssassinateText.setPosition(sf::Vector2f(m_SizeX * 0.785f, m_SizeY * 0.608f));
 
 	m_CharacterNameText.setFont(m_Font);
 	m_CharacterNameText.setCharacterSize(m_CharacterSize);
 	m_CharacterNameText.setStyle(m_Style);
+	m_CharacterNameText.setPosition(sf::Vector2f(m_SizeX * 0.25f, m_SizeY * 0.025f));
 
 	m_RealmNameText.setFont(m_Font);
 	m_RealmNameText.setCharacterSize(m_CharacterSize);
 	m_RealmNameText.setStyle(m_Style);
+	m_RealmNameText.setPosition(sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.1f));
 
 	m_CharacterAgeText.setFont(m_Font);
 	m_CharacterAgeText.setCharacterSize(m_CharacterSize);
 	m_CharacterAgeText.setStyle(m_Style);
+	m_CharacterAgeText.setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.4f));
 
 	m_ArmyText.setFont(m_Font);
 	m_ArmyText.setCharacterSize(m_CharacterSize);
 	m_ArmyText.setStyle(m_Style);
+	m_ArmyText.setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.2f));
 
 	m_GoldText.setFont(m_Font);
 	m_GoldText.setCharacterSize(m_CharacterSize);
 	m_GoldText.setStyle(m_Style);
+	m_GoldText.setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.3f));
 }
 
 void CharacterWindow::update()
@@ -199,57 +221,6 @@ void CharacterWindow::update()
 	if (m_Visible)
 	{
 		clickButton();
-
-		m_WindowShape.setPosition(sf::Vector2f((int)m_OutlineThickness, (int)m_OutlineThickness));
-
-		m_DeclareWarShape.setPosition(sf::Vector2f((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.2f)));
-		m_DeclareWarText.setPosition(sf::Vector2f((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.208f)));
-
-		m_MakePeaceShape.setPosition(sf::Vector2f((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.3f)));
-		m_MakePeaceText.setPosition(sf::Vector2f((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.308f)));
-
-		m_AllianceShape.setPosition(sf::Vector2f((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.4f)));
-		m_AllianceText.setPosition(sf::Vector2f((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.408f)));
-
-		m_MarriageShape.setPosition(sf::Vector2f((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.5f)));
-		m_MarriageText.setPosition(sf::Vector2f((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.508f)));
-
-		m_AssassinateShape.setPosition(sf::Vector2f((int)(m_SizeX * 0.775f), (int)(m_SizeY * 0.6f)));
-		m_AssassinateText.setPosition(sf::Vector2f((int)(m_SizeX * 0.785f), (int)(m_SizeY * 0.608f)));
-
-		m_CharacterNameText.setPosition(sf::Vector2f((int)(m_SizeX * 0.25f), (int)(m_SizeY * 0.025f)));
-
-		m_RealmNameText.setPosition(sf::Vector2f((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.1f)));
-
-		m_ArmyText.setPosition(sf::Vector2f((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.2f)));
-
-		m_GoldText.setPosition(sf::Vector2f((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.3f)));
-
-		m_CharacterAgeText.setPosition(sf::Vector2f((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.4f)));
-
-		for (unsigned int index = 0; index < m_ChildrenShapes.size(); index++)
-		{
-			m_ChildrenShapes[index].setPosition(sf::Vector2f((int)(m_SizeX * 0.1f), (int)(m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f)));
-			m_ChildrenNames[index].setPosition(sf::Vector2f((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f)));
-		}
-
-		for (unsigned int index = 0; index < m_AlliesShapes.size(); index++)
-		{
-			m_AlliesShapes[index].setPosition(sf::Vector2f((int)(m_SizeX * 0.2f), (int)(m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f)));
-		}
-
-		for (unsigned int index = 0; index < m_WarShapes.size(); index++)
-		{
-			m_WarShapes[index].setPosition(sf::Vector2f((int)(m_SizeX * 0.3f), (int)(m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f)));
-		}
-
-		m_SpouseName.setPosition(sf::Vector2f((int)(m_MarriedPosition.x + m_SizeX * 0.1f), (int)(m_MarriedPosition.y)));
-
-		m_FatherShape.setPosition(sf::Vector2f((int)(m_FatherPosition.x), (int)(m_FatherPosition.y)));
-		m_FatherName.setPosition(sf::Vector2f((int)(m_FatherPosition.x + m_SizeX * 0.1f), (int)(m_FatherPosition.y)));
-
-		m_MotherShape.setPosition(sf::Vector2f((int)(m_MotherPosition.x), (int)(m_MotherPosition.y)));
-		m_MotherName.setPosition(sf::Vector2f((int)(m_MotherPosition.x + m_SizeX * 0.1f), (int)(m_MotherPosition.y)));
 	}
 }
 
@@ -484,10 +455,13 @@ void CharacterWindow::updateInfo()
 			}
 			m_ChildrenShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
 			m_ChildrenShapes[index].setSize(sf::Vector2f(m_SpriteSize / 2, m_SpriteSize / 2));
+			m_ChildrenShapes[index].setPosition(sf::Vector2f(m_SizeX * 0.1f,m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f));
+
 			m_ChildrenNames[index].setString(child.m_Name);
 			m_ChildrenNames[index].setFont(m_Font);
 			m_ChildrenNames[index].setCharacterSize(m_CharacterSize / 2);
 			m_ChildrenNames[index].setStyle(m_Style);
+			m_ChildrenNames[index].setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f));
 			if (child.m_CharacterTitle != Title::Unlanded)
 			{
 				m_ChildrenShapes[index].setOutlineColor(child.m_RegionColor);
@@ -527,18 +501,35 @@ void CharacterWindow::updateInfo()
 			m_AlliesShapes[index].setOutlineColor(ally.m_RegionColor);
 			m_AlliesShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
 			m_AlliesShapes[index].setSize(sf::Vector2f(m_SpriteSize / 2, m_SpriteSize / 2));
+			m_AlliesShapes[index].setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f));
 		}
 
 		m_WarShapes.clear();
 		m_WarSprites.clear();
 		m_WarTextures.clear();
 		m_WarPositions.clear();
+		m_WarDefenders.clear();
+		m_WarAttackers.clear();
 		for (unsigned int index = 0; index < m_CurrentCharacter->m_CurrentWars.size(); index++)
 		{
-			Character& enemy = CharacterManager::get()->getCharacter(WarManager::get().getWar(m_CurrentCharacter->m_CurrentWars[index])->getOpponent(m_CurrentCharacterID));
+			War& war = *WarManager::get().getWar(m_CurrentCharacter->m_CurrentWars[index]);
+			CharacterID defenderID = war.getDefender();
+			CharacterID attackerID = war.getAttacker();
+			m_WarDefenders.push_back(defenderID);
+			m_WarAttackers.push_back(attackerID);
+			CharacterID opponentID;
+			if (m_CurrentCharacterID == attackerID)
+			{
+				opponentID = defenderID;
+			}
+			else
+			{
+				opponentID = attackerID;
+			}
+			Character& opponent = CharacterManager::get()->getCharacter(opponentID);
 			m_WarShapes.push_back(sf::RectangleShape());
 			m_WarSprites.push_back(sf::Sprite());
-			if (enemy.m_Gender == Gender::Male)
+			if (opponent.m_Gender == Gender::Male)
 			{
 				m_WarTextures.push_back(m_MaleCharacterTexture);
 			}
@@ -546,9 +537,10 @@ void CharacterWindow::updateInfo()
 			{
 				m_WarTextures.push_back(m_FemaleCharacterTexture);
 			}
-			m_WarShapes[index].setOutlineColor(enemy.m_RegionColor);
+			m_WarShapes[index].setOutlineColor(opponent.m_RegionColor);
 			m_WarShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
 			m_WarShapes[index].setSize(sf::Vector2f(m_SpriteSize / 2, m_SpriteSize / 2));
+			m_WarShapes[index].setPosition(sf::Vector2f(m_SizeX * 0.3f, m_SizeY * 0.05f * (index + 1) + m_SizeY * 0.45f));
 		}
 
 		if (m_Gender == Gender::Male)
@@ -799,7 +791,9 @@ void CharacterWindow::clickButton()
 		{
 			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				UIManager::get()->m_WarWindow->openWindow(WarManager::get().getWar(m_CurrentCharacter->m_CurrentWars[index])->getOpponent(m_CurrentCharacterID), m_CurrentCharacterID, Time::m_GameDate.m_Date);
+				closeWindow();
+				InputHandler::setCharacterWindowOpen(false);
+				UIManager::get()->m_WarWindow->openWindow(m_WarAttackers[index], m_WarDefenders[index], Time::m_GameDate.m_Date);
 				break;
 			}
 		}

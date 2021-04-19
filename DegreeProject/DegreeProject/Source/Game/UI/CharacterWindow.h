@@ -47,6 +47,8 @@ public:
 	std::vector<sf::Sprite> m_WarSprites = std::vector<sf::Sprite>();
 	std::vector<sf::Texture> m_WarTextures = std::vector<sf::Texture>();
 	std::vector<Vector2DInt> m_WarPositions = std::vector<Vector2DInt>();
+	std::vector<CharacterID> m_WarDefenders = std::vector<CharacterID>();
+	std::vector<CharacterID> m_WarAttackers = std::vector<CharacterID>();
 
 	sf::Texture m_MaleChildTexture;
 	sf::Texture m_FemaleChildTexture;
