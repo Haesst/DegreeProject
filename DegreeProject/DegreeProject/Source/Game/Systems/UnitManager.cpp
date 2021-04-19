@@ -657,7 +657,8 @@ void UnitManager::unitSiege(Unit& unit)
 
 				if (currentWar->m_AttackerWarscore < 100)
 				{
-					currentWar->addWarscore(currentWar->getAttacker(), 50);
+					currentWar->addWarscore(attacker.m_CharacterID, 50);
+					currentWar->addWarscore(defender.m_CharacterID, -50);
 				}
 
 				if (!WarManager::get().isValidWar(*currentWar))
