@@ -4,6 +4,7 @@
 #include "Game/Data/AIData.h"
 #include "Game/Data/Character.h"
 #include "Game/Data/Unit.h"
+#include "Game/Map/Map.h"
 
 WarManager* WarManager::m_Instance = nullptr;
 
@@ -140,6 +141,34 @@ bool WarManager::isValidWar(War& war)
 	}
 
 	return false;
+}
+
+void WarManager::update()
+{
+	for (auto& war : m_Wars)
+	{
+		if (Map::get().getRegionById(war.second.m_WargoalRegion).m_OccupiedBy == INVALID_CHARACTER_ID)
+		{
+			war.second.warGoalRegionTimerAccu += Time::deltaTime();
+
+			if (war.second.warGoalRegionTimerAccu >= war.second.warGoalRegionCapturedTimer)
+			{
+				war.second.addWarscore(war.second.getDefender(), 5);
+				war.second.warGoalRegionTimerAccu = 0;
+			}
+		}
+
+		else if (Map::get().getRegionById(war.second.m_WargoalRegion).m_OccupiedBy != INVALID_CHARACTER_ID)
+		{
+			war.second.warGoalRegionTimerAccu += Time::deltaTime();
+
+			if (war.second.warGoalRegionTimerAccu >= war.second.warGoalRegionCapturedTimer)
+			{
+				war.second.addWarscore(war.second.getAttacker(), 5);
+				war.second.warGoalRegionTimerAccu = 0;
+			}
+		}
+	}
 }
 
 std::vector<War> WarManager::getWarsOfCharacter(CharacterID ID)

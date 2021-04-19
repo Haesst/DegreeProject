@@ -405,7 +405,7 @@ void AIManager::update()
 					if (warmind.m_OrderAccu >= warmind.m_OrderTimer)
 					{
 						warmind.m_OrderAccu = 0.0f;
-						considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warManager.getWar(warmind.m_PrioritizedWarHandle)->getOpponent(warmind.m_OwnerID));
+						considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warManager.getWar(warmind.m_PrioritizedWarHandle)->getOpposingForce(warmind.m_OwnerID));
 					}
 				}
 
@@ -846,7 +846,7 @@ int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 
 		if (warManager->getWar(warmind.m_PrioritizedWarHandle) != nullptr)
 		{
-			warmind.m_Opponent = warManager->getWar(warmind.m_PrioritizedWarHandle)->getOpponent(warmind.m_OwnerID);
+			warmind.m_Opponent = warManager->getWar(warmind.m_PrioritizedWarHandle)->getOpposingForce(warmind.m_OwnerID);
 			return warmind.m_PrioritizedWarHandle;
 		}
 

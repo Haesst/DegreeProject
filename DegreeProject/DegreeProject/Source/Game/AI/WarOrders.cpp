@@ -31,7 +31,7 @@ void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 
 		else
 		{
-			int randomRegion = rand() % CharacterManager::get()->getCharacter(war->getOpponent(warmind.m_OwnerID)).m_OwnedRegionIDs.size();
+			int randomRegion = rand() % CharacterManager::get()->getCharacter(war->getOpposingForce(warmind.m_OwnerID)).m_OwnedRegionIDs.size();
 			battlefieldIntPosition = Map::get().getRegionById(randomRegion).m_RegionCapital;
 		}
 	}

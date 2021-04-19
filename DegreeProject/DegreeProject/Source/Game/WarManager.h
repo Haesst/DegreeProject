@@ -27,7 +27,7 @@ public:
 	void invalidateWarsForRegion(int regionID);
 	bool isEnemyOfEnemy(Unit& unit, Unit& enemyUnit);
 	bool isValidWar(War& war);
-
+	void update();
 	std::vector<War> getWarsOfCharacter(CharacterID ID);
 
 	std::vector<CharacterID> getOpposingSide(CharacterID ID);
@@ -48,6 +48,7 @@ public:
 	}
 
 private:
+	
 	int m_Warhandle = 0;
 	std::vector<std::pair<int, War>> m_Wars = std::vector<std::pair<int, War>>();
 	static WarManager* m_Instance;

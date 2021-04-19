@@ -32,7 +32,7 @@ private:
 	HotReloader* m_HotReloader = nullptr;
 	sf::SoundBuffer m_SoundBuffer;
 	sf::SoundBuffer m_BattleSoundBuffer;
-	float m_Volume = 5.0f;
+	float m_Volume = 1.0f;
 
 public:
 	static sf::Sound m_Sound;

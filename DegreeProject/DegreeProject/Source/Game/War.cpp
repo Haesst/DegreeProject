@@ -236,7 +236,7 @@ int War::getHandle()
 	return m_Handle;
 }
 
-CharacterID War::getOpponent(CharacterID character)
+CharacterID War::getOpposingForce(CharacterID character)
 {
 	if (isAttacker(character))
 	{

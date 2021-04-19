@@ -8,7 +8,7 @@
 #include "Game/AI/AIManager.h"
 #include "Game/UI/UIManager.h"
 #include "Game/StaticSpriteManager.h"
-
+#include "Game/WarManager.h"
 #include "Game/Systems/HeraldicShieldManager.h"
 #include "Game/Systems/Characters/CharacterNamePool.h"
 
@@ -62,6 +62,7 @@ void Game::run()
 		CharacterManager::get()->update();
 		AIManager::get().update();
 		UIManager::get()->update();
+		WarManager::get().update();
 
 		// Render
 		Window::getWindow()->clear(sf::Color::Blue);

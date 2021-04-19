@@ -710,7 +710,7 @@ void CharacterWindow::clickButton()
 		{
 			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				m_CurrentCharacterID = WarManager::get().getWar(m_CurrentCharacter->m_CurrentWars[index])->getOpponent(m_CurrentCharacterID);
+				m_CurrentCharacterID = WarManager::get().getWar(m_CurrentCharacter->m_CurrentWars[index])->getOpposingForce(m_CurrentCharacterID);
 				checkIfPlayerCharacter();
 				updateInfo();
 				break;
