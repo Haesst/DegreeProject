@@ -16,6 +16,7 @@ struct Unit
 	bool m_Raised = false;
 	int m_RepresentedForce = 0;
 
+	bool m_OnWater = false;
 	bool m_Selected = false;
 	sf::Sprite m_Sprite;
 

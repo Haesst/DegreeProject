@@ -112,6 +112,7 @@ struct Map
 	void setRegionColor(int regionId, sf::Color color);
 	void clearRegions();
 	bool mapSquareDataContainsKey(const Vector2DInt& key);
+	bool isWater(const Vector2DInt& tile);
 	void clearRegionMapTiles();
 
 	void createVertexArrays();
@@ -144,6 +145,11 @@ private:
 	sf::VertexArray m_MountainVertexArray;
 	sf::Color m_MountainBaseColor = sf::Color(80, 80, 80, 255);
 	sf::Color m_MountainAlternateColor = sf::Color(100, 100, 100, 255);
+
+	//Water
+	std::vector<Vector2DInt> m_WaterSquares;
+	sf::VertexArray m_WaterVertexArray;
+	sf::Color m_WaterBaseColor = sf::Color::Blue;
 
 	// Unreachable land
 	std::vector<Vector2DInt> m_UnreachableLandSquares;

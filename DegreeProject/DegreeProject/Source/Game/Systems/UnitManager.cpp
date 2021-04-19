@@ -15,6 +15,7 @@ UnitID UnitManager::m_UnitIDs = INVALID_UNIT_ID + 1;
 void UnitManager::start()
 {
 	m_UnitTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/soldier unit.png");
+	m_BoatTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Boat.png");
 	m_UnitSprite.setTexture(m_UnitTexture);
 
 	for (auto& unit : m_Units)
@@ -92,7 +93,6 @@ void UnitManager::render()
 		}
 
 		Window::getWindow()->draw(unit.m_Sprite);
-
 
 		if (unit.m_Moving)
 		{
@@ -328,7 +328,6 @@ void UnitManager::moveUnit(Unit& unit)
 	if (!unit.m_Position.nearlyEqual(unit.m_Target, m_MoveTolerance))
 	{
 		unit.m_Position += unit.m_Direction * unit.m_Speed * Time::deltaTime();
-		int i = 40;
 	}
 
 	else
@@ -348,6 +347,16 @@ void UnitManager::moveUnit(Unit& unit)
 		unit.m_LastPosition = unit.m_Target;
 		unit.m_Position = unit.m_Target;
 		Vector2DInt pos = Map::convertToMap(unit.m_Target);
+
+		if (Map::get().isWater(pos))
+		{
+			unit.m_OnWater = true;
+		}
+
+		else
+		{
+			unit.m_OnWater = false;
+		}
 
 		for (auto& squareData : Map::get().m_MapSquareData)
 		{
@@ -785,7 +794,7 @@ bool UnitManager::weightedRandomCombat(float weight)
 
 void UnitManager::updateSprite(Unit& unit)
 {
-	unit.m_Sprite.setTexture(m_UnitTexture, true);
+	unit.m_Sprite.setTexture(unit.m_OnWater ? m_BoatTexture : m_UnitTexture, true);
 	unit.m_Sprite.setPosition({ unit.m_Position.x, unit.m_Position.y });
 
 	sf::FloatRect localSize = unit.m_Sprite.getLocalBounds();

@@ -45,6 +45,7 @@ private:
 	void displayProgressMeter(Unit& unit, float timeElapsed, float totalTime, sf::Vector2f offset, sf::Color fillColor);
 	
 private:
+	sf::Texture m_BoatTexture;
 
 	Date m_LastDay;
 	static UnitID m_UnitIDs;

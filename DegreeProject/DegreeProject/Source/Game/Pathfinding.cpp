@@ -229,7 +229,10 @@ std::vector<Vector2DInt> Pathfinding::findPerformantPath(Vector2DInt start, Vect
 
 			if (!Map::get().mapSquareDataContainsKey({ x,  y }))
 			{
-				continue;
+				if (!Map::get().isWater({ x, y }))
+				{
+					continue;
+				}
 			}
 
 			Node neighbour;
@@ -245,6 +248,11 @@ std::vector<Vector2DInt> Pathfinding::findPerformantPath(Vector2DInt start, Vect
 
 			neighbour.m_FCost = current.m_FCost + calculateHCost({ current.x, current.y }, { neighbour.x, neighbour.y });
 			neighbour.m_GCost = current.m_FCost + calculateHCost({ neighbour.x, neighbour.y }, { goalNode.x, goalNode.y });
+
+			if (Map::get().isWater({neighbour.x, neighbour.y}))
+			{
+				neighbour.m_GCost += 10.0f;
+			}
 
 			visited[neighbourIndex] = 1;
 			parents[neighbourIndex] = current;

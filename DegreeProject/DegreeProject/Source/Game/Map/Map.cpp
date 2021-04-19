@@ -161,6 +161,11 @@ void Map::loadMap()
 					m_UnreachableLandSquares.push_back({ x,y });
 				}
 
+				else if (character == '~')
+				{
+					m_WaterSquares.push_back({ x, y });
+				}
+
 				x++;
 			}
 
@@ -214,6 +219,7 @@ void Map::render()
 {
 	renderSquares(m_MountainVertexArray, m_MountainBaseColor, m_MountainAlternateColor, m_Data.m_LandTexture, false);
 	renderSquares(m_UnreachableVertexArray, m_UnreachableLandColor, m_UnreachableLandColor, m_Data.m_LandTexture, false);
+	renderSquares(m_WaterVertexArray, m_WaterBaseColor, m_WaterBaseColor, m_Data.m_LandTexture, false);
 
 	for (auto& region : m_Data.m_Regions)
 	{
@@ -263,6 +269,19 @@ bool Map::mapSquareDataContainsKey(const Vector2DInt& key)
 	return false;
 }
 
+bool Map::isWater(const Vector2DInt& tile)
+{
+	for (auto& pos : m_WaterSquares)
+	{
+		if (pos == tile)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 void Map::clearRegionMapTiles()
 {
 	for (auto& region : m_Data.m_Regions)
@@ -284,6 +303,7 @@ void Map::createVertexArrays()
 
 	createVertexArray(m_MountainVertexArray, m_MountainSquares);
 	createVertexArray(m_UnreachableVertexArray, m_UnreachableLandSquares);
+	createVertexArray(m_WaterVertexArray, m_WaterSquares);
 }
 
 void Map::createVertexArray(sf::VertexArray& vertexArray, const std::vector<Vector2DInt>& squares)
