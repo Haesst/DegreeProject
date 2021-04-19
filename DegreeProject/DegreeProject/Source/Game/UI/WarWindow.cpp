@@ -209,7 +209,7 @@ void WarWindow::start()
 	m_AttackerAlliesText.setStyle(m_Style);
 	m_AttackerAlliesText.setString(m_Allies);
 	m_AttackerAlliesText.setFillColor(m_TextColor);
-	m_AttackerAlliesText.setPosition(sf::Vector2f(m_DefenderAlliesTextPosition));
+	m_AttackerAlliesText.setPosition(sf::Vector2f(m_AttackerAlliesTextPosition));
 
 	m_DefenderAlliesTextPosition = sf::Vector2f(m_SizeX * 0.1f, m_DefendersTextPosition.y);
 	m_DefenderAlliesText.setFont(m_Font);
@@ -217,7 +217,7 @@ void WarWindow::start()
 	m_DefenderAlliesText.setStyle(m_Style);
 	m_DefenderAlliesText.setString(m_Allies);
 	m_DefenderAlliesText.setFillColor(m_TextColor);
-	m_DefenderAlliesText.setPosition(sf::Vector2f(m_AttackerAlliesTextPosition));
+	m_DefenderAlliesText.setPosition(sf::Vector2f(m_DefenderAlliesTextPosition));
 }
 
 void WarWindow::update()

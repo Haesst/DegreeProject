@@ -20,20 +20,34 @@ public:
 	void render();
 	void clickOnMap();
 	void onDayChange();
+	void clearInfo();
 	void updateInfo();
+	void updateParents();
+	void updateTraits();
+	void updateChildren();
+	void updateAllies();
+	void updateWars();
 	void handleWindow();
 	void openWindow();
 	void closeWindow();
 	void clickButton();
+	void declareWar();
+	void offerPeace();
+	void proposeMarriage();
+	void proposeAlliance();
+	void assassinate();
+
 	bool checkIfPlayerCharacter();
 	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize = m_SpriteSize);
 
 	sf::RectangleShape m_WindowShape;
-	sf::RectangleShape m_DeclareWarShape;
-	sf::RectangleShape m_MakePeaceShape;
-	sf::RectangleShape m_MarriageShape;
-	sf::RectangleShape m_AllianceShape;
-	sf::RectangleShape m_AssassinateShape;
+
+	const unsigned int m_NumberOfButtons = 5;
+
+	std::vector<sf::RectangleShape> m_ButtonShapes = std::vector<sf::RectangleShape>();
+	std::vector<sf::Text> m_ButtonTexts = std::vector<sf::Text>();
+	std::vector<const char*> m_ButtonStrings = { "Declare War", "Make Peace", "Marriage", "Alliance", "Assassinate" };
+
 	std::vector<sf::RectangleShape> m_ChildrenShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_ChildrenSprites = std::vector<sf::Sprite>();
 	std::vector<sf::Texture> m_ChildrenTextures = std::vector<sf::Texture>();
@@ -50,6 +64,15 @@ public:
 	std::vector<CharacterID> m_WarDefenders = std::vector<CharacterID>();
 	std::vector<CharacterID> m_WarAttackers = std::vector<CharacterID>();
 
+	std::vector<sf::Sprite> m_TraitsSprites = std::vector<sf::Sprite>();
+	std::vector<sf::Texture> m_TraitsTextures = std::vector<sf::Texture>();
+	std::vector<sf::Text> m_TraitsInfo = std::vector<sf::Text>();
+	std::vector<bool> m_TraitsShowInfo = std::vector<bool>();
+
+	sf::Texture m_FertilityTexture;
+	sf::Texture m_BeautifulTexture;
+	sf::Texture m_UglyTexture;
+	sf::Texture m_SterileTexture;
 	sf::Texture m_MaleChildTexture;
 	sf::Texture m_FemaleChildTexture;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
@@ -66,25 +89,18 @@ public:
 	sf::Text m_CharacterNameText;
 	sf::Text m_CharacterAgeText;
 	sf::Font m_Font;
-	sf::Text m_DeclareWarText;
-	sf::Text m_MakePeaceText;
-	sf::Text m_MarriageText;
-	sf::Text m_AllianceText;
-	sf::Text m_AssassinateText;
 	std::vector<sf::Text> m_ChildrenNames = std::vector<sf::Text>();
 	std::vector<bool> m_ShowChildrenNames = std::vector<bool>();
 	unsigned int m_CurrentRegionID = 0;
 	CharacterID m_CurrentCharacterID = INVALID_CHARACTER_ID;
-	const std::string m_DeclareWar = "Declare War";
-	const std::string m_MakePeace = "Make Peace";
-	const std::string m_Marriage = "Marriage";
-	const std::string m_Alliance = "Alliance";
-	const std::string m_Assassinate = "Assassinate";
 	const std::string m_Dash = "/";
 	const char* m_PregnantTrait = "Pregnant";
+	const char* m_BeautifulTrait = "Beautiful";
+	const char* m_UglyTrait = "Ugly";
+	const char* m_SterileTrait = "Sterile";
 	std::string m_MaleTitles[(unsigned int)Title::Baron + 1];
 	std::string m_FemaleTitles[(unsigned int)Title::Baron + 1];
-	int m_CharacterSize = 50;
+	int m_CharacterSize = 25;
 	sf::Text::Style m_Style = sf::Text::Regular;
 	int m_DaySubscriptionHandle = 0;
 	bool m_Open = false;
@@ -100,7 +116,7 @@ public:
 	sf::Texture m_MaleCharacterTexture;
 	sf::Texture m_FemaleCharacterTexture;
 	sf::Sprite m_CharacterSprite;
-	const static int m_SpriteSize = 64;
+	const static int m_SpriteSize = 32;
 	sf::Vector2f m_CharacterPosition;
 
 	sf::Texture m_GoldTexture;
@@ -117,8 +133,6 @@ public:
 
 	sf::Texture m_MaleGenderTexture;
 	sf::Texture m_FemaleGenderTexture;
-	sf::Sprite m_GenderSprite;
-	sf::Vector2f m_GenderPosition;
 
 	sf::Texture m_PregnantTexture;
 	sf::Sprite m_Pregnantprite;
