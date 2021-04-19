@@ -27,10 +27,6 @@ public:
 	std::string m_CountryName = "";
 	unsigned int m_CharacterSize = 20;
 	unsigned int m_MinCharacterSize = 30;
-#pragma warning(push)
-#pragma warning(disable: 26812)
-	sf::Text::Style m_Style = sf::Text::Regular;
-#pragma warning(pop)
 	float m_Rotation = 0.0f;
 	std::vector<unsigned int> m_OwnedRegionIDs;
 	bool m_Conquered = false;

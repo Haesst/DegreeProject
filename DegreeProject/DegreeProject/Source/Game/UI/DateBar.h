@@ -7,8 +7,6 @@
 const static unsigned int NUMBER_OF_SPEEDS = 5;
 const static unsigned int NUMBER_OF_BUTTONS = 3;
 
-#pragma warning(push)
-#pragma warning(disable: 26812)
 class DateBar
 {
 public:
@@ -42,10 +40,8 @@ public:
 	sf::Text m_DateText;
 	sf::Font m_Font;
 	int m_CharacterSize = 30;
-	sf::Text::Style m_Style = sf::Text::Regular;
 	sf::RenderWindow* m_Window = nullptr;
 	unsigned int m_CurrentSpeedLevel = 3;
 	int m_DaySubscriptionHandle = 0;
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 };
-#pragma warning(pop)

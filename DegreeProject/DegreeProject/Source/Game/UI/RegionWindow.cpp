@@ -58,21 +58,17 @@ void RegionWindow::start()
 	m_RegionNameText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.1f, positionY));
 	m_RegionNameText.setFont(m_Font);
 	m_RegionNameText.setCharacterSize(m_CharacterSize);
-	m_RegionNameText.setStyle(m_Style);
 
 	m_RegionTaxText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.1f, positionY + m_SizeY * 0.5f));
 	m_RegionTaxText.setFont(m_Font);
 	m_RegionTaxText.setCharacterSize((int)(m_CharacterSize * 0.5f));
-	m_RegionTaxText.setStyle(m_Style);
 
 	m_RegionManpowerText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.1f, positionY + m_SizeY * 0.6f));
 	m_RegionManpowerText.setFont(m_Font);
 	m_RegionManpowerText.setCharacterSize((int)(m_CharacterSize * 0.5f));
-	m_RegionManpowerText.setStyle(m_Style);
 
 	m_KingdomNameText.setFont(m_Font);
 	m_KingdomNameText.setCharacterSize((int)(m_CharacterSize * 0.5f));
-	m_KingdomNameText.setStyle(m_Style);
 	m_KingdomNameText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.1f, positionY + m_SizeY * 0.1f));
 }
 

@@ -304,7 +304,6 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		m_AgreeShape.setPosition(sf::Vector2f(m_AgreePosition));
 		m_AgreeText.setFont(m_Font);
 		m_AgreeText.setCharacterSize((int)(m_CharacterSize * 0.5f));
-		m_AgreeText.setStyle(m_Style);
 		m_AgreeText.setFillColor(m_AgreeColor);
 		m_AgreeText.setString(m_AgreeString);
 		m_AgreeText.setPosition(sf::Vector2f(m_AgreePosition));
@@ -318,7 +317,6 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 	m_DismissShape.setPosition(sf::Vector2f(m_DismissPosition));
 	m_DismissText.setFont(m_Font);
 	m_DismissText.setCharacterSize((int)(m_CharacterSize * 0.5f));
-	m_DismissText.setStyle(m_Style);
 	m_DismissText.setFillColor(m_DismissColor);
 	m_DismissText.setString(m_DismissString);
 	m_DismissText.setPosition(sf::Vector2f(m_DismissPosition));
@@ -326,7 +324,6 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 	m_MessageTextPosition = sf::Vector2f(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 1.6f);
 	m_MessageText.setFont(m_Font);
 	m_MessageText.setCharacterSize((int)(m_CharacterSize * 0.5f));
-	m_MessageText.setStyle(m_Style);
 	m_MessageText.setFillColor(m_OwnerColor);
 	m_MessageText.setPosition(sf::Vector2f(m_MessageTextPosition));
 
@@ -372,6 +369,22 @@ void EventWindow::closeWindow()
 {
 	m_Dismissed = true;
 	Time::unpauseGame();
+}
+
+void EventWindow::dismissRequest()
+{
+	switch (m_MessageType)
+	{
+		case UIType::CallToArmsRequest:
+		{
+			WarManager::get().breakAlliance(m_InstigatorID, m_SubjectID);
+			break;
+		}
+		default:
+		{
+			break;
+		}
+	}
 }
 
 void EventWindow::acceptRequest()
@@ -435,6 +448,7 @@ void EventWindow::clickButton()
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_DismissShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			dismissRequest();
 			closeWindow();
 		}
 		else if (m_AgreeShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))

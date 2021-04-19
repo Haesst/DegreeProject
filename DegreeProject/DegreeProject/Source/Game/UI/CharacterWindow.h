@@ -6,10 +6,9 @@
 #include "Engine/Vector2D.h"
 
 struct Character;
+struct HeraldicShield;
 enum class Gender;
 
-#pragma warning(push)
-#pragma warning(disable: 26812)
 class CharacterWindow
 {
 public:
@@ -38,11 +37,13 @@ public:
 	void assassinate();
 
 	bool checkIfPlayerCharacter();
-	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize = m_SpriteSize);
 
 	sf::RectangleShape m_WindowShape;
 
 	const unsigned int m_NumberOfButtons = 5;
+
+	std::vector<sf::Text> m_OwnedRegionsTexts = std::vector<sf::Text>();
+	std::vector<HeraldicShield*> m_OwnedRegionsShields = std::vector<HeraldicShield*>();
 
 	std::vector<sf::RectangleShape> m_ButtonShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Text> m_ButtonTexts = std::vector<sf::Text>();
@@ -50,22 +51,19 @@ public:
 
 	std::vector<sf::RectangleShape> m_ChildrenShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_ChildrenSprites = std::vector<sf::Sprite>();
-	std::vector<sf::Texture> m_ChildrenTextures = std::vector<sf::Texture>();
 
 	std::vector<sf::RectangleShape> m_AlliesShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_AlliesSprites = std::vector<sf::Sprite>();
-	std::vector<sf::Texture> m_AlliesTextures = std::vector<sf::Texture>();
 	std::vector<Vector2DInt> m_AlliesPositions = std::vector<Vector2DInt>();
+	std::vector<CharacterID> m_AlliesIDs = std::vector<CharacterID>();
 
 	std::vector<sf::RectangleShape> m_WarShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_WarSprites = std::vector<sf::Sprite>();
-	std::vector<sf::Texture> m_WarTextures = std::vector<sf::Texture>();
 	std::vector<Vector2DInt> m_WarPositions = std::vector<Vector2DInt>();
 	std::vector<CharacterID> m_WarDefenders = std::vector<CharacterID>();
 	std::vector<CharacterID> m_WarAttackers = std::vector<CharacterID>();
 
 	std::vector<sf::Sprite> m_TraitsSprites = std::vector<sf::Sprite>();
-	std::vector<sf::Texture> m_TraitsTextures = std::vector<sf::Texture>();
 	std::vector<sf::Text> m_TraitsInfo = std::vector<sf::Text>();
 	std::vector<bool> m_TraitsShowInfo = std::vector<bool>();
 
@@ -98,10 +96,13 @@ public:
 	const char* m_BeautifulTrait = "Beautiful";
 	const char* m_UglyTrait = "Ugly";
 	const char* m_SterileTrait = "Sterile";
+	const char* m_Male = "Male";
+	const char* m_Female = "Female";
+	const char* m_Fertility = "Fertility: ";
+	const char* m_Spouse = "Spouse: ";
 	std::string m_MaleTitles[(unsigned int)Title::Baron + 1];
 	std::string m_FemaleTitles[(unsigned int)Title::Baron + 1];
 	int m_CharacterSize = 25;
-	sf::Text::Style m_Style = sf::Text::Regular;
 	int m_DaySubscriptionHandle = 0;
 	bool m_Open = false;
 
@@ -135,7 +136,7 @@ public:
 	sf::Texture m_FemaleGenderTexture;
 
 	sf::Texture m_PregnantTexture;
-	sf::Sprite m_Pregnantprite;
+	sf::Sprite m_PregnantSprite;
 	sf::Vector2f m_PregnantPosition;
 
 	sf::Texture m_MarriedTexture;
@@ -169,4 +170,3 @@ public:
 	sf::Vector2f m_DeadPosition;
 	bool m_Dead = false;
 };
-#pragma warning(pop)

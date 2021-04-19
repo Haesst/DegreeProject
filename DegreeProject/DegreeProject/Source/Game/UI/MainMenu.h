@@ -4,8 +4,6 @@
 #include "Game/Data/Types.h"
 #include "Engine/Vector2D.h"
 
-#pragma warning(push)
-#pragma warning(disable: 26812)
 class MainMenu
 {
 public:
@@ -20,7 +18,6 @@ public:
 	int m_CharacterSize = 25;
 	bool m_Visible = false;
 	sf::Font m_Font;
-	sf::Text::Style m_Style = sf::Text::Regular;
 	sf::Color m_BackgroundFillColor = sf::Color(0, 0, 0, 100);
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Black;
@@ -46,4 +43,3 @@ public:
 	void clickButton();
 	void handleWindow();
 };
-#pragma warning(pop)

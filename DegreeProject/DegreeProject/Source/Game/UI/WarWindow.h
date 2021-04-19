@@ -45,7 +45,6 @@ private:
 	const static unsigned int m_SpriteSize = 32;
 	bool m_Visible = false;
 	sf::Font m_Font;
-	sf::Text::Style m_Style = sf::Text::Regular;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_AttackerColor = sf::Color(210, 32, 60);
 	sf::Color m_DefenderColor = sf::Color(33, 137, 206);

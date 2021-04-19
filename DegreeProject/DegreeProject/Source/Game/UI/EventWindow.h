@@ -18,6 +18,7 @@ public:
 	void render();
 	void moveWindow();
 	void closeWindow();
+	void dismissRequest();
 	void acceptRequest();
 	void clickButton();
 	void updateSprites();
@@ -47,10 +48,6 @@ public:
 	sf::Font m_Font;
 	int m_CharacterSize = 50;
 	const static int m_SpriteSize = 64;
-#pragma warning(push)
-#pragma warning(disable: 26812)
-	sf::Text::Style m_Style = sf::Text::Regular;
-#pragma warning(pop)
 	sf::RenderWindow* m_Window = nullptr;
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	UIType m_MessageType = UIType::WarDeclaration;

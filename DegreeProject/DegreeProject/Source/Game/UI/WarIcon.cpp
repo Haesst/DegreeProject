@@ -32,7 +32,6 @@ WarIcon::WarIcon(UIID ID, sf::Font font, unsigned int index, CharacterID attacke
 	m_WarscoreTextPosition = sf::Vector2f(m_WarIconPosition.x, m_WarIconPosition.y + m_SizeY * 0.5f);
 	m_WarscoreText.setCharacterSize(m_CharacterSize);
 	m_WarscoreText.setFont(m_Font);
-	m_WarscoreText.setStyle(m_Style);
 	m_WarscoreText.setPosition(m_WarscoreTextPosition);
 
 	activate();

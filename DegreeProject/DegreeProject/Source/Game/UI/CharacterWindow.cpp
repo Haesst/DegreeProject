@@ -14,6 +14,7 @@
 #include "Game/Data/AIData.h"
 #include "Game/UI/UIManager.h"
 #include "Game/UI/WarWindow.h"
+#include "Game/Systems/HeraldicShieldManager.h"
 
 CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 {
@@ -56,39 +57,42 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 		m_ButtonTexts.push_back(buttonText);
 	}
 
-	m_MaleCharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/MalePortrait.jpg");
-	m_FemaleCharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/FemalePortrait.jpg");
+	AssetHandler& assetHandler = AssetHandler::get();
 
-	m_CharacterPosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.025f);
+	m_MaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/MalePortrait.jpg");
+	m_FemaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/FemalePortrait.jpg");
 
-	m_GoldTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Coins.png");
+	m_CharacterSprite.setPosition(sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.025f));
+	m_CharacterSprite.setScale(m_SpriteSize * 2 / m_CharacterSprite.getLocalBounds().width, m_SpriteSize * 2 / m_CharacterSprite.getLocalBounds().height);
+
+	m_GoldTexture = assetHandler.getTextureAtPath("Assets/Graphics/Coins.png");
 	m_GoldPosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.32f);
 
-	m_ArmyTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/soldier unit.png");
+	m_ArmyTexture = assetHandler.getTextureAtPath("Assets/Graphics/soldier unit.png");
 	m_ArmyPosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.22f);
 
-	m_AgeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Age.png");
+	m_AgeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Age.png");
 	m_AgePosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.42f);
 
-	m_DeadTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Dead.png");
+	m_DeadTexture = assetHandler.getTextureAtPath("Assets/Graphics/Dead.png");
 	m_DeadPosition = sf::Vector2f(m_SizeX * 0.025f, m_SizeY * 0.025f);
 
-	m_MaleGenderTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Male.png");
-	m_FemaleGenderTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Female.png");
+	m_MaleGenderTexture = assetHandler.getTextureAtPath("Assets/Graphics/Male.png");
+	m_FemaleGenderTexture = assetHandler.getTextureAtPath("Assets/Graphics/Female.png");
 
-	m_FertilityTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Fertility.png");
-	m_BeautifulTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Beautiful.png");
-	m_UglyTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Ugly.png");
-	m_SterileTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Sterile.png");
-	m_PregnantTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Pregnant.png");
+	m_FertilityTexture = assetHandler.getTextureAtPath("Assets/Graphics/Fertility.png");
+	m_BeautifulTexture = assetHandler.getTextureAtPath("Assets/Graphics/Beautiful.png");
+	m_UglyTexture = assetHandler.getTextureAtPath("Assets/Graphics/Ugly.png");
+	m_SterileTexture = assetHandler.getTextureAtPath("Assets/Graphics/Sterile.png");
 
+	m_PregnantTexture = assetHandler.getTextureAtPath("Assets/Graphics/Pregnant.png");
 	m_PregnantPosition = sf::Vector2f(m_SizeX * 0.5f, m_SizeY * 0.42f);
 
-	m_MaleChildTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/BabyMale.png");
-	m_FemaleChildTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/BabyFemale.png");
+	m_MaleChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyMale.png");
+	m_FemaleChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyFemale.png");
 
-	m_MotherTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Mother.png");
-	m_FatherTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Father.png");
+	m_MotherTexture = assetHandler.getTextureAtPath("Assets/Graphics/Mother.png");
+	m_FatherTexture = assetHandler.getTextureAtPath("Assets/Graphics/Father.png");
 
 	m_FatherPosition = sf::Vector2f(m_SizeX * 0.4f, m_SizeY * 0.55f);
 	m_MotherPosition = sf::Vector2f(m_SizeX * 0.4f, m_SizeY * 0.60f);
@@ -105,20 +109,17 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 
 	m_FatherName.setFont(m_Font);
 	m_FatherName.setCharacterSize(m_CharacterSize);
-	m_FatherName.setStyle(m_Style);
 	m_FatherName.setPosition(sf::Vector2f(m_FatherPosition.x + m_SizeX * 0.1f, m_FatherPosition.y));
 
 	m_MotherName.setFont(m_Font);
 	m_MotherName.setCharacterSize(m_CharacterSize);
-	m_MotherName.setStyle(m_Style);
 	m_MotherName.setPosition(sf::Vector2f(m_MotherPosition.x + m_SizeX * 0.1f, m_MotherPosition.y));
 
-	m_MarriedTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Married.png");
+	m_MarriedTexture = assetHandler.getTextureAtPath("Assets/Graphics/Married.png");
 	m_MarriedPosition = sf::Vector2f(m_SizeX * 0.4f, m_SizeY * 0.42f);
 
 	m_SpouseName.setFont(m_Font);
 	m_SpouseName.setCharacterSize(m_CharacterSize);
-	m_SpouseName.setStyle(m_Style);
 	m_SpouseName.setPosition(sf::Vector2f(m_MarriedPosition.x + m_SizeX * 0.1f, m_MarriedPosition.y));
 
 	m_WindowShape.setFillColor(m_FillColor);
@@ -127,28 +128,55 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 
 	m_CharacterNameText.setFont(m_Font);
 	m_CharacterNameText.setCharacterSize(m_CharacterSize);
-	m_CharacterNameText.setStyle(m_Style);
 	m_CharacterNameText.setPosition(sf::Vector2f(m_SizeX * 0.25f, m_SizeY * 0.025f));
 
 	m_RealmNameText.setFont(m_Font);
 	m_RealmNameText.setCharacterSize(m_CharacterSize);
-	m_RealmNameText.setStyle(m_Style);
 	m_RealmNameText.setPosition(sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.1f));
 
 	m_CharacterAgeText.setFont(m_Font);
 	m_CharacterAgeText.setCharacterSize(m_CharacterSize);
-	m_CharacterAgeText.setStyle(m_Style);
 	m_CharacterAgeText.setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.4f));
 
 	m_ArmyText.setFont(m_Font);
 	m_ArmyText.setCharacterSize(m_CharacterSize);
-	m_ArmyText.setStyle(m_Style);
 	m_ArmyText.setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.2f));
 
 	m_GoldText.setFont(m_Font);
 	m_GoldText.setCharacterSize(m_CharacterSize);
-	m_GoldText.setStyle(m_Style);
 	m_GoldText.setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.3f));
+
+	m_ArmySprite.setTexture(m_ArmyTexture);
+	m_ArmySprite.setPosition(m_ArmyPosition);
+	m_ArmySprite.setScale(m_SpriteSize / m_ArmySprite.getLocalBounds().width, m_SpriteSize / m_ArmySprite.getLocalBounds().height);
+
+	m_DeadSprite.setTexture(m_DeadTexture);
+	m_DeadSprite.setPosition(m_DeadPosition);
+	m_DeadSprite.setScale(m_SpriteSize / m_DeadSprite.getLocalBounds().width, m_SpriteSize / m_DeadSprite.getLocalBounds().height);
+
+	m_GoldSprite.setTexture(m_GoldTexture);
+	m_GoldSprite.setPosition(m_GoldPosition);
+	m_GoldSprite.setScale(m_SpriteSize / m_GoldSprite.getLocalBounds().width, m_SpriteSize / m_GoldSprite.getLocalBounds().height);
+
+	m_AgeSprite.setTexture(m_AgeTexture);
+	m_AgeSprite.setPosition(m_AgePosition);
+	m_AgeSprite.setScale(m_SpriteSize / m_AgeSprite.getLocalBounds().width, m_SpriteSize / m_AgeSprite.getLocalBounds().height);
+
+	m_MarriedSprite.setTexture(m_MarriedTexture);
+	m_MarriedSprite.setPosition(m_MarriedPosition);
+	m_MarriedSprite.setScale(m_SpriteSize / m_MarriedSprite.getLocalBounds().width, m_SpriteSize / m_MarriedSprite.getLocalBounds().height);
+
+	m_FatherSprite.setTexture(m_FatherTexture);
+	m_FatherSprite.setPosition(m_FatherPosition);
+	m_FatherSprite.setScale(m_SpriteSize / m_FatherSprite.getLocalBounds().width, m_SpriteSize / m_FatherSprite.getLocalBounds().height);
+
+	m_MotherSprite.setTexture(m_MotherTexture);
+	m_MotherSprite.setPosition(m_MotherPosition);
+	m_MotherSprite.setScale(m_SpriteSize / m_MotherSprite.getLocalBounds().width, m_SpriteSize / m_MotherSprite.getLocalBounds().height);
+
+	m_PregnantSprite.setTexture(m_PregnantTexture);
+	m_PregnantSprite.setPosition(m_PregnantPosition);
+	m_PregnantSprite.setScale(m_SpriteSize / m_PregnantSprite.getLocalBounds().width, m_SpriteSize / m_PregnantSprite.getLocalBounds().height);
 
 	clearInfo();
 }
@@ -177,82 +205,87 @@ void CharacterWindow::render()
 	{
 		m_Window->draw(m_WindowShape);
 		m_Window->draw(m_RealmNameText);
+
 		if (m_Dead)
 		{
-			updateSprite(m_DeadSprite, m_DeadTexture, m_DeadPosition, m_SpriteSize);
+			m_Window->draw(m_DeadSprite);
 		}
-		updateSprite(m_GoldSprite, m_GoldTexture, m_GoldPosition, m_SpriteSize);
+
+		m_Window->draw(m_GoldSprite);
 		m_Window->draw(m_GoldText);
 		m_Window->draw(m_CharacterNameText);
-		updateSprite(m_ArmySprite, m_ArmyTexture, m_ArmyPosition, m_SpriteSize);
+		m_Window->draw(m_ArmySprite);
 		m_Window->draw(m_ArmyText);
-		updateSprite(m_AgeSprite, m_AgeTexture, m_AgePosition, m_SpriteSize);
+		m_Window->draw(m_AgeSprite);
 		m_Window->draw(m_CharacterAgeText);
-		if (m_Gender == Gender::Male)
+
+		m_Window->draw(m_CharacterSprite);
+
+		if (m_Pregnant)
 		{
-			updateSprite(m_CharacterSprite, m_MaleCharacterTexture, m_CharacterPosition, m_SpriteSize * 2);
+			m_Window->draw(m_PregnantSprite);
 		}
-		else
-		{
-			updateSprite(m_CharacterSprite, m_FemaleCharacterTexture, m_CharacterPosition, m_SpriteSize * 2);
-			if (m_Pregnant)
-			{
-				updateSprite(m_Pregnantprite, m_PregnantTexture, m_PregnantPosition, m_SpriteSize);
-			}
-		}
+
 		if (m_SpouseID != INVALID_CHARACTER_ID)
 		{
-			updateSprite(m_MarriedSprite, m_MarriedTexture, m_MarriedPosition, m_SpriteSize);
+			m_Window->draw(m_MarriedSprite);
 			if (m_ShowSpouseName)
 			{
 				m_Window->draw(m_SpouseName);
 			}
 		}
+
 		m_Window->draw(m_FatherShape);
 		if (m_FatherID != INVALID_CHARACTER_ID)
 		{
-			updateSprite(m_FatherSprite, m_FatherTexture, m_FatherPosition, m_SpriteSize);
+			m_Window->draw(m_FatherSprite);
 			if (m_ShowFatherName)
 			{
 				m_Window->draw(m_FatherName);
 			}
 		}
+
 		m_Window->draw(m_MotherShape);
 		if (m_MotherID != INVALID_CHARACTER_ID)
 		{
-			updateSprite(m_MotherSprite, m_MotherTexture, m_MotherPosition, m_SpriteSize);
+			m_Window->draw(m_MotherSprite);
 			if (m_ShowMotherName)
 			{
 				m_Window->draw(m_MotherName);
 			}
 		}
+
 		for (unsigned int index = 0; index < m_ChildrenShapes.size(); index++)
 		{
 			m_Window->draw(m_ChildrenShapes[index]);
-			updateSprite(m_ChildrenSprites[index], m_ChildrenTextures[index], m_ChildrenShapes[index].getPosition(), m_SpriteSize);
+			m_Window->draw(m_ChildrenSprites[index]);
 			if (m_ShowChildrenNames.size() > 0 && m_ShowChildrenNames[index])
 			{
 				m_Window->draw(m_ChildrenNames[index]);
 			}
 		}
+
 		for (unsigned int index = 0; index < m_AlliesShapes.size(); index++)
 		{
 			m_Window->draw(m_AlliesShapes[index]);
-			updateSprite(m_AlliesSprites[index], m_AlliesTextures[index], m_AlliesShapes[index].getPosition(), m_SpriteSize);
+			m_Window->draw(m_AlliesSprites[index]);
 		}
+
 		for (unsigned int index = 0; index < m_WarShapes.size(); index++)
 		{
 			m_Window->draw(m_WarShapes[index]);
-			updateSprite(m_WarSprites[index], m_WarTextures[index], m_WarShapes[index].getPosition(), m_SpriteSize);
+			m_Window->draw(m_WarSprites[index]);
 		}
+
 		for (unsigned int index = 0; index < m_TraitsSprites.size(); index++)
 		{
-			updateSprite(m_TraitsSprites[index], m_TraitsTextures[index], m_TraitsInfo[index].getPosition() - sf::Vector2f(0.0f, m_SpriteSize), m_SpriteSize);
-			if (m_TraitsShowInfo[index])
+			m_Window->draw(m_TraitsSprites[index]);
+			if (m_TraitsShowInfo.size() > 0 && m_TraitsShowInfo[index])
 			{
 				m_Window->draw(m_TraitsInfo[index]);
 			}
 		}
+
 		if (!m_IsPlayerCharacter && m_CurrentCharacter->m_CharacterTitle != Title::Unlanded)
 		{
 			for (unsigned int index = 0; index < m_NumberOfButtons; index++)
@@ -260,6 +293,12 @@ void CharacterWindow::render()
 				m_Window->draw(m_ButtonShapes[index]);
 				m_Window->draw(m_ButtonTexts[index]);
 			}
+		}
+
+		for (unsigned int index = 0; index < m_OwnedRegionsTexts.size(); index++)
+		{
+			HeraldicShieldManager::renderShield(*m_OwnedRegionsShields[index], m_OwnedRegionsTexts[index].getPosition());
+			m_Window->draw(m_OwnedRegionsTexts[index]);
 		}
 	}
 }
@@ -272,10 +311,11 @@ void CharacterWindow::clickOnMap()
 		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			Vector2DInt mouseMapPosition = InputHandler::getMouseMapPosition();
-			if (Map::get().mapSquareDataContainsKey(mouseMapPosition))
+			Map& map = Map::get();
+			if (map.mapSquareDataContainsKey(mouseMapPosition))
 			{
 				size_t regionID = 0;
-				for (auto& squareData : Map::get().m_MapSquareData)
+				for (auto& squareData : map.m_MapSquareData)
 				{
 					if (squareData.m_Position == mouseMapPosition)
 					{
@@ -283,7 +323,7 @@ void CharacterWindow::clickOnMap()
 					}
 				}
 				m_CurrentRegionID = regionID;
-				m_CurrentCharacterID = Map::get().getRegionById(m_CurrentRegionID).m_OwnerID;
+				m_CurrentCharacterID = map.getRegionById(m_CurrentRegionID).m_OwnerID;
 				checkIfPlayerCharacter();
 				updateInfo();
 				m_Open = true;
@@ -318,23 +358,22 @@ void CharacterWindow::onDayChange()
 
 void CharacterWindow::clearInfo()
 {
+	m_OwnedRegionsTexts.clear();
+	m_OwnedRegionsShields.clear();
+
 	m_TraitsSprites.clear();
-	m_TraitsTextures.clear();
 	m_TraitsInfo.clear();
 
 	m_ChildrenShapes.clear();
 	m_ChildrenSprites.clear();
-	m_ChildrenTextures.clear();
 	m_ChildrenNames.clear();
 
 	m_AlliesShapes.clear();
 	m_AlliesSprites.clear();
-	m_AlliesTextures.clear();
 	m_AlliesPositions.clear();
 
 	m_WarShapes.clear();
 	m_WarSprites.clear();
-	m_WarTextures.clear();
 	m_WarPositions.clear();
 	m_WarDefenders.clear();
 	m_WarAttackers.clear();
@@ -370,178 +409,194 @@ void CharacterWindow::updateParents()
 void CharacterWindow::updateTraits()
 {
 	std::stringstream stream;
-
+	
+	sf::Sprite genderSprite;
 	if (m_Gender == Gender::Male)
 	{
-		stream << "Male";
-		m_TraitsTextures.push_back(m_MaleGenderTexture);
+		stream << m_Male;
+		genderSprite.setTexture(m_MaleGenderTexture);
 	}
 	else
 	{
-		stream << "Female";
-		m_TraitsTextures.push_back(m_FemaleGenderTexture);
+		stream << m_Female;
+		genderSprite.setTexture(m_FemaleGenderTexture);
 	}
 	sf::Text genderInfo(stream.str(), m_Font, m_CharacterSize);
 	genderInfo.setFillColor(m_OwnerColor);
 	genderInfo.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
+	genderSprite.setPosition(genderInfo.getPosition() - sf::Vector2f(0.0f, m_SpriteSize));
+	genderSprite.setScale(m_SpriteSize / genderSprite.getLocalBounds().width, m_SpriteSize / genderSprite.getLocalBounds().height);
 	m_TraitsInfo.push_back(genderInfo);
-	m_TraitsShowInfo.push_back(false);
-	m_TraitsSprites.push_back(sf::Sprite());
+	m_TraitsSprites.push_back(genderSprite);
 	stream.str(std::string());
 	stream.clear();
 
-	stream << "Fertility: " << std::fixed << std::setprecision(1) << m_CurrentCharacter->m_Fertility;
+	stream << m_Fertility << std::fixed << std::setprecision(1) << m_CurrentCharacter->m_Fertility;
 	sf::Text fertilityInfo(stream.str(), m_Font, m_CharacterSize);
 	fertilityInfo.setFillColor(m_OwnerColor);
 	fertilityInfo.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
+	sf::Sprite fertilitySprite(m_FertilityTexture);
+	fertilitySprite.setPosition(fertilityInfo.getPosition() - sf::Vector2f(0.0f, m_SpriteSize));
+	fertilitySprite.setScale(m_SpriteSize / fertilitySprite.getLocalBounds().width, m_SpriteSize / fertilitySprite.getLocalBounds().height);
 	m_TraitsInfo.push_back(fertilityInfo);
-	m_TraitsShowInfo.push_back(false);
-	m_TraitsSprites.push_back(sf::Sprite());
-	m_TraitsTextures.push_back(m_FertilityTexture);
+	m_TraitsSprites.push_back(fertilitySprite);
 	stream.str(std::string());
 	stream.clear();
 
+	CharacterManager& characterManager = *CharacterManager::get();
+
 	if (m_CurrentCharacter->m_Spouse != INVALID_CHARACTER_ID)
 	{
-		sf::Sprite sprite;
-		Character& spouse = CharacterManager::get()->getCharacter(m_CurrentCharacter->m_Spouse);
-		stream << "Spouse: " << spouse.m_Name;
-		sf::Text text(stream.str(), m_Font, m_CharacterSize);
-		text.setFillColor(spouse.m_RegionColor);
-		text.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
-		m_TraitsSprites.push_back(sprite);
-		m_TraitsTextures.push_back(m_MarriedTexture);
-		m_TraitsInfo.push_back(text);
-		m_TraitsShowInfo.push_back(false);
+		Character& spouse = characterManager.getCharacter(m_CurrentCharacter->m_Spouse);
+		stream << m_Spouse << spouse.m_Name;
+		sf::Text marriedInfo(stream.str(), m_Font, m_CharacterSize);
+		marriedInfo.setFillColor(spouse.m_RegionColor);
+		marriedInfo.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
+		sf::Sprite marriedSprite(m_MarriedTexture);
+		marriedSprite.setPosition(marriedInfo.getPosition() - sf::Vector2f(0.0f, m_SpriteSize));
+		marriedSprite.setScale(m_SpriteSize / marriedSprite.getLocalBounds().width, m_SpriteSize / marriedSprite.getLocalBounds().height);
+		m_TraitsSprites.push_back(marriedSprite);
+		m_TraitsInfo.push_back(marriedInfo);
 	}
 
-	if (CharacterManager::get()->hasTrait(m_CurrentCharacterID, CharacterManager::get()->getTrait(m_PregnantTrait)))
+	if (characterManager.hasTrait(m_CurrentCharacterID, characterManager.getTrait(m_PregnantTrait)))
 	{
-		sf::Sprite sprite;
-		sf::Text text(m_PregnantTrait, m_Font, m_CharacterSize);
-		text.setFillColor(m_OwnerColor);
-		text.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
-		m_TraitsSprites.push_back(sprite);
-		m_TraitsTextures.push_back(m_PregnantTexture);
-		m_TraitsInfo.push_back(text);
-		m_TraitsShowInfo.push_back(false);
+		sf::Text pregnantInfo(m_PregnantTrait, m_Font, m_CharacterSize);
+		pregnantInfo.setFillColor(m_OwnerColor);
+		pregnantInfo.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
+		sf::Sprite pregnantSprite(m_PregnantTexture);
+		pregnantSprite.setPosition(pregnantInfo.getPosition() - sf::Vector2f(0.0f, m_SpriteSize));
+		pregnantSprite.setScale(m_SpriteSize / pregnantSprite.getLocalBounds().width, m_SpriteSize / pregnantSprite.getLocalBounds().height);
+		m_TraitsSprites.push_back(pregnantSprite);
+		m_TraitsInfo.push_back(pregnantInfo);
 	}
 
-	if (CharacterManager::get()->hasTrait(m_CurrentCharacterID, CharacterManager::get()->getTrait(m_BeautifulTrait)))
+	if (characterManager.hasTrait(m_CurrentCharacterID, characterManager.getTrait(m_BeautifulTrait)))
 	{
-		sf::Sprite sprite;
-		sf::Text text(m_BeautifulTrait, m_Font, m_CharacterSize);
-		text.setFillColor(m_OwnerColor);
-		text.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
-		m_TraitsSprites.push_back(sprite);
-		m_TraitsTextures.push_back(m_BeautifulTexture);
-		m_TraitsInfo.push_back(text);
-		m_TraitsShowInfo.push_back(false);
+		sf::Text beautifulInfo(m_BeautifulTrait, m_Font, m_CharacterSize);
+		beautifulInfo.setFillColor(m_OwnerColor);
+		beautifulInfo.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
+		sf::Sprite beautifulSprite(m_BeautifulTexture);
+		beautifulSprite.setPosition(beautifulInfo.getPosition() - sf::Vector2f(0.0f, m_SpriteSize));
+		beautifulSprite.setScale(m_SpriteSize / beautifulSprite.getLocalBounds().width, m_SpriteSize / beautifulSprite.getLocalBounds().height);
+		m_TraitsSprites.push_back(beautifulSprite);
+		m_TraitsInfo.push_back(beautifulInfo);
 	}
 
-	if (CharacterManager::get()->hasTrait(m_CurrentCharacterID, CharacterManager::get()->getTrait(m_UglyTrait)))
+	if (characterManager.hasTrait(m_CurrentCharacterID, characterManager.getTrait(m_UglyTrait)))
 	{
-		sf::Sprite sprite;
-		sf::Text text(m_UglyTrait, m_Font, m_CharacterSize);
-		text.setFillColor(m_OwnerColor);
-		text.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
-		m_TraitsSprites.push_back(sprite);
-		m_TraitsTextures.push_back(m_UglyTexture);
-		m_TraitsInfo.push_back(text);
-		m_TraitsShowInfo.push_back(false);
+		sf::Text uglyInfo(m_UglyTrait, m_Font, m_CharacterSize);
+		uglyInfo.setFillColor(m_OwnerColor);
+		uglyInfo.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
+		sf::Sprite uglySprite(m_BeautifulTexture);
+		uglySprite.setPosition(uglyInfo.getPosition() - sf::Vector2f(0.0f, m_SpriteSize));
+		uglySprite.setScale(m_SpriteSize / uglySprite.getLocalBounds().width, m_SpriteSize / uglySprite.getLocalBounds().height);
+		m_TraitsSprites.push_back(uglySprite);
+		m_TraitsInfo.push_back(uglyInfo);
 	}
 
-	if (CharacterManager::get()->hasTrait(m_CurrentCharacterID, CharacterManager::get()->getTrait(m_SterileTrait)))
+	if (characterManager.hasTrait(m_CurrentCharacterID, characterManager.getTrait(m_SterileTrait)))
 	{
-		sf::Sprite sprite;
-		sf::Text text(m_SterileTrait, m_Font, m_CharacterSize);
-		text.setFillColor(m_OwnerColor);
-		text.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
-		m_TraitsSprites.push_back(sprite);
-		m_TraitsTextures.push_back(m_SterileTexture);
-		m_TraitsInfo.push_back(text);
-		m_TraitsShowInfo.push_back(false);
+		sf::Text sterileInfo(m_SterileTrait, m_Font, m_CharacterSize);
+		sterileInfo.setFillColor(m_OwnerColor);
+		sterileInfo.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
+		sf::Sprite sterileSprite(m_SterileTexture);
+		sterileSprite.setPosition(sterileInfo.getPosition() - sf::Vector2f(0.0f, m_SpriteSize));
+		sterileSprite.setScale(m_SpriteSize / sterileSprite.getLocalBounds().width, m_SpriteSize / sterileSprite.getLocalBounds().height);
+		m_TraitsSprites.push_back(sterileSprite);
+		m_TraitsInfo.push_back(sterileInfo);
 	}
 }
 
 void CharacterWindow::updateChildren()
 {
-	for (unsigned int index = 0; index < m_CurrentCharacter->m_Children.size(); index++)
+	CharacterManager& characterManager = *CharacterManager::get();
+	unsigned int sizeChildren = m_CurrentCharacter->m_Children.size();
+	for (unsigned int index = 0; index < sizeChildren; index++)
 	{
-		Character& child = CharacterManager::get()->getCharacter(m_CurrentCharacter->m_Children[index]);
-		m_ChildrenShapes.push_back(sf::RectangleShape());
-		m_ChildrenSprites.push_back(sf::Sprite());
-		m_ChildrenNames.push_back(sf::Text());
-		if (child.m_Gender == Gender::Male)
-		{
-			m_ChildrenTextures.push_back(m_MaleChildTexture);
-		}
-		else
-		{
-			m_ChildrenTextures.push_back(m_FemaleChildTexture);
-		}
-		m_ChildrenShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
-		m_ChildrenShapes[index].setSize(sf::Vector2f(m_SpriteSize, m_SpriteSize));
-		m_ChildrenShapes[index].setPosition(sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.05f * (index)+m_SizeY * 0.55f));
-
-		m_ChildrenNames[index].setString(child.m_Name);
-		m_ChildrenNames[index].setFont(m_Font);
-		m_ChildrenNames[index].setCharacterSize(m_CharacterSize);
-		m_ChildrenNames[index].setStyle(m_Style);
-		m_ChildrenNames[index].setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f * (index)+m_SizeY * 0.55f));
+		Character& child = characterManager.getCharacter(m_CurrentCharacter->m_Children[index]);
+		sf::RectangleShape childShape(sf::Vector2f(m_SpriteSize, m_SpriteSize));
+		childShape.setOutlineThickness(m_OutlineThickness * 0.5f);
+		childShape.setFillColor(sf::Color::Transparent);
+		childShape.setPosition(sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.05f * (index)+m_SizeY * 0.55f));
+		sf::Text childNameText(child.m_Name, m_Font, m_CharacterSize);
+		childNameText.setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f * (index)+m_SizeY * 0.55f));
 		if (child.m_CharacterTitle != Title::Unlanded)
 		{
-			m_ChildrenShapes[index].setOutlineColor(child.m_RegionColor);
-			m_ChildrenNames[index].setFillColor(child.m_RegionColor);
+			childShape.setOutlineColor(child.m_RegionColor);
+			childNameText.setFillColor(child.m_RegionColor);
 		}
 		else if (m_CurrentCharacter->m_CharacterID == child.m_Mother)
 		{
-			Character& fatherChild = CharacterManager::get()->getCharacter(child.m_Father);
-			m_ChildrenShapes[index].setOutlineColor(fatherChild.m_RegionColor);
-			m_ChildrenNames[index].setFillColor(fatherChild.m_RegionColor);
+			Character& fatherChild = characterManager.getCharacter(child.m_Father);
+			childShape.setOutlineColor(fatherChild.m_RegionColor);
+			childNameText.setFillColor(fatherChild.m_RegionColor);
 		}
 		else
 		{
-			Character& motherChild = CharacterManager::get()->getCharacter(child.m_Mother);
-			m_ChildrenShapes[index].setOutlineColor(motherChild.m_RegionColor);
-			m_ChildrenNames[index].setFillColor(motherChild.m_RegionColor);
+			Character& motherChild = characterManager.getCharacter(child.m_Mother);
+			childShape.setOutlineColor(motherChild.m_RegionColor);
+			childNameText.setFillColor(motherChild.m_RegionColor);
 		}
+		sf::Sprite childSprite;
+		childSprite.setPosition(childShape.getPosition());
+		childSprite.setScale(m_SpriteSize / childSprite.getLocalBounds().width, m_SpriteSize / childSprite.getLocalBounds().height);
+		if (child.m_Gender == Gender::Male)
+		{
+			childSprite.setTexture(m_MaleChildTexture);
+		}
+		else
+		{
+			childSprite.setTexture(m_MaleChildTexture);
+		}
+		m_ChildrenShapes.push_back(childShape);
+		m_ChildrenSprites.push_back(childSprite);
+		m_ChildrenNames.push_back(childNameText);
 	}
 }
 
 void CharacterWindow::updateAllies()
 {
-	for (unsigned int index = 0; index < WarManager::get().getAlliances(m_CurrentCharacterID).size(); index++)
+	CharacterManager& characterManager = *CharacterManager::get();
+	m_AlliesIDs = WarManager::get().getAlliances(m_CurrentCharacterID);
+	unsigned int sizeAlliances = m_AlliesIDs.size();
+	for (unsigned int index = 0; index < sizeAlliances; index++)
 	{
-		Character& ally = CharacterManager::get()->getCharacter(WarManager::get().getAlliances(m_CurrentCharacterID)[index]);
-		m_AlliesShapes.push_back(sf::RectangleShape());
-		m_AlliesSprites.push_back(sf::Sprite());
+		Character& ally = characterManager.getCharacter(m_AlliesIDs[index]);
+		sf::RectangleShape allyShape(sf::Vector2f(m_SpriteSize, m_SpriteSize));
+		allyShape.setOutlineColor(ally.m_RegionColor);
+		allyShape.setOutlineThickness(m_OutlineThickness * 0.5f);
+		allyShape.setFillColor(sf::Color::Transparent);
+		allyShape.setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f * (index) + m_SizeY * 0.55f));
+		sf::Sprite allySprite;
+		allySprite.setPosition(allyShape.getPosition());
+		allySprite.setScale(m_SpriteSize / allySprite.getLocalBounds().width, m_SpriteSize / allySprite.getLocalBounds().height);
 		if (ally.m_Gender == Gender::Male)
 		{
-			m_AlliesTextures.push_back(m_MaleCharacterTexture);
+			allySprite.setTexture(m_MaleCharacterTexture);
 		}
 		else
 		{
-			m_AlliesTextures.push_back(m_FemaleCharacterTexture);
+			allySprite.setTexture(m_FemaleCharacterTexture);
 		}
-		m_AlliesShapes[index].setOutlineColor(ally.m_RegionColor);
-		m_AlliesShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
-		m_AlliesShapes[index].setSize(sf::Vector2f(m_SpriteSize, m_SpriteSize));
-		m_AlliesShapes[index].setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f * (index)+m_SizeY * 0.55f));
+		m_AlliesShapes.push_back(allyShape);
+		m_AlliesSprites.push_back(allySprite);
 	}
 }
 
 void CharacterWindow::updateWars()
 {
-	for (unsigned int index = 0; index < m_CurrentCharacter->m_CurrentWars.size(); index++)
+	CharacterManager& characterManager = *CharacterManager::get();
+	WarManager& warManager = WarManager::get();
+	War* war = nullptr;
+	unsigned int sizeWars = m_CurrentCharacter->m_CurrentWars.size();
+	for (unsigned int index = 0; index < sizeWars; index++)
 	{
-		War* war = WarManager::get().getWar(m_CurrentCharacter->m_CurrentWars[index]);
+		war = warManager.getWar(m_CurrentCharacter->m_CurrentWars[index]);
 		if (war != nullptr)
 		{
 			CharacterID defenderID = war->getDefender();
 			CharacterID attackerID = war->getAttacker();
-			m_WarDefenders.push_back(defenderID);
-			m_WarAttackers.push_back(attackerID);
 			CharacterID opponentID;
 			if (war->isAttacker(m_CurrentCharacterID))
 			{
@@ -551,21 +606,27 @@ void CharacterWindow::updateWars()
 			{
 				opponentID = attackerID;
 			}
-			Character& opponent = CharacterManager::get()->getCharacter(opponentID);
-			m_WarShapes.push_back(sf::RectangleShape());
-			m_WarSprites.push_back(sf::Sprite());
+			Character& opponent = characterManager.getCharacter(opponentID);
+			sf::RectangleShape warShape(sf::Vector2f(m_SpriteSize, m_SpriteSize));
+			warShape.setOutlineColor(opponent.m_RegionColor);
+			warShape.setOutlineThickness(m_OutlineThickness * 0.5f);
+			warShape.setFillColor(sf::Color::Transparent);
+			warShape.setPosition(sf::Vector2f(m_SizeX * 0.3f, m_SizeY * 0.05f * (index) + m_SizeY * 0.55f));
+			sf::Sprite opponetSprite;
+			opponetSprite.setPosition(warShape.getPosition());
+			opponetSprite.setScale(m_SpriteSize / opponetSprite.getLocalBounds().width, m_SpriteSize / opponetSprite.getLocalBounds().height);
 			if (opponent.m_Gender == Gender::Male)
 			{
-				m_WarTextures.push_back(m_MaleCharacterTexture);
+				opponetSprite.setTexture(m_MaleCharacterTexture);
 			}
 			else
 			{
-				m_WarTextures.push_back(m_FemaleCharacterTexture);
+				opponetSprite.setTexture(m_FemaleCharacterTexture);
 			}
-			m_WarShapes[index].setOutlineColor(opponent.m_RegionColor);
-			m_WarShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
-			m_WarShapes[index].setSize(sf::Vector2f(m_SpriteSize, m_SpriteSize));
-			m_WarShapes[index].setPosition(sf::Vector2f(m_SizeX * 0.3f, m_SizeY * 0.05f * (index)+m_SizeY * 0.55f));
+			m_WarShapes.push_back(warShape);
+			m_WarSprites.push_back(opponetSprite);
+			m_WarDefenders.push_back(defenderID);
+			m_WarAttackers.push_back(attackerID);
 		}
 	}
 }
@@ -574,11 +635,24 @@ void CharacterWindow::updateInfo()
 {
 	if (m_CurrentCharacterID != INVALID_CHARACTER_ID)
 	{
-		m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
-		m_CurrentCharacter = &CharacterManager::get()->getCharacter(m_CurrentCharacterID);
+		CharacterManager& characterManager = *CharacterManager::get();
+		m_PlayerCharacter = &characterManager.getPlayerCharacter();
+		m_CurrentCharacter = &characterManager.getCharacter(m_CurrentCharacterID);
 		m_FatherID = m_CurrentCharacter->m_Father;
 		m_MotherID = m_CurrentCharacter->m_Mother;
 		m_Dead = m_CurrentCharacter->m_Dead;
+		m_Gender = m_CurrentCharacter->m_Gender;
+
+		Map& map = Map::get();
+		for (unsigned int index = 0; index < m_CurrentCharacter->m_OwnedRegionIDs.size(); index++)
+		{
+			MapRegion& mapRegion = map.getRegionById(m_CurrentCharacter->m_OwnedRegionIDs[index]);
+			sf::Text regionNameText(mapRegion.m_RegionName, m_Font, m_CharacterSize);
+			regionNameText.setPosition(sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.5f + index * m_SpriteSize));
+			regionNameText.setFillColor(m_OwnerColor);
+			m_OwnedRegionsTexts.push_back(regionNameText);
+			m_OwnedRegionsShields.push_back(&mapRegion.m_HeraldicShield);
+		}
 
 		if (m_CurrentCharacter->m_CharacterTitle != Title::Unlanded)
 		{
@@ -588,7 +662,7 @@ void CharacterWindow::updateInfo()
 		}
 		else if (m_FatherID != INVALID_CHARACTER_ID)
 		{
-			Character& father = CharacterManager::get()->getCharacter(m_FatherID);
+			Character& father = characterManager.getCharacter(m_FatherID);
 			m_OwnerColor = father.m_RegionColor;
 			m_RealmNameText.setString(father.m_KingdomName);
 			m_RealmNameText.setFillColor(m_OwnerColor);
@@ -599,7 +673,6 @@ void CharacterWindow::updateInfo()
 		}
 
 		m_WindowShape.setOutlineColor(m_OwnerColor);
-		m_Gender = m_CurrentCharacter->m_Gender;
 
 		clearInfo();
 		updateParents();
@@ -608,35 +681,42 @@ void CharacterWindow::updateInfo()
 		updateAllies();
 		updateWars();
 
-		if (m_Gender == Gender::Male)
+		std::stringstream stream;
+		if (m_CurrentCharacter->m_CharacterTitle != Title::Unlanded)
 		{
-			if (m_CurrentCharacter->m_CharacterTitle != Title::Unlanded)
+			if (m_Gender == Gender::Male)
 			{
-				m_CharacterNameText.setString(m_MaleTitles[(unsigned int)m_CurrentCharacter->m_CharacterTitle] + m_CurrentCharacter->m_Name);
+				stream << m_MaleTitles[(unsigned int)m_CurrentCharacter->m_CharacterTitle] << m_CurrentCharacter->m_Name;
+				m_CharacterSprite.setTexture(m_MaleCharacterTexture);
 			}
 			else
 			{
-				m_CharacterNameText.setString(m_CurrentCharacter->m_Name);
+				stream << m_FemaleTitles[(unsigned int)m_CurrentCharacter->m_CharacterTitle] << m_CurrentCharacter->m_Name;
+				m_CharacterSprite.setTexture(m_FemaleCharacterTexture);
 			}
 		}
 		else
 		{
-			if (m_CurrentCharacter->m_CharacterTitle != Title::Unlanded)
+			stream << m_CurrentCharacter->m_Name;
+			if (m_Gender == Gender::Male)
 			{
-				m_CharacterNameText.setString(m_FemaleTitles[(unsigned int)m_CurrentCharacter->m_CharacterTitle] + m_CurrentCharacter->m_Name);
+				m_CharacterSprite.setTexture(m_MaleCharacterTexture);
 			}
 			else
 			{
-				m_CharacterNameText.setString(m_CurrentCharacter->m_Name);
+				m_CharacterSprite.setTexture(m_FemaleCharacterTexture);
 			}
 		}
+		m_CharacterNameText.setString(stream.str());
 		m_CharacterNameText.setFillColor(m_OwnerColor);
+		stream.str(std::string());
+		stream.clear();
 
-		std::stringstream stream;
 		stream << m_CurrentCharacter->m_RaisedArmySize << m_Dash << m_CurrentCharacter->m_MaxArmySize;
 		m_ArmyText.setString(stream.str());
 		m_ArmyText.setFillColor(m_OwnerColor);
-
+		stream.str(std::string());
+		stream.clear();
 
 		stream << std::fixed << std::setprecision(1) << m_CurrentCharacter->m_CurrentGold;
 		m_GoldText.setString(stream.str());
@@ -644,8 +724,11 @@ void CharacterWindow::updateInfo()
 		stream.str(std::string());
 		stream.clear();
 
-		m_CharacterAgeText.setString(std::to_string(Time::m_GameDate.getAge(m_CurrentCharacter->m_Birthday)));
+		stream << Time::m_GameDate.getAge(m_CurrentCharacter->m_Birthday);
+		m_CharacterAgeText.setString(stream.str());
 		m_CharacterAgeText.setFillColor(m_OwnerColor);
+		stream.str(std::string());
+		stream.clear();
 	}
 }
 
@@ -768,11 +851,12 @@ void CharacterWindow::clickButton()
 			checkIfPlayerCharacter();
 			updateInfo();
 		}
+		CharacterManager& characterManager = *CharacterManager::get();
 		for (unsigned int index = 0; index < m_ChildrenShapes.size(); index++)
 		{
 			if (m_ChildrenShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				m_CurrentCharacterID = CharacterManager::get()->getCharacter(m_CurrentCharacterID).m_Children[index];
+				m_CurrentCharacterID = characterManager.getCharacter(m_CurrentCharacterID).m_Children[index];
 				checkIfPlayerCharacter();
 				updateInfo();
 				break;
@@ -782,17 +866,18 @@ void CharacterWindow::clickButton()
 		{
 			if (m_AlliesShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				m_CurrentCharacterID = WarManager::get().getAlliances(m_CurrentCharacterID)[index];
+				m_CurrentCharacterID = m_AlliesIDs[index];
 				checkIfPlayerCharacter();
 				updateInfo();
 				break;
 			}
 		}
+		WarManager& warManager = WarManager::get();
 		for (unsigned int index = 0; index < m_WarShapes.size(); index++)
 		{
 			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				m_CurrentCharacterID = WarManager::get().getWar(m_CurrentCharacter->m_CurrentWars[index])->getOpposingForce(m_CurrentCharacterID);
+				m_CurrentCharacterID = warManager.getWar(m_CurrentCharacter->m_CurrentWars[index])->getOpposingForce(m_CurrentCharacterID);
 				checkIfPlayerCharacter();
 				updateInfo();
 				break;
@@ -840,13 +925,14 @@ void CharacterWindow::clickButton()
 				}
 			}
 		}
+		UIManager& uiManager = *UIManager::get();
 		for (unsigned int index = 0; index < m_WarShapes.size(); index++)
 		{
 			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				closeWindow();
 				InputHandler::setCharacterWindowOpen(false);
-				UIManager::get()->m_WarWindow->openWindow(m_WarAttackers[index], m_WarDefenders[index], Time::m_GameDate.m_Date);
+				uiManager.m_WarWindow->openWindow(m_WarAttackers[index], m_WarDefenders[index], Time::m_GameDate.m_Date);
 				break;
 			}
 		}
@@ -855,28 +941,32 @@ void CharacterWindow::clickButton()
 
 void CharacterWindow::declareWar()
 {
+	UIManager& uiManager = *UIManager::get();
 	for (CharacterID& allyID : WarManager::get().getAlliances(m_PlayerCharacter->m_CharacterID))
 	{
 		if (allyID == m_CurrentCharacterID)
 		{
-			UIManager::get()->createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::TriedToDeclareWarOnAlly);
+			uiManager.createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::TriedToDeclareWarOnAlly);
 			return;
 		}
 	}
-	War* war = WarManager::get().getWarAgainst(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
+	WarManager& warManager = WarManager::get();
+	War* war = warManager.getWarAgainst(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 	if (war == nullptr)
 	{
 		int warHandle = WarManager::get().createWar(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, m_CurrentRegionID);
 
 		m_PlayerCharacter->m_CurrentWars.push_back(warHandle);
 		m_CurrentCharacter->m_CurrentWars.push_back(warHandle);
-		AIManager::get().getWarmindOfCharacter(m_CurrentCharacterID).m_Active = true;
-		AIManager::get().getWarmindOfCharacter(m_CurrentCharacterID).m_Opponent = m_PlayerCharacter->m_CharacterID;
-		AIManager::get().getAIDataofCharacter(m_CurrentCharacterID).m_CurrentAction = Action::War;
-		AIManager::get().getAIDataofCharacter(m_CurrentCharacterID).m_LastAction = Action::War;
 
-		UIManager::get()->createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::WarDeclaration);
-		UIManager::get()->createWarIcon(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
+		AIManager& aiManager = AIManager::get();
+		aiManager.getWarmindOfCharacter(m_CurrentCharacterID).m_Active = true;
+		aiManager.getWarmindOfCharacter(m_CurrentCharacterID).m_Opponent = m_PlayerCharacter->m_CharacterID;
+		aiManager.getAIDataofCharacter(m_CurrentCharacterID).m_CurrentAction = Action::War;
+		aiManager.getAIDataofCharacter(m_CurrentCharacterID).m_LastAction = Action::War;
+
+		uiManager.createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::WarDeclaration);
+		uiManager.createWarIcon(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 
 		CharacterManager::get()->callAllies(m_PlayerCharacter->m_CharacterID, warHandle);
 
@@ -914,9 +1004,10 @@ void CharacterWindow::proposeAlliance()
 
 void CharacterWindow::assassinate()
 {
-	if (CharacterManager::get()->chancePerPercent(0.5f))
+	CharacterManager& characterManager = *CharacterManager::get();
+	if (characterManager.chancePerPercent(0.5f))
 	{
-		CharacterManager::get()->killCharacter(m_CurrentCharacterID);
+		characterManager.killCharacter(m_CurrentCharacterID);
 		UIManager::get()->createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationSuccess);
 	}
 	else
@@ -928,16 +1019,4 @@ void CharacterWindow::assassinate()
 bool CharacterWindow::checkIfPlayerCharacter()
 {
 	return m_IsPlayerCharacter = m_CurrentCharacterID == m_PlayerCharacter->m_CharacterID;
-}
-
-void CharacterWindow::updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize)
-{
-	sprite.setTexture(texture, true);
-	sprite.setPosition(position);
-
-	sf::FloatRect localSize = sprite.getLocalBounds();
-
-	sprite.setScale(spriteSize / localSize.width, spriteSize / localSize.height);
-
-	m_Window->draw(sprite);
 }

@@ -29,10 +29,6 @@ public:
 	sf::Text m_CurrentMaxArmyText;
 	sf::Font m_Font;
 	int m_CharacterSize = 30;
-#pragma warning(push)
-#pragma warning(disable: 26812)
-	sf::Text::Style m_Style = sf::Text::Regular;
-#pragma warning(pop)
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	sf::RenderWindow* m_Window = nullptr;
 	const std::string m_PositiveSign = "+";

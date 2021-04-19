@@ -86,7 +86,6 @@ void UIText::adjustText()
 		m_PositionX = diagonal.x * 0.5f + leftMostPositionScreen.x - m_CharacterSize * m_CountryName.size() * 2 * 0.05f;
 		m_PositionY = -(int)m_CharacterSize + diagonal.y * 0.5f + leftMostPositionScreen.y - m_CharacterSize * m_CountryName.size() * offsetY;
 		m_CountryNameText.setFont(m_Font);
-		m_CountryNameText.setStyle(m_Style);
 		m_CountryNameText.setString(m_CountryName);
 		m_CountryNameText.setFillColor(m_FillColor);
 		m_CountryNameText.setOutlineColor(m_OutlineColor);

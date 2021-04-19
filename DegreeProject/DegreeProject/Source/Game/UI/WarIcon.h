@@ -9,8 +9,6 @@
 
 struct War;
 
-#pragma warning(push)
-#pragma warning(disable: 26812)
 class WarIcon
 {
 public:
@@ -34,7 +32,6 @@ private:
 	float m_SizeY = 64.0f;
 	float m_OutlineThickness = 5.0f;
 	int m_CharacterSize = 25;
-	sf::Text::Style m_Style = sf::Text::Regular;
 	sf::Color m_NegativeColor = sf::Color::Red;
 	sf::Color m_PositiveColor = sf::Color::Green;
 	const static unsigned int m_SpriteSize = 64;
@@ -59,4 +56,3 @@ private:
 	sf::Text m_WarscoreText;
 	sf::Vector2f m_WarscoreTextPosition;
 };
-#pragma warning(pop)

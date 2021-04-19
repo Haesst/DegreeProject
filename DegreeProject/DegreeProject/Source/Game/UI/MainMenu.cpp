@@ -25,7 +25,6 @@ MainMenu::MainMenu(UIID id, sf::Font font, Vector2D, Vector2D size)
 
 	m_MainMenuText.setFont(m_Font);
 	m_MainMenuText.setCharacterSize(m_CharacterSize);
-	m_MainMenuText.setStyle(m_Style);
 	m_MainMenuText.setString(m_MainMenuString);
 	m_MainMenuText.setPosition(sf::Vector2f(m_MainMenuPosition.x + m_SizeX * 0.25f, m_MainMenuPosition.y));
 
@@ -42,7 +41,6 @@ MainMenu::MainMenu(UIID id, sf::Font font, Vector2D, Vector2D size)
 		sf::Text buttonText;
 		buttonText.setFont(m_Font);
 		buttonText.setCharacterSize(m_CharacterSize);
-		buttonText.setStyle(m_Style);
 		buttonText.setString(m_ButtonStrings[index]);
 		buttonText.setPosition(buttonPosition);
 		m_ButtonTexts.push_back(buttonText);

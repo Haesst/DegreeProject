@@ -87,7 +87,6 @@ void DateBar::start()
 
 	m_DateText.setFont(m_Font);
 	m_DateText.setCharacterSize(m_CharacterSize);
-	m_DateText.setStyle(m_Style);
 	m_DateText.setFillColor(m_OwnerColor);
 	m_DateText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.475f, positionY + m_OutlineThickness * 0.5f));
 }

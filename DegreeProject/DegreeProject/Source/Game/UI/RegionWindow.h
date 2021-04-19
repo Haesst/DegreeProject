@@ -62,11 +62,6 @@ public:
 	float m_IconSlotPositionOffset = 0.0f;
 	float m_IconSlotPositionY = 0.0f;
 
-#pragma warning(push)
-#pragma warning(disable: 26812)
-	sf::Text::Style m_Style = sf::Text::Regular;
-#pragma warning(pop)
-
 	sf::RenderWindow* m_Window = nullptr;
 	Character* m_PlayerCharacter = nullptr;
 	MapRegion* m_CurrentMapRegion = nullptr;
