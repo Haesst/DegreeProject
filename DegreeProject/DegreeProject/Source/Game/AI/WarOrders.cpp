@@ -125,6 +125,11 @@ void WarOrders::orderAttackEnemyRegion(Unit& unit, Unit& enemyUnit)
 
 			if (dist < shortestDistance)
 			{
+				if (Map::get().getRegionById(ownedRegion).m_OccupiedBy != INVALID_CHARACTER_ID)
+				{
+					continue;
+				}
+
 				bestRegion = regionPos;
 				shortestDistance = dist;
 			}

@@ -154,6 +154,15 @@ void WarManager::update()
 			if (war.second.warGoalRegionTimerAccu >= war.second.warGoalRegionCapturedTimer)
 			{
 				war.second.addWarscore(war.second.getDefender(), 5);
+
+				if (war.second.m_DefenderOccupiedRegions.size() > war.second.m_AttackerOccupiedRegions.size())
+				{
+					for (auto ID : war.second.m_DefenderOccupiedRegions)
+					{
+						war.second.addWarscore(war.second.getDefender(), 1);
+					}
+				}
+
 				war.second.warGoalRegionTimerAccu = 0;
 			}
 		}
@@ -165,6 +174,15 @@ void WarManager::update()
 			if (war.second.warGoalRegionTimerAccu >= war.second.warGoalRegionCapturedTimer)
 			{
 				war.second.addWarscore(war.second.getAttacker(), 5);
+
+				if (war.second.m_AttackerOccupiedRegions.size() > war.second.m_DefenderOccupiedRegions.size())
+				{
+					for (auto ID : war.second.m_AttackerOccupiedRegions)
+					{
+						war.second.addWarscore(war.second.getAttacker(), 1);
+					}
+				}
+
 				war.second.warGoalRegionTimerAccu = 0;
 			}
 		}
