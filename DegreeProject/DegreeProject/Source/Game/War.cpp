@@ -43,7 +43,7 @@ int War::getWarscore(CharacterID ID)
 
 void War::addWarscore(CharacterID ID, int warScore)
 {
-	if (getAttacker() == ID)
+	if (isAttacker(ID))
 	{
 		m_AttackerWarscore += warScore;
 		m_DefenderWarscore -= warScore;
@@ -58,7 +58,7 @@ void War::addWarscore(CharacterID ID, int warScore)
 		}
 	}
 
-	else if (getDefender() == ID)
+	else if (isDefender(ID))
 	{
 		m_DefenderWarscore += warScore;
 		m_AttackerWarscore -= warScore;
