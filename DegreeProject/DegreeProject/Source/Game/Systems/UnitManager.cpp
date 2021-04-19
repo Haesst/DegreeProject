@@ -207,11 +207,6 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 		return;
 	}
 
-	//if (unitID == INVALID_UNIT_ID)
-	//{
-	//	return; // Todo: This is wrong. Find out how an invalid id gets sent in
-	//}
-
 	Unit& unit = getUnitWithId(unitID);
 
 	if (unit.m_RepresentedForce == 0)
@@ -220,6 +215,7 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 	}
 
 	unit.m_Position = Map::get().convertToScreen(location);
+	unit.m_LastPosition = unit.m_Position;
 	unit.m_Raised = true;
 	unit.m_Sprite.setColor(CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_RegionColor);
 
@@ -286,6 +282,7 @@ void UnitManager::giveUnitPath(UnitID unitID, std::vector<Vector2DInt> path)
 			unit.m_Moving = false;
 			unit.m_CurrentPath.clear();
 		}
+
 		return;
 	}
 
@@ -328,12 +325,12 @@ void UnitManager::moveUnit(Unit& unit)
 		return;
 	}
 
-	// showPath(transform, unit); <- debug. add functionality
-
 	if (!unit.m_Position.nearlyEqual(unit.m_Target, m_MoveTolerance))
 	{
 		unit.m_Position += unit.m_Direction * unit.m_Speed * Time::deltaTime();
+		int i = 40;
 	}
+
 	else
 	{
 		if (Map::get().mapSquareDataContainsKey(Map::convertToMap(unit.m_LastPosition)))

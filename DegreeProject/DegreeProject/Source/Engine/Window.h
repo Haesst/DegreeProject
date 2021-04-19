@@ -12,6 +12,11 @@ public:
 		m_Window = new sf::RenderWindow(videoMode, title, styleMode);
 	}
 
+	static bool isOpen()
+	{
+		return m_Window->isOpen();
+	}
+
 	static sf::RenderWindow* getWindow()
 	{
 		return m_Window;

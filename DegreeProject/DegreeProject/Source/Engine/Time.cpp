@@ -1,5 +1,6 @@
 #include "Time.h"
 #include "Game/GameDate.h"
+#include "Engine/Window.h"
 
 float Time::m_DeltaTime = 0.0f;
 float Time::m_CurrentSpeedMultiplier = 1.0f;
@@ -13,7 +14,7 @@ GameDate Time::m_GameDate;
 
 void Time::updateTime()
 {
-	m_DeltaTime = m_GamePaused ? 0 : m_DeltaClock.restart().asSeconds() * m_CurrentSpeedMultiplier;
+	m_DeltaTime = m_GamePaused || !Window::getWindow()->isOpen() ? 0 : m_DeltaClock.restart().asSeconds() * m_CurrentSpeedMultiplier;
 	m_GameDate.update();
 }
 

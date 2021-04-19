@@ -22,7 +22,7 @@ public:
 	static Pathfinding* m_Instance;
 	static Pathfinding& get();
 
-	bool usePerformantPath = false;
+	bool usePerformantPath = true;
 
 	void init();
 
