@@ -323,7 +323,7 @@ void UnitManager::displayProgressMeter(Unit& unit, float timeElapsed, float tota
 
 void UnitManager::moveUnit(Unit& unit)
 {
-	if (!unit.m_Moving)
+	if (!unit.m_Moving || unit.m_InCombat)
 	{
 		return;
 	}
@@ -583,7 +583,7 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 
 void UnitManager::unitSiege(Unit& unit)
 {
-	if (unit.m_SeizingRegionID <= 0)
+	if (unit.m_SeizingRegionID <= 0 || unit.m_InCombat)
 	{
 		return;
 	}
@@ -592,137 +592,125 @@ void UnitManager::unitSiege(Unit& unit)
 	{
 		MapRegion& region = Map::get().getRegionById(unit.m_SeizingRegionID);
 
-		if (!unit.m_InCombat || neutralUnitAtSquare(CharacterManager::get()->getCharacter(unit.m_Owner), region.m_RegionCapital))
+		unit.m_DaysSeizing++;
+		unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
+
+		War* war = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OwnerID);
+
+		bool skipWarCheck = region.m_OccupiedBy != INVALID_CHARACTER_ID && region.m_OwnerID == unit.m_Owner;
+
+		if (war == nullptr && !skipWarCheck)
 		{
-			unit.m_DaysSeizing++;
+			unit.m_DaysSeizing = 0;
 			unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
+			dismissUnit(unit.m_UnitID);
+			return;
+		}
 
-			if (Map::get().mapSquareDataContainsKey(region.m_RegionCapital))
+		int daysToSiegeRegion = region.m_DaysToSeize;
+
+		for (auto& slot : region.m_BuildingSlots)
+		{
+			if (slot.m_BuildingId == INVALID_BUILDING_ID)
 			{
-				if (neutralUnitAtSquare(CharacterManager::get()->getCharacter(unit.m_Owner), region.m_RegionCapital))
-				{
-					unit.m_SeizingRegionID = INVALID_REGION_ID;
-					unit.m_DaysSeizing = 0;
-					return;
-				}
+				continue;
 			}
-			War* war = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OwnerID);
 
-			bool skipWarCheck = region.m_OccupiedBy != INVALID_CHARACTER_ID && region.m_OwnerID == unit.m_Owner;
+			Building& building = GameData::m_Buildings[slot.m_BuildingId];
+			daysToSiegeRegion += building.m_HoldingModifier;
+		}
 
-			if (war == nullptr && !skipWarCheck)
+		if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
+		{
+			CharacterManager* characterManager = CharacterManager::get();
+			Character& attacker = characterManager->getCharacter(unit.m_Owner);
+			Character& defender = characterManager->getCharacter(region.m_OwnerID);
+			War* currentWar = WarManager::get().getWarAgainst(attacker.m_CharacterID, defender.m_CharacterID);
+
+			if (currentWar == nullptr && !skipWarCheck)
 			{
-				unit.m_DaysSeizing = 0;
-				unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
-				dismissUnit(unit.m_UnitID);
 				return;
 			}
 
-			int daysToSiegeRegion = region.m_DaysToSeize;
-
-			for (auto& slot : region.m_BuildingSlots)
+			if (unit.m_Owner == region.m_OwnerID)
 			{
-				if (slot.m_BuildingId == INVALID_BUILDING_ID)
+				War* siegedWar = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OccupiedBy);
+
+				if (siegedWar != nullptr)
 				{
-					continue;
+					siegedWar->addWarscore(region.m_OccupiedBy, -50);
 				}
 
-				Building& building = GameData::m_Buildings[slot.m_BuildingId];
-				daysToSiegeRegion += building.m_HoldingModifier;
-			}
+				region.m_OccupiedBy = INVALID_CHARACTER_ID;
 
-			if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
-			{	
-				CharacterManager* characterManager = CharacterManager::get();
-				Character& attacker = characterManager->getCharacter(unit.m_Owner);
-				Character& defender = characterManager->getCharacter(region.m_OwnerID);
-				War* currentWar = WarManager::get().getWarAgainst(attacker.m_CharacterID, defender.m_CharacterID);
-
-				if (currentWar == nullptr && !skipWarCheck)
-				{
-					return;
-				}
-
-				if (unit.m_Owner == region.m_OwnerID)
-				{
-					War* siegedWar = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OccupiedBy);
-
-					if (siegedWar != nullptr)
-					{
-						siegedWar->addWarscore(region.m_OccupiedBy, -50);
-					}
-					
-					region.m_OccupiedBy = INVALID_CHARACTER_ID;
-
-					attacker.m_MaxArmySize += region.m_ManPower;
-
-					unit.m_DaysSeizing = 0;
-					unit.m_SeizingRegionID = INVALID_REGION_ID;
-
-					return;
-				}
-				
-				if (defender.m_CharacterID == region.m_OwnerID)
-				{
-					currentWar->m_AttackerOccupiedRegions.push_back(region.m_RegionId);
-
-					if (currentWar->m_AttackerWarscore < 100)
-					{
-						currentWar->addWarscore(currentWar->getAttacker(), 50);
-					}
-
-					if (!WarManager::get().isValidWar(*currentWar))
-					{
-						return;
-					}
-
-					region.m_OccupiedBy = attacker.m_CharacterID;
-
-					//Loot
-					defender.m_CurrentGold -= region.m_RegionTax;
-					attacker.m_CurrentGold += region.m_RegionTax;
-
-					defender.m_MaxArmySize -= region.m_ManPower;
-
-					bool allRegionsSiezed = true;
-
-					for (auto ID : CharacterManager::get()->getCharacter(currentWar->getDefender()).m_OwnedRegionIDs)
-					{
-						if (Map::get().getRegionById(ID).m_OccupiedBy == INVALID_CHARACTER_ID)
-						{
-							allRegionsSiezed = false;
-						}
-					}
-
-					if (allRegionsSiezed && currentWar->m_AttackerWarscore < 100)
-					{
-						currentWar->addWarscore(currentWar->getAttacker(), 100);
-					}
-				}
-
-				else if (attacker.m_CharacterID == region.m_OwnerID)
-				{
-					currentWar->m_DefenderOccupiedRegions.push_back(region.m_RegionId);
-					currentWar->addWarscore(currentWar->getDefender(), 50);
-					region.m_OccupiedBy = defender.m_CharacterID;
-
-					//Loot
-					attacker.m_CurrentGold -= region.m_RegionTax;
-					defender.m_CurrentGold += region.m_RegionTax;
-
-					attacker.m_MaxArmySize -= region.m_ManPower;
-				}
+				attacker.m_MaxArmySize += region.m_ManPower;
 
 				unit.m_DaysSeizing = 0;
 				unit.m_SeizingRegionID = INVALID_REGION_ID;
+
+				return;
 			}
+
+			if (defender.m_CharacterID == region.m_OwnerID)
+			{
+				currentWar->m_AttackerOccupiedRegions.push_back(region.m_RegionId);
+
+				if (currentWar->m_AttackerWarscore < 100)
+				{
+					currentWar->addWarscore(currentWar->getAttacker(), 50);
+				}
+
+				if (!WarManager::get().isValidWar(*currentWar))
+				{
+					return;
+				}
+
+				region.m_OccupiedBy = attacker.m_CharacterID;
+
+				//Loot
+				defender.m_CurrentGold -= region.m_RegionTax;
+				attacker.m_CurrentGold += region.m_RegionTax;
+
+				defender.m_MaxArmySize -= region.m_ManPower;
+
+				bool allRegionsSiezed = true;
+
+				for (auto ID : CharacterManager::get()->getCharacter(currentWar->getDefender()).m_OwnedRegionIDs)
+				{
+					if (Map::get().getRegionById(ID).m_OccupiedBy == INVALID_CHARACTER_ID)
+					{
+						allRegionsSiezed = false;
+					}
+				}
+
+				if (allRegionsSiezed && currentWar->m_AttackerWarscore < 100)
+				{
+					currentWar->addWarscore(currentWar->getAttacker(), 100);
+				}
+			}
+
+			else if (attacker.m_CharacterID == region.m_OwnerID)
+			{
+				currentWar->m_DefenderOccupiedRegions.push_back(region.m_RegionId);
+				currentWar->addWarscore(currentWar->getDefender(), 50);
+				region.m_OccupiedBy = defender.m_CharacterID;
+
+				//Loot
+				attacker.m_CurrentGold -= region.m_RegionTax;
+				defender.m_CurrentGold += region.m_RegionTax;
+
+				attacker.m_MaxArmySize -= region.m_ManPower;
+			}
+
+			unit.m_DaysSeizing = 0;
+			unit.m_SeizingRegionID = INVALID_REGION_ID;
 		}
 	}
 }
 
 void UnitManager::startConquerRegion(Unit& unit)
 {
-	if (unit.m_Moving || unit.m_SeizingRegionID != INVALID_REGION_ID)
+	if (unit.m_Moving || unit.m_SeizingRegionID != INVALID_REGION_ID || unit.m_InCombat)
 	{
 		return;
 	}
