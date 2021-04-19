@@ -12,6 +12,7 @@ const int   Map::m_XOffset = -300;
 const int   Map::m_YOffset = -100;
 const float Map::m_TileSize = 32;
 const float Map::m_HalfTileSize = m_TileSize * 0.5f;
+const float Map::m_AspectRatio = 1.0f;
 
 Map* Map::m_Instance = nullptr;
 
@@ -382,12 +383,12 @@ MapRegion& Map::getRegionById(unsigned int regionId)
 
 Vector2DInt Map::convertToMap(Vector2D position)
 {
-	return Vector2DInt((int)((position.x - m_XOffset + m_HalfTileSize) / m_TileSize), (int)((position.y - m_YOffset + m_HalfTileSize) / m_TileSize));
+	return Vector2DInt((int)((position.x - m_XOffset + m_HalfTileSize) / m_TileSize), (int)(((position.y - m_YOffset + m_HalfTileSize) / m_AspectRatio) / m_TileSize));
 }
 
 Vector2D Map::convertToScreen(Vector2DInt position)
 {
-	return Vector2D((float)position.x * m_TileSize + m_XOffset - m_HalfTileSize, (float)position.y * m_TileSize + m_YOffset - m_HalfTileSize);
+	return Vector2D((float)(position.x * m_TileSize) - m_HalfTileSize + m_XOffset, (float)(((position.y * m_TileSize) - m_HalfTileSize) * m_AspectRatio) + m_YOffset);
 }
 
 Vector2DInt Map::getRegionCapitalLocation(unsigned int regionId)

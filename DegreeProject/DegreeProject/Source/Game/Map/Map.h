@@ -137,7 +137,7 @@ private:
 	void renderSquares(const sf::VertexArray& vertexArray, const sf::Color& color, const sf::Color& highlightColor, const sf::Texture& texture, const bool& highlighted);
 	void createVertexArray(sf::VertexArray& vertexArray, const std::vector<Vector2DInt>& squares);
 
-	float m_AspectRatio = 1.0f;
+	static const float m_AspectRatio;
 
 	// Mountains
 	std::vector<Vector2DInt> m_MountainSquares;
