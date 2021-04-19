@@ -608,17 +608,22 @@ void CharacterManager::onMonthChange(Date)
 
 void CharacterManager::killCharacter(CharacterID characterID)
 {
-	if (characterID == INVALID_CHARACTER_ID)
-	{
-		return;
-	}
+	Character& character = getCharacter(characterID);
 
 	for (auto& region : getCharacter(characterID).m_OwnedRegionIDs)
 	{
 		WarManager::get().invalidateWarsForRegion(region);
 	}
 
-	Character& character = getCharacter(characterID);
+	if (!character.m_IsPlayerControlled)
+	{
+		AIManager::get().deactivateAI(characterID);
+	}
+
+	if (characterID == INVALID_CHARACTER_ID)
+	{
+		return;
+	}
 
 	UnitManager::get().dismissUnit(character.m_UnitEntity);
 
@@ -648,11 +653,6 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	{
 		getCharacter(character.m_Spouse).m_Spouse = INVALID_CHARACTER_ID;
 		character.m_Spouse = INVALID_CHARACTER_ID;
-	}
-
-	if (!character.m_IsPlayerControlled)
-	{
-		AIManager::get().deactivateAI(characterID);
 	}
 }
 

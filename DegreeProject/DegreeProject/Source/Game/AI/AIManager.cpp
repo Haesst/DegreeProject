@@ -110,29 +110,43 @@ void AIManager::initAI(CharacterID ID)
 void AIManager::deactivateAI(CharacterID ID)
 {
 	unsigned int index = 0;
+	unsigned int indexToDelete = INT_MAX;
 
 	for (auto& warmind : m_Warminds)
 	{
 		if (warmind.m_OwnerID == ID)
 		{
+			indexToDelete = index;
 			break;
 		}
 
 		index++;
 	}
 
-	m_Warminds.erase(m_Warminds.begin() + index);
+	if (indexToDelete == INT_MAX)
+	{
+		return;
+	}
+
+	m_Warminds.erase(m_Warminds.begin() + indexToDelete);
 
 	index = 0;
+	indexToDelete = 0;
 
 	for (auto& data : m_AIDatas)
 	{
 		if (data.m_OwnerID == ID)
 		{
+			indexToDelete = index;
 			break;
 		}
 
 		index++;
+	}
+
+	if (indexToDelete == INT_MAX)
+	{
+		return;
 	}
 
 	m_AIDatas.erase(m_AIDatas.begin() + index);
@@ -400,7 +414,6 @@ void AIManager::update()
 					Character& character = characterManager->getCharacter(warmind.m_OwnerID);
 					if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f && character.m_MaxArmySize > 0)
 					{
-						LOG_INFO("{0} IS RAISING UNITS", characterManager->getCharacter(warmind.m_OwnerID).m_Name);
 						unitManager.raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
 					}
 				}
