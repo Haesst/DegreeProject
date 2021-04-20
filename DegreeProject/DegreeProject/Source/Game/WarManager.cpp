@@ -5,6 +5,7 @@
 #include "Game/Data/Character.h"
 #include "Game/Data/Unit.h"
 #include "Game/Map/Map.h"
+#include "Game/UI/UIManager.h"
 
 WarManager* WarManager::m_Instance = nullptr;
 
@@ -254,6 +255,18 @@ War* WarManager::getWarAgainst(CharacterID character, CharacterID enemy)
 
 void WarManager::createAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID)
 {
+	unsigned int size = m_Alliances[characterOneID].size();
+	for (unsigned int index = 0; index < size; index++)
+	{
+		if (m_Alliances[characterOneID][index] == characterTwoID)
+		{
+			if (CharacterManager::get()->getCharacter(characterOneID).m_IsPlayerControlled)
+			{
+				UIManager::get()->createUIEventElement(characterTwoID, characterOneID, UIType::AllianceDeclined);
+			}
+			return;
+		}
+	}
 	m_Alliances[characterOneID].push_back(characterTwoID);
 	m_Alliances[characterTwoID].push_back(characterOneID);
 }
