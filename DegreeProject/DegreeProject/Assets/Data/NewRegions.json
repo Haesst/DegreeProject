@@ -1,0 +1,302 @@
+[
+	{
+	"name": "Piedmonte",
+	"id": 1,
+	"mapchar": "1",
+	"color": "Red",
+	"tax": 5,
+	"manPower": 50,
+	"capitalx" : 230,
+	"capitaly" : 23
+	},
+	{
+	"name": "Lombardy",
+	"id": 2,
+	"mapchar": "2",
+	"color": "Yellow",
+	"tax": 7,
+	"manPower": 90,
+	"capitalx" : 254,
+	"capitaly" : 20
+	},
+	{
+	"name": "Trentino",
+	"id": 3,
+	"mapchar": "3",
+	"color": "Purple",
+	"tax": 3,
+	"manPower": 20,
+	"capitalx" : 268,
+	"capitaly" : 12
+	},
+	{
+	"name": "Veneto",
+	"id": 4,
+	"mapchar": "4",
+	"color": "Cyan",
+	"tax": 7,
+	"manPower": 50,
+	"capitalx" : 282,
+	"capitaly" : 18
+	},
+	{
+	"name": "Friuli",
+	"id": 5,
+	"mapchar": "5",
+	"color": "Blue",
+	"tax": 3,
+	"manPower": 30,
+	"capitalx" : 294,
+	"capitaly" : 15
+	},
+	{
+	"name": "Liguria",
+	"id": 6,
+	"mapchar": "6",
+	"color": "Brown",
+	"tax": 2,
+	"manPower": 30,
+	"capitalx" : 247,
+	"capitaly" : 27
+	},
+	{
+	"name": "Emilia Romagna",
+	"id": 7,
+	"mapchar": "7",
+	"color": "Red",
+	"tax": 6,
+	"manPower": 50,
+	"capitalx" : 283,
+	"capitaly" : 29
+	},
+	{
+	"name": "Toscany",
+	"id": 8,
+	"mapchar": "8",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 30,
+	"capitalx" : 272,
+	"capitaly" : 40
+	},
+	{
+	"name": "Marches",
+	"id": 9,
+	"mapchar": "9",
+	"color": "Cyan",
+	"tax": 4,
+	"manPower": 40,
+	"capitalx" : 297,
+	"capitaly" : 37
+	},
+	{
+	"name": "Umbria",
+	"id": 10,
+	"mapchar": "U",
+	"color": "Blue",
+	"tax": 2,
+	"manPower": 20,
+	"capitalx" : 291,
+	"capitaly" : 40
+	},
+	{
+	"name": "Latium",
+	"id": 11,
+	"mapchar": "L",
+	"color": "Brown",
+	"tax": 8,
+	"manPower": 80,
+	"capitalx" : 287,
+	"capitaly" : 50
+	},
+	{
+	"name": "Abruzzo",
+	"id": 12,
+	"mapchar": "A",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 40,
+	"capitalx" : 310,
+	"capitaly" : 46
+	},
+	{
+	"name": "Campania",
+	"id": 13,
+	"mapchar": "C",
+	"color": "Red",
+	"tax": 4,
+	"manPower": 70,
+	"capitalx" : 316,
+	"capitaly" : 57
+	},
+	{
+	"name": "Apulia",
+	"id": 14,
+	"mapchar": "P",
+	"color": "Purple",
+	"tax": 5,
+	"manPower": 60,
+	"capitalx" : 346,
+	"capitaly" : 57
+	},
+	{
+	"name": "Basilicata",
+	"id": 15,
+	"mapchar": "B",
+	"color": "Blue",
+	"tax": 3,
+	"manPower": 30,
+	"capitalx" : 339,
+	"capitaly" : 61
+	},
+	{
+	"name": "Calabria",
+	"id": 16,
+	"mapchar": "R",
+	"color": "Brown",
+	"tax": 4,
+	"manPower": 50,
+	"capitalx" : 341,
+	"capitaly" : 72
+	},
+	{
+	"name": "Sicily",
+	"id": 17,
+	"mapchar": "S",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 60,
+	"capitalx" : 305,
+	"capitaly" : 85
+	},
+	{
+	"name": "Krain",
+	"id": 18,
+	"mapchar": "K",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 30,
+	"capitalx" : 307,
+	"capitaly" : 13
+	},
+	{
+	"name": "Slavonia",
+	"id": 19,
+	"mapchar": "V",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 40,
+	"capitalx" : 338,
+	"capitaly" : 16
+	},
+	{
+	"name": "Istria",
+	"id": 20,
+	"mapchar": "I",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 30,
+	"capitalx" : 303,
+	"capitaly" : 23
+	},
+	{
+	"name": "Croatia",
+	"id": 21,
+	"mapchar": "T",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 40,
+	"capitalx" : 316,
+	"capitaly" : 21
+	},
+	{
+	"name": "Lower Bosnia",
+	"id": 22,
+	"mapchar": "W",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 30,
+	"capitalx" : 355,
+	"capitaly" : 23
+	},
+	{
+	"name": "Upper Bosnia",
+	"id": 23,
+	"mapchar": "E",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 30,
+	"capitalx" : 350,
+	"capitaly" : 27
+	},
+	{
+	"name": "Dalmatia",
+	"id": 24,
+	"mapchar": "D",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 40,
+	"capitalx" : 324,
+	"capitaly" : 29
+	},
+	{
+	"name": "Zachlumia",
+	"id": 25,
+	"mapchar": "Z",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 50,
+	"capitalx" : 348,
+	"capitaly" : 33
+	},
+	{
+	"name": "Dubrovnik",
+	"id": 26,
+	"mapchar": "d",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 60,
+	"capitalx" : 352,
+	"capitaly" : 38
+	},
+	{
+	"name": "Corsica",
+	"id": 27,
+	"mapchar": "c",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 30,
+	"capitalx" : 241,
+	"capitaly" : 46
+	},
+	{
+	"name": "Sardinia",
+	"id": 28,
+	"mapchar": "s",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 50,
+	"capitalx" : 245,
+	"capitaly" : 70
+	},
+	{
+	"name": "Molise",
+	"id": 29,
+	"mapchar": "M",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 20,
+	"capitalx" : 316,
+	"capitaly" : 50
+	},
+	{
+	"name": "Valle d'Aosta",
+	"id": 30,
+	"mapchar": "a",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 20,
+	"capitalx" : 229,
+	"capitaly" : 15
+	}
+]
