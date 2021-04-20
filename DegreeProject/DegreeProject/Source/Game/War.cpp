@@ -11,6 +11,7 @@ War::War(CharacterID attacker, CharacterID defender, int warGoalRegion, int hand
 	m_Defenders.push_back(defender);
 	m_WargoalRegion = warGoalRegion;
 	m_Handle = handle;
+	m_StartDate = Time::m_GameDate.m_Date;
 }
 
 bool War::isWinning(CharacterID ID, CharacterID enemyID)
@@ -259,4 +260,9 @@ CharacterID War::getAttacker()
 CharacterID War::getDefender()
 {
 	return m_Defenders[0];
+}
+
+Date War::getStartDate()
+{
+	return m_StartDate;
 }

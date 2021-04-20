@@ -29,6 +29,7 @@ struct War
 
 	CharacterID getAttacker();
 	CharacterID getDefender();
+	Date getStartDate();
 
 public:
 	int m_AttackerWarscore = 0;
@@ -47,4 +48,6 @@ public:
 
 private:
 	int m_Handle = -1;
+
+	Date m_StartDate;
 };
