@@ -49,7 +49,7 @@ void WarWindow::start()
 	m_WindowShape.setOutlineThickness(m_OutlineThickness);
 	m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
 	m_WindowShape.setOutlineColor(m_OwnerColor);
-	m_WindowShape.setPosition(sf::Vector2f(m_PositionX, m_PositionY));
+	m_WindowShape.setPosition(m_PositionX, m_PositionY);
 
 	m_AttackerPosition = sf::Vector2f(m_PositionX + m_SizeX - m_SpriteSize * 4, m_PositionY - m_SpriteSize * 4 - m_OutlineThickness * 2);
 
@@ -60,148 +60,148 @@ void WarWindow::start()
 	m_WarscoreShape.setOutlineThickness(m_OutlineThickness);
 	m_WarscoreShape.setSize(sf::Vector2f(m_SizeX / 4, m_SpriteSize));
 	m_WarscoreShape.setOutlineColor(m_OwnerColor);
-	m_WarscoreShape.setPosition(sf::Vector2f(m_WarscorePosition.x, m_WarscorePosition.y));
+	m_WarscoreShape.setPosition(m_WarscorePosition.x, m_WarscorePosition.y);
 
 	m_WarscoreProgressPosition = sf::Vector2f(m_PositionX + m_SizeX * 0.5f - (m_SizeX * 0.25f) * 0.5f, m_PositionY + m_SizeY * 0.4f);
 	m_WarscoreProgressShape.setFillColor(m_DefenderColor);
 	m_WarscoreProgressShape.setSize(sf::Vector2f((m_SizeX / 4) * 0.5f, m_SpriteSize));
-	m_WarscoreProgressShape.setPosition(sf::Vector2f(m_WarscoreProgressPosition.x, m_WarscoreProgressPosition.y));
+	m_WarscoreProgressShape.setPosition(m_WarscoreProgressPosition.x, m_WarscoreProgressPosition.y);
 
 	m_SurrenderPosition = sf::Vector2f(m_PositionX + m_SizeX * 0.5f - m_OutlineThickness - (m_SizeX / 12) * 1.5f, m_PositionY + m_SizeY * 0.4f + m_SpriteSize * 2);
 	m_SurrenderShape.setFillColor(sf::Color::Transparent);
 	m_SurrenderShape.setOutlineThickness(m_OutlineThickness);
 	m_SurrenderShape.setSize(sf::Vector2f(m_SizeX / 12, m_SpriteSize));
 	m_SurrenderShape.setOutlineColor(m_OwnerColor);
-	m_SurrenderShape.setPosition(sf::Vector2f(m_SurrenderPosition.x, m_SurrenderPosition.y));
+	m_SurrenderShape.setPosition(m_SurrenderPosition.x, m_SurrenderPosition.y);
 
 	m_WhitePeacePosition = sf::Vector2f(m_PositionX + m_SizeX * 0.5f - (m_SizeX / 12) * 0.5f, m_PositionY + m_SizeY * 0.4f + m_SpriteSize * 2);
 	m_WhitePeaceShape.setFillColor(sf::Color::Transparent);
 	m_WhitePeaceShape.setOutlineThickness(m_OutlineThickness);
 	m_WhitePeaceShape.setSize(sf::Vector2f(m_SizeX / 12, m_SpriteSize));
 	m_WhitePeaceShape.setOutlineColor(m_OwnerColor);
-	m_WhitePeaceShape.setPosition(sf::Vector2f(m_WhitePeacePosition.x, m_WhitePeacePosition.y));
+	m_WhitePeaceShape.setPosition(m_WhitePeacePosition.x, m_WhitePeacePosition.y);
 
 	m_EnforceDemandsPosition = sf::Vector2f(m_PositionX + m_SizeX * 0.5f + m_OutlineThickness + (m_SizeX / 12) * 0.5f, m_PositionY + m_SizeY * 0.4f + m_SpriteSize * 2);
 	m_EnforceDemandsShape.setFillColor(sf::Color::Transparent);
 	m_EnforceDemandsShape.setOutlineThickness(m_OutlineThickness);
 	m_EnforceDemandsShape.setSize(sf::Vector2f(m_SizeX / 12, m_SpriteSize));
 	m_EnforceDemandsShape.setOutlineColor(m_OwnerColor);
-	m_EnforceDemandsShape.setPosition(sf::Vector2f(m_EnforceDemandsPosition.x, m_EnforceDemandsPosition.y));
+	m_EnforceDemandsShape.setPosition(m_EnforceDemandsPosition.x, m_EnforceDemandsPosition.y);
 
 	m_SendPosition = sf::Vector2f(m_PositionX + m_SizeX * 0.5f - (m_SizeX / 12) * 0.5f, m_PositionY + m_SizeY * 0.4f + m_SpriteSize * 4);
 	m_SendShape.setFillColor(sf::Color::Transparent);
 	m_SendShape.setOutlineThickness(m_OutlineThickness);
 	m_SendShape.setSize(sf::Vector2f(m_SizeX / 12, m_SpriteSize));
 	m_SendShape.setOutlineColor(m_OwnerColor);
-	m_SendShape.setPosition(sf::Vector2f(m_SendPosition));
+	m_SendShape.setPosition(m_SendPosition);
 
 	m_WarNameTextPosition = sf::Vector2f(m_WarscorePosition.x, m_WarscorePosition.y - m_SpriteSize * 3.5f);
 	m_WarNameText.setFont(m_Font);
 	m_WarNameText.setCharacterSize(m_CharacterSize);
 	m_WarNameText.setFillColor(m_TextColor);
-	m_WarNameText.setPosition(sf::Vector2f(m_WarNameTextPosition));
+	m_WarNameText.setPosition(m_WarNameTextPosition);
 
 	m_DurationTextPosition = sf::Vector2f(m_WarscorePosition.x, m_WarscorePosition.y - m_SpriteSize * 2.5f);
 	m_DurationText.setFont(m_Font);
 	m_DurationText.setCharacterSize((int)(m_CharacterSize * 0.75f));
 	m_DurationText.setFillColor(m_TextColor);
-	m_DurationText.setPosition(sf::Vector2f(m_DurationTextPosition));
+	m_DurationText.setPosition(m_DurationTextPosition);
 
 	m_WarscoreTextPosition = sf::Vector2f(m_WarscorePosition.x, m_WarscorePosition.y - m_SpriteSize * 1.5f);
 	m_WarscoreText.setFont(m_Font);
 	m_WarscoreText.setCharacterSize(m_CharacterSize);
 	m_WarscoreText.setFillColor(m_TextColor);
 	m_WarscoreText.setString(m_WarScore);
-	m_WarscoreText.setPosition(sf::Vector2f(m_WarscoreTextPosition));
+	m_WarscoreText.setPosition(m_WarscoreTextPosition);
 
 	m_WarscoreAmountTextPosition = sf::Vector2f(m_WarscorePosition.x + 110, m_WarscorePosition.y - m_SpriteSize * 1.5f);
 	m_WarscoreAmountText.setFont(m_Font);
 	m_WarscoreAmountText.setCharacterSize(m_CharacterSize);
-	m_WarscoreAmountText.setPosition(sf::Vector2f(m_WarscoreAmountTextPosition));
+	m_WarscoreAmountText.setPosition(m_WarscoreAmountTextPosition);
 
 	m_SurrenderTextPosition = sf::Vector2f(m_SurrenderPosition);
 	m_SurrenderText.setFont(m_Font);
 	m_SurrenderText.setCharacterSize(m_CharacterSize);
 	m_SurrenderText.setString(m_Surrender);
 	m_SurrenderText.setFillColor(m_TextColor);
-	m_SurrenderText.setPosition(sf::Vector2f(m_SurrenderTextPosition));
+	m_SurrenderText.setPosition(m_SurrenderTextPosition);
 
 	m_WhitePeaceTextPosition = sf::Vector2f(m_WhitePeacePosition);
 	m_WhitePeaceText.setFont(m_Font);
 	m_WhitePeaceText.setCharacterSize(m_CharacterSize);
 	m_WhitePeaceText.setString(m_WhitePeace);
 	m_WhitePeaceText.setFillColor(m_TextColor);
-	m_WhitePeaceText.setPosition(sf::Vector2f(m_WhitePeaceTextPosition));
+	m_WhitePeaceText.setPosition(m_WhitePeaceTextPosition);
 
 	m_EnforceDemandsTextPosition = sf::Vector2f(m_EnforceDemandsPosition);
 	m_EnforceDemandsText.setFont(m_Font);
 	m_EnforceDemandsText.setCharacterSize(m_CharacterSize);
 	m_EnforceDemandsText.setString(m_EnforceDemands);
 	m_EnforceDemandsText.setFillColor(m_TextColor);
-	m_EnforceDemandsText.setPosition(sf::Vector2f(m_EnforceDemandsTextPosition));
+	m_EnforceDemandsText.setPosition(m_EnforceDemandsTextPosition);
 
 	m_SendTextPosition = sf::Vector2f(m_SendPosition);
 	m_SendText.setFont(m_Font);
 	m_SendText.setCharacterSize(m_CharacterSize);
 	m_SendText.setString(m_Send);
 	m_SendText.setFillColor(m_TextColor);
-	m_SendText.setPosition(sf::Vector2f(m_SendTextPosition));
+	m_SendText.setPosition(m_SendTextPosition);
 
 	m_AttackersTextPosition = sf::Vector2f(m_AttackerPosition.x - m_PositionX, m_PositionY);
 	m_AttackersText.setFont(m_Font);
 	m_AttackersText.setCharacterSize(m_CharacterSize);
 	m_AttackersText.setString(m_Attackers);
 	m_AttackersText.setFillColor(m_AttackerColor);
-	m_AttackersText.setPosition(sf::Vector2f(m_AttackersTextPosition));
+	m_AttackersText.setPosition(m_AttackersTextPosition);
 
 	m_AttackerArmyTextPosition = sf::Vector2f(m_AttackerPosition.x - m_PositionX, m_PositionY + m_SpriteSize);
 	m_AttackerArmyText.setFont(m_Font);
 	m_AttackerArmyText.setCharacterSize(m_CharacterSize);
 	m_AttackerArmyText.setString(m_TotalSoldiers);
 	m_AttackerArmyText.setFillColor(m_TextColor);
-	m_AttackerArmyText.setPosition(sf::Vector2f(m_AttackerArmyTextPosition));
+	m_AttackerArmyText.setPosition(m_AttackerArmyTextPosition);
 
 	m_AttackerArmyStrengthTextPosition = sf::Vector2f(m_AttackerPosition.x - m_PositionX + m_SpriteSize, m_PositionY + m_SpriteSize * 2);
 	m_AttackerArmyPosition = sf::Vector2f(m_AttackerArmyStrengthTextPosition.x - m_SpriteSize, m_AttackerArmyStrengthTextPosition.y);
 	m_AttackerArmyStrengthText.setFont(m_Font);
 	m_AttackerArmyStrengthText.setCharacterSize(m_CharacterSize);
 	m_AttackerArmyStrengthText.setFillColor(m_TextColor);
-	m_AttackerArmyStrengthText.setPosition(sf::Vector2f(m_AttackerArmyStrengthTextPosition));
+	m_AttackerArmyStrengthText.setPosition(m_AttackerArmyStrengthTextPosition);
 
 	m_DefendersTextPosition = sf::Vector2f(m_PositionX, m_PositionY);
 	m_DefendersText.setFont(m_Font);
 	m_DefendersText.setCharacterSize(m_CharacterSize);
 	m_DefendersText.setString(m_Defenders);
 	m_DefendersText.setFillColor(m_DefenderColor);
-	m_DefendersText.setPosition(sf::Vector2f(m_DefendersTextPosition));
+	m_DefendersText.setPosition(m_DefendersTextPosition);
 
 	m_DefenderArmyTextPosition = sf::Vector2f(m_PositionX, m_PositionY + m_SpriteSize);
 	m_DefenderArmyText.setFont(m_Font);
 	m_DefenderArmyText.setCharacterSize(m_CharacterSize);
 	m_DefenderArmyText.setString(m_TotalSoldiers);
 	m_DefenderArmyText.setFillColor(m_TextColor);
-	m_DefenderArmyText.setPosition(sf::Vector2f(m_DefenderArmyTextPosition));
+	m_DefenderArmyText.setPosition(m_DefenderArmyTextPosition);
 
 	m_DefenderArmyStrengthTextPosition = sf::Vector2f(m_PositionX + m_SpriteSize, m_PositionY + m_SpriteSize * 2);
 	m_DefenderArmyPosition = sf::Vector2f(m_DefenderArmyStrengthTextPosition.x - m_SpriteSize, m_DefenderArmyStrengthTextPosition.y);
 	m_DefenderArmyStrengthText.setFont(m_Font);
 	m_DefenderArmyStrengthText.setCharacterSize(m_CharacterSize);
 	m_DefenderArmyStrengthText.setFillColor(m_TextColor);
-	m_DefenderArmyStrengthText.setPosition(sf::Vector2f(m_DefenderArmyStrengthTextPosition));
+	m_DefenderArmyStrengthText.setPosition(m_DefenderArmyStrengthTextPosition);
 
 	m_AttackerAlliesTextPosition = sf::Vector2f(m_AttackersTextPosition.x - m_SizeX * 0.25f, m_AttackersTextPosition.y);
 	m_AttackerAlliesText.setFont(m_Font);
 	m_AttackerAlliesText.setCharacterSize(m_CharacterSize);
 	m_AttackerAlliesText.setString(m_Allies);
 	m_AttackerAlliesText.setFillColor(m_TextColor);
-	m_AttackerAlliesText.setPosition(sf::Vector2f(m_AttackerAlliesTextPosition));
+	m_AttackerAlliesText.setPosition(m_AttackerAlliesTextPosition);
 
 	m_DefenderAlliesTextPosition = sf::Vector2f(m_SizeX * 0.1f, m_DefendersTextPosition.y);
 	m_DefenderAlliesText.setFont(m_Font);
 	m_DefenderAlliesText.setCharacterSize(m_CharacterSize);
 	m_DefenderAlliesText.setString(m_Allies);
 	m_DefenderAlliesText.setFillColor(m_TextColor);
-	m_DefenderAlliesText.setPosition(sf::Vector2f(m_DefenderAlliesTextPosition));
+	m_DefenderAlliesText.setPosition(m_DefenderAlliesTextPosition);
 }
 
 void WarWindow::update()
@@ -497,7 +497,7 @@ void WarWindow::openWindow(CharacterID mainAttackerID, CharacterID mainDefenderI
 				attackerShape.setOutlineColor(attacker.m_RegionColor);
 				attackerShape.setOutlineThickness(m_OutlineThickness * 0.25f * sizeMultiplier);
 				attackerShape.setSize(sf::Vector2f(m_SpriteSize * sizeMultiplier, m_SpriteSize * sizeMultiplier));
-				attackerShape.setPosition(sf::Vector2f(m_AttackerCharacterPositions[index]));
+				attackerShape.setPosition(m_AttackerCharacterPositions[index]);
 				m_AttackerCharacterShapes.push_back(attackerShape);
 				sf::Sprite attackerSprite;
 				m_AttackerCharacterSprites.push_back(attackerSprite);
@@ -534,7 +534,7 @@ void WarWindow::openWindow(CharacterID mainAttackerID, CharacterID mainDefenderI
 				defenderShape.setOutlineColor(defender.m_RegionColor);
 				defenderShape.setOutlineThickness(m_OutlineThickness * 0.25f * sizeMultiplier);
 				defenderShape.setSize(sf::Vector2f(m_SpriteSize * sizeMultiplier, m_SpriteSize * sizeMultiplier));
-				defenderShape.setPosition(sf::Vector2f(m_DefenderCharacterPositions[index]));
+				defenderShape.setPosition(m_DefenderCharacterPositions[index]);
 				m_DefenderCharacterShapes.push_back(defenderShape);
 				sf::Sprite defenderSprite;
 				m_DefenderCharacterSprites.push_back(defenderSprite);

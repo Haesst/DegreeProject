@@ -22,15 +22,18 @@ void RegionWindow::start()
 {
 	m_Window = Window::getWindow();
 
-	m_BuildingSlotTextures[0] = AssetHandler::get().getTextureAtPath("Assets/Graphics/FortIcon.png");
-	m_BuildingSlotTextures[1] = AssetHandler::get().getTextureAtPath("Assets/Graphics/BarackIcon.png");
-	m_BuildingSlotTextures[2] = AssetHandler::get().getTextureAtPath("Assets/Graphics/MarketIcon.png");
-	m_BuildingSlotTextures[3] = AssetHandler::get().getTextureAtPath("Assets/Graphics/WallIcon.png");
+	AssetHandler& assetHandler = AssetHandler::get();
 
-	m_RaiseArmyTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/soldier unit.png");
+	m_BuildingSlotTextures[0] = assetHandler.getTextureAtPath("Assets/Graphics/FortIcon.png");
+	m_BuildingSlotTextures[1] = assetHandler.getTextureAtPath("Assets/Graphics/BarackIcon.png");
+	m_BuildingSlotTextures[2] = assetHandler.getTextureAtPath("Assets/Graphics/MarketIcon.png");
+	m_BuildingSlotTextures[3] = assetHandler.getTextureAtPath("Assets/Graphics/WallIcon.png");
 
-	m_MaleCharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harold.jpg");
-	m_FemaleCharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harriet.jpg");
+	m_RaiseArmyTexture = assetHandler.getTextureAtPath("Assets/Graphics/soldier unit.png");
+	m_RegionTaxTexture = assetHandler.getTextureAtPath("Assets/Graphics/Coins.png");
+
+	m_MaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harold.jpg");
+	m_FemaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harriet.jpg");
 
 	m_IconSlotPositionX = m_SizeX - m_SpriteSize - m_OutlineThickness;
 	m_IconSlotPositionOffset = m_SpriteSize + m_OutlineThickness * 2;
@@ -43,7 +46,7 @@ void RegionWindow::start()
 	float positionX = m_OutlineThickness;
 	float positionY = m_Window->getSize().y - m_SizeY - m_OutlineThickness;
 
-	m_WindowShape.setPosition(sf::Vector2f(positionX, positionY));
+	m_WindowShape.setPosition(positionX, positionY);
 	m_WindowShape.setFillColor(m_FillColor);
 	m_WindowShape.setOutlineThickness(m_OutlineThickness);
 
@@ -51,34 +54,48 @@ void RegionWindow::start()
 	{
 		m_BuildingSlotShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
 		m_BuildingSlotShapes[index].setSize(sf::Vector2f((float)m_SpriteSize, (float)m_SpriteSize));
-		m_BuildingSlotShapes[index].setPosition(sf::Vector2f(m_IconSlotPositionX - m_IconSlotPositionOffset * index, m_IconSlotPositionY));
+		m_BuildingSlotShapes[index].setPosition(m_IconSlotPositionX - m_IconSlotPositionOffset * index, m_IconSlotPositionY);
 		m_BuildingSlotSprites[index].setTexture(m_BuildingSlotTextures[index]);
 		m_BuildingSlotSprites[index].setPosition(m_BuildingSlotShapes[index].getPosition());
 		m_BuildingSlotSprites[index].setScale(m_SpriteSize / m_BuildingSlotSprites[index].getLocalBounds().width, m_SpriteSize / m_BuildingSlotSprites[index].getLocalBounds().height);
 	}
 
-	m_RaiseArmyShape.setPosition(sf::Vector2f(m_IconSlotPositionX, m_IconSlotPositionY - m_IconSlotPositionOffset));
+	m_RaiseArmyShape.setPosition(m_IconSlotPositionX, m_IconSlotPositionY - m_IconSlotPositionOffset);
 	m_RaiseArmyShape.setOutlineThickness(m_OutlineThickness * 0.5f);
 	m_RaiseArmyShape.setSize(sf::Vector2f((float)m_SpriteSize, (float)m_SpriteSize));
 	m_RaiseArmySprite.setTexture(m_RaiseArmyTexture);
 	m_RaiseArmySprite.setPosition(m_RaiseArmyShape.getPosition());
 	m_RaiseArmySprite.setScale(m_SpriteSize / m_RaiseArmySprite.getLocalBounds().width, m_SpriteSize / m_RaiseArmySprite.getLocalBounds().height);
 
-	m_RegionNameText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.1f, positionY));
+	m_RegionNameText.setPosition(positionX + m_SizeX * 0.1f, positionY);
 	m_RegionNameText.setFont(m_Font);
 	m_RegionNameText.setCharacterSize(m_CharacterSize);
 
-	m_RegionTaxText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.1f, positionY + m_SizeY * 0.5f));
+	m_RegionTaxText.setPosition(positionX + m_SpriteSize * 1.5f, positionY + m_SizeY * 0.5f);
 	m_RegionTaxText.setFont(m_Font);
-	m_RegionTaxText.setCharacterSize((int)(m_CharacterSize * 0.5f));
+	m_RegionTaxText.setCharacterSize(m_CharacterSize);
+	m_RegionTaxInfoText.setPosition(m_RegionTaxText.getPosition().x - m_SpriteSize * 0.5f, m_RegionTaxText.getPosition().y - m_SpriteSize * 0.5f);
+	m_RegionTaxInfoText.setFont(m_Font);
+	m_RegionTaxInfoText.setCharacterSize(m_CharacterSize);
+	m_RegionTaxInfoText.setString(m_TaxString);
+	m_RegionTaxSprite.setTexture(m_RegionTaxTexture);
+	m_RegionTaxSprite.setPosition(m_RegionTaxText.getPosition().x - m_SpriteSize * 0.5f, m_RegionTaxText.getPosition().y);
+	m_RegionTaxSprite.setScale(m_SpriteSize * 0.5f / m_RegionTaxSprite.getLocalBounds().width, m_SpriteSize * 0.5f / m_RegionTaxSprite.getLocalBounds().height);
 
-	m_RegionManpowerText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.1f, positionY + m_SizeY * 0.6f));
+	m_RegionManpowerText.setPosition(positionX + m_SpriteSize * 1.5f, positionY + m_SizeY * 0.6f);
 	m_RegionManpowerText.setFont(m_Font);
-	m_RegionManpowerText.setCharacterSize((int)(m_CharacterSize * 0.5f));
+	m_RegionManpowerText.setCharacterSize(m_CharacterSize);
+	m_RegionManpowerInfoText.setPosition(m_RegionManpowerText.getPosition().x - m_SpriteSize * 0.5f, m_RegionManpowerText.getPosition().y - m_SpriteSize * 0.5f);
+	m_RegionManpowerInfoText.setFont(m_Font);
+	m_RegionManpowerInfoText.setCharacterSize(m_CharacterSize);
+	m_RegionManpowerInfoText.setString(m_ManPowerString);
+	m_RegionManpowerSprite.setTexture(m_RaiseArmyTexture);
+	m_RegionManpowerSprite.setPosition(m_RegionManpowerText.getPosition().x - m_SpriteSize * 0.5f, m_RegionManpowerText.getPosition().y);
+	m_RegionManpowerSprite.setScale(m_SpriteSize * 0.5f / m_RegionManpowerSprite.getLocalBounds().width, m_SpriteSize * 0.5f / m_RegionManpowerSprite.getLocalBounds().height);
 
 	m_KingdomNameText.setFont(m_Font);
-	m_KingdomNameText.setCharacterSize((int)(m_CharacterSize * 0.5f));
-	m_KingdomNameText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.1f, positionY + m_SizeY * 0.1f));
+	m_KingdomNameText.setCharacterSize(m_CharacterSize);
+	m_KingdomNameText.setPosition(positionX + m_SizeX * 0.1f, positionY + m_SizeY * 0.1f);
 }
 
 void RegionWindow::update()
@@ -99,11 +116,21 @@ void RegionWindow::render()
 		m_Window->draw(m_WindowShape);
 		m_Window->draw(m_CharacterSprite);
 		m_Window->draw(m_RegionNameText);
-		m_Window->draw(m_RegionTaxText);
-		m_Window->draw(m_RegionManpowerText);
 		m_Window->draw(m_KingdomNameText);
 		m_Window->draw(m_RaiseArmyShape);
 		m_Window->draw(m_RaiseArmySprite);
+		m_Window->draw(m_RegionTaxSprite);
+		m_Window->draw(m_RegionTaxText);
+		if (m_ShowTaxInfo)
+		{
+			m_Window->draw(m_RegionTaxInfoText);
+		}
+		m_Window->draw(m_RegionManpowerSprite);
+		m_Window->draw(m_RegionManpowerText);
+		if (m_ShowManpowerInfo)
+		{
+			m_Window->draw(m_RegionManpowerInfoText);
+		}
 		for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
 		{
 			m_Window->draw(m_BuildingSlotShapes[index]);
@@ -211,15 +238,17 @@ void RegionWindow::updateInfo()
 		m_CharacterSprite.setScale(m_SpriteSize / m_CharacterSprite.getLocalBounds().width, m_SpriteSize / m_CharacterSprite.getLocalBounds().height);
 
 		std::stringstream stream;
-		stream << m_TaxString << m_CurrentMapRegion->m_RegionTax;
+		stream << m_CurrentMapRegion->m_RegionTax;
 		m_RegionTaxText.setString(stream.str());
 		m_RegionTaxText.setFillColor(m_OwnerColor);
+		m_RegionTaxInfoText.setFillColor(m_OwnerColor);
 		stream.str(std::string());
 		stream.clear();
 
-		stream << m_ManPowerString << m_CurrentMapRegion->m_ManPower;
+		stream << m_CurrentMapRegion->m_ManPower;
 		m_RegionManpowerText.setString(stream.str());
 		m_RegionManpowerText.setFillColor(m_OwnerColor);
+		m_RegionManpowerInfoText.setFillColor(m_OwnerColor);
 		stream.str(std::string());
 		stream.clear();
 
@@ -305,6 +334,26 @@ void RegionWindow::closeWindow()
 
 void RegionWindow::clickButton()
 {
+	if (InputHandler::getLeftMouseReleased())
+	{
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
+		if (m_RegionTaxSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		{
+			m_ShowTaxInfo = true;
+		}
+		else
+		{
+			m_ShowTaxInfo = false;
+		}
+		if (m_RegionManpowerSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		{
+			m_ShowManpowerInfo = true;
+		}
+		else
+		{
+			m_ShowManpowerInfo = false;
+		}
+	}
 	if (InputHandler::getLeftMouseReleased() && m_PlayerRegion)
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();

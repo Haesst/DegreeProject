@@ -15,7 +15,6 @@ MainMenu::MainMenu(UIID id, sf::Font font, Vector2D, Vector2D size)
 
 	m_BackgroundShape.setFillColor(m_BackgroundFillColor);
 	m_BackgroundShape.setSize(sf::Vector2f((float)m_Window->getSize().x, (float)m_Window->getSize().y));
-	m_BackgroundShape.setPosition(sf::Vector2f());
 
 	m_MainMenuPosition = sf::Vector2f(m_PositionX - m_SizeX * 0.5f, m_PositionY - m_SizeY * 0.5f);
 	m_MainMenuShape.setFillColor(m_FillColor);
@@ -26,7 +25,7 @@ MainMenu::MainMenu(UIID id, sf::Font font, Vector2D, Vector2D size)
 	m_MainMenuText.setFont(m_Font);
 	m_MainMenuText.setCharacterSize(m_CharacterSize);
 	m_MainMenuText.setString(m_MainMenuString);
-	m_MainMenuText.setPosition(sf::Vector2f(m_MainMenuPosition.x + m_SizeX * 0.25f, m_MainMenuPosition.y));
+	m_MainMenuText.setPosition(m_MainMenuPosition.x + m_SizeX * 0.25f, m_MainMenuPosition.y);
 
 	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 	{

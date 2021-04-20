@@ -38,11 +38,9 @@ public:
 	float m_SizeY = 600.0f;
 	float m_OutlineThickness = 10.0f;
 	sf::Text m_RegionNameText;
-	sf::Text m_RegionTaxText;
-	sf::Text m_RegionManpowerText;
 	sf::Text m_KingdomNameText;
 	sf::Font m_Font;
-	int m_CharacterSize = 50;
+	int m_CharacterSize = 25;
 	bool m_Visible = false;
 	bool m_Open = false;
 	unsigned int m_CurrentRegionID = 0;
@@ -55,6 +53,18 @@ public:
 	sf::Texture m_MaleCharacterTexture;
 	sf::Texture m_FemaleCharacterTexture;
 	sf::Sprite m_CharacterSprite;
+
+	sf::Sprite m_RegionManpowerSprite;
+	sf::Text m_RegionManpowerText;
+	sf::Text m_RegionManpowerInfoText;
+	bool m_ShowManpowerInfo = false;
+
+	sf::Texture m_RegionTaxTexture;
+	sf::Sprite m_RegionTaxSprite;
+	sf::Text m_RegionTaxText;
+	sf::Text m_RegionTaxInfoText;
+	bool m_ShowTaxInfo = false;
+
 	const static int m_SpriteSize = 64;
 	float m_IconSlotPositionX = 0.0f;
 	float m_IconSlotPositionOffset = 0.0f;
@@ -65,8 +75,8 @@ public:
 	MapRegion* m_CurrentMapRegion = nullptr;
 	bool m_PlayerRegion = false;
 
-	const char* m_TaxString = "Tax: ";
-	const char* m_ManPowerString = "Manpower: ";
+	const char* m_TaxString = "Tax";
+	const char* m_ManPowerString = "Manpower";
 
 	float m_ProgressMeterWidth = 64.0f;
 	float m_ProgressMeterBorder = 1.0f;
