@@ -32,6 +32,11 @@ void Map::setLandTexture(sf::Texture tex)
 	m_Data.m_LandTexture = tex;
 }
 
+void Map::setResolution(const Vector2D& resolution)
+{
+	m_Resolution = resolution;
+}
+
 void Map::setupHotReloading()
 {
 	HotReloader::get()->subscribeToFileChange("Assets\\Data\\Regions.json", std::bind(&Map::regionsChanged, this, std::placeholders::_1, std::placeholders::_2));
@@ -39,6 +44,8 @@ void Map::setupHotReloading()
 
 	HotReloader::get()->subscribeToFileChange("Assets\\Shaders\\LandShader.frag", std::bind(&Map::shadersChanged, this, std::placeholders::_1, std::placeholders::_2));
 	HotReloader::get()->subscribeToFileChange("Assets\\Shaders\\LandShader.vert", std::bind(&Map::shadersChanged, this, std::placeholders::_1, std::placeholders::_2));
+
+	HotReloader::get()->subscribeToFileChange("Assets\\Shaders\\WaterShader.frag", std::bind(&Map::shadersChanged, this, std::placeholders::_1, std::placeholders::_2));
 }
 
 Map& Map::get()
@@ -217,9 +224,10 @@ void Map::updateRegions()
 
 void Map::render()
 {
+	//renderSquares(m_WaterVertexArray, m_WaterBaseColor, m_WaterBaseColor, m_Data.m_LandTexture, false);
+
 	renderSquares(m_MountainVertexArray, m_MountainBaseColor, m_MountainAlternateColor, m_Data.m_LandTexture, false);
 	renderSquares(m_UnreachableVertexArray, m_UnreachableLandColor, m_UnreachableLandColor, m_Data.m_LandTexture, false);
-	renderSquares(m_WaterVertexArray, m_WaterBaseColor, m_WaterBaseColor, m_Data.m_LandTexture, false);
 
 	for (auto& region : m_Data.m_Regions)
 	{
@@ -234,6 +242,25 @@ void Map::render()
 		
 		HeraldicShieldManager::renderShield(region.m_HeraldicShield, convertToScreen(region.m_RegionCapital) + Vector2D(0.0f, -32.0f));
 	}
+
+	m_WaveTime += Time::deltaTime() * m_WaveDirection;
+
+	if (m_WaveTime >= 10.0f)
+	{
+		m_WaveDirection = -1.0f;
+	}
+	else if (m_WaveTime <= 0.0f)
+	{
+		m_WaveDirection = 1.0f;
+	}
+
+	m_Data.m_WaterShader.setUniform("u_Time", m_WaveTime);
+	m_Data.m_WaterShader.setUniform("u_Resolution", sf::Glsl::Vec2( m_Resolution.x, m_Resolution.y ));
+	m_Data.m_WaterShader.setUniform("u_Wave_Speed", m_WaveSpeed);
+	m_Data.m_WaterShader.setUniform("u_Zoom_Level", m_WaveZoomLevel);
+	m_Data.m_WaterShader.setUniform("u_Color", sf::Glsl::Vec4( m_WaterBaseColor));
+
+	Window::getWindow()->draw(m_WaterVertexArray, m_Data.m_WaterRenderStates);
 }
 
 void Map::renderSquares(const sf::VertexArray& vertexArray, const sf::Color& color, const sf::Color& highlightColor, const sf::Texture& texture, const bool& highlighted)
@@ -341,6 +368,11 @@ void Map::loadShadersAndCreateRenderStates()
 	m_Data.m_Shader.loadFromFile(m_Data.m_VertexShaderPath, m_Data.m_FragmentShaderPath);
 
 	m_Data.m_RenderStates.shader = &m_Data.m_Shader;
+	m_Data.m_RenderStates.texture = &m_Data.m_LandTexture;
+
+	m_Data.m_WaterShader.loadFromFile(m_Data.m_VertexShaderPath, m_Data.m_WaterFragShaderPath);
+
+	m_Data.m_WaterRenderStates.shader = &m_Data.m_WaterShader;
 	m_Data.m_RenderStates.texture = &m_Data.m_LandTexture;
 }
 

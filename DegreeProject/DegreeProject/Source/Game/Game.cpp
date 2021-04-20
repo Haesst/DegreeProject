@@ -119,6 +119,7 @@ void Game::addEntitys()
 {
 	Map::get().init();
 	Map::get().setLandTexture(m_AssetHandler->getTextureAtPath("Assets/Graphics/Checkerboard.png"));
+	Map::get().setResolution({ (float)m_Resolution.x, (float)m_Resolution.y });
 
 	const char* castlePath = "Assets/Graphics/Castle.png";
 	for (unsigned int regionIndex = 0; regionIndex < NUMBER_OF_REGIONS; regionIndex++)

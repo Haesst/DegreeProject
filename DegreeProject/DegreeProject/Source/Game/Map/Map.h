@@ -97,6 +97,7 @@ struct Map
 	static Map& get();
 	void init();
 	void setLandTexture(sf::Texture tex);
+	void setResolution(const Vector2D& resolution);
 
 	void setupHotReloading();
 	void regionsChanged(std::string path, FileStatus fileStatus);
@@ -149,11 +150,17 @@ private:
 	//Water
 	std::vector<Vector2DInt> m_WaterSquares;
 	sf::VertexArray m_WaterVertexArray;
-	sf::Color m_WaterBaseColor = sf::Color::Blue;
+	sf::Color m_WaterBaseColor = sf::Color(49, 169, 238, 255);
 
 	// Unreachable land
 	std::vector<Vector2DInt> m_UnreachableLandSquares;
 	sf::VertexArray m_UnreachableVertexArray;
 	sf::Color m_UnreachableLandColor = sf::Color(20, 60, 20, 255);
+
+	float m_WaveTime = 0.0f;
+	float m_WaveDirection = 1.0f;
+	float m_WaveSpeed = 0.2f;
+	float m_WaveZoomLevel = 25.0f;
+	Vector2D m_Resolution;
 };
 #pragma warning(pop)
