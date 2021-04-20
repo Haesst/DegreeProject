@@ -40,14 +40,22 @@ public:
 
 	sf::RectangleShape m_WindowShape;
 
-	const unsigned int m_NumberOfButtons = 5;
-
 	std::vector<sf::Text> m_OwnedRegionsTexts = std::vector<sf::Text>();
-	std::vector<HeraldicShield*> m_OwnedRegionsShields = std::vector<HeraldicShield*>();
+	std::vector<sf::RectangleShape> m_OwnedRegionShapes = std::vector<sf::RectangleShape>();
+	std::vector<HeraldicShield> m_OwnedRegionShields = std::vector<HeraldicShield>();
+	std::vector<bool> m_OwnedRegionsShowInfo = std::vector<bool>();
 
+	const unsigned int m_NumberOfButtons = 5;
 	std::vector<sf::RectangleShape> m_ButtonShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Text> m_ButtonTexts = std::vector<sf::Text>();
 	std::vector<const char*> m_ButtonStrings = { "Declare War", "Make Peace", "Marriage", "Alliance", "Assassinate" };
+	
+	const unsigned int m_NumberOfRelations = 5;
+	std::vector<sf::Text> m_DiplomacyTexts = std::vector<sf::Text>();
+	std::vector<sf::Texture> m_DiplomacyTextures = std::vector<sf::Texture>();
+	std::vector<sf::Sprite> m_DiplomacySprites = std::vector<sf::Sprite>();
+	std::vector<const char*> m_DiplomacyStrings = { "Regions", "Children", "Alliances", "Conflicts", "Parents" };
+	std::vector<bool> m_DiplomacyShowInfo = std::vector<bool>();
 
 	std::vector<sf::RectangleShape> m_ChildrenShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_ChildrenSprites = std::vector<sf::Sprite>();
@@ -66,6 +74,12 @@ public:
 	std::vector<sf::Sprite> m_TraitsSprites = std::vector<sf::Sprite>();
 	std::vector<sf::Text> m_TraitsInfo = std::vector<sf::Text>();
 	std::vector<bool> m_TraitsShowInfo = std::vector<bool>();
+
+	sf::Texture m_RegionTexture;
+	sf::Texture m_ChildTexture;
+	sf::Texture m_AllianceTexture;
+	sf::Texture m_WarTexture;
+	sf::Texture m_ParentTexture;
 
 	sf::Texture m_FertilityTexture;
 	sf::Texture m_BeautifulTexture;
