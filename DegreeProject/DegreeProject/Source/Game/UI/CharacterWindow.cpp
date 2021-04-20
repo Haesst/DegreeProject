@@ -15,6 +15,7 @@
 #include "Game/UI/UIManager.h"
 #include "Game/UI/WarWindow.h"
 #include "Game/Systems/HeraldicShieldManager.h"
+#include "Game/UI/RegionWindow.h"
 
 CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 {
@@ -829,6 +830,7 @@ void CharacterWindow::openWindow()
 		m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
 		m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { CharacterWindow& characterWindow = *static_cast<CharacterWindow*>(data); characterWindow.onDayChange(); }, static_cast<void*>(this));
 		m_Visible = true;
+		InputHandler::setCharacterWindowOpen(true);
 	}
 }
 
@@ -840,6 +842,7 @@ void CharacterWindow::closeWindow()
 		m_WindowShape.setSize(sf::Vector2f());
 		m_Open = false;
 		m_Visible = false;
+		InputHandler::setCharacterWindowOpen(false);
 	}
 }
 
@@ -942,13 +945,13 @@ void CharacterWindow::clickButton()
 			checkIfPlayerCharacter();
 			updateInfo();
 		}
-		if (m_FatherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		else if (m_FatherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			m_CurrentCharacterID = m_FatherID;
 			checkIfPlayerCharacter();
 			updateInfo();
 		}
-		if (m_MotherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		else if (m_MotherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			m_CurrentCharacterID = m_MotherID;
 			checkIfPlayerCharacter();
@@ -984,6 +987,19 @@ void CharacterWindow::clickButton()
 				checkIfPlayerCharacter();
 				updateInfo();
 				break;
+			}
+		}
+		UIManager& uiManager = *UIManager::get();
+		for (unsigned int index = 0; index < m_OwnedRegionShapes.size(); index++)
+		{
+			if (m_OwnedRegionShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				closeWindow();
+				RegionWindow& regionWindow = *uiManager.m_RegionWindow;
+				regionWindow.m_CurrentMapRegion = &Map::get().getRegionById(m_CurrentCharacter->m_OwnedRegionIDs[index]);
+				regionWindow.checkIfPlayerRegion();
+				regionWindow.openWindow();
+				regionWindow.updateInfo();
 			}
 		}
 	}
@@ -1034,7 +1050,7 @@ void CharacterWindow::clickButton()
 			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				closeWindow();
-				InputHandler::setCharacterWindowOpen(false);
+				InputHandler::m_Inputs[LeftMouseReleased] = false;
 				uiManager.m_WarWindow->openWindow(m_WarAttackers[index], m_WarDefenders[index], Time::m_GameDate.m_Date);
 				break;
 			}

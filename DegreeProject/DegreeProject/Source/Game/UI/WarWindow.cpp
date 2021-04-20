@@ -544,6 +544,7 @@ void WarWindow::openWindow(CharacterID mainAttackerID, CharacterID mainDefenderI
 			updateInfo();
 			m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
 			m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { WarWindow& warWindow = *static_cast<WarWindow*>(data); warWindow.onDayChange(); }, static_cast<void*>(this));
+			InputHandler::setWarWindowOpen(true);
 		}	
 	}
 }
@@ -568,6 +569,7 @@ void WarWindow::closeWindow()
 
 		m_WindowShape.setSize(sf::Vector2f());
 		m_Visible = false;
+		InputHandler::setWarWindowOpen(false);
 	}
 }
 

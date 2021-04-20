@@ -13,7 +13,7 @@ static const float ZOOM_SPEED = 0.1f;
 static Vector2D mousePosition = Vector2D(0.0f, 0.0f);
 static Vector2D mousePositionUI = Vector2D(0.0f, 0.0f);
 static Vector2DInt mouseMapPosition = Vector2DInt(0, 0);
-static bool inputs[Inputs::PlayerUnitSelected + 1];
+bool InputHandler::m_Inputs[Inputs::PlayerUnitSelected + 1];
 
 sf::View& InputHandler::m_UIView = sf::View();
 
@@ -24,15 +24,15 @@ float InputHandler::minCenterYPosition = -85.0f;
 
 void InputHandler::handleInputEvents()
 {
-	inputs[LeftMouseClicked] = false;
-	inputs[RightMouseClicked] = false;
-	inputs[LeftMouseReleased] = false;
-	inputs[RightMouseReleased] = false;
-	inputs[MiddleMouseReleased] = false;
-	inputs[MouseMoved] = false;
-	inputs[MouseScrolled] = false;
-	inputs[EscapePressed] = false;
-	inputs[PlayerUnitSelected] = false;
+	m_Inputs[LeftMouseClicked] = false;
+	m_Inputs[RightMouseClicked] = false;
+	m_Inputs[LeftMouseReleased] = false;
+	m_Inputs[RightMouseReleased] = false;
+	m_Inputs[MiddleMouseReleased] = false;
+	m_Inputs[MouseMoved] = false;
+	m_Inputs[MouseScrolled] = false;
+	m_Inputs[EscapePressed] = false;
+	m_Inputs[PlayerUnitSelected] = false;
 	sf::RenderWindow& window = *Window::getWindow();
 	sf::View view = window.getView();
 	sf::Event event;
@@ -92,7 +92,7 @@ void InputHandler::handleInputEvents()
 			}
 			case sf::Keyboard::Escape:
 			{
-				inputs[EscapePressed] = true;
+				m_Inputs[EscapePressed] = true;
 				break;
 			}
 			case sf::Keyboard::Space:
@@ -169,19 +169,19 @@ void InputHandler::handleInputEvents()
 			{
 			case sf::Mouse::Left:
 			{
-				inputs[LeftMouseClicked] = true;
+				m_Inputs[LeftMouseClicked] = true;
 				setMousePosition(event.mouseButton.x, event.mouseButton.y, window);
 				break;
 			}
 			case sf::Mouse::Right:
 			{
-				inputs[RightMouseClicked] = true;
+				m_Inputs[RightMouseClicked] = true;
 				setMousePosition(event.mouseButton.x, event.mouseButton.y, window);
 				break;
 			}
 			case sf::Mouse::Middle:
 			{
-				inputs[MiddleMouseClicked] = true;
+				m_Inputs[MiddleMouseClicked] = true;
 				break;
 			}
 			case sf::Mouse::XButton1:
@@ -205,20 +205,20 @@ void InputHandler::handleInputEvents()
 			{
 			case sf::Mouse::Left:
 			{
-				inputs[LeftMouseReleased] = true;
+				m_Inputs[LeftMouseReleased] = true;
 				setMousePosition(event.mouseButton.x, event.mouseButton.y, window);
 				break;
 			}
 			case sf::Mouse::Right:
 			{
-				inputs[RightMouseReleased] = true;
+				m_Inputs[RightMouseReleased] = true;
 				setMousePosition(event.mouseButton.x, event.mouseButton.y, window);
 				break;
 			}
 			case sf::Mouse::Middle:
 			{
-				inputs[MiddleMouseReleased] = true;
-				inputs[MiddleMouseClicked] = false;
+				m_Inputs[MiddleMouseReleased] = true;
+				m_Inputs[MiddleMouseClicked] = false;
 				break;
 			}
 			case sf::Mouse::XButton1:
@@ -243,7 +243,7 @@ void InputHandler::handleInputEvents()
 				mouseScrollDirection = event.mouseWheelScroll.delta;
 				if (allowedToZoomView(view))
 				{
-					inputs[MouseScrolled] = true;
+					m_Inputs[MouseScrolled] = true;
 					zoomView(window, view);
 				}
 			}
@@ -251,10 +251,10 @@ void InputHandler::handleInputEvents()
 		}
 		case sf::Event::MouseMoved:
 		{
-			inputs[MouseMoved] = true;
+			m_Inputs[MouseMoved] = true;
 			Vector2D previousMousePosition = getMousePosition();
 			setMousePosition(event.mouseMove.x, event.mouseMove.y, window);
-			if (inputs[MiddleMouseClicked])
+			if (m_Inputs[MiddleMouseClicked])
 			{
 				Vector2D distance = (getMousePosition() - previousMousePosition);
 				float length = distance.getLength();
@@ -335,22 +335,22 @@ void InputHandler::moveView(sf::RenderWindow& window, sf::View& view)
 
 bool InputHandler::getLeftMouseClicked()
 {
-	return inputs[LeftMouseClicked];
+	return m_Inputs[LeftMouseClicked];
 }
 
 bool InputHandler::getRightMouseClicked()
 {
-	return inputs[RightMouseClicked];
+	return m_Inputs[RightMouseClicked];
 }
 
 bool InputHandler::getLeftMouseReleased()
 {
-	return inputs[LeftMouseReleased];
+	return m_Inputs[LeftMouseReleased];
 }
 
 bool InputHandler::getRightMouseReleased()
 {
-	return inputs[RightMouseReleased];
+	return m_Inputs[RightMouseReleased];
 }
 
 Vector2D InputHandler::getMousePosition()
@@ -375,57 +375,57 @@ float InputHandler::getMouseScrollDirection()
 
 bool InputHandler::getMouseScrolled()
 {
-	return inputs[MouseScrolled];
+	return m_Inputs[MouseScrolled];
 }
 
 bool InputHandler::getPlayerUnitSelected()
 {
-	return inputs[PlayerUnitSelected];
+	return m_Inputs[PlayerUnitSelected];
 }
 
 bool InputHandler::getCharacterWindowOpen()
 {
-	return inputs[CharacterWindowOpen];
+	return m_Inputs[CharacterWindowOpen];
 }
 
 bool InputHandler::getRegionWindowOpen()
 {
-	return inputs[RegionWindowOpen];
+	return m_Inputs[RegionWindowOpen];
 }
 
 bool InputHandler::getWarWindowOpen()
 {
-	return inputs[WarWindowOpen];
+	return m_Inputs[WarWindowOpen];
 }
 
 bool InputHandler::getMouseMoved()
 {
-	return inputs[MouseMoved];
+	return m_Inputs[MouseMoved];
 }
 
 bool InputHandler::getEscapePressed()
 {
-	return inputs[EscapePressed];
+	return m_Inputs[EscapePressed];
 }
 
 void InputHandler::setPlayerUnitSelected(bool selected)
 {
-	inputs[PlayerUnitSelected] = selected;
+	m_Inputs[PlayerUnitSelected] = selected;
 }
 
 void InputHandler::setCharacterWindowOpen(bool open)
 {
-	inputs[CharacterWindowOpen] = open;
+	m_Inputs[CharacterWindowOpen] = open;
 }
 
 void InputHandler::setRegionWindowOpen(bool open)
 {
-	inputs[RegionWindowOpen] = open;
+	m_Inputs[RegionWindowOpen] = open;
 }
 
 void InputHandler::setWarWindowOpen(bool open)
 {
-	inputs[WarWindowOpen] = open;
+	m_Inputs[WarWindowOpen] = open;
 }
 
 float InputHandler::getZoomSpeed()
