@@ -62,9 +62,6 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	m_MaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/MalePortrait.jpg");
 	m_FemaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/FemalePortrait.jpg");
 
-	m_CharacterSprite.setPosition(sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.025f));
-	m_CharacterSprite.setScale(m_SpriteSize * 2 / m_CharacterSprite.getLocalBounds().width, m_SpriteSize * 2 / m_CharacterSprite.getLocalBounds().height);
-
 	m_GoldTexture = assetHandler.getTextureAtPath("Assets/Graphics/Coins.png");
 	m_GoldPosition = sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.32f);
 
@@ -539,8 +536,6 @@ void CharacterWindow::updateChildren()
 			childNameText.setFillColor(motherChild.m_RegionColor);
 		}
 		sf::Sprite childSprite;
-		childSprite.setPosition(childShape.getPosition());
-		childSprite.setScale(m_SpriteSize / childSprite.getLocalBounds().width, m_SpriteSize / childSprite.getLocalBounds().height);
 		if (child.m_Gender == Gender::Male)
 		{
 			childSprite.setTexture(m_MaleChildTexture);
@@ -549,6 +544,8 @@ void CharacterWindow::updateChildren()
 		{
 			childSprite.setTexture(m_MaleChildTexture);
 		}
+		childSprite.setPosition(childShape.getPosition());
+		childSprite.setScale(m_SpriteSize / childSprite.getLocalBounds().width, m_SpriteSize / childSprite.getLocalBounds().height);
 		m_ChildrenShapes.push_back(childShape);
 		m_ChildrenSprites.push_back(childSprite);
 		m_ChildrenNames.push_back(childNameText);
@@ -569,8 +566,6 @@ void CharacterWindow::updateAllies()
 		allyShape.setFillColor(sf::Color::Transparent);
 		allyShape.setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f * (index) + m_SizeY * 0.55f));
 		sf::Sprite allySprite;
-		allySprite.setPosition(allyShape.getPosition());
-		allySprite.setScale(m_SpriteSize / allySprite.getLocalBounds().width, m_SpriteSize / allySprite.getLocalBounds().height);
 		if (ally.m_Gender == Gender::Male)
 		{
 			allySprite.setTexture(m_MaleCharacterTexture);
@@ -579,6 +574,8 @@ void CharacterWindow::updateAllies()
 		{
 			allySprite.setTexture(m_FemaleCharacterTexture);
 		}
+		allySprite.setPosition(allyShape.getPosition());
+		allySprite.setScale(m_SpriteSize / allySprite.getLocalBounds().width, m_SpriteSize / allySprite.getLocalBounds().height);
 		m_AlliesShapes.push_back(allyShape);
 		m_AlliesSprites.push_back(allySprite);
 	}
@@ -613,8 +610,6 @@ void CharacterWindow::updateWars()
 			warShape.setFillColor(sf::Color::Transparent);
 			warShape.setPosition(sf::Vector2f(m_SizeX * 0.3f, m_SizeY * 0.05f * (index) + m_SizeY * 0.55f));
 			sf::Sprite opponetSprite;
-			opponetSprite.setPosition(warShape.getPosition());
-			opponetSprite.setScale(m_SpriteSize / opponetSprite.getLocalBounds().width, m_SpriteSize / opponetSprite.getLocalBounds().height);
 			if (opponent.m_Gender == Gender::Male)
 			{
 				opponetSprite.setTexture(m_MaleCharacterTexture);
@@ -623,6 +618,8 @@ void CharacterWindow::updateWars()
 			{
 				opponetSprite.setTexture(m_FemaleCharacterTexture);
 			}
+			opponetSprite.setPosition(warShape.getPosition());
+			opponetSprite.setScale(m_SpriteSize / opponetSprite.getLocalBounds().width, m_SpriteSize / opponetSprite.getLocalBounds().height);
 			m_WarShapes.push_back(warShape);
 			m_WarSprites.push_back(opponetSprite);
 			m_WarDefenders.push_back(defenderID);
@@ -707,6 +704,8 @@ void CharacterWindow::updateInfo()
 				m_CharacterSprite.setTexture(m_FemaleCharacterTexture);
 			}
 		}
+		m_CharacterSprite.setPosition(sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.025f));
+		m_CharacterSprite.setScale((m_SpriteSize * 2) / m_CharacterSprite.getLocalBounds().width, (m_SpriteSize * 2) / m_CharacterSprite.getLocalBounds().height);
 		m_CharacterNameText.setString(stream.str());
 		m_CharacterNameText.setFillColor(m_OwnerColor);
 		stream.str(std::string());
