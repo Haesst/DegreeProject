@@ -375,7 +375,6 @@ void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever, 
 				break;
 			}
 
-
 			if (getCharacter(sender).m_IsPlayerControlled)
 			{
 				UIManager::get()->createUIEventElement(reciever, sender, UIType::PeaceAccepted);
@@ -618,10 +617,26 @@ void CharacterManager::onMonthChange(Date)
 void CharacterManager::killCharacter(CharacterID characterID)
 {
 	Character& character = getCharacter(characterID);
+	WarManager* warManager = &WarManager::get();
 
 	for (auto& region : getCharacter(characterID).m_OwnedRegionIDs)
 	{
 		WarManager::get().invalidateWarsForRegion(region);
+	}
+
+	for (auto& war : character.m_CurrentWars)
+	{
+		War* currentWar = warManager->getWar(war);
+
+		if (currentWar->isAllyOf(characterID, currentWar->getAttacker()))
+		{
+			warManager->removeAllyFromWar(characterID, war);
+		}
+
+		else if (currentWar->isAllyOf(characterID, currentWar->getDefender()))
+		{
+			warManager->removeAllyFromWar(characterID, war);
+		}
 	}
 
 	if (!character.m_IsPlayerControlled)

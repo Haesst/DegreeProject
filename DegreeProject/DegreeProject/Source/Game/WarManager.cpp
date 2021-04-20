@@ -235,6 +235,44 @@ std::vector<CharacterID> WarManager::getOpposingSide(CharacterID ID)
 	return enemies;
 }
 
+void WarManager::removeAllyFromWar(CharacterID ally, int warHandle)
+{
+	Character& character = CharacterManager::get()->getCharacter(ally);
+	War* war = getWar(warHandle);
+
+	if (war->isAttacker(ally))
+	{
+		unsigned int index = 0;
+
+		for (auto& allied : war->m_Attackers)
+		{
+			if (allied == ally)
+			{
+				war->m_Attackers.erase(war->m_Attackers.begin() + index);
+				return;
+			}
+
+			index++;
+		}
+	}
+
+	else if (war->isDefender(ally))
+	{
+		unsigned int index = 0;
+
+		for (auto& allied : war->m_Defenders)
+		{
+			if (allied == ally)
+			{
+				war->m_Defenders.erase(war->m_Defenders.begin() + index);
+				return;
+			}
+
+			index++;
+		}
+	}
+}
+
 War* WarManager::getWarAgainst(CharacterID character, CharacterID enemy)
 {
 	for (auto& pair : m_Wars)

@@ -19,6 +19,7 @@ struct War
 	void handleOccupiedRegions(CharacterID winningCharacter);
 
 	bool alliesInWar(CharacterID ID);
+	bool isAllyOf(CharacterID potentialAlly, CharacterID allyOf);
 
 	bool isAttacker(CharacterID ent);
 	bool isDefender(CharacterID ent);

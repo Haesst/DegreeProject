@@ -204,6 +204,41 @@ bool War::alliesInWar(CharacterID ID)
 	return false;
 }
 
+bool War::isAllyOf(CharacterID potentialAlly, CharacterID allyOf)
+{
+	if (isAttacker(allyOf))
+	{
+		unsigned int index = 0;
+
+		for (auto& attacker : m_Attackers)
+		{
+			if (attacker == potentialAlly)
+			{
+				return true;
+			}
+
+			index++;
+		}
+	}
+
+	else if (isDefender(allyOf))
+	{
+		unsigned int index = 0;
+
+		for (auto& defender : m_Defenders)
+		{
+			if (defender == potentialAlly)
+			{
+				return true;
+			}
+
+			index++;
+		}
+	}
+	
+	return false;
+}
+
 
 bool War::isAttacker(CharacterID ent)
 {
