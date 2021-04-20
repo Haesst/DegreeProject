@@ -684,12 +684,12 @@ void CharacterWindow::updateInfo()
 			if (m_Gender == Gender::Male)
 			{
 				stream << m_MaleTitles[(unsigned int)m_CurrentCharacter->m_CharacterTitle] << m_CurrentCharacter->m_Name;
-				m_CharacterSprite.setTexture(m_MaleCharacterTexture);
+				m_CharacterSprite.setTexture(m_MaleCharacterTexture, true);
 			}
 			else
 			{
 				stream << m_FemaleTitles[(unsigned int)m_CurrentCharacter->m_CharacterTitle] << m_CurrentCharacter->m_Name;
-				m_CharacterSprite.setTexture(m_FemaleCharacterTexture);
+				m_CharacterSprite.setTexture(m_FemaleCharacterTexture, true);
 			}
 		}
 		else
@@ -697,11 +697,11 @@ void CharacterWindow::updateInfo()
 			stream << m_CurrentCharacter->m_Name;
 			if (m_Gender == Gender::Male)
 			{
-				m_CharacterSprite.setTexture(m_MaleCharacterTexture);
+				m_CharacterSprite.setTexture(m_MaleCharacterTexture, true);
 			}
 			else
 			{
-				m_CharacterSprite.setTexture(m_FemaleCharacterTexture);
+				m_CharacterSprite.setTexture(m_FemaleCharacterTexture, true);
 			}
 		}
 		m_CharacterSprite.setPosition(sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.025f));
