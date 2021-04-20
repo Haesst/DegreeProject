@@ -105,7 +105,7 @@ public:
 	std::vector<bool> m_ShowChildrenNames = std::vector<bool>();
 	unsigned int m_CurrentRegionID = 0;
 	CharacterID m_CurrentCharacterID = INVALID_CHARACTER_ID;
-	const std::string m_Dash = "/";
+	const char* m_Dash = "/";
 	const char* m_PregnantTrait = "Pregnant";
 	const char* m_BeautifulTrait = "Beautiful";
 	const char* m_UglyTrait = "Ugly";
@@ -114,10 +114,10 @@ public:
 	const char* m_Female = "Female";
 	const char* m_Fertility = "Fertility: ";
 	const char* m_Spouse = "Spouse: ";
-	std::string m_MaleTitles[(unsigned int)Title::Baron + 1];
-	std::string m_FemaleTitles[(unsigned int)Title::Baron + 1];
+	std::vector<const char*> m_MaleTitles = { "Emperor ", "King ", "Duke ", "Count ", "Baron " };
+	std::vector<const char*> m_FemaleTitles = { "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness " };
 	int m_CharacterSize = 25;
-	int m_DaySubscriptionHandle = 0;
+	int m_DaySubscriptionHandle = -1;
 	bool m_Open = false;
 
 	sf::RenderWindow* m_Window = nullptr;

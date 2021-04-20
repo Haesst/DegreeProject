@@ -28,8 +28,6 @@ public:
 	void clickButton();
 	bool checkIfPlayerRegion();
 	void displayProgressMeter(unsigned int index);
-	void updateSprites();
-	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize = m_SpriteSize);
 
 	sf::RectangleShape m_WindowShape;
 	sf::RectangleShape m_BuildingSlotShapes[NUMBER_OF_BUILDING_SLOTS];
@@ -48,7 +46,7 @@ public:
 	bool m_Visible = false;
 	bool m_Open = false;
 	unsigned int m_CurrentRegionID = 0;
-	int m_DaySubscriptionHandle = 0;
+	int m_DaySubscriptionHandle = -1;
 	sf::RectangleShape m_BuildingProgressShape[NUMBER_OF_BUILDING_SLOTS];
 	sf::Sprite m_BuildingSlotSprites[NUMBER_OF_BUILDING_SLOTS];
 	sf::Texture m_BuildingSlotTextures[NUMBER_OF_BUILDING_SLOTS];
@@ -67,8 +65,8 @@ public:
 	MapRegion* m_CurrentMapRegion = nullptr;
 	bool m_PlayerRegion = false;
 
-	const std::string m_TaxString = "Tax: ";
-	const std::string m_ManPowerString = "Manpower: ";
+	const char* m_TaxString = "Tax: ";
+	const char* m_ManPowerString = "Manpower: ";
 
 	float m_ProgressMeterWidth = 64.0f;
 	float m_ProgressMeterBorder = 1.0f;

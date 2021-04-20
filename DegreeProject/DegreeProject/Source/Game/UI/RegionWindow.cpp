@@ -28,6 +28,7 @@ void RegionWindow::start()
 	m_BuildingSlotTextures[3] = AssetHandler::get().getTextureAtPath("Assets/Graphics/WallIcon.png");
 
 	m_RaiseArmyTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/soldier unit.png");
+
 	m_MaleCharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harold.jpg");
 	m_FemaleCharacterTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harriet.jpg");
 
@@ -51,11 +52,17 @@ void RegionWindow::start()
 		m_BuildingSlotShapes[index].setOutlineThickness(m_OutlineThickness * 0.5f);
 		m_BuildingSlotShapes[index].setSize(sf::Vector2f((float)m_SpriteSize, (float)m_SpriteSize));
 		m_BuildingSlotShapes[index].setPosition(sf::Vector2f(m_IconSlotPositionX - m_IconSlotPositionOffset * index, m_IconSlotPositionY));
+		m_BuildingSlotSprites[index].setTexture(m_BuildingSlotTextures[index]);
+		m_BuildingSlotSprites[index].setPosition(m_BuildingSlotShapes[index].getPosition());
+		m_BuildingSlotSprites[index].setScale(m_SpriteSize / m_BuildingSlotSprites[index].getLocalBounds().width, m_SpriteSize / m_BuildingSlotSprites[index].getLocalBounds().height);
 	}
 
 	m_RaiseArmyShape.setPosition(sf::Vector2f(m_IconSlotPositionX, m_IconSlotPositionY - m_IconSlotPositionOffset));
 	m_RaiseArmyShape.setOutlineThickness(m_OutlineThickness * 0.5f);
 	m_RaiseArmyShape.setSize(sf::Vector2f((float)m_SpriteSize, (float)m_SpriteSize));
+	m_RaiseArmySprite.setTexture(m_RaiseArmyTexture);
+	m_RaiseArmySprite.setPosition(m_RaiseArmyShape.getPosition());
+	m_RaiseArmySprite.setScale(m_SpriteSize / m_RaiseArmySprite.getLocalBounds().width, m_SpriteSize / m_RaiseArmySprite.getLocalBounds().height);
 
 	m_RegionNameText.setPosition(sf::Vector2f(positionX + m_SizeX * 0.1f, positionY));
 	m_RegionNameText.setFont(m_Font);
@@ -90,17 +97,19 @@ void RegionWindow::render()
 	if (m_Visible)
 	{
 		m_Window->draw(m_WindowShape);
+		m_Window->draw(m_CharacterSprite);
 		m_Window->draw(m_RegionNameText);
 		m_Window->draw(m_RegionTaxText);
 		m_Window->draw(m_RegionManpowerText);
 		m_Window->draw(m_KingdomNameText);
 		m_Window->draw(m_RaiseArmyShape);
+		m_Window->draw(m_RaiseArmySprite);
 		for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
 		{
 			m_Window->draw(m_BuildingSlotShapes[index]);
 			displayProgressMeter(index);
+			m_Window->draw(m_BuildingSlotSprites[index]);
 		}
-		updateSprites();
 	}
 }
 
@@ -112,11 +121,12 @@ void RegionWindow::clickOnMap()
 		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			Vector2DInt mouseMapPosition = InputHandler::getMouseMapPosition();
-			if (Map::get().mapSquareDataContainsKey(mouseMapPosition))
+			Map& map = Map::get();
+			if (map.mapSquareDataContainsKey(mouseMapPosition))
 			{
 				size_t regionID = 0;
 
-				for (auto& squareData : Map::get().m_MapSquareData)
+				for (auto& squareData : map.m_MapSquareData)
 				{
 					if (squareData.m_Position == mouseMapPosition)
 					{
@@ -124,7 +134,7 @@ void RegionWindow::clickOnMap()
 					}
 				}
 				m_CurrentRegionID = regionID;
-				m_CurrentMapRegion = &Map::get().getRegionById(m_CurrentRegionID);
+				m_CurrentMapRegion = &map.getRegionById(m_CurrentRegionID);
 				checkIfPlayerRegion();
 				updateInfo();
 				m_Open = true;
@@ -182,22 +192,48 @@ void RegionWindow::updateInfo()
 	if (m_CurrentMapRegion != nullptr)
 	{
 		m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
-		Character character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
+
+		Character& character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
+
 		m_OwnerColor = character.m_RegionColor;
 
 		m_WindowShape.setOutlineColor(m_OwnerColor);
 
-		m_RegionTaxText.setString(m_TaxString + std::to_string(m_CurrentMapRegion->m_RegionTax));
+		if (character.m_Gender == Gender::Male)
+		{
+			m_CharacterSprite.setTexture(m_MaleCharacterTexture);
+		}
+		else
+		{
+			m_CharacterSprite.setTexture(m_FemaleCharacterTexture);
+		}
+		m_CharacterSprite.setPosition(m_CharacterPosition);
+		m_CharacterSprite.setScale(m_SpriteSize / m_CharacterSprite.getLocalBounds().width, m_SpriteSize / m_CharacterSprite.getLocalBounds().height);
+
+		std::stringstream stream;
+		stream << m_TaxString << m_CurrentMapRegion->m_RegionTax;
+		m_RegionTaxText.setString(stream.str());
 		m_RegionTaxText.setFillColor(m_OwnerColor);
+		stream.str(std::string());
+		stream.clear();
 
-		m_RegionManpowerText.setString(m_ManPowerString + std::to_string(m_CurrentMapRegion->m_ManPower));
+		stream << m_ManPowerString << m_CurrentMapRegion->m_ManPower;
+		m_RegionManpowerText.setString(stream.str());
 		m_RegionManpowerText.setFillColor(m_OwnerColor);
+		stream.str(std::string());
+		stream.clear();
 
-		m_RegionNameText.setString(m_CurrentMapRegion->m_RegionName);
+		stream << m_CurrentMapRegion->m_RegionName;
+		m_RegionNameText.setString(stream.str());
 		m_RegionNameText.setFillColor(m_OwnerColor);
+		stream.str(std::string());
+		stream.clear();
 
-		m_KingdomNameText.setString(character.m_KingdomName);
+		stream << character.m_KingdomName;
+		m_KingdomNameText.setString(stream.str());
 		m_KingdomNameText.setFillColor(m_OwnerColor);
+		stream.str(std::string());
+		stream.clear();
 
 		m_RaiseArmyShape.setOutlineColor(m_OwnerColor);
 		if (character.m_RaisedArmySize > 0)
@@ -237,7 +273,7 @@ void RegionWindow::handleWindow()
 	{
 		closeWindow();
 	}
-	else if (InputHandler::getCharacterWindowOpen())
+	else if (InputHandler::getCharacterWindowOpen() || InputHandler::getWarWindowOpen())
 	{
 		closeWindow();
 	}
@@ -262,6 +298,7 @@ void RegionWindow::closeWindow()
 		m_Visible = false;
 		m_WindowShape.setSize(sf::Vector2f());
 		Time::m_GameDate.unsubscribeToDayChange(m_DaySubscriptionHandle);
+		m_DaySubscriptionHandle = -1;
 		InputHandler::setRegionWindowOpen(false);
 	}
 }
@@ -291,11 +328,12 @@ void RegionWindow::clickButton()
 			}
 			return;
 		}
+		CharacterManager& characterManager = *CharacterManager::get();
 		for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
 		{
 			if (m_BuildingSlotShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				CharacterManager::get()->constructBuilding(m_PlayerCharacter->m_CharacterID, index + 1, m_CurrentRegionID, index);
+				characterManager.constructBuilding(m_PlayerCharacter->m_CharacterID, index + 1, m_CurrentRegionID, index);
 				break;
 			}
 		}
@@ -318,35 +356,4 @@ void RegionWindow::clickButton()
 bool RegionWindow::checkIfPlayerRegion()
 {
 	return m_PlayerRegion = m_CurrentMapRegion->m_OwnerID == m_PlayerCharacter->m_CharacterID;
-}
-
-void RegionWindow::updateSprites()
-{
-	for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
-	{
-		updateSprite(m_BuildingSlotSprites[index], m_BuildingSlotTextures[index], sf::Vector2f(m_IconSlotPositionX - m_IconSlotPositionOffset * index, m_IconSlotPositionY));
-	}
-
-	updateSprite(m_RaiseArmySprite, m_RaiseArmyTexture, sf::Vector2f(m_IconSlotPositionX, m_IconSlotPositionY - m_IconSlotPositionOffset));
-
-	if (CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID).m_Gender == Gender::Male)
-	{
-		updateSprite(m_CharacterSprite, m_MaleCharacterTexture, m_CharacterPosition);
-	}
-	else
-	{
-		updateSprite(m_CharacterSprite, m_FemaleCharacterTexture, m_CharacterPosition);
-	}
-}
-
-void RegionWindow::updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize)
-{
-	sprite.setTexture(texture, true);
-	sprite.setPosition(position);
-
-	sf::FloatRect localSize = sprite.getLocalBounds();
-
-	sprite.setScale(spriteSize / localSize.width, spriteSize / localSize.height);
-
-	m_Window->draw(sprite);
 }

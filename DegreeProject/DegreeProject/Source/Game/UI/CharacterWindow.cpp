@@ -24,18 +24,6 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	m_SizeX = size.x;
 	m_SizeY = size.y;
 
-	m_MaleTitles[(unsigned int)Title::Emperor] = "Emperor ";
-	m_MaleTitles[(unsigned int)Title::King] = "King ";
-	m_MaleTitles[(unsigned int)Title::Duke] = "Duke ";
-	m_MaleTitles[(unsigned int)Title::Count] = "Count ";
-	m_MaleTitles[(unsigned int)Title::Baron] = "Baron ";
-
-	m_FemaleTitles[(unsigned int)Title::Emperor] = "Empress ";
-	m_FemaleTitles[(unsigned int)Title::King] = "Queen ";
-	m_FemaleTitles[(unsigned int)Title::Duke] = "Duchess ";
-	m_FemaleTitles[(unsigned int)Title::Count] = "Countess ";
-	m_FemaleTitles[(unsigned int)Title::Baron] = "Baroness ";
-
 	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 	{
 		sf::RectangleShape buttonShape(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f));
