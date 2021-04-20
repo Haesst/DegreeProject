@@ -19,18 +19,6 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 	m_SubjectID = subjectID;
 	m_MessageType = type;
 
-	m_MaleTitles[(unsigned int)Title::Emperor] = "Emperor ";
-	m_MaleTitles[(unsigned int)Title::King] = "King ";
-	m_MaleTitles[(unsigned int)Title::Duke] = "Duke ";
-	m_MaleTitles[(unsigned int)Title::Count] = "Count ";
-	m_MaleTitles[(unsigned int)Title::Baron] = "Baron ";
-
-	m_FemaleTitles[(unsigned int)Title::Emperor] = "Empress ";
-	m_FemaleTitles[(unsigned int)Title::King] = "Queen ";
-	m_FemaleTitles[(unsigned int)Title::Duke] = "Duchess ";
-	m_FemaleTitles[(unsigned int)Title::Count] = "Countess ";
-	m_FemaleTitles[(unsigned int)Title::Baron] = "Baroness ";
-
 	m_Window = Window::getWindow();
 
 	Character& playerCharacter = CharacterManager::get()->getPlayerCharacter();
@@ -42,26 +30,38 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 	Character& subject = CharacterManager::get()->getCharacter(m_SubjectID);
 	m_SubjectColor = subject.m_RegionColor;
 
+	AssetHandler& assetHandler = AssetHandler::get();
+
+	m_PositionX = m_Window->getSize().x * 0.5f - m_OutlineThickness - m_SizeX * 0.5f;
+	m_PositionY = m_Window->getSize().y * 0.5f - m_OutlineThickness - m_SizeY * 0.5f;
+
 	if (subject.m_Gender == Gender::Male)
 	{
-		m_SubjectTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harold.jpg");
+		m_SubjectTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harold.jpg");
 	}
 	else
 	{
-		m_SubjectTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harriet.jpg");
+		m_SubjectTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harriet.jpg");
 	}
+	m_SubjectSprite.setTexture(m_SubjectTexture);
+	m_SubjectSprite.setPosition(m_PositionX + m_SizeX - m_SpriteSize * 1.5f, m_PositionY + m_SpriteSize * 0.5f);
+	m_SubjectSprite.setScale(m_SpriteSize / m_SubjectSprite.getLocalBounds().width, m_SpriteSize / m_SubjectSprite.getLocalBounds().height);
 
 	std::stringstream stream;
 	if (instigator.m_Gender == Gender::Male)
 	{
-		m_InstigatorTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harold.jpg");
+		m_InstigatorTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harold.jpg");
 		stream << m_MaleTitles[(unsigned int)instigator.m_CharacterTitle];
 	}
 	else
 	{
-		m_InstigatorTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Harriet.jpg");
+		m_InstigatorTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harriet.jpg");
 		stream << m_FemaleTitles[(unsigned int)instigator.m_CharacterTitle];
 	}
+	m_InstigatorSprite.setTexture(m_InstigatorTexture);
+	m_InstigatorSprite.setPosition(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 0.5f);
+	m_InstigatorSprite.setScale(m_SpriteSize / m_InstigatorSprite.getLocalBounds().width, m_SpriteSize / m_InstigatorSprite.getLocalBounds().height);
+
 	stream << instigator.m_Name;
 	switch (m_MessageType)
 	{
@@ -69,7 +69,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		case UIType::MarriageAccepted:
 		case UIType::MarriageDeclined:
 		{
-			m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Married.png");
+			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Married.png");
 			if (m_MessageType == UIType::MarriageRequest)
 			{
 				stream << "\nwants to marry you.\n\n               Do you accept?";
@@ -89,7 +89,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		case UIType::AllianceAccepted:
 		case UIType::AllianceDeclined:
 		{
-			m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Alliance.png");
+			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Alliance.png");
 			if (m_MessageType == UIType::AllianceRequest)
 			{
 				stream << "\nwants to ally you.\n\n               Do you accept?";
@@ -107,7 +107,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		}
 		case UIType::AllianceBroken:
 		{
-			m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Alliance.png");
+			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Alliance.png");
 
 			stream.str(std::string());
 			stream.clear();
@@ -120,7 +120,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		case UIType::CallToArmsAccepted:
 		case UIType::CallToArmsRejected:
 		{
-			m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Alliance.png");
+			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Alliance.png");
 			if (m_MessageType == UIType::CallToArmsRequest)
 			{
 				stream << "\nis calling you to arms.\n\n               Do you honor it?";
@@ -140,7 +140,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		case UIType::PeaceAccepted:
 		case UIType::PeaceDeclined:
 		{
-			m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Peace.png");
+			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Peace.png");
 			if (m_MessageType == UIType::PeaceRequest)
 			{
 				stream << "\nwants peace.\n\n               Do you accept?";
@@ -156,48 +156,47 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			m_MessageText.setString(stream.str());
 			break;
 		}
+		case UIType::TriedToDeclareWarOnAlly:
 		case UIType::WarDeclaration:
 		{
-			m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/War.png");
-			if (instigatorID == playerCharacter.m_CharacterID)
+			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/War.png");
+			if (m_MessageType == UIType::WarDeclaration)
 			{
-				if (subject.m_Gender == Gender::Male)
+				if (instigatorID == playerCharacter.m_CharacterID)
 				{
-					stream << "\ndeclared war on\n" << m_MaleTitles[(unsigned int)subject.m_CharacterTitle] << subject.m_Name << "!";
+					if (subject.m_Gender == Gender::Male)
+					{
+						stream << "\ndeclared war on\n" << m_MaleTitles[(unsigned int)subject.m_CharacterTitle] << subject.m_Name << "!";
+					}
+					else
+					{
+						stream << "\ndeclared war on\n" << m_FemaleTitles[(unsigned int)subject.m_CharacterTitle] << subject.m_Name << "!";
+					}
 				}
 				else
 				{
-					stream << "\ndeclared war on\n" << m_FemaleTitles[(unsigned int)subject.m_CharacterTitle] << subject.m_Name << "!";
+					stream << "\ndeclared war on you!";
 				}
 			}
 			else
 			{
-				stream << "\ndeclared war on you!";
+				stream.str(std::string());
+				stream.clear();
+				stream << "You can't declare war on an ally!";
 			}
 			m_MessageText.setString(stream.str());
 			break;
 		}
-		case UIType::TriedToDeclareWarOnAlly:
-		{
-			m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/War.png");
-
-			stream.str(std::string());
-			stream.clear();
-			stream << "You can't declare war on an ally!";
-			m_MessageText.setString(stream.str());
-
-			break;
-		}
 		case UIType::Gift:
 		{
-			m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Coins.png");
+			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Coins.png");
 			stream << "\nsent you a gift of " << std::fixed << std::setprecision(1) << giftAmount << " gold!";
 			m_MessageText.setString(stream.str());
 			break;
 		}
 		case UIType::Pregnant:
 		{
-			m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Pregnant.png");
+			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Pregnant.png");
 			stream << "\njust got pregnant!";
 			m_MessageText.setString(stream.str());
 			break;
@@ -209,13 +208,13 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 				Character& child = CharacterManager::get()->getCharacter(instigator.m_Children.back());
 				if (child.m_Gender == Gender::Male)
 				{
-					m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/BabyMale.png");
+					m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyMale.png");
 					stream << "\njust gave birth to a healthy baby boy!" << "\nHis name is " << child.m_Name << ".";
 					m_MessageText.setString(stream.str());
 				}
 				else
 				{
-					m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/BabyFemale.png");
+					m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyFemale.png");
 					stream << "\njust gave birth to a healthy baby girl!" << "\nHer name is " << child.m_Name << ".";
 					m_MessageText.setString(stream.str());
 				}
@@ -224,7 +223,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		}
 		case UIType::AssassinationSuccess:
 		{
-			m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Assassinate.png");
+			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Assassinate.png");
 			stream.str(std::string());
 			stream.clear();
 			if (subject.m_Gender == Gender::Male)
@@ -241,7 +240,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		}
 		case UIType::AssassinationFailure:
 		{
-			m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Assassinate.png");
+			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Assassinate.png");
 			stream.str(std::string());
 			stream.clear();
 			if (subject.m_Gender == Gender::Male)
@@ -258,7 +257,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		}
 		case UIType::Death:
 		{
-			m_MessageTypeTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Dead.png");
+			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Dead.png");
 			stream << "\njust died!";
 			m_MessageText.setString(stream.str());
 			break;
@@ -268,64 +267,57 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			break;
 		}
 	}
-
-	m_PositionX = m_Window->getSize().x * 0.5f - m_OutlineThickness - m_SizeX * 0.5f;
-	m_PositionY = m_Window->getSize().y * 0.5f - m_OutlineThickness - m_SizeY * 0.5f;
+	m_MessageTypeSprite.setTexture(m_MessageTypeTexture);
+	m_MessageTypeSprite.setPosition(m_PositionX + m_SizeX * 0.5f - m_SpriteSize * 0.25f, m_PositionY + m_SpriteSize * 0.75f);
+	m_MessageTypeSprite.setScale(m_SpriteSize * 0.5f / m_MessageTypeSprite.getLocalBounds().width, m_SpriteSize * 0.5f / m_MessageTypeSprite.getLocalBounds().height);
 
 	m_WindowShape.setFillColor(m_FillColor);
 	m_WindowShape.setOutlineThickness(m_OutlineThickness);
 	m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
 	m_WindowShape.setOutlineColor(m_OwnerColor);
-	m_WindowShape.setPosition(sf::Vector2f(m_PositionX, m_PositionY));
+	m_WindowShape.setPosition(m_PositionX, m_PositionY);
 
-	m_InstigatorPosition = sf::Vector2f(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 0.5f);
 	m_InstigatorShape.setFillColor(sf::Color::Transparent);
 	m_InstigatorShape.setOutlineThickness(m_OutlineThickness * 0.5f);
 	m_InstigatorShape.setOutlineColor(instigator.m_RegionColor);
 	m_InstigatorShape.setSize(sf::Vector2f(m_SpriteSize, m_SpriteSize));
-	m_InstigatorShape.setPosition(sf::Vector2f(m_InstigatorPosition));
+	m_InstigatorShape.setPosition(m_InstigatorSprite.getPosition());
 
-	m_MessageTypePosition = sf::Vector2f(m_PositionX + m_SizeX * 0.5f - m_SpriteSize * 0.25f, m_PositionY + m_SpriteSize * 0.75f);
-
-	m_SubjectPosition = sf::Vector2f(m_PositionX + m_SizeX - m_SpriteSize * 1.5f, m_PositionY + m_SpriteSize * 0.5f);
 	m_SubjectShape.setFillColor(sf::Color::Transparent);
 	m_SubjectShape.setOutlineThickness(m_OutlineThickness * 0.5f);
 	m_SubjectShape.setOutlineColor(m_SubjectColor);
 	m_SubjectShape.setSize(sf::Vector2f(m_SpriteSize, m_SpriteSize));
-	m_SubjectShape.setPosition(sf::Vector2f(m_SubjectPosition));
+	m_SubjectShape.setPosition(m_SubjectSprite.getPosition());
 
 	if (m_MessageType == UIType::MarriageRequest || m_MessageType == UIType::AllianceRequest || m_MessageType == UIType::PeaceRequest || m_MessageType == UIType::CallToArmsRequest)
 	{
-		m_AgreePosition = sf::Vector2f(m_PositionX + m_SizeX - m_SpriteSize * 1.75f, m_PositionY + m_SizeY - m_SpriteSize);
 		m_AgreeShape.setSize(sf::Vector2f(m_SpriteSize * 1.25f, m_SpriteSize * 0.5f));
 		m_AgreeShape.setFillColor(sf::Color::Transparent);
 		m_AgreeShape.setOutlineThickness(m_OutlineThickness * 0.5f);
 		m_AgreeShape.setOutlineColor(m_AgreeColor);
-		m_AgreeShape.setPosition(sf::Vector2f(m_AgreePosition));
+		m_AgreeShape.setPosition(m_PositionX + m_SizeX - m_SpriteSize * 1.75f, m_PositionY + m_SizeY - m_SpriteSize);
 		m_AgreeText.setFont(m_Font);
-		m_AgreeText.setCharacterSize((int)(m_CharacterSize * 0.5f));
+		m_AgreeText.setCharacterSize(m_CharacterSize);
 		m_AgreeText.setFillColor(m_AgreeColor);
 		m_AgreeText.setString(m_AgreeString);
-		m_AgreeText.setPosition(sf::Vector2f(m_AgreePosition));
+		m_AgreeText.setPosition(m_AgreeShape.getPosition());
 	}
 
-	m_DismissPosition = sf::Vector2f(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SizeY - m_SpriteSize);
 	m_DismissShape.setSize(sf::Vector2f(m_SpriteSize * 1.25f, m_SpriteSize * 0.5f));
 	m_DismissShape.setFillColor(sf::Color::Transparent);
 	m_DismissShape.setOutlineThickness(m_OutlineThickness * 0.5f);
 	m_DismissShape.setOutlineColor(m_DismissColor);
-	m_DismissShape.setPosition(sf::Vector2f(m_DismissPosition));
+	m_DismissShape.setPosition(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SizeY - m_SpriteSize);
 	m_DismissText.setFont(m_Font);
-	m_DismissText.setCharacterSize((int)(m_CharacterSize * 0.5f));
+	m_DismissText.setCharacterSize(m_CharacterSize);
 	m_DismissText.setFillColor(m_DismissColor);
 	m_DismissText.setString(m_DismissString);
-	m_DismissText.setPosition(sf::Vector2f(m_DismissPosition));
+	m_DismissText.setPosition(m_DismissShape.getPosition());
 
-	m_MessageTextPosition = sf::Vector2f(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 1.6f);
 	m_MessageText.setFont(m_Font);
-	m_MessageText.setCharacterSize((int)(m_CharacterSize * 0.5f));
+	m_MessageText.setCharacterSize(m_CharacterSize);
 	m_MessageText.setFillColor(m_OwnerColor);
-	m_MessageText.setPosition(sf::Vector2f(m_MessageTextPosition));
+	m_MessageText.setPosition(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 1.6f);
 
 	Time::pauseGame();
 }
@@ -344,25 +336,38 @@ void EventWindow::render()
 {
 	m_Window->draw(m_WindowShape);
 	m_Window->draw(m_InstigatorShape);
+	m_Window->draw(m_InstigatorSprite);
 	m_Window->draw(m_SubjectShape);
+	m_Window->draw(m_SubjectSprite);
+	m_Window->draw(m_MessageTypeSprite);
 	m_Window->draw(m_MessageText);
-	if (m_MessageType == UIType::MarriageRequest || m_MessageType == UIType::AllianceRequest || m_MessageType == UIType::PeaceRequest || m_MessageType == UIType::CallToArmsRequest)
+	if (m_MessageType == UIType::MarriageRequest || m_MessageType == UIType::AllianceRequest 
+	 || m_MessageType == UIType::PeaceRequest || m_MessageType == UIType::CallToArmsRequest)
 	{
 		m_Window->draw(m_AgreeShape);
 		m_Window->draw(m_AgreeText);
 	}
 	m_Window->draw(m_DismissShape);
 	m_Window->draw(m_DismissText);
-	updateSprites();
 }
 
 void EventWindow::moveWindow()
 {
 	Vector2D mousePosition = InputHandler::getUIMousePosition();
 	Vector2D diff = m_MousePosition - mousePosition;
-	m_PositionX -= diff.x;
-	m_PositionY -= diff.y;
 	m_MousePosition = mousePosition;
+
+	m_WindowShape.setPosition(m_WindowShape.getPosition().x - diff.x, m_WindowShape.getPosition().y - diff.y);
+	m_InstigatorShape.setPosition(m_InstigatorShape.getPosition().x - diff.x, m_InstigatorShape.getPosition().y - diff.y);
+	m_InstigatorSprite.setPosition(m_InstigatorSprite.getPosition().x - diff.x, m_InstigatorSprite.getPosition().y - diff.y);
+	m_SubjectShape.setPosition(m_SubjectShape.getPosition().x - diff.x, m_SubjectShape.getPosition().y - diff.y);
+	m_SubjectSprite.setPosition(m_SubjectSprite.getPosition().x - diff.x, m_SubjectSprite.getPosition().y - diff.y);
+	m_MessageTypeSprite.setPosition(m_MessageTypeSprite.getPosition().x - diff.x, m_MessageTypeSprite.getPosition().y - diff.y);
+	m_MessageText.setPosition(m_MessageText.getPosition().x - diff.x, m_MessageText.getPosition().y - diff.y);
+	m_DismissShape.setPosition(m_DismissShape.getPosition().x - diff.x, m_DismissShape.getPosition().y - diff.y);
+	m_DismissText.setPosition(m_DismissText.getPosition().x - diff.x, m_DismissText.getPosition().y - diff.y);
+	m_AgreeShape.setPosition(m_AgreeShape.getPosition().x - diff.x, m_AgreeShape.getPosition().y - diff.y);
+	m_AgreeText.setPosition(m_AgreeText.getPosition().x - diff.x, m_AgreeText.getPosition().y - diff.y);
 }
 
 void EventWindow::closeWindow()
@@ -465,7 +470,7 @@ void EventWindow::clickButton()
 			acceptRequest();
 			closeWindow();
 		}
-		else if (m_MovingWindow)
+		if (m_MovingWindow)
 		{
 			m_MovingWindow = false;
 		}
@@ -473,38 +478,20 @@ void EventWindow::clickButton()
 	else if (InputHandler::getRightMouseReleased())
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
+		CharacterWindow& characterWindow = *UIManager::get()->m_CharacterWindow;
 		if (m_InstigatorShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
-			UIManager::get()->m_CharacterWindow->m_CurrentCharacterID = m_InstigatorID;
-			UIManager::get()->m_CharacterWindow->checkIfPlayerCharacter();
-			UIManager::get()->m_CharacterWindow->updateInfo();
-			UIManager::get()->m_CharacterWindow->openWindow();
+			characterWindow.m_CurrentCharacterID = m_InstigatorID;
+			characterWindow.checkIfPlayerCharacter();
+			characterWindow.updateInfo();
+			characterWindow.openWindow();
 		}
 		else if (m_SubjectShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
-			UIManager::get()->m_CharacterWindow->m_CurrentCharacterID = m_SubjectID;
-			UIManager::get()->m_CharacterWindow->checkIfPlayerCharacter();
-			UIManager::get()->m_CharacterWindow->updateInfo();
-			UIManager::get()->m_CharacterWindow->openWindow();
+			characterWindow.m_CurrentCharacterID = m_SubjectID;
+			characterWindow.checkIfPlayerCharacter();
+			characterWindow.updateInfo();
+			characterWindow.openWindow();
 		}
 	}
-}
-
-void EventWindow::updateSprites()
-{
-	updateSprite(m_InstigatorSprite, m_InstigatorTexture, m_InstigatorPosition);
-	updateSprite(m_SubjectSprite, m_SubjectTexture, m_SubjectPosition);
-	updateSprite(m_MessageTypeSprite, m_MessageTypeTexture, m_MessageTypePosition, m_SpriteSize / 2);
-}
-
-void EventWindow::updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, int spriteSize)
-{
-	sprite.setTexture(texture, true);
-	sprite.setPosition(position);
-
-	sf::FloatRect localSize = sprite.getLocalBounds();
-
-	sprite.setScale(spriteSize / localSize.width, spriteSize / localSize.height);
-
-	m_Window->draw(sprite);
 }

@@ -25,7 +25,7 @@ public:
 	sf::Vector2f m_MainMenuPosition;
 	sf::RectangleShape m_MainMenuShape;
 	sf::Text m_MainMenuText;
-	const std::string m_MainMenuString = "Main Menu";
+	const char* m_MainMenuString = "Main Menu";
 
 	sf::RectangleShape m_BackgroundShape;
 
