@@ -15,6 +15,7 @@
 #include "Game/UI/UIManager.h"
 #include "Game/UI/WarWindow.h"
 #include "Game/Systems/HeraldicShieldManager.h"
+#include "Game/UI/RegionWindow.h"
 
 CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 {
@@ -59,6 +60,55 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 
 	AssetHandler& assetHandler = AssetHandler::get();
 
+	for (unsigned int index = 0; index < m_NumberOfRelations; index++)
+	{
+		sf::Sprite relationSprite;
+		switch (index)
+		{
+			case 0:
+			{
+				m_RegionTexture = assetHandler.getTextureAtPath("Assets/Graphics/Castle.png");
+				relationSprite.setTexture(m_RegionTexture);
+				break;
+			}
+			case 1:
+			{
+				m_ChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyMale.png");
+				relationSprite.setTexture(m_ChildTexture);
+				break;
+			}
+			case 2:
+			{
+				m_AllianceTexture = assetHandler.getTextureAtPath("Assets/Graphics/Alliance.png");
+				relationSprite.setTexture(m_AllianceTexture);
+				break;
+			}
+			case 3:
+			{
+				m_WarTexture = assetHandler.getTextureAtPath("Assets/Graphics/War.png");
+				relationSprite.setTexture(m_WarTexture);
+				break;
+			}
+			case 4:
+			{
+				m_ParentTexture = assetHandler.getTextureAtPath("Assets/Graphics/Father.png");
+				relationSprite.setTexture(m_ParentTexture);
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
+		relationSprite.setPosition(sf::Vector2f(m_SizeX * 0.1f + (m_SizeX * 0.1f * index), m_SizeY * 0.5f));
+		relationSprite.setScale(m_SpriteSize / relationSprite.getLocalBounds().width, m_SpriteSize / relationSprite.getLocalBounds().height);
+		
+		sf::Text relationText(m_DiplomacyStrings[index], m_Font, m_CharacterSize);
+		relationText.setPosition(relationSprite.getPosition());
+		m_DiplomacyTexts.push_back(relationText);
+		m_DiplomacySprites.push_back(relationSprite);
+	}
+
 	m_MaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/MalePortrait.jpg");
 	m_FemaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/FemalePortrait.jpg");
 
@@ -91,8 +141,8 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	m_MotherTexture = assetHandler.getTextureAtPath("Assets/Graphics/Mother.png");
 	m_FatherTexture = assetHandler.getTextureAtPath("Assets/Graphics/Father.png");
 
-	m_FatherPosition = sf::Vector2f(m_SizeX * 0.4f, m_SizeY * 0.55f);
-	m_MotherPosition = sf::Vector2f(m_SizeX * 0.4f, m_SizeY * 0.60f);
+	m_FatherPosition = sf::Vector2f(m_SizeX * 0.5f, m_SizeY * 0.55f);
+	m_MotherPosition = sf::Vector2f(m_SizeX * 0.5f, m_SizeY * 0.60f);
 
 	m_FatherShape.setFillColor(sf::Color::Transparent);
 	m_FatherShape.setOutlineThickness(m_OutlineThickness * 0.5f);
@@ -252,6 +302,15 @@ void CharacterWindow::render()
 			}
 		}
 
+		for (unsigned int index = 0; index < m_NumberOfRelations; index++)
+		{
+			m_Window->draw(m_DiplomacySprites[index]);
+			if (m_DiplomacyShowInfo.size() > 0 && m_DiplomacyShowInfo[index])
+			{
+				m_Window->draw(m_DiplomacyTexts[index]);
+			}
+		}
+
 		for (unsigned int index = 0; index < m_ChildrenShapes.size(); index++)
 		{
 			m_Window->draw(m_ChildrenShapes[index]);
@@ -292,10 +351,13 @@ void CharacterWindow::render()
 			}
 		}
 
-		for (unsigned int index = 0; index < m_OwnedRegionsTexts.size(); index++)
+		for (unsigned int index = 0; index < m_OwnedRegionShields.size(); index++)
 		{
-			HeraldicShieldManager::renderShield(*m_OwnedRegionsShields[index], m_OwnedRegionsTexts[index].getPosition());
-			m_Window->draw(m_OwnedRegionsTexts[index]);
+			HeraldicShieldManager::renderShield(m_OwnedRegionShields[index], m_OwnedRegionShapes[index].getPosition());
+			if (m_OwnedRegionsShowInfo.size() > 0 && m_OwnedRegionsShowInfo[index])
+			{
+				m_Window->draw(m_OwnedRegionsTexts[index]);
+			}
 		}
 	}
 }
@@ -355,11 +417,12 @@ void CharacterWindow::onDayChange()
 
 void CharacterWindow::clearInfo()
 {
-	m_OwnedRegionsTexts.clear();
-	m_OwnedRegionsShields.clear();
-
 	m_TraitsSprites.clear();
 	m_TraitsInfo.clear();
+
+	m_OwnedRegionShields.clear();
+	m_OwnedRegionShapes.clear();
+	m_OwnedRegionsTexts.clear();
 
 	m_ChildrenShapes.clear();
 	m_ChildrenSprites.clear();
@@ -485,7 +548,7 @@ void CharacterWindow::updateTraits()
 		sf::Text uglyInfo(m_UglyTrait, m_Font, m_CharacterSize);
 		uglyInfo.setFillColor(m_OwnerColor);
 		uglyInfo.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
-		sf::Sprite uglySprite(m_BeautifulTexture);
+		sf::Sprite uglySprite(m_UglyTexture);
 		uglySprite.setPosition(uglyInfo.getPosition() - sf::Vector2f(0.0f, m_SpriteSize));
 		uglySprite.setScale(m_SpriteSize / uglySprite.getLocalBounds().width, m_SpriteSize / uglySprite.getLocalBounds().height);
 		m_TraitsSprites.push_back(uglySprite);
@@ -515,9 +578,9 @@ void CharacterWindow::updateChildren()
 		sf::RectangleShape childShape(sf::Vector2f(m_SpriteSize, m_SpriteSize));
 		childShape.setOutlineThickness(m_OutlineThickness * 0.5f);
 		childShape.setFillColor(sf::Color::Transparent);
-		childShape.setPosition(sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.05f * (index)+m_SizeY * 0.55f));
+		childShape.setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f * index + m_SizeY * 0.55f));
 		sf::Text childNameText(child.m_Name, m_Font, m_CharacterSize);
-		childNameText.setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f * (index)+m_SizeY * 0.55f));
+		childNameText.setPosition(childShape.getPosition());
 		if (child.m_CharacterTitle != Title::Unlanded)
 		{
 			childShape.setOutlineColor(child.m_RegionColor);
@@ -564,7 +627,7 @@ void CharacterWindow::updateAllies()
 		allyShape.setOutlineColor(ally.m_RegionColor);
 		allyShape.setOutlineThickness(m_OutlineThickness * 0.5f);
 		allyShape.setFillColor(sf::Color::Transparent);
-		allyShape.setPosition(sf::Vector2f(m_SizeX * 0.2f, m_SizeY * 0.05f * (index) + m_SizeY * 0.55f));
+		allyShape.setPosition(sf::Vector2f(m_SizeX * 0.3f, m_SizeY * 0.05f * index + m_SizeY * 0.55f));
 		sf::Sprite allySprite;
 		if (ally.m_Gender == Gender::Male)
 		{
@@ -608,7 +671,7 @@ void CharacterWindow::updateWars()
 			warShape.setOutlineColor(opponent.m_RegionColor);
 			warShape.setOutlineThickness(m_OutlineThickness * 0.5f);
 			warShape.setFillColor(sf::Color::Transparent);
-			warShape.setPosition(sf::Vector2f(m_SizeX * 0.3f, m_SizeY * 0.05f * (index) + m_SizeY * 0.55f));
+			warShape.setPosition(sf::Vector2f(m_SizeX * 0.4f, m_SizeY * 0.05f * index + m_SizeY * 0.55f));
 			sf::Sprite opponetSprite;
 			if (opponent.m_Gender == Gender::Male)
 			{
@@ -640,17 +703,6 @@ void CharacterWindow::updateInfo()
 		m_Dead = m_CurrentCharacter->m_Dead;
 		m_Gender = m_CurrentCharacter->m_Gender;
 
-		Map& map = Map::get();
-		for (unsigned int index = 0; index < m_CurrentCharacter->m_OwnedRegionIDs.size(); index++)
-		{
-			MapRegion& mapRegion = map.getRegionById(m_CurrentCharacter->m_OwnedRegionIDs[index]);
-			sf::Text regionNameText(mapRegion.m_RegionName, m_Font, m_CharacterSize);
-			regionNameText.setPosition(sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.5f + index * m_SpriteSize));
-			regionNameText.setFillColor(m_OwnerColor);
-			m_OwnedRegionsTexts.push_back(regionNameText);
-			m_OwnedRegionsShields.push_back(&mapRegion.m_HeraldicShield);
-		}
-
 		if (m_CurrentCharacter->m_CharacterTitle != Title::Unlanded)
 		{
 			m_OwnerColor = m_CurrentCharacter->m_RegionColor;
@@ -671,12 +723,35 @@ void CharacterWindow::updateInfo()
 
 		m_WindowShape.setOutlineColor(m_OwnerColor);
 
+		for (sf::Text& text : m_DiplomacyTexts)
+		{
+			text.setFillColor(m_OwnerColor);
+		}
+
 		clearInfo();
 		updateParents();
 		updateTraits();
 		updateChildren();
 		updateAllies();
 		updateWars();
+
+		Map& map = Map::get();
+		unsigned int ownedRegionSize = m_CurrentCharacter->m_OwnedRegionIDs.size();
+		for (unsigned int index = 0; index < ownedRegionSize; index++)
+		{
+			sf::RectangleShape regionShape(sf::Vector2f(m_SpriteSize, m_SpriteSize));
+			regionShape.setFillColor(sf::Color::Transparent);
+			regionShape.setPosition(sf::Vector2f(m_SizeX * 0.1f, m_SizeY * 0.05f * index + m_SizeY * 0.55f));
+
+			MapRegion& mapRegion = map.getRegionById(m_CurrentCharacter->m_OwnedRegionIDs[index]);
+			sf::Text regionNameText(mapRegion.m_RegionName, m_Font, m_CharacterSize);
+			regionNameText.setPosition(regionShape.getPosition() + sf::Vector2f(0.0f, m_SpriteSize));
+			regionNameText.setFillColor(m_OwnerColor);
+
+			m_OwnedRegionsTexts.push_back(regionNameText);
+			m_OwnedRegionShapes.push_back(regionShape);
+			m_OwnedRegionShields.push_back(mapRegion.m_HeraldicShield);
+		}
 
 		std::stringstream stream;
 		if (m_CurrentCharacter->m_CharacterTitle != Title::Unlanded)
@@ -755,6 +830,7 @@ void CharacterWindow::openWindow()
 		m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
 		m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { CharacterWindow& characterWindow = *static_cast<CharacterWindow*>(data); characterWindow.onDayChange(); }, static_cast<void*>(this));
 		m_Visible = true;
+		InputHandler::setCharacterWindowOpen(true);
 	}
 }
 
@@ -766,6 +842,7 @@ void CharacterWindow::closeWindow()
 		m_WindowShape.setSize(sf::Vector2f());
 		m_Open = false;
 		m_Visible = false;
+		InputHandler::setCharacterWindowOpen(false);
 	}
 }
 
@@ -797,6 +874,36 @@ void CharacterWindow::clickButton()
 		else
 		{
 			m_ShowMotherName = false;
+		}
+		for (unsigned int index = 0; index < m_OwnedRegionShapes.size(); index++)
+		{
+			if (index + 1 > m_OwnedRegionsShowInfo.size())
+			{
+				m_OwnedRegionsShowInfo.push_back(false);
+			}
+			if (m_OwnedRegionShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				m_OwnedRegionsShowInfo[index] = true;
+			}
+			else
+			{
+				m_OwnedRegionsShowInfo[index] = false;
+			}
+		}
+		for (unsigned int index = 0; index < m_DiplomacySprites.size(); index++)
+		{
+			if (index + 1 > m_DiplomacyShowInfo.size())
+			{
+				m_DiplomacyShowInfo.push_back(false);
+			}
+			if (m_DiplomacySprites[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				m_DiplomacyShowInfo[index] = true;
+			}
+			else
+			{
+				m_DiplomacyShowInfo[index] = false;
+			}
 		}
 		for (unsigned int index = 0; index < m_ChildrenShapes.size(); index++)
 		{
@@ -838,13 +945,13 @@ void CharacterWindow::clickButton()
 			checkIfPlayerCharacter();
 			updateInfo();
 		}
-		if (m_FatherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		else if (m_FatherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			m_CurrentCharacterID = m_FatherID;
 			checkIfPlayerCharacter();
 			updateInfo();
 		}
-		if (m_MotherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		else if (m_MotherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			m_CurrentCharacterID = m_MotherID;
 			checkIfPlayerCharacter();
@@ -880,6 +987,19 @@ void CharacterWindow::clickButton()
 				checkIfPlayerCharacter();
 				updateInfo();
 				break;
+			}
+		}
+		UIManager& uiManager = *UIManager::get();
+		for (unsigned int index = 0; index < m_OwnedRegionShapes.size(); index++)
+		{
+			if (m_OwnedRegionShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				closeWindow();
+				RegionWindow& regionWindow = *uiManager.m_RegionWindow;
+				regionWindow.m_CurrentMapRegion = &Map::get().getRegionById(m_CurrentCharacter->m_OwnedRegionIDs[index]);
+				regionWindow.checkIfPlayerRegion();
+				regionWindow.openWindow();
+				regionWindow.updateInfo();
 			}
 		}
 	}
@@ -930,7 +1050,7 @@ void CharacterWindow::clickButton()
 			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				closeWindow();
-				InputHandler::setCharacterWindowOpen(false);
+				InputHandler::m_Inputs[LeftMouseReleased] = false;
 				uiManager.m_WarWindow->openWindow(m_WarAttackers[index], m_WarDefenders[index], Time::m_GameDate.m_Date);
 				break;
 			}
@@ -979,7 +1099,9 @@ void CharacterWindow::declareWar()
 
 void CharacterWindow::offerPeace()
 {
-	if (!m_PlayerCharacter->m_CurrentWars.empty())
+	WarManager& warManager = WarManager::get();
+	War* war = warManager.getWarAgainst(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
+	if (war != nullptr)
 	{
 		CharacterManager::get()->sendPeaceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, PeaceType::Enforce_Demands);
 

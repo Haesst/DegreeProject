@@ -359,6 +359,22 @@ void AIManager::update()
 				}
 			}
 
+			for (auto& war : characterManager->getCharacter(data.m_OwnerID).m_CurrentWars)
+			{
+				if (Time::m_GameDate.m_Date.m_Month - warManager.getWar(war)->getStartDate().m_Month >= 4)
+				{
+					bool sendOffer = (rand() % 100) < 20;
+
+					if (sendOffer)
+					{
+						if (warManager.isValidWar(*warManager.getWar(war)))
+						{
+							characterManager->sendPeaceOffer(data.m_OwnerID, warManager.getWar(war)->getOpposingForce(data.m_OwnerID), PeaceType::White_Peace);
+						}
+					}
+				}
+			}
+
 			handleHighestEvaluation(data);
 			data.m_ConsiderationAccu = 0;
 		}
@@ -791,7 +807,7 @@ void AIManager::handleHighestEvaluation(AIData& data)
 		}
 	}
 
-	if (highest < .5f)
+	if (highest < .3f)
 	{
 		data.m_CurrentAction = Action::NONE;
 		return;
@@ -800,8 +816,11 @@ void AIManager::handleHighestEvaluation(AIData& data)
 	switch (bestAction)
 	{
 	case Action::War:
-		warAction(data);
-		data.m_LastAction = Action::War;
+		if (data.m_LastAction != Action::War)
+		{
+			warAction(data);
+			data.m_LastAction = Action::War;
+		}
 		break;
 	case Action::Upgrade_Settlement:
 		upgradeAction(data);

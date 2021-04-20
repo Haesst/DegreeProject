@@ -248,6 +248,7 @@ void RegionWindow::openWindow()
 		m_Visible = true;
 		m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
 		m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { RegionWindow& regionWindow = *static_cast<RegionWindow*>(data); regionWindow.onDayChange(); }, static_cast<void*>(this));
+		InputHandler::setRegionWindowOpen(true);
 	}
 }
 
@@ -259,6 +260,7 @@ void RegionWindow::closeWindow()
 		m_Visible = false;
 		m_WindowShape.setSize(sf::Vector2f());
 		Time::m_GameDate.unsubscribeToDayChange(m_DaySubscriptionHandle);
+		InputHandler::setRegionWindowOpen(false);
 	}
 }
 

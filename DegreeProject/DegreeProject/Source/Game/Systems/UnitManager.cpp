@@ -397,6 +397,11 @@ void UnitManager::unitCombat(Unit& unit)
 {
 	int id = unitAtSquare(Map::get().convertToMap(unit.m_Position), unit.m_UnitID);
 
+	if (unit.m_FightingArmyID == id)
+	{
+		return;
+	}
+
 	if (id == INVALID_UNIT_ID)
 	{
 		return;
@@ -545,7 +550,7 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	if (win)
 	{
 		dismissUnit(enemyID);
-		getUnitWithId(enemyID).m_RepresentedForce = 0;
+		getUnitWithId(enemyID).m_RepresentedForce = getUnitWithId(enemyID).m_RepresentedForce * 0.5f;
 
 		if (war != nullptr)
 		{
@@ -567,7 +572,7 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	{
 		LOG_INFO("{0} won the battle against {1}", CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get()->getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
 		dismissUnit(unitID);
-		getUnitWithId(unitID).m_RepresentedForce = 0;
+		getUnitWithId(unitID).m_RepresentedForce = getUnitWithId(unitID).m_RepresentedForce * 0.5f;
 		
 		if (war != nullptr)
 		{

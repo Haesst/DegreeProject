@@ -28,9 +28,11 @@ public:
 	bool isEnemyOfEnemy(Unit& unit, Unit& enemyUnit);
 	bool isValidWar(War& war);
 	void update();
-	std::vector<War> getWarsOfCharacter(CharacterID ID);
 
+	std::vector<War> getWarsOfCharacter(CharacterID ID);
 	std::vector<CharacterID> getOpposingSide(CharacterID ID);
+
+	void removeAllyFromWar(CharacterID ally, int warHandle);
 
 	// Alliances
 	void createAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID);

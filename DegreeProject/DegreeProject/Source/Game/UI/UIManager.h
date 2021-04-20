@@ -34,6 +34,7 @@ public:
 	UIElement& getUIElement(UIID ID);
 	UIText& getUIText(UIID ID);
 	CharacterWindow* m_CharacterWindow = nullptr;
+	RegionWindow* m_RegionWindow = nullptr;
 	WarWindow* m_WarWindow = nullptr;
 	MainMenu* m_MainMenu = nullptr;
 	bool m_ActiveWarIcons = false;
@@ -45,7 +46,6 @@ private:
 	std::unordered_map<CharacterID, UIText*> m_UITexts;
 	std::vector<EventWindow*> m_EventWindows;
 	std::vector<WarIcon*> m_WarIcons;
-	RegionWindow* m_RegionWindow = nullptr;
 	StatBar* m_StatBar = nullptr;
 	DateBar* m_DateBar = nullptr;
 };

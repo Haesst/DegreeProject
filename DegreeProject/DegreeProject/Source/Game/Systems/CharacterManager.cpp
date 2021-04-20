@@ -316,6 +316,15 @@ void CharacterManager::callAllies(CharacterID character, int war)
 
 void CharacterManager::sendAllianceOffer(CharacterID sender, CharacterID reciever)
 {
+	if (getCharacter(sender).m_Dead || getCharacter(reciever).m_Dead)
+	{
+		if (getCharacter(sender).m_IsPlayerControlled)
+		{
+			UIManager::get()->createUIEventElement(reciever, sender, UIType::AllianceDeclined);
+		}
+		return;
+	}
+
 	if (!getCharacter(reciever).m_IsPlayerControlled)
 	{
 		if (AIManager::get().handleAllianceRequest(sender, reciever))
@@ -365,7 +374,6 @@ void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever, 
 			default:
 				break;
 			}
-
 
 			if (getCharacter(sender).m_IsPlayerControlled)
 			{
@@ -609,10 +617,26 @@ void CharacterManager::onMonthChange(Date)
 void CharacterManager::killCharacter(CharacterID characterID)
 {
 	Character& character = getCharacter(characterID);
+	WarManager* warManager = &WarManager::get();
 
 	for (auto& region : getCharacter(characterID).m_OwnedRegionIDs)
 	{
 		WarManager::get().invalidateWarsForRegion(region);
+	}
+
+	for (auto& war : character.m_CurrentWars)
+	{
+		War* currentWar = warManager->getWar(war);
+
+		if (currentWar->isAllyOf(characterID, currentWar->getAttacker()))
+		{
+			warManager->removeAllyFromWar(characterID, war);
+		}
+
+		else if (currentWar->isAllyOf(characterID, currentWar->getDefender()))
+		{
+			warManager->removeAllyFromWar(characterID, war);
+		}
 	}
 
 	if (!character.m_IsPlayerControlled)
@@ -938,13 +962,15 @@ void CharacterManager::onMarriage(CharacterID sender, CharacterID reciever)
 
 void CharacterManager::marry(CharacterID character, CharacterID spouse)
 {
-	if (getCharacter(spouse).m_Spouse != INVALID_CHARACTER_ID || getCharacter(character).m_Spouse != INVALID_CHARACTER_ID)
+	if (getCharacter(spouse).m_Dead || getCharacter(character).m_Dead
+	 || getCharacter(spouse).m_Spouse != INVALID_CHARACTER_ID || getCharacter(character).m_Spouse != INVALID_CHARACTER_ID
+	 || getCharacter(character).m_Gender == getCharacter(spouse).m_Gender
+	 || Time::m_GameDate.getAge(getCharacter(character).m_Birthday) < m_AgeOfConsent || Time::m_GameDate.getAge(getCharacter(spouse).m_Birthday) < m_AgeOfConsent)
 	{
-		return;
-	}
-
-	if (Time::m_GameDate.getAge(getCharacter(character).m_Birthday) < m_AgeOfConsent || Time::m_GameDate.getAge(getCharacter(spouse).m_Birthday) < m_AgeOfConsent)
-	{
+		if (getCharacter(character).m_IsPlayerControlled)
+		{
+			UIManager::get()->createUIEventElement(spouse, character, UIType::MarriageDeclined);
+		}
 		return;
 	}
 
@@ -953,6 +979,7 @@ void CharacterManager::marry(CharacterID character, CharacterID spouse)
 		if (AIManager::get().handleRecieveMarriageRequest(spouse, character))
 		{
 			onMarriage(character, spouse);
+			WarManager::get().createAlliance(character, spouse);
 			if (getCharacter(character).m_IsPlayerControlled)
 			{
 				UIManager::get()->createUIEventElement(spouse, character, UIType::MarriageAccepted);

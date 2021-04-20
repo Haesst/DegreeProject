@@ -5,6 +5,7 @@
 #include "Game/Data/Character.h"
 #include "Game/Data/Unit.h"
 #include "Game/Map/Map.h"
+#include "Game/UI/UIManager.h"
 
 WarManager* WarManager::m_Instance = nullptr;
 
@@ -234,6 +235,44 @@ std::vector<CharacterID> WarManager::getOpposingSide(CharacterID ID)
 	return enemies;
 }
 
+void WarManager::removeAllyFromWar(CharacterID ally, int warHandle)
+{
+	Character& character = CharacterManager::get()->getCharacter(ally);
+	War* war = getWar(warHandle);
+
+	if (war->isAttacker(ally))
+	{
+		unsigned int index = 0;
+
+		for (auto& allied : war->m_Attackers)
+		{
+			if (allied == ally)
+			{
+				war->m_Attackers.erase(war->m_Attackers.begin() + index);
+				return;
+			}
+
+			index++;
+		}
+	}
+
+	else if (war->isDefender(ally))
+	{
+		unsigned int index = 0;
+
+		for (auto& allied : war->m_Defenders)
+		{
+			if (allied == ally)
+			{
+				war->m_Defenders.erase(war->m_Defenders.begin() + index);
+				return;
+			}
+
+			index++;
+		}
+	}
+}
+
 War* WarManager::getWarAgainst(CharacterID character, CharacterID enemy)
 {
 	for (auto& pair : m_Wars)
@@ -254,6 +293,18 @@ War* WarManager::getWarAgainst(CharacterID character, CharacterID enemy)
 
 void WarManager::createAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID)
 {
+	unsigned int size = m_Alliances[characterOneID].size();
+	for (unsigned int index = 0; index < size; index++)
+	{
+		if (m_Alliances[characterOneID][index] == characterTwoID)
+		{
+			if (CharacterManager::get()->getCharacter(characterOneID).m_IsPlayerControlled)
+			{
+				UIManager::get()->createUIEventElement(characterTwoID, characterOneID, UIType::AllianceDeclined);
+			}
+			return;
+		}
+	}
 	m_Alliances[characterOneID].push_back(characterTwoID);
 	m_Alliances[characterTwoID].push_back(characterOneID);
 }

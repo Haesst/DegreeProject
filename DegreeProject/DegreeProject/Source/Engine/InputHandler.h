@@ -43,6 +43,9 @@ public:
 	static void setRegionWindowOpen(bool open);
 	static float getZoomSpeed();
 	static void setUIView(sf::View& uiView);
+
+	static bool m_Inputs[Inputs::PlayerUnitSelected + 1];
+
 private:
 	static void moveView(sf::RenderWindow& window, sf::View& view);
 	static void setMousePosition(int xPosition, int yPosition, const sf::RenderWindow& window);

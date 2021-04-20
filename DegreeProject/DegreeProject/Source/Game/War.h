@@ -19,6 +19,7 @@ struct War
 	void handleOccupiedRegions(CharacterID winningCharacter);
 
 	bool alliesInWar(CharacterID ID);
+	bool isAllyOf(CharacterID potentialAlly, CharacterID allyOf);
 
 	bool isAttacker(CharacterID ent);
 	bool isDefender(CharacterID ent);
@@ -29,6 +30,7 @@ struct War
 
 	CharacterID getAttacker();
 	CharacterID getDefender();
+	Date getStartDate();
 
 public:
 	int m_AttackerWarscore = 0;
@@ -47,4 +49,6 @@ public:
 
 private:
 	int m_Handle = -1;
+
+	Date m_StartDate;
 };

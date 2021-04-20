@@ -104,7 +104,6 @@ struct UpgradeSettlementConsideration : public Consideration
 		outRegion = targetRegionID;
 
 		float goldSurplusWeight = 0.0f;
-		float atWarWeight = 0.0f;
 
 		int buildingIndex = rand() % GameData::m_Buildings.size();
 
@@ -118,6 +117,7 @@ struct UpgradeSettlementConsideration : public Consideration
 				buildingId = pair.second.m_Id;
 				break;
 			}
+
 			++index;
 		}
 
@@ -130,20 +130,10 @@ struct UpgradeSettlementConsideration : public Consideration
 
 		if ((characterManager->getCharacter(context).m_CurrentGold - building.m_Cost) > 20)
 		{
-			goldSurplusWeight += .2f;
+			goldSurplusWeight += .5f;
 		}
 
-		if (characterManager->getCharacter(context).m_CurrentWars.size() > 0)
-		{
-			atWarWeight -= .5;
-		}
-		
-		else
-		{
-			atWarWeight += .4f;
-		}
-
-		return std::clamp(atWarWeight + goldSurplusWeight, 0.0f, 1.0f);
+		return std::clamp(goldSurplusWeight + (lowestTax * 0.1f), 0.0f, 1.0f);
 	}
 };
 
