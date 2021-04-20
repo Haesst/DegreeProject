@@ -421,7 +421,16 @@ void EventWindow::acceptRequest()
 			Character& playerCharacter = CharacterManager::get()->getPlayerCharacter();
 			for (War& war : wars)
 			{
-				playerCharacter.m_CurrentWars.push_back(war.getHandle());
+				if (war.isAttacker(m_InstigatorID))
+				{
+					war.addAttacker(playerCharacter.m_CharacterID);
+				}
+
+				else if (war.isDefender(m_InstigatorID))
+				{
+					war.addDefender(playerCharacter.m_CharacterID);
+				}
+
 				UIManager::get()->createWarIcon(war.getAttacker(), war.getDefender());
 			}
 			break;
