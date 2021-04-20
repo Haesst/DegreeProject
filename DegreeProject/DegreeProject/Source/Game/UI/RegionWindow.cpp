@@ -6,6 +6,8 @@
 #include "Game/Map/Map.h"
 #include "Game/Systems/CharacterManager.h"
 #include "Game/Data/Character.h"
+#include "Game/UI/CharacterWindow.h"
+#include "Game/UI/UIManager.h"
 
 RegionWindow::RegionWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 {
@@ -296,6 +298,19 @@ void RegionWindow::clickButton()
 				CharacterManager::get()->constructBuilding(m_PlayerCharacter->m_CharacterID, index + 1, m_CurrentRegionID, index);
 				break;
 			}
+		}
+	}
+	if (InputHandler::getRightMouseReleased())
+	{
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
+		CharacterWindow& characterWindow = *UIManager::get()->m_CharacterWindow;
+		if (m_CharacterSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		{
+			closeWindow();
+			characterWindow.m_CurrentCharacterID = m_CurrentMapRegion->m_OwnerID;
+			characterWindow.checkIfPlayerCharacter();
+			characterWindow.updateInfo();
+			characterWindow.openWindow();
 		}
 	}
 }

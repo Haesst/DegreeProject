@@ -48,6 +48,7 @@ void WarIcon::deactivate()
 {
 	m_WarIconShape.setSize(sf::Vector2f());
 	Time::m_GameDate.unsubscribeToDayChange(m_DaySubscriptionHandle);
+	m_DaySubscriptionHandle = -1;
 	m_Active = false;
 }
 
@@ -115,7 +116,7 @@ void WarIcon::updateInfo()
 		stream.str(std::string());
 		stream.clear();
 	}
-	else
+	else if(m_DaySubscriptionHandle > 0)
 	{
 		deactivate();
 	}

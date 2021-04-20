@@ -104,7 +104,7 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 		relationSprite.setScale(m_SpriteSize / relationSprite.getLocalBounds().width, m_SpriteSize / relationSprite.getLocalBounds().height);
 		
 		sf::Text relationText(m_DiplomacyStrings[index], m_Font, m_CharacterSize);
-		relationText.setPosition(relationSprite.getPosition());
+		relationText.setPosition(relationSprite.getPosition() - sf::Vector2f(0.0f, m_SpriteSize));
 		m_DiplomacyTexts.push_back(relationText);
 		m_DiplomacySprites.push_back(relationSprite);
 	}
@@ -491,7 +491,7 @@ void CharacterWindow::updateTraits()
 	stream.str(std::string());
 	stream.clear();
 
-	stream << m_Fertility << std::fixed << std::setprecision(1) << m_CurrentCharacter->m_Fertility;
+	stream << m_Fertility << std::fixed << std::setprecision(2) << m_CurrentCharacter->m_Fertility;
 	sf::Text fertilityInfo(stream.str(), m_Font, m_CharacterSize);
 	fertilityInfo.setFillColor(m_OwnerColor);
 	fertilityInfo.setPosition(sf::Vector2f(m_SpriteSize * (m_TraitsInfo.size()) + m_SizeX * 0.2f, m_SizeY * 0.42f + m_SpriteSize));
