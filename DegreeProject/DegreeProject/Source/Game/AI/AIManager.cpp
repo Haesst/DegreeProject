@@ -807,7 +807,7 @@ void AIManager::handleHighestEvaluation(AIData& data)
 		}
 	}
 
-	if (highest < .5f)
+	if (highest < .3f)
 	{
 		data.m_CurrentAction = Action::NONE;
 		return;
@@ -816,8 +816,11 @@ void AIManager::handleHighestEvaluation(AIData& data)
 	switch (bestAction)
 	{
 	case Action::War:
-		warAction(data);
-		data.m_LastAction = Action::War;
+		if (data.m_LastAction != Action::War)
+		{
+			warAction(data);
+			data.m_LastAction = Action::War;
+		}
 		break;
 	case Action::Upgrade_Settlement:
 		upgradeAction(data);
