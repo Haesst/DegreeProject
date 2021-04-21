@@ -553,10 +553,15 @@ float AIManager::warDecision(CharacterID ID)
 	}
 
 	float actionScore = (goldEvaluation * enemyArmyEvaluation) - allyDebuff;
-	//actionScore += personality.m_DeclareWarModifier;
 
-	if (actionScore <= .5f)
+	for (auto& war : WarManager::get().getWarsForRegion(getWarmindOfCharacter(ID).m_WargoalRegionId))
 	{
+		actionScore -= .1f;
+	}
+
+	if (actionScore <= .3f)
+	{
+		getWarmindOfCharacter(ID).m_WargoalRegionId = -1;
 		return 0.0f;
 	}
 

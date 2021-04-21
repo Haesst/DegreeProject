@@ -206,6 +206,21 @@ void WarManager::update()
 	}
 }
 
+std::vector<int> WarManager::getWarsForRegion(int regionID)
+{
+	std::vector<int> wars;
+
+	for (auto& war : m_Wars)
+	{
+		if (war.second.m_WargoalRegion == regionID)
+		{
+			wars.push_back(war.second.getHandle());
+		}
+	}
+
+	return wars;
+}
+
 std::vector<War> WarManager::getWarsOfCharacter(CharacterID ID)
 {
 	std::vector<War> wars;
