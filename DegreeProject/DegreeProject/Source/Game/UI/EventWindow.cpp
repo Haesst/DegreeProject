@@ -43,9 +43,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 	{
 		m_SubjectTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harriet.jpg");
 	}
-	m_SubjectSprite.setTexture(m_SubjectTexture);
-	m_SubjectSprite.setPosition(m_PositionX + m_SizeX - m_SpriteSize * 1.5f, m_PositionY + m_SpriteSize * 0.5f);
-	m_SubjectSprite.setScale(m_SpriteSize / m_SubjectSprite.getLocalBounds().width, m_SpriteSize / m_SubjectSprite.getLocalBounds().height);
+	setSprite(m_SubjectSprite, m_SubjectTexture, { m_PositionX + m_SizeX - m_SpriteSize * 1.5f, m_PositionY + m_SpriteSize * 0.5f });
 
 	std::stringstream stream;
 	if (instigator.m_Gender == Gender::Male)
@@ -58,9 +56,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		m_InstigatorTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harriet.jpg");
 		stream << m_FemaleTitles[(unsigned int)instigator.m_CharacterTitle];
 	}
-	m_InstigatorSprite.setTexture(m_InstigatorTexture);
-	m_InstigatorSprite.setPosition(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 0.5f);
-	m_InstigatorSprite.setScale(m_SpriteSize / m_InstigatorSprite.getLocalBounds().width, m_SpriteSize / m_InstigatorSprite.getLocalBounds().height);
+	setSprite(m_InstigatorSprite, m_InstigatorTexture, { m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 0.5f });
 
 	stream << instigator.m_Name;
 	switch (m_MessageType)
@@ -82,7 +78,6 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			{
 				stream << "\ndeclined your marriage proposal!";
 			}
-			m_MessageText.setString(stream.str());
 			break;
 		}
 		case UIType::AllianceRequest:
@@ -102,18 +97,14 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			{
 				stream << "\ndeclined your alliance proposal!";
 			}
-			m_MessageText.setString(stream.str());
 			break;
 		}
 		case UIType::AllianceBroken:
 		{
 			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Alliance.png");
-
 			stream.str(std::string());
 			stream.clear();
 			stream << "You're alliance with " << subject.m_Name << " is broken.";
-			m_MessageText.setString(stream.str());
-
 			break;
 		}
 		case UIType::CallToArmsRequest:
@@ -133,7 +124,6 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			{
 				stream << "\ndeclined your call to arms!";
 			}
-			m_MessageText.setString(stream.str());
 			break;
 		}
 		case UIType::PeaceRequest:
@@ -153,7 +143,6 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			{
 				stream << "\ndeclined your peace offer!";
 			}
-			m_MessageText.setString(stream.str());
 			break;
 		}
 		case UIType::TriedToDeclareWarOnAlly:
@@ -184,21 +173,18 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 				stream.clear();
 				stream << "You can't declare war on an ally!";
 			}
-			m_MessageText.setString(stream.str());
 			break;
 		}
 		case UIType::Gift:
 		{
 			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Coins.png");
 			stream << "\nsent you a gift of " << std::fixed << std::setprecision(1) << giftAmount << " gold!";
-			m_MessageText.setString(stream.str());
 			break;
 		}
 		case UIType::Pregnant:
 		{
 			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Pregnant.png");
 			stream << "\njust got pregnant!";
-			m_MessageText.setString(stream.str());
 			break;
 		}
 		case UIType::ChildBirth:
@@ -210,13 +196,11 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 				{
 					m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyMale.png");
 					stream << "\njust gave birth to a healthy baby boy!" << "\nHis name is " << child.m_Name << ".";
-					m_MessageText.setString(stream.str());
 				}
 				else
 				{
 					m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyFemale.png");
 					stream << "\njust gave birth to a healthy baby girl!" << "\nHer name is " << child.m_Name << ".";
-					m_MessageText.setString(stream.str());
 				}
 			}
 			break;
@@ -235,7 +219,6 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 				stream << m_FemaleTitles[(unsigned int)subject.m_CharacterTitle];
 			}
 			stream << subject.m_Name << "\ndied under suspicious circumstances.";
-			m_MessageText.setString(stream.str());
 			break;
 		}
 		case UIType::AssassinationFailure:
@@ -252,14 +235,12 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 				stream << m_FemaleTitles[(unsigned int)subject.m_CharacterTitle];
 			}
 			stream << subject.m_Name << "\nevaded an assassination!";
-			m_MessageText.setString(stream.str());
 			break;
 		}
 		case UIType::Death:
 		{
 			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Dead.png");
 			stream << "\njust died!";
-			m_MessageText.setString(stream.str());
 			break;
 		}
 		default:
@@ -267,57 +248,25 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			break;
 		}
 	}
-	m_MessageTypeSprite.setTexture(m_MessageTypeTexture);
-	m_MessageTypeSprite.setPosition(m_PositionX + m_SizeX * 0.5f - m_SpriteSize * 0.25f, m_PositionY + m_SpriteSize * 0.75f);
-	m_MessageTypeSprite.setScale(m_SpriteSize * 0.5f / m_MessageTypeSprite.getLocalBounds().width, m_SpriteSize * 0.5f / m_MessageTypeSprite.getLocalBounds().height);
+	setSprite(m_MessageTypeSprite, m_MessageTypeTexture, { m_PositionX + m_SizeX * 0.5f - m_SpriteSize * 0.25f, m_PositionY + m_SpriteSize * 0.75f }, (unsigned int)(m_SpriteSize * 0.5f));
+	setText(m_MessageText, m_Font, m_CharacterSize, m_OwnerColor, { m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 1.6f }, stream.str().c_str());
+	stream.str(std::string());
+	stream.clear();
 
-	m_WindowShape.setFillColor(m_FillColor);
-	m_WindowShape.setOutlineThickness(m_OutlineThickness);
-	m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
-	m_WindowShape.setOutlineColor(m_OwnerColor);
-	m_WindowShape.setPosition(m_PositionX, m_PositionY);
+	setShape(m_WindowShape, m_FillColor, m_OwnerColor, m_OutlineThickness, { m_SizeX, m_SizeY }, { m_PositionX, m_PositionY });
 
-	m_InstigatorShape.setFillColor(sf::Color::Transparent);
-	m_InstigatorShape.setOutlineThickness(m_OutlineThickness * 0.5f);
-	m_InstigatorShape.setOutlineColor(instigator.m_RegionColor);
-	m_InstigatorShape.setSize(sf::Vector2f(m_SpriteSize, m_SpriteSize));
-	m_InstigatorShape.setPosition(m_InstigatorSprite.getPosition());
+	setShape(m_InstigatorShape, m_TransparentColor, m_InstigatorColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, m_InstigatorSprite.getPosition());
 
-	m_SubjectShape.setFillColor(sf::Color::Transparent);
-	m_SubjectShape.setOutlineThickness(m_OutlineThickness * 0.5f);
-	m_SubjectShape.setOutlineColor(m_SubjectColor);
-	m_SubjectShape.setSize(sf::Vector2f(m_SpriteSize, m_SpriteSize));
-	m_SubjectShape.setPosition(m_SubjectSprite.getPosition());
+	setShape(m_SubjectShape, m_TransparentColor, m_SubjectColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, m_SubjectSprite.getPosition());
 
 	if (m_MessageType == UIType::MarriageRequest || m_MessageType == UIType::AllianceRequest || m_MessageType == UIType::PeaceRequest || m_MessageType == UIType::CallToArmsRequest)
 	{
-		m_AgreeShape.setSize(sf::Vector2f(m_SpriteSize * 1.25f, m_SpriteSize * 0.5f));
-		m_AgreeShape.setFillColor(sf::Color::Transparent);
-		m_AgreeShape.setOutlineThickness(m_OutlineThickness * 0.5f);
-		m_AgreeShape.setOutlineColor(m_AgreeColor);
-		m_AgreeShape.setPosition(m_PositionX + m_SizeX - m_SpriteSize * 1.75f, m_PositionY + m_SizeY - m_SpriteSize);
-		m_AgreeText.setFont(m_Font);
-		m_AgreeText.setCharacterSize(m_CharacterSize);
-		m_AgreeText.setFillColor(m_AgreeColor);
-		m_AgreeText.setString(m_AgreeString);
-		m_AgreeText.setPosition(m_AgreeShape.getPosition());
+		setShape(m_AgreeShape, m_TransparentColor, m_AgreeColor, m_OutlineThickness * 0.5f, { m_SpriteSize * 1.25f, m_SpriteSize * 0.5f }, { m_PositionX + m_SizeX - m_SpriteSize * 1.75f, m_PositionY + m_SizeY - m_SpriteSize });
+		setText(m_AgreeText, m_Font, m_CharacterSize, m_AgreeColor, m_AgreeShape.getPosition(), m_AgreeString);
 	}
 
-	m_DismissShape.setSize(sf::Vector2f(m_SpriteSize * 1.25f, m_SpriteSize * 0.5f));
-	m_DismissShape.setFillColor(sf::Color::Transparent);
-	m_DismissShape.setOutlineThickness(m_OutlineThickness * 0.5f);
-	m_DismissShape.setOutlineColor(m_DismissColor);
-	m_DismissShape.setPosition(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SizeY - m_SpriteSize);
-	m_DismissText.setFont(m_Font);
-	m_DismissText.setCharacterSize(m_CharacterSize);
-	m_DismissText.setFillColor(m_DismissColor);
-	m_DismissText.setString(m_DismissString);
-	m_DismissText.setPosition(m_DismissShape.getPosition());
-
-	m_MessageText.setFont(m_Font);
-	m_MessageText.setCharacterSize(m_CharacterSize);
-	m_MessageText.setFillColor(m_OwnerColor);
-	m_MessageText.setPosition(m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 1.6f);
+	setShape(m_DismissShape, m_TransparentColor, m_DismissColor, m_OutlineThickness * 0.5f, { m_SpriteSize * 1.25f, m_SpriteSize * 0.5f }, { m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SizeY - m_SpriteSize });
+	setText(m_DismissText, m_Font, m_CharacterSize, m_DismissColor, m_DismissShape.getPosition(), m_DismissString);
 
 	Time::pauseGame();
 }
@@ -506,4 +455,29 @@ void EventWindow::clickButton()
 			characterWindow.openWindow();
 		}
 	}
+}
+
+void EventWindow::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position)
+{
+	shape.setFillColor(fillColor);
+	shape.setOutlineColor(outlineColor);
+	shape.setOutlineThickness(outlineThickness);
+	shape.setSize(size);
+	shape.setPosition(position);
+}
+
+void EventWindow::setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string)
+{
+	text.setFont(font);
+	text.setCharacterSize(characterSize);
+	text.setFillColor(fillColor);
+	text.setPosition(position);
+	text.setString(string);
+}
+
+void EventWindow::setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize)
+{
+	sprite.setTexture(texture, true);
+	sprite.setScale(spriteSize / sprite.getLocalBounds().width, spriteSize / sprite.getLocalBounds().height);
+	sprite.setPosition(position);
 }

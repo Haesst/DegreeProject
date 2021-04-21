@@ -21,19 +21,22 @@ public:
 	void dismissRequest();
 	void acceptRequest();
 	void clickButton();
+	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
+	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string = "");
+	void setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize = m_SpriteSize);
 	
 	sf::RectangleShape m_WindowShape;
 
 	sf::RectangleShape m_DismissShape;
 	sf::Text m_DismissText;
 	sf::Color m_DismissColor = sf::Color(210, 32, 60);
-	const std::string m_DismissString = "Dismiss";
+	const char* m_DismissString = "Dismiss";
 
 	sf::RectangleShape m_AgreeShape;
 	sf::Text m_AgreeText;
 	sf::Color m_AgreeColor = sf::Color(67, 175, 17);
-	const std::string m_AgreeString = "Agree";
-
+	const char* m_AgreeString = "Agree";
+	sf::Color m_TransparentColor = sf::Color::Transparent;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Black;
 	float m_SizeX = 400.0f;
