@@ -37,48 +37,45 @@ void DateBar::start()
 
 	float positionX = m_Window->getSize().x - m_SizeX - m_OutlineThickness;
 	float positionY = m_Window->getSize().y - m_SizeY - m_OutlineThickness;
-	Vector2D position = { positionX, positionY };
 
+	sf::Vector2f position = { positionX, positionY };
 	setShape(m_WindowShape, m_FillColor, m_OwnerColor, m_OutlineThickness, sf::Vector2f(m_SizeX, m_SizeY), position);
 
 	sf::Color buttonFillColor = sf::Color::Transparent;
 	sf::Vector2f buttonSize = sf::Vector2f(sizeY + sizeX, sizeY + sizeX);
 	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 	{
-		Vector2D buttonPos = { positionX + m_ButtonThickness * 1.25f + m_ButtonThickness * 4.5f * index, positionY + m_SizeY * 0.25f - m_ButtonThickness * 0.25f };
+		sf::Vector2f buttonPos = { positionX + m_ButtonThickness * 1.25f + m_ButtonThickness * 4.5f * index, positionY + m_SizeY * 0.25f - m_ButtonThickness * 0.25f };
 		setShape(m_ButtonShapes[index], buttonFillColor, m_OwnerColor, m_ButtonThickness * 0.25f, buttonSize, buttonPos);
 	}
 
 	sf::Vector2f speedSize = sf::Vector2f(sizeY * 0.5f + sizeX, sizeY + sizeX);
 	for (unsigned int index = 0; index < m_NumberOfSpeeds; index++)
 	{
-		Vector2D buttonPos = { positionX + m_ButtonThickness * 14.5f + m_ButtonThickness * 2.5f * index, positionY + m_SizeY * 0.25f - m_ButtonThickness * 0.25f };
+		sf::Vector2f buttonPos = { positionX + m_ButtonThickness * 14.5f + m_ButtonThickness * 2.5f * index, positionY + m_SizeY * 0.25f - m_ButtonThickness * 0.25f };
 		setShape(m_SpeedShapes[index], buttonFillColor, m_OwnerColor, m_ButtonThickness * 0.25f, speedSize, buttonPos);
 	}
 
 	sf::Vector2f buttonShapeSize = sf::Vector2f(sizeX, sizeY);
 
-	Vector2D pauseButtonPosition = { positionX + m_ButtonThickness * 2, positionY + m_SizeY * 0.25f };
+	sf::Vector2f pauseButtonPosition = { positionX + m_ButtonThickness * 2, positionY + m_SizeY * 0.25f };
 	setShape(m_PauseLeftShape, m_OwnerColor, buttonFillColor, 0.0f, buttonShapeSize, pauseButtonPosition);
 
-	Vector2D pauseRightPosition = { positionX + m_ButtonThickness * 3, positionY + m_SizeY * 0.25f };
+	sf::Vector2f pauseRightPosition = { positionX + m_ButtonThickness * 3, positionY + m_SizeY * 0.25f };
 	setShape(m_PauseRightShape, m_OwnerColor, buttonFillColor, 0.0f, buttonShapeSize, pauseRightPosition);
 
-	Vector2D decreaseSpeedPosition = { positionX + m_ButtonThickness * 8.5f, positionY + m_SizeY * 0.5f - m_ButtonThickness * 0.25f };
+	sf::Vector2f decreaseSpeedPosition = { positionX + m_ButtonThickness * 8.5f, positionY + m_SizeY * 0.5f - m_ButtonThickness * 0.25f };
 	setShape(m_DecreaseSpeedShape, m_OwnerColor, buttonFillColor, 0.0f, buttonShapeSize, decreaseSpeedPosition);
 	m_DecreaseSpeedShape.setRotation(90.0f);
 
-	Vector2D increaseSpeedHorizontalPos = { positionX + m_ButtonThickness * 13, positionY + m_SizeY * 0.5f - m_ButtonThickness * 0.25f };
+	sf::Vector2f increaseSpeedHorizontalPos = { positionX + m_ButtonThickness * 13, positionY + m_SizeY * 0.5f - m_ButtonThickness * 0.25f };
 	setShape(m_IncreaseSpeedHorizontalShape, m_OwnerColor, buttonFillColor, 0.0f, buttonShapeSize, increaseSpeedHorizontalPos);
 	m_IncreaseSpeedHorizontalShape.setRotation(90.0f);
 
-	Vector2D increaseSpeedVerticalPos = { positionX + m_ButtonThickness * 11.5f, positionY + m_SizeY * 0.25f };
+	sf::Vector2f increaseSpeedVerticalPos = { positionX + m_ButtonThickness * 11.5f, positionY + m_SizeY * 0.25f };
 	setShape(m_IncreaseSpeedVerticalShape, m_OwnerColor, buttonFillColor, 0.0f, buttonShapeSize, increaseSpeedVerticalPos);
 
-	m_DateText.setFont(m_Font);
-	m_DateText.setCharacterSize(m_CharacterSize);
-	m_DateText.setFillColor(m_OwnerColor);
-	m_DateText.setPosition(positionX + m_SizeX * 0.475f, positionY + m_OutlineThickness * 0.5f);
+	setText(m_DateText, m_Font, m_CharacterSize, m_OwnerColor, sf::Vector2f(positionX + m_SizeX * 0.475f, positionY + m_OutlineThickness * 0.5f));
 }
 
 void DateBar::update()
@@ -191,11 +188,19 @@ void DateBar::updateOwnerColor(sf::Color& newColor)
 	}
 }
 
-void DateBar::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f& size, Vector2D& position)
+void DateBar::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position)
 {
 	shape.setFillColor(fillColor);
 	shape.setOutlineColor(outlineColor);
 	shape.setOutlineThickness(outlineThickness);
 	shape.setSize(size);
-	shape.setPosition(position.x, position.y);
+	shape.setPosition(position);
+}
+
+void DateBar::setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position)
+{
+	text.setFont(font);
+	text.setCharacterSize(characterSize);
+	text.setFillColor(fillColor);
+	text.setPosition(position);
 }
