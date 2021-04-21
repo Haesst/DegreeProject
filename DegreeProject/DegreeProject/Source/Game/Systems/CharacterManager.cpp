@@ -8,6 +8,7 @@
 #include "Game/Map/Map.h"
 #include "Game/AI/AIManager.h"
 #include "Game/UI/UIManager.h"
+#include "Game/UI/DateBar.h"
 #include "Game/Game.h"
 #include "Game/Player.h"
 #include "Game/Data/Trait.h"
@@ -733,6 +734,7 @@ void CharacterManager::handleInheritance(Character& character)
 			m_PlayerCharacter = &child;
 
 			AIManager::get().deactivateAI(child.m_CharacterID);
+			UIManager::get().m_DateBar->updateOwnerColor(child.m_RegionColor);
 		}
 		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
 		{
@@ -825,6 +827,7 @@ void CharacterManager::handleInheritance(Character& character)
 			m_PlayerCharacterID = child.m_CharacterID;
 			m_PlayerCharacter = &child;
 			AIManager::get().deactivateAI(child.m_CharacterID);
+			UIManager::get().m_DateBar->updateOwnerColor(child.m_RegionColor);
 		}
 	}
 	else
