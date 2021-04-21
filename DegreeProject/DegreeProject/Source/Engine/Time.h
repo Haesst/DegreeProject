@@ -15,6 +15,7 @@ public:
 	static void increaseGameSpeed();
 	static void setGameSpeed(int speedLevel);
 	static bool gamePaused() { return m_GamePaused; };
+	static unsigned long m_Ticks;
 
 private:
 	static float m_DeltaTime;

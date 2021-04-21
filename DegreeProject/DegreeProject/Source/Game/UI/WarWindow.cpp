@@ -593,11 +593,11 @@ void WarWindow::sendPeaceOffer(PeaceType type)
 	{
 		enemy = m_AttackerCharacterIDs.front();
 	}
-	if (!playerCharacter.m_CurrentWars.empty())
+	if (!WarManager::get().getWarHandlesOfCharacter(playerCharacter.m_CharacterID).empty())
 	{
 		CharacterManager::get().sendPeaceOffer(playerCharacter.m_CharacterID, enemy, type);
 
-		if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && playerCharacter.m_CurrentWars.size() == 0)
+		if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && WarManager::get().getWarHandlesOfCharacter(playerCharacter.m_CharacterID).empty())
 		{
 			Game::m_BattleSound.stop();
 			Game::m_Sound.play();

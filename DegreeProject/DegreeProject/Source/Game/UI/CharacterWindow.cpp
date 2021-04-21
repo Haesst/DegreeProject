@@ -53,44 +53,44 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 		sf::Sprite relationSprite;
 		switch (index)
 		{
-			case 0:
-			{
-				m_RegionTexture = assetHandler.getTextureAtPath("Assets/Graphics/Castle.png");
-				relationSprite.setTexture(m_RegionTexture);
-				break;
-			}
-			case 1:
-			{
-				m_ChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyMale.png");
-				relationSprite.setTexture(m_ChildTexture);
-				break;
-			}
-			case 2:
-			{
-				m_AllianceTexture = assetHandler.getTextureAtPath("Assets/Graphics/Alliance.png");
-				relationSprite.setTexture(m_AllianceTexture);
-				break;
-			}
-			case 3:
-			{
-				m_WarTexture = assetHandler.getTextureAtPath("Assets/Graphics/War.png");
-				relationSprite.setTexture(m_WarTexture);
-				break;
-			}
-			case 4:
-			{
-				m_ParentTexture = assetHandler.getTextureAtPath("Assets/Graphics/Father.png");
-				relationSprite.setTexture(m_ParentTexture);
-				break;
-			}
-			default:
-			{
-				break;
-			}
+		case 0:
+		{
+			m_RegionTexture = assetHandler.getTextureAtPath("Assets/Graphics/Castle.png");
+			relationSprite.setTexture(m_RegionTexture);
+			break;
+		}
+		case 1:
+		{
+			m_ChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyMale.png");
+			relationSprite.setTexture(m_ChildTexture);
+			break;
+		}
+		case 2:
+		{
+			m_AllianceTexture = assetHandler.getTextureAtPath("Assets/Graphics/Alliance.png");
+			relationSprite.setTexture(m_AllianceTexture);
+			break;
+		}
+		case 3:
+		{
+			m_WarTexture = assetHandler.getTextureAtPath("Assets/Graphics/War.png");
+			relationSprite.setTexture(m_WarTexture);
+			break;
+		}
+		case 4:
+		{
+			m_ParentTexture = assetHandler.getTextureAtPath("Assets/Graphics/Father.png");
+			relationSprite.setTexture(m_ParentTexture);
+			break;
+		}
+		default:
+		{
+			break;
+		}
 		}
 		relationSprite.setPosition(m_SizeX * 0.1f + (m_SizeX * 0.1f * index), m_SizeY * 0.5f);
 		relationSprite.setScale(m_SpriteSize / relationSprite.getLocalBounds().width, m_SpriteSize / relationSprite.getLocalBounds().height);
-		
+
 		sf::Text relationText(m_DiplomacyStrings[index], m_Font, m_CharacterSize);
 		relationText.setPosition(relationSprite.getPosition().x, relationSprite.getPosition().y - m_SpriteSize);
 		m_DiplomacyTexts.push_back(relationText);
@@ -459,7 +459,7 @@ void CharacterWindow::updateParents()
 void CharacterWindow::updateTraits()
 {
 	std::stringstream stream;
-	
+
 	sf::Sprite genderSprite;
 	if (m_Gender == Gender::Male)
 	{
@@ -638,46 +638,44 @@ void CharacterWindow::updateWars()
 {
 	CharacterManager& characterManager = CharacterManager::get();
 	WarManager& warManager = WarManager::get();
-	War* war = nullptr;
-	unsigned int sizeWars = m_CurrentCharacter->m_CurrentWars.size();
+	unsigned int sizeWars = warManager.getWarHandlesOfCharacter(m_CurrentCharacterID).size();
 	for (unsigned int index = 0; index < sizeWars; index++)
 	{
-		war = warManager.getWar(m_CurrentCharacter->m_CurrentWars[index]);
-		if (war != nullptr)
+		int warHandle = warManager.getWarHandlesOfCharacter(m_CurrentCharacter->m_CharacterID)[index];
+		War* currentWar = warManager.getWar(warHandle);
+		CharacterID defenderID = currentWar->getDefender();
+		CharacterID attackerID = currentWar->getAttacker();
+		CharacterID opponentID;
+
+		if (currentWar->isAttacker(m_CurrentCharacterID))
 		{
-			CharacterID defenderID = war->getDefender();
-			CharacterID attackerID = war->getAttacker();
-			CharacterID opponentID;
-			if (war->isAttacker(m_CurrentCharacterID))
-			{
-				opponentID = defenderID;
-			}
-			else
-			{
-				opponentID = attackerID;
-			}
-			Character& opponent = characterManager.getCharacter(opponentID);
-			sf::RectangleShape warShape(sf::Vector2f(m_SpriteSize, m_SpriteSize));
-			warShape.setOutlineColor(opponent.m_RegionColor);
-			warShape.setOutlineThickness(m_OutlineThickness * 0.5f);
-			warShape.setFillColor(sf::Color::Transparent);
-			warShape.setPosition(m_SizeX * 0.4f, m_SizeY * 0.05f * index + m_SizeY * 0.55f);
-			sf::Sprite opponetSprite;
-			if (opponent.m_Gender == Gender::Male)
-			{
-				opponetSprite.setTexture(m_MaleCharacterTexture);
-			}
-			else
-			{
-				opponetSprite.setTexture(m_FemaleCharacterTexture);
-			}
-			opponetSprite.setPosition(warShape.getPosition());
-			opponetSprite.setScale(m_SpriteSize / opponetSprite.getLocalBounds().width, m_SpriteSize / opponetSprite.getLocalBounds().height);
-			m_WarShapes.push_back(warShape);
-			m_WarSprites.push_back(opponetSprite);
-			m_WarDefenders.push_back(defenderID);
-			m_WarAttackers.push_back(attackerID);
+			opponentID = defenderID;
 		}
+		else
+		{
+			opponentID = attackerID;
+		}
+		Character& opponent = characterManager.getCharacter(opponentID);
+		sf::RectangleShape warShape(sf::Vector2f(m_SpriteSize, m_SpriteSize));
+		warShape.setOutlineColor(opponent.m_RegionColor);
+		warShape.setOutlineThickness(m_OutlineThickness * 0.5f);
+		warShape.setFillColor(sf::Color::Transparent);
+		warShape.setPosition(m_SizeX * 0.4f, m_SizeY * 0.05f * index + m_SizeY * 0.55f);
+		sf::Sprite opponetSprite;
+		if (opponent.m_Gender == Gender::Male)
+		{
+			opponetSprite.setTexture(m_MaleCharacterTexture);
+		}
+		else
+		{
+			opponetSprite.setTexture(m_FemaleCharacterTexture);
+		}
+		opponetSprite.setPosition(warShape.getPosition());
+		opponetSprite.setScale(m_SpriteSize / opponetSprite.getLocalBounds().width, m_SpriteSize / opponetSprite.getLocalBounds().height);
+		m_WarShapes.push_back(warShape);
+		m_WarSprites.push_back(opponetSprite);
+		m_WarDefenders.push_back(defenderID);
+		m_WarAttackers.push_back(attackerID);
 	}
 }
 
@@ -987,7 +985,8 @@ void CharacterWindow::clickButton()
 			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				InputHandler::setRightMouseReleased(false);
-				m_CurrentCharacterID = warManager.getWar(m_CurrentCharacter->m_CurrentWars[index])->getOpposingForce(m_CurrentCharacterID);
+				std::vector<int> wars = warManager.getWarHandlesOfCharacter(m_CurrentCharacter->m_CharacterID);
+				m_CurrentCharacterID = warManager.getWar(wars[index])->getOpposingForce(m_CurrentCharacterID);
 				checkIfPlayerCharacter();
 				updateInfo();
 				break;
@@ -1082,9 +1081,6 @@ void CharacterWindow::declareWar()
 	{
 		int warHandle = WarManager::get().createWar(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, m_CurrentRegionID);
 
-		m_PlayerCharacter->m_CurrentWars.push_back(warHandle);
-		m_CurrentCharacter->m_CurrentWars.push_back(warHandle);
-
 		AIManager& aiManager = AIManager::get();
 		aiManager.getWarmindOfCharacter(m_CurrentCharacterID).m_Active = true;
 		aiManager.getWarmindOfCharacter(m_CurrentCharacterID).m_Opponent = m_PlayerCharacter->m_CharacterID;
@@ -1112,7 +1108,7 @@ void CharacterWindow::offerPeace()
 	{
 		CharacterManager::get().sendPeaceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, PeaceType::Enforce_Demands);
 
-		if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && m_PlayerCharacter->m_CurrentWars.size() == 0)
+		if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && warManager.getWarHandlesOfCharacter(m_PlayerCharacter->m_CharacterID).size() == 0)
 		{
 			Game::m_BattleSound.stop();
 			Game::m_Sound.play();

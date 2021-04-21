@@ -48,7 +48,7 @@ struct Character
 	unsigned int m_RaisedArmySize = 0;
 	unsigned int m_CurrentMaxArmySize = 0;
 
-	std::vector<int> m_CurrentWars = std::vector<int>();
+	//std::vector<int> m_CurrentWars = std::vector<int>();
 	
 	int m_PersonalityIndex = 0; // Change to personality id, move away from indices
 

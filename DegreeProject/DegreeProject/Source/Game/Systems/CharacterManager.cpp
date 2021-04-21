@@ -282,14 +282,12 @@ void CharacterManager::callAllies(CharacterID character, int war)
 				{
 					aiManager->getWarmindOfCharacter(ID).m_Active = true;
 					currentWar->m_Attackers.push_back(ID);
-					getCharacter(ID).m_CurrentWars.push_back(currentWar->getHandle());
 				}
 	
 				else if (character == currentWar->getDefender())
 				{
 					aiManager->getWarmindOfCharacter(ID).m_Active = true;
 					currentWar->m_Defenders.push_back(ID);
-					getCharacter(ID).m_CurrentWars.push_back(currentWar->getHandle());
 				}
 
 				if (character == m_PlayerCharacterID)
@@ -626,13 +624,13 @@ void CharacterManager::killCharacter(CharacterID characterID)
 		WarManager::get().invalidateWarsForRegion(region);
 	}
 
-	for (auto& war : character.m_CurrentWars)
+	for (auto& war : warManager->getWarHandlesOfCharacter(characterID))
 	{
 		War* currentWar = warManager->getWar(war);
 
 		if (currentWar->isAllyOf(characterID, currentWar->getAttacker()))
 		{
-			warManager->removeAllyFromWar(characterID, war);
+			warManager->removeAllyFromWar(characterID, currentWar->getHandle());
 		}
 
 		else if (currentWar->isAllyOf(characterID, currentWar->getDefender()))
@@ -884,7 +882,7 @@ void CharacterManager::handleInheritance(Character& character)
 			}
 		}
 	}
-	character.m_CurrentWars.clear();
+
 	character.m_IsPlayerControlled = false;
 	UIManager::get().SetRealmTextAsConquered(character.m_CharacterID);
 

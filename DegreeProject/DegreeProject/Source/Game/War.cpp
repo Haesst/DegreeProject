@@ -77,38 +77,26 @@ void War::addWarscore(CharacterID ID, int warScore)
 
 void War::endWar(CharacterID winningCharacter)
 {
-	unsigned int index = 0;
 	for (auto ID : m_Attackers)
 	{
-		index = 0;
-
-		for (auto& war : CharacterManager::get().getCharacter(ID).m_CurrentWars)
+		for (auto& war : WarManager::get().getWarHandlesOfCharacter(ID))
 		{
 			if (war == getHandle())
 			{
-				CharacterManager::get().getCharacter(ID).m_CurrentWars.erase(CharacterManager::get().getCharacter(ID).m_CurrentWars.begin() + index);
-
 				if (CharacterManager::get().getCharacter(ID).m_IsPlayerControlled == false)
 				{
 					AIManager::get().getWarmindOfCharacter(ID).m_PrioritizedWarHandle = -1;
 				}
-
-				break;
 			}
-			index++;
 		}
 	}
 
 	for (auto ID : m_Defenders)
 	{
-		for (auto& war : CharacterManager::get().getCharacter(ID).m_CurrentWars)
+		for (auto& war : WarManager::get().getWarHandlesOfCharacter(ID))
 		{
-			index = 0;
-
 			if (war == getHandle())
 			{
-				CharacterManager::get().getCharacter(ID).m_CurrentWars.erase(CharacterManager::get().getCharacter(ID).m_CurrentWars.begin() + index);
-
 				if (CharacterManager::get().getCharacter(ID).m_IsPlayerControlled == false)
 				{
 					AIManager::get().getWarmindOfCharacter(ID).m_PrioritizedWarHandle = -1;
@@ -116,7 +104,6 @@ void War::endWar(CharacterID winningCharacter)
 
 				break;
 			}
-			index++;
 		}
 	}
 
@@ -137,7 +124,6 @@ void War::addAttacker(CharacterID character)
 	}
 
 	m_Attackers.push_back(character);
-	CharacterManager::get().getCharacter(character).m_CurrentWars.push_back(m_Handle);
 }
 
 void War::addDefender(CharacterID character)
@@ -151,7 +137,6 @@ void War::addDefender(CharacterID character)
 	}
 
 	m_Defenders.push_back(character);
-	CharacterManager::get().getCharacter(character).m_CurrentWars.push_back(m_Handle);
 }
 
 void War::handleOccupiedRegions(CharacterID winningCharacter)
@@ -274,7 +259,7 @@ bool War::isDefender(CharacterID ent)
 
 int War::getHandle()
 {
-	return m_Handle;
+ 	return m_Handle;
 }
 
 CharacterID War::getOpposingForce(CharacterID character)
