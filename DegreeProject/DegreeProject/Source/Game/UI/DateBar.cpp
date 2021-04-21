@@ -39,24 +39,24 @@ void DateBar::start()
 	float positionY = m_Window->getSize().y - m_SizeY - m_OutlineThickness;
 
 	sf::Vector2f position = { positionX, positionY };
-	setShape(m_WindowShape, m_FillColor, m_OwnerColor, m_OutlineThickness, sf::Vector2f(m_SizeX, m_SizeY), position);
+	setShape(m_WindowShape, m_FillColor, m_OwnerColor, m_OutlineThickness, { m_SizeX, m_SizeY }, position);
 
 	sf::Color buttonFillColor = sf::Color::Transparent;
-	sf::Vector2f buttonSize = sf::Vector2f(sizeY + sizeX, sizeY + sizeX);
+	sf::Vector2f buttonSize = { sizeY + sizeX, sizeY + sizeX };
 	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 	{
 		sf::Vector2f buttonPos = { positionX + m_ButtonThickness * 1.25f + m_ButtonThickness * 4.5f * index, positionY + m_SizeY * 0.25f - m_ButtonThickness * 0.25f };
 		setShape(m_ButtonShapes[index], buttonFillColor, m_OwnerColor, m_ButtonThickness * 0.25f, buttonSize, buttonPos);
 	}
 
-	sf::Vector2f speedSize = sf::Vector2f(sizeY * 0.5f + sizeX, sizeY + sizeX);
+	sf::Vector2f speedSize = { sizeY * 0.5f + sizeX, sizeY + sizeX };
 	for (unsigned int index = 0; index < m_NumberOfSpeeds; index++)
 	{
 		sf::Vector2f buttonPos = { positionX + m_ButtonThickness * 14.5f + m_ButtonThickness * 2.5f * index, positionY + m_SizeY * 0.25f - m_ButtonThickness * 0.25f };
 		setShape(m_SpeedShapes[index], buttonFillColor, m_OwnerColor, m_ButtonThickness * 0.25f, speedSize, buttonPos);
 	}
 
-	sf::Vector2f buttonShapeSize = sf::Vector2f(sizeX, sizeY);
+	sf::Vector2f buttonShapeSize = { sizeX, sizeY };
 
 	sf::Vector2f pauseButtonPosition = { positionX + m_ButtonThickness * 2, positionY + m_SizeY * 0.25f };
 	setShape(m_PauseLeftShape, m_OwnerColor, buttonFillColor, 0.0f, buttonShapeSize, pauseButtonPosition);
@@ -75,7 +75,7 @@ void DateBar::start()
 	sf::Vector2f increaseSpeedVerticalPos = { positionX + m_ButtonThickness * 11.5f, positionY + m_SizeY * 0.25f };
 	setShape(m_IncreaseSpeedVerticalShape, m_OwnerColor, buttonFillColor, 0.0f, buttonShapeSize, increaseSpeedVerticalPos);
 
-	setText(m_DateText, m_Font, m_CharacterSize, m_OwnerColor, sf::Vector2f(positionX + m_SizeX * 0.475f, positionY + m_OutlineThickness * 0.5f));
+	setText(m_DateText, m_Font, m_CharacterSize, m_OwnerColor, { positionX + m_SizeX * 0.475f, positionY + m_OutlineThickness * 0.5f });
 }
 
 void DateBar::update()

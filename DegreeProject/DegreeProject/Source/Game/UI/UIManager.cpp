@@ -173,6 +173,7 @@ void UIManager::start()
 
 void UIManager::update()
 {
+	m_MainMenu->update();
 	m_ActiveEventWindows = false;
 	for (int i = m_EventWindows.size() - 1; i >= 0; i--)
 	{
@@ -228,7 +229,6 @@ void UIManager::update()
 	}
 	m_CharacterWindow->update();
 	m_RegionWindow->update();
-	m_MainMenu->update();
 }
 
 void UIManager::render()

@@ -21,6 +21,7 @@ public:
 	sf::Color m_BackgroundFillColor = sf::Color(0, 0, 0, 100);
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Black;
+	sf::Color m_TransparentColor = sf::Color::Transparent;
 
 	sf::Vector2f m_MainMenuPosition;
 	sf::RectangleShape m_MainMenuShape;
@@ -42,4 +43,6 @@ public:
 	void closeWindow();
 	void clickButton();
 	void handleWindow();
+	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
+	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string = "");
 };

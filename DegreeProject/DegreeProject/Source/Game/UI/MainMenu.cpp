@@ -13,35 +13,22 @@ MainMenu::MainMenu(UIID id, sf::Font font, Vector2D, Vector2D size)
 
 	m_Window = Window::getWindow();
 
-	m_BackgroundShape.setFillColor(m_BackgroundFillColor);
-	m_BackgroundShape.setSize(sf::Vector2f((float)m_Window->getSize().x, (float)m_Window->getSize().y));
+	setShape(m_BackgroundShape, m_BackgroundFillColor, m_TransparentColor, 0.0f, { (float)m_Window->getSize().x, (float)m_Window->getSize().y }, {  });
 
-	m_MainMenuPosition = sf::Vector2f(m_PositionX - m_SizeX * 0.5f, m_PositionY - m_SizeY * 0.5f);
-	m_MainMenuShape.setFillColor(m_FillColor);
-	m_MainMenuShape.setOutlineThickness(m_OutlineThickness);
-	m_MainMenuShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
-	m_MainMenuShape.setPosition(m_MainMenuPosition);
-
-	m_MainMenuText.setFont(m_Font);
-	m_MainMenuText.setCharacterSize(m_CharacterSize);
-	m_MainMenuText.setString(m_MainMenuString);
-	m_MainMenuText.setPosition(m_MainMenuPosition.x + m_SizeX * 0.25f, m_MainMenuPosition.y);
+	m_MainMenuPosition = { m_PositionX - m_SizeX * 0.5f, m_PositionY - m_SizeY * 0.5f };
+	setShape(m_MainMenuShape, m_FillColor, m_OwnerColor, m_OutlineThickness, { m_SizeX, m_SizeY }, m_MainMenuPosition);
+	setText(m_MainMenuText, m_Font, m_CharacterSize, m_OwnerColor, { m_MainMenuPosition.x + m_SizeX * 0.25f, m_MainMenuPosition.y }, m_MainMenuString);
 
 	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 	{
-		sf::Vector2f buttonPosition = sf::Vector2f(m_MainMenuPosition.x + m_SizeX * 0.25f, m_MainMenuPosition.y + 100 + 100 * index);
+		sf::Vector2f buttonPosition = { m_MainMenuPosition.x + m_SizeX * 0.25f, m_MainMenuPosition.y + 100 + 100 * index };
 
-		sf::RectangleShape buttonShape(sf::Vector2f(m_SizeX * 0.25f, m_SizeY * 0.1f));
-		buttonShape.setFillColor(sf::Color::Transparent);
-		buttonShape.setOutlineThickness(m_OutlineThickness);
-		buttonShape.setPosition(buttonPosition);
+		sf::RectangleShape buttonShape;
+		setShape(buttonShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness, { m_SizeX * 0.25f, m_SizeY * 0.1f }, buttonPosition);
 		m_ButtonShapes.push_back(buttonShape);
 
 		sf::Text buttonText;
-		buttonText.setFont(m_Font);
-		buttonText.setCharacterSize(m_CharacterSize);
-		buttonText.setString(m_ButtonStrings[index]);
-		buttonText.setPosition(buttonPosition);
+		setText(buttonText, m_Font, m_CharacterSize, m_OwnerColor, buttonPosition, m_ButtonStrings[index]);
 		m_ButtonTexts.push_back(buttonText);
 	}
 }
@@ -130,4 +117,22 @@ void MainMenu::handleWindow()
 	{
 		closeWindow();
 	}
+}
+
+void MainMenu::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position)
+{
+	shape.setFillColor(fillColor);
+	shape.setOutlineColor(outlineColor);
+	shape.setOutlineThickness(outlineThickness);
+	shape.setSize(size);
+	shape.setPosition(position);
+}
+
+void MainMenu::setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string)
+{
+	text.setFont(font);
+	text.setCharacterSize(characterSize);
+	text.setFillColor(fillColor);
+	text.setString(string);
+	text.setPosition(position);
 }

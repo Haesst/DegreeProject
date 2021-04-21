@@ -24,7 +24,7 @@ void UIText::update()
 {
 	if (!m_Conquered)
 	{
-		m_CountryNameText.setPosition(sf::Vector2f(m_Window->mapCoordsToPixel(sf::Vector2f(m_PositionX, m_PositionY))));
+		m_CountryNameText.setPosition(sf::Vector2f(m_Window->mapCoordsToPixel({ m_PositionX, m_PositionY })));
 	}
 }
 void UIText::render()
@@ -40,10 +40,10 @@ void UIText::adjustText()
 	if (m_OwnedRegionIDs.size() > 0)
 	{
 		m_Conquered = false;
-		std::vector<SquareData> mapData = Map::get().m_MapSquareData;
+		std::vector<SquareData>& mapData = Map::get().m_MapSquareData;
 		Vector2DInt leftMostPosition = { Map::get().width, 0 };
 		Vector2DInt rightMostPosition = { 0, 0 };
-		for (SquareData square : mapData)
+		for (SquareData& square : mapData)
 		{
 			for (unsigned int regionId : m_OwnedRegionIDs)
 			{
@@ -63,13 +63,17 @@ void UIText::adjustText()
 		Vector2D leftMostPositionScreen = Map::convertToScreen(leftMostPosition);
 		Vector2D diagonal = Map::convertToScreen(rightMostPosition) - leftMostPositionScreen;
 		float offsetY = 1.0f;
-		if ((unsigned int)(diagonal.x * 0.1f) > m_MinCharacterSize)
+		if ((unsigned int)(diagonal.x * 0.1f) >= m_MinCharacterSize && (unsigned int)(diagonal.x * 0.1f) <= m_MaxCharacterSize)
 		{
 			m_CharacterSize = (unsigned int)(diagonal.x * 0.1f);
 		}
-		else
+		else if ((unsigned int)(diagonal.x * 0.1f) < m_MinCharacterSize)
 		{
 			m_CharacterSize = m_MinCharacterSize;
+		}
+		else
+		{
+			m_CharacterSize = m_MaxCharacterSize;
 		}
 		m_OutlineThickness = diagonal.x * 0.001f;
 		m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
