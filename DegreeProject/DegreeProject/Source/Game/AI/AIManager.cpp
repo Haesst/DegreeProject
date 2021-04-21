@@ -293,8 +293,6 @@ void AIManager::update()
 {
 	CharacterManager& characterManager = CharacterManager::get();
 	WarManager& warManager = WarManager::get();
-	UnitManager& unitManager = UnitManager::get();
-	Map& map = Map::get();
 
 	if (Time::gamePaused())
 	{
@@ -308,7 +306,6 @@ void AIManager::update()
 
 	if (Time::m_Ticks % m_tickRate1 == 1)
 	{
-		LOG_INFO("TICK UPDATE 1");
 		for (auto& data : m_TickPrio[1])
 		{
 			UpdateAIData(characterManager, data, warManager);
@@ -317,7 +314,6 @@ void AIManager::update()
 
 	if (Time::m_Ticks % m_tickRate2 == 1)
 	{
-		LOG_INFO("TICK UPDATE 2");
 		for (auto& data : m_TickPrio[2])
 		{
 			UpdateAIData(characterManager, data, warManager);
@@ -326,7 +322,6 @@ void AIManager::update()
 
 	if (Time::m_Ticks % m_tickRate3 == 1)
 	{
-		LOG_INFO("TICK UPDATE 3");
 		for (auto& data : m_TickPrio[3])
 		{
 			UpdateAIData(characterManager, data, warManager);
@@ -677,19 +672,16 @@ void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target
 			m_Orders.orderFightEnemyArmy(warmind, unit);
 			return;
 		}
-
-		else
-		{
-			if (Map::get().regionOccupiedByFriendlies(CharacterManager::get().getCharacter(unit.m_Owner), warmind.m_WargoalRegionId))
-			{
-				m_Orders.orderAttackEnemyRegion(unit, enemyUnit);
-				return;
-			}
-
-			//Siege wargoal region
-			m_Orders.orderSiegeCapital(warmind, unit);
-		}
 	}
+
+	if (Map::get().regionOccupiedByFriendlies(CharacterManager::get().getCharacter(unit.m_Owner), warmind.m_WargoalRegionId))
+	{
+		m_Orders.orderAttackEnemyRegion(unit, enemyUnit);
+		return;
+	}
+
+	//Siege wargoal region
+	m_Orders.orderSiegeCapital(warmind, unit);
 }
 
 void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*target*/, Unit& unit, Unit& enemyUnit)
@@ -728,7 +720,6 @@ void AIManager::warAction(AIData& data)
 	}
 
 	int warHandle = WarManager::get().createWar(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent, getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
-	War* war = WarManager::get().getWar(warHandle);
 
 	characterManager.callAllies(data.m_OwnerID, warHandle);
 
