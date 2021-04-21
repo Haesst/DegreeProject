@@ -436,6 +436,20 @@ void CharacterManager::dailyUpdates(Character& character)
 	{
 		progressPregnancy(character);
 	}
+
+	if (!character.m_Dead)
+	{
+		unsigned int age = Time::m_GameDate.getAge(character.m_Birthday);
+		if (age > character.m_DeadlyAge)
+		{
+			float dieChance = ((float)((age - character.m_DeadlyAge) * (age - character.m_DeadlyAge)) / (character.m_AgeMax * character.m_AgeMax)) * m_MortalityRate;
+			bool die = chancePerPercent(dieChance);
+			if (die)
+			{
+				killCharacter(character.m_CharacterID);
+			}
+		}
+	}
 }
 
 void CharacterManager::tryForPregnancy(Character& character)
@@ -598,20 +612,6 @@ void CharacterManager::onMonthChange(Date)
 		incomingGold -= (character.m_RaisedArmySize * 0.1f); // Todo: Declare army cost somewhere
 		character.m_Income = incomingGold; // Todo: Change to prediction for upcoming month instead of showing last month.
 		character.m_CurrentGold += incomingGold;
-
-		if (!character.m_Dead)
-		{	
-			unsigned int age = Time::m_GameDate.getAge(character.m_Birthday);
-			if (age > character.m_DeadlyAge)
-			{
-				float dieChance = ((float)((age - character.m_DeadlyAge) * (age - character.m_DeadlyAge)) / (character.m_AgeMax * character.m_AgeMax)) * m_MortalityRate;
-				bool die = chancePerPercent(dieChance);
-				if (die)
-				{
-					killCharacter(character.m_CharacterID);
-				}
-			}
-		}
 	}
 }
 

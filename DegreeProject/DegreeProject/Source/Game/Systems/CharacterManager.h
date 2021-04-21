@@ -111,5 +111,5 @@ private:
 
 	Date m_LastDayUpdate;
 
-	float m_MortalityRate = 4.0f;
+	float m_MortalityRate = 0.13f;
 };
