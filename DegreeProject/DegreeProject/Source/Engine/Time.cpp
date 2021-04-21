@@ -7,6 +7,7 @@ float Time::m_CurrentSpeedMultiplier = 1.0f;
 float Time::m_SpeedModifer = 0.3f;
 int Time::m_MinSpeedLevel = 1;
 int Time::m_MaxSpeedLevel = 5;
+unsigned long Time::m_Ticks = 0;
 int Time::m_CurrentSpeedLevel = 3;
 bool Time::m_GamePaused = false;
 sf::Clock Time::m_DeltaClock;
@@ -16,6 +17,11 @@ void Time::updateTime()
 {
 	m_DeltaTime = m_GamePaused || !Window::getWindow()->isOpen() ? 0 : m_DeltaClock.restart().asSeconds() * m_CurrentSpeedMultiplier;
 	m_GameDate.update();
+
+	if (m_GamePaused == false)
+	{
+		m_Ticks++;
+	}
 }
 
 void Time::pauseGame()

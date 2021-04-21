@@ -105,51 +105,47 @@ void AIManager::initAI(CharacterID ID)
 	data.m_LastAction = Action::NONE;
 	data.m_CurrentAction = Action::NONE;
 	m_AIDatas.push_back(data);
+
+	int randomTickRate = (rand() % 3) + 1;
+	data.m_TickPrio = randomTickRate;
+	m_TickPrio[randomTickRate].push_back(data);
 }
 
 void AIManager::deactivateAI(CharacterID ID)
 {
 	unsigned int index = 0;
-	unsigned int indexToDelete = INT_MAX;
 
 	for (auto& warmind : m_Warminds)
 	{
 		if (warmind.m_OwnerID == ID)
 		{
-			indexToDelete = index;
 			break;
 		}
 
 		index++;
 	}
 
-	if (indexToDelete == INT_MAX)
+	m_Warminds.erase(m_Warminds.begin() + index);
+
+	index = 0;
+	int tickRate = getAIDataofCharacter(ID).m_TickPrio;
+
+	if (tickRate == -1)
 	{
 		return;
 	}
 
-	m_Warminds.erase(m_Warminds.begin() + indexToDelete);
-
-	index = 0;
-	indexToDelete = 0;
-
-	for (auto& data : m_AIDatas)
+	for (auto& data : m_TickPrio[tickRate])
 	{
 		if (data.m_OwnerID == ID)
 		{
-			indexToDelete = index;
 			break;
 		}
 
 		index++;
 	}
 
-	if (indexToDelete == INT_MAX)
-	{
-		return;
-	}
-
-	m_AIDatas.erase(m_AIDatas.begin() + index);
+	m_TickPrio[tickRate].erase(m_TickPrio[tickRate].begin() + index);
 }
 
 bool AIManager::handleRecieveMarriageRequest(CharacterID reciever, CharacterID sender)
@@ -244,7 +240,7 @@ bool AIManager::handleAllianceRequest(CharacterID sender, CharacterID reciever)
 	float goldEval = goldConsideration.evaluate(sender, reciever);
 	float armyEval = armyConsideration.evaluate(sender, reciever);
 	float actionScore = armyEval * goldEval;
-	
+
 	//Todo: Add opinion
 	if (actionScore > .5f)
 	{
@@ -280,8 +276,8 @@ bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, i
 			}
 		}
 	}
-	
-	for (auto& handle : CharacterManager::get().getCharacter(reciever).m_CurrentWars)
+
+	for (auto& handle : WarManager::get().getWarHandlesOfCharacter(reciever))
 	{
 		if (handle == currentWar->getHandle())
 		{
@@ -300,148 +296,167 @@ void AIManager::update()
 	UnitManager& unitManager = UnitManager::get();
 	Map& map = Map::get();
 
-	for (auto& data : m_AIDatas)
+	if (Time::gamePaused())
 	{
-		if (characterManager.getCharacter(data.m_OwnerID).m_CharacterTitle == Title::Unlanded)
+		return;
+	}
+
+	if (Time::m_Ticks == 1)
+	{
+		return;
+	}
+
+	if (Time::m_Ticks % m_tickRate1 == 1)
+	{
+		LOG_INFO("TICK UPDATE 1");
+		for (auto& data : m_TickPrio[1])
+		{
+			UpdateAIData(characterManager, data, warManager);
+		}
+	}
+
+	if (Time::m_Ticks % m_tickRate2 == 1)
+	{
+		LOG_INFO("TICK UPDATE 2");
+		for (auto& data : m_TickPrio[2])
+		{
+			UpdateAIData(characterManager, data, warManager);
+		}
+	}
+
+	if (Time::m_Ticks % m_tickRate3 == 1)
+	{
+		LOG_INFO("TICK UPDATE 3");
+		for (auto& data : m_TickPrio[3])
+		{
+			UpdateAIData(characterManager, data, warManager);
+		}
+	}
+}
+
+void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& characterManager, UnitManager& unitManager, WarManager& warManager)
+{
+	if (!warmind.m_Active)
+	{
+		if (getAIDataofCharacter(warmind.m_OwnerID).m_CurrentAction == Action::War)
+		{
+			getAIDataofCharacter(warmind.m_OwnerID).m_CurrentAction = Action::NONE;
+		}
+
+		if (warmind.m_PrioritizedWarHandle != -1)
+		{
+			warmind.m_PrioritizedWarHandle = -1;
+		}
+
+		return;
+	}
+
+	else if (warmind.m_Active && warmind.m_PrioritizedWarHandle == -1)
+	{
+		warmind.m_PrioritizedWarHandle = considerPrioritizedWar(warmind);
+	}
+
+	if (warManager.getWarHandlesOfCharacter(warmind.m_OwnerID).empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
+	{
+		unitManager.dismissUnit(unitManager.getUnitOfCharacter(warmind.m_OwnerID).m_UnitID);
+		warmind.m_Active = false;
+	}
+
+	else
+	{
+		if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
+		{
+			considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warManager.getWar(warmind.m_PrioritizedWarHandle)->getOpposingForce(warmind.m_OwnerID));
+		}
+
+		else
+		{
+			Character& character = characterManager.getCharacter(warmind.m_OwnerID);
+			if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f && character.m_MaxArmySize > 0)
+			{
+				unitManager.raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
+			}
+		}
+	}
+}
+
+
+void AIManager::UpdateAIData(CharacterManager& characterManager, AIData& data, WarManager& warManager)
+{
+	if (characterManager.getCharacter(data.m_OwnerID).m_CharacterTitle == Title::Unlanded)
+	{
+		return;
+	}
+
+	if (data.m_CurrentAction == Action::War || data.m_LastAction == Action::War)
+	{
+		return;
+	}
+
+	if (data.m_CurrentAction != Action::War && warManager.getWarHandlesOfCharacter(data.m_OwnerID).size() == 0)
+	{
+		if (expansionDecision(data.m_OwnerID) > .3f)
+		{
+			float warEval = warDecision(data.m_OwnerID);
+
+			if (data.m_LastAction == Action::War)
+			{
+				warEval -= .3f;
+			}
+
+			data.m_Evaluations.push_back(std::make_pair(warEval, Action::War));
+		}
+	}
+
+	if (warManager.getAlliances(data.m_OwnerID).empty())
+	{
+		float eval = allianceDecision(data.m_OwnerID, getPotentialAlly(data));
+
+		if (eval > .5f)
+		{
+			data.m_Evaluations.push_back(std::make_pair(eval, Action::Seek_Alliance));
+		}
+	}
+
+	int regionID = INVALID_REGION_ID;
+	float settlementEval = upgradeDecision(data.m_OwnerID, regionID);
+	data.m_SettlementToUpgrade = regionID;
+	data.m_Evaluations.push_back(std::make_pair(settlementEval, Action::War));
+
+	if (characterManager.getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
+	{
+		CharacterID potentialSpouse = getPotentialSpouse(data);
+
+		if (potentialSpouse != INVALID_CHARACTER_ID)
+		{
+			float marriageEval = marriageDecision(data.m_OwnerID, potentialSpouse);
+			data.m_PotentialSpouseID = potentialSpouse;
+			data.m_Evaluations.push_back(std::make_pair(marriageEval, Action::Marriage));
+		}
+	}
+
+	for (auto& war : WarManager::get().getWarHandlesOfCharacter(data.m_OwnerID))
+	{
+		War* currentWar = WarManager::get().getWar(war);
+
+		if (!warManager.isValidWar(*currentWar))
 		{
 			continue;
 		}
 
-		data.m_ConsiderationAccu += Time::deltaTime();
-
-		if (data.m_ConsiderationAccu > data.m_ConsiderationTimer)
+		if (Time::m_GameDate.m_Date.m_Month - currentWar->getStartDate().m_Month >= 4)
 		{
-			if (data.m_CurrentAction == Action::War || data.m_LastAction == Action::War)
+			bool sendOffer = (rand() % 100) < 20;
+
+			if (sendOffer)
 			{
-				data.m_ConsiderationAccu = 0;
-				continue;
+				characterManager.sendPeaceOffer(data.m_OwnerID, currentWar->getOpposingForce(data.m_OwnerID), PeaceType::White_Peace);
 			}
-
-			if (data.m_CurrentAction != Action::War && characterManager.getCharacter(data.m_OwnerID).m_CurrentWars.size() == 0)
-			{
-				if (expansionDecision(data.m_OwnerID) > .3f)
-				{
-					float warEval = warDecision(data.m_OwnerID);
-
-					if (data.m_LastAction == Action::War)
-					{
-						warEval -= .3f;
-					}
-
-					data.m_Evaluations.push_back(std::make_pair(warEval, Action::War));
-				}
-			}
-
-			if (warManager.getAlliances(data.m_OwnerID).empty())
-			{
-				float eval = allianceDecision(data.m_OwnerID, getPotentialAlly(data));
-				
-				if(eval > .5f)
-				{
-					data.m_Evaluations.push_back(std::make_pair(eval, Action::Seek_Alliance));
-				}
-			}
-
-			int regionID = INVALID_REGION_ID;
-			float settlementEval = upgradeDecision(data.m_OwnerID, regionID);
-			data.m_SettlementToUpgrade = regionID;
-			data.m_Evaluations.push_back(std::make_pair(settlementEval, Action::War));
-
-			if (characterManager.getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
-			{
-				CharacterID potentialSpouse = getPotentialSpouse(data);
-
-				if (potentialSpouse != INVALID_CHARACTER_ID)
-				{
-					float marriageEval = marriageDecision(data.m_OwnerID, potentialSpouse);
-					data.m_PotentialSpouseID = potentialSpouse;
-					data.m_Evaluations.push_back(std::make_pair(marriageEval, Action::Marriage));
-				}
-			}
-
-			for (auto& war : characterManager.getCharacter(data.m_OwnerID).m_CurrentWars)
-			{
-				if (Time::m_GameDate.m_Date.m_Month - warManager.getWar(war)->getStartDate().m_Month >= 4)
-				{
-					bool sendOffer = (rand() % 100) < 20;
-
-					if (sendOffer)
-					{
-						if (warManager.isValidWar(*warManager.getWar(war)))
-						{
-							characterManager.sendPeaceOffer(data.m_OwnerID, warManager.getWar(war)->getOpposingForce(data.m_OwnerID), PeaceType::White_Peace);
-						}
-					}
-				}
-			}
-
-			handleHighestEvaluation(data);
-			data.m_ConsiderationAccu = 0;
 		}
 	}
 
-	for (auto& warmind : m_Warminds)
-	{
-		if (!warmind.m_Active)
-		{
-			if (getAIDataofCharacter(warmind.m_OwnerID).m_CurrentAction == Action::War)
-			{
-				getAIDataofCharacter(warmind.m_OwnerID).m_CurrentAction = Action::NONE;
-			}
-
-			if (warmind.m_PrioritizedWarHandle != -1)
-			{
-				warmind.m_PrioritizedWarHandle = -1;
-			}
-
-			continue;
-		}
-
-		else if (warmind.m_Active && warmind.m_PrioritizedWarHandle == -1)
-		{
-			warmind.m_PrioritizedWarHandle = considerPrioritizedWar(warmind);
-		}
-
-		warmind.m_TickAccu++;
-
-		if (warmind.m_TickAccu > warmind.m_AtWarTickRate)
-		{
-			if (characterManager.getCharacter(warmind.m_OwnerID).m_CurrentWars.empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
-			{
-				unitManager.dismissUnit(unitManager.getUnitOfCharacter(warmind.m_OwnerID).m_UnitID);
-				warmind.m_Active = false;
-			}
-
-			else
-			{
-				if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
-				{
-					warmind.m_OrderAccu += Time::deltaTime();
-
-					if (warmind.m_OrderAccu >= warmind.m_OrderTimer)
-					{
-						warmind.m_OrderAccu = 0.0f;
-						considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warManager.getWar(warmind.m_PrioritizedWarHandle)->getOpposingForce(warmind.m_OwnerID));
-					}
-				}
-
-				else
-				{
-					Character& character = characterManager.getCharacter(warmind.m_OwnerID);
-					if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f && character.m_MaxArmySize > 0)
-					{
-						unitManager.raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
-						//for (int war : character.m_CurrentWars)
-						//{
-						//	characterManager->callAllies(character.m_CharacterID, war);
-						//}
-					}
-				}
-			}
-
-			warmind.m_TickAccu = 0;
-		}
-	}
+	handleHighestEvaluation(data);
+	UpdateWarmind(getWarmindOfCharacter(data.m_OwnerID), characterManager, UnitManager::get(), warManager);
 }
 
 CharacterID AIManager::getPotentialSpouse(AIData& data)
@@ -561,7 +576,6 @@ float AIManager::warDecision(CharacterID ID)
 
 	if (actionScore <= .3f)
 	{
-		getWarmindOfCharacter(ID).m_WargoalRegionId = -1;
 		return 0.0f;
 	}
 
@@ -716,8 +730,6 @@ void AIManager::warAction(AIData& data)
 	int warHandle = WarManager::get().createWar(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent, getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
 	War* war = WarManager::get().getWar(warHandle);
 
-	characterManager.getCharacter(war->getAttacker()).m_CurrentWars.push_back(warHandle);
-	characterManager.getCharacter(war->getDefender()).m_CurrentWars.push_back(warHandle);
 	characterManager.callAllies(data.m_OwnerID, warHandle);
 
 	getWarmindOfCharacter(data.m_OwnerID).m_Active = true;
@@ -875,19 +887,14 @@ int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 	WarManager* warManager = &WarManager::get();
 	Character& character = CharacterManager::get().getCharacter(warmind.m_OwnerID);
 
-	if (!character.m_CurrentWars.empty())
+	if (!warManager->getWarHandlesOfCharacter(character.m_CharacterID).empty())
 	{
-		warmind.m_PrioritizedWarHandle = character.m_CurrentWars.front();
+		warmind.m_PrioritizedWarHandle = warManager->getWarHandlesOfCharacter(warmind.m_OwnerID).front();
 
 		if (warManager->getWar(warmind.m_PrioritizedWarHandle) != nullptr)
 		{
 			warmind.m_Opponent = warManager->getWar(warmind.m_PrioritizedWarHandle)->getOpposingForce(warmind.m_OwnerID);
 			return warmind.m_PrioritizedWarHandle;
-		}
-
-		else
-		{
-			character.m_CurrentWars.erase(character.m_CurrentWars.begin());
 		}
 	}
 

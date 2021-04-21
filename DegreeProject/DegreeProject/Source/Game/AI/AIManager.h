@@ -47,6 +47,9 @@ public:
 	bool handleWarCallRequest(CharacterID sender, CharacterID reciever, int war);
 	void update();
 
+	void UpdateWarmind(WarmindComponent& warmind, CharacterManager& characterManager, UnitManager& unitManager, WarManager& warManager);
+	void UpdateAIData(CharacterManager& characterManager, AIData& data, WarManager& warManager);
+
 
 private:
 	float upgradeDecision(CharacterID ID, int& outRegion);
@@ -70,6 +73,8 @@ private:
 
 	bool weightedRandom(float weight);
 
+
+
 private:
 	static AIManager* m_Instance;
 	WarOrders m_Orders;
@@ -79,4 +84,14 @@ private:
 	mutable std::mutex m_PersonalityMtx;
 	WarManager* m_WarManager = nullptr;
 	UnitManager* m_UnitManager = nullptr;
+
+	std::vector<AIData> m_tickPrio1; //Every 5:th tick
+	std::vector<AIData> m_tickPrio2; //Every 11:th tick
+	std::vector<AIData> m_tickPrio3; //Every 17:th tick.
+
+	int m_tickRate1 = 547;
+	int m_tickRate2 = 811;
+	int m_tickRate3 = 1087;
+
+	std::map<int, std::vector<AIData>> m_TickPrio;
 };

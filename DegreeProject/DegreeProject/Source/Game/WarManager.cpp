@@ -133,10 +133,7 @@ bool WarManager::isEnemyOfEnemy(Unit& unit, Unit& enemyUnit)
 		{
 			if (character == enemy)
 			{
-				for (auto& war : CharacterManager::get().getCharacter(character).m_CurrentWars)
-				{
-					return true;
-				}
+				return true;
 			}
 		}
 	}
@@ -221,21 +218,6 @@ std::vector<int> WarManager::getWarsForRegion(int regionID)
 	return wars;
 }
 
-std::vector<War> WarManager::getWarsOfCharacter(CharacterID ID)
-{
-	std::vector<War> wars;
-
-	for (auto& war : m_Wars)
-	{
-		if (war.second.isAttacker(ID) || war.second.isDefender(ID))
-		{
-			wars.push_back(war.second);
-		}
-	}
-
-	return wars;
-}
-
 std::vector<int> WarManager::getWarHandlesOfCharacter(CharacterID ID)
 {
 	std::vector<int> wars;
@@ -254,21 +236,23 @@ std::vector<int> WarManager::getWarHandlesOfCharacter(CharacterID ID)
 std::vector<CharacterID> WarManager::getOpposingSide(CharacterID ID)
 {
 	std::vector<CharacterID> enemies;
-	std::vector<War> wars = getWarsOfCharacter(ID);
+	std::vector<int> wars = getWarHandlesOfCharacter(ID);
 
 	for (auto& war : wars)
 	{
-		if (war.isAttacker(ID))
+		War* currentWar = getWar(war);
+
+		if (currentWar->isAttacker(ID))
 		{
-			for (auto defender : war.m_Defenders)
+			for (auto defender : currentWar->m_Defenders)
 			{
 				enemies.push_back(defender);
 			}
 		}
 
-		if (war.isDefender(ID))
+		if (currentWar->isDefender(ID))
 		{
-			for (auto attacker : war.m_Attackers)
+			for (auto attacker : currentWar->m_Attackers)
 			{
 				enemies.push_back(attacker);
 			}
