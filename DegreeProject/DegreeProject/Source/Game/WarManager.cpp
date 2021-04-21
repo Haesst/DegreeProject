@@ -135,10 +135,7 @@ bool WarManager::isEnemyOfEnemy(Unit& unit, Unit& enemyUnit)
 			{
 				for (auto& war : CharacterManager::get()->getCharacter(character).m_CurrentWars)
 				{
-					if (!WarManager::get().getWar(war)->isAllyOf(enemy, character))
-					{
-						return true;
-					}
+					return true;
 				}
 			}
 		}

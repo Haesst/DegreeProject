@@ -431,6 +431,10 @@ void AIManager::update()
 					if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f && character.m_MaxArmySize > 0)
 					{
 						unitManager.raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
+						//for (int war : character.m_CurrentWars)
+						//{
+						//	characterManager->callAllies(character.m_CharacterID, war);
+						//}
 					}
 				}
 			}
@@ -820,21 +824,28 @@ void AIManager::handleHighestEvaluation(AIData& data)
 		{
 			warAction(data);
 			data.m_LastAction = Action::War;
+			data.m_CurrentAction = Action::War;
 		}
 		break;
 	case Action::Upgrade_Settlement:
 		upgradeAction(data);
 		data.m_LastAction = Action::Upgrade_Settlement;
+		data.m_CurrentAction = Action::Upgrade_Settlement;
+
 		break;
 	case Action::Marriage:
 		marriageAction(data);
 		data.m_LastAction = Action::Marriage;
+		data.m_CurrentAction = Action::Marriage;
+
 		break;
 
 	case Action::Seek_Alliance:
 		allianceAction(data);
 		data.m_LastAction = Action::Seek_Alliance;
+		data.m_CurrentAction = Action::Seek_Alliance;
 		break;
+
 	case Action::NONE:
 		data.m_PotentialSpouseID = INVALID_CHARACTER_ID;
 		data.m_SettlementToUpgrade = INVALID_REGION_ID;
