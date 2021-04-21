@@ -21,8 +21,10 @@ public:
 	void onDayChange();
 	void updateInfo();
 	void clickButton();
-	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize = m_SpriteSize);
-
+	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
+	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Vector2f position);
+	void setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position);
+	void setWarscore(CharacterID& characterID, std::stringstream& stream);
 	bool m_Active = false;
 
 private:
@@ -52,7 +54,5 @@ private:
 	sf::RectangleShape m_WarIconShape;
 	sf::Sprite m_WarIconSprite;
 	sf::Texture m_WarIconTexture;
-	sf::Vector2f m_WarIconPosition;
 	sf::Text m_WarscoreText;
-	sf::Vector2f m_WarscoreTextPosition;
 };

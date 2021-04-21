@@ -23,12 +23,16 @@ public:
 	void closeWindow();
 
 private:
+	void updateWarParticipants(CharacterID& mainParticipantID, CharacterID& participantID, std::vector<CharacterID>& participantsIDs, std::vector<sf::RectangleShape>& participantsShapes, std::vector<sf::Sprite>& participantsSprites, sf::Texture& mainParticipantTexture, sf::Texture& participantTexture, sf::Vector2f& mainParticipantPosition, sf::Vector2f& participantPosition, unsigned int& index);
+	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
+	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string = "");
+	void setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize = m_SpriteSize);
+	void setWarscore(CharacterID& characterID, std::stringstream& stream, int& warscore);
 	void onDayChange();
 	void updateInfo();
 	void handleWindow();
 	void clickButton();
 	void sendPeaceOffer(PeaceType type);
-	void updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize = m_SpriteSize);
 
 private:
 	sf::RenderWindow* m_Window = nullptr;
@@ -52,11 +56,12 @@ private:
 	sf::Color m_OwnerColor = sf::Color::Black;
 	sf::Color m_NegativeColor = sf::Color::Red;
 	sf::Color m_PositiveColor = sf::Color::Green;
+	sf::Color m_TransparentColor = sf::Color::Transparent;
 	Date m_WarStartDate;
 	PeaceType m_CurrentPeaceType;
 
-	const std::string m_MaleTitles[(unsigned int)Title::Baron + 1] = { "Emperor ", "King ", "Duke ", "Count ", "Baron " };
-	const std::string m_FemaleTitles[(unsigned int)Title::Baron + 1] = { "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness " };
+	const char* m_MaleTitles[(unsigned int)Title::Baron + 1] = { "Emperor ", "King ", "Duke ", "Count ", "Baron " };
+	const char* m_FemaleTitles[(unsigned int)Title::Baron + 1] = { "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness " };
 	sf::Texture m_MaleCharacterTexture;
 	sf::Texture m_FemaleCharacterTexture;
 	sf::Texture m_YoungMaleCharacterTexture;
@@ -71,7 +76,6 @@ private:
 	sf::Vector2f m_AttackerPosition;
 	sf::Vector2f m_DefenderPosition;
 	sf::Vector2f m_WarscorePosition;
-	sf::Vector2f m_WarscoreProgressPosition;
 	sf::Vector2f m_SurrenderPosition;
 	sf::Vector2f m_WhitePeacePosition;
 	sf::Vector2f m_EnforceDemandsPosition;
@@ -106,10 +110,6 @@ private:
 	sf::Vector2f m_DurationTextPosition;
 	sf::Vector2f m_WarscoreTextPosition;
 	sf::Vector2f m_WarscoreAmountTextPosition;
-	sf::Vector2f m_SurrenderTextPosition;
-	sf::Vector2f m_WhitePeaceTextPosition;
-	sf::Vector2f m_EnforceDemandsTextPosition;
-	sf::Vector2f m_SendTextPosition;
 	sf::Vector2f m_AttackersTextPosition;
 	sf::Vector2f m_AttackerArmyTextPosition;
 	sf::Vector2f m_AttackerArmyStrengthTextPosition;
@@ -119,37 +119,33 @@ private:
 	sf::Vector2f m_AttackerAlliesTextPosition;
 	sf::Vector2f m_DefenderAlliesTextPosition;
 
-	const std::string m_Surrender = "Surrender";
-	const std::string m_WhitePeace = "White Peace";
-	const std::string m_EnforceDemands = "Enforce Demands";
-	const std::string m_WarScore = "War Score ";
-	const std::string m_Allies = "Allies";
-	const std::string m_TotalSoldiers = "Total Soldiers";
-	const std::string m_Attackers = "Attackers";
-	const std::string m_Defenders = "Defenders";
-	const std::string m_CasusBelli = " war for ";
-	const std::string m_Of = " of ";
-	const std::string m_WarStarted = "War started: ";
-	const std::string m_DaysAgo = " days ago";
-	const std::string m_MonthsAgo = " months ago";
-	const std::string m_YearsAgo = " years ago";
-	const std::string m_DayAgo = " day ago";
-	const std::string m_MonthAgo = " month ago";
-	const std::string m_YearAgo = " year ago";
-	const std::string m_Send = "Send";
-	const std::string m_PositiveSign = "+";
-	const std::string m_PercentSign = "%";
-	const std::string m_DashSign = "/";
+	const char* m_Surrender = "Surrender";
+	const char* m_WhitePeace = "White Peace";
+	const char* m_EnforceDemands = "Enforce Demands";
+	const char* m_WarScore = "War Score ";
+	const char* m_Allies = "Allies";
+	const char* m_TotalSoldiers = "Total Soldiers";
+	const char* m_Attackers = "Attackers";
+	const char* m_Defenders = "Defenders";
+	const char* m_CasusBelli = " war for ";
+	const char* m_Of = " of ";
+	const char* m_WarStarted = "War started: ";
+	const char* m_DaysAgo = " days ago";
+	const char* m_MonthsAgo = " months ago";
+	const char* m_YearsAgo = " years ago";
+	const char* m_DayAgo = " day ago";
+	const char* m_MonthAgo = " month ago";
+	const char* m_YearAgo = " year ago";
+	const char* m_Send = "Send";
+	const char* m_PositiveSign = "+";
+	const char* m_PercentSign = "%";
+	const char* m_DashSign = "/";
 
 	std::vector<CharacterID> m_DefenderCharacterIDs = std::vector<CharacterID>();
 	std::vector<sf::RectangleShape> m_DefenderCharacterShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_DefenderCharacterSprites = std::vector<sf::Sprite>();
-	std::vector<sf::Texture> m_DefenderCharacterTextures = std::vector<sf::Texture>();
-	std::vector<sf::Vector2f> m_DefenderCharacterPositions = std::vector<sf::Vector2f>();
 
 	std::vector<CharacterID> m_AttackerCharacterIDs = std::vector<CharacterID>();
 	std::vector<sf::RectangleShape> m_AttackerCharacterShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_AttackerCharacterSprites = std::vector<sf::Sprite>();
-	std::vector<sf::Texture> m_AttackerCharacterTextures = std::vector<sf::Texture>();
-	std::vector<sf::Vector2f> m_AttackerCharacterPositions = std::vector<sf::Vector2f>();
 };

@@ -22,17 +22,10 @@ WarIcon::WarIcon(UIID ID, sf::Font font, unsigned int index, CharacterID attacke
 
 	m_WarIconTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Charizard.png");
 
-	m_WarIconPosition = sf::Vector2f(m_Window->getSize().x - 600 - m_SpriteSize - m_OutlineThickness * 5 - (m_SpriteSize + m_OutlineThickness * 4) * m_Index, m_Window->getSize().y - m_SpriteSize - m_OutlineThickness * 2);
-	m_WarIconShape.setFillColor(m_WarIconOutlineColor);
-	m_WarIconShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
-	m_WarIconShape.setOutlineColor(m_WarIconOutlineColor);
-	m_WarIconShape.setOutlineThickness(m_OutlineThickness);
-	m_WarIconShape.setPosition(m_WarIconPosition);
-
-	m_WarscoreTextPosition = sf::Vector2f(m_WarIconPosition.x, m_WarIconPosition.y + m_SizeY * 0.5f);
-	m_WarscoreText.setCharacterSize(m_CharacterSize);
-	m_WarscoreText.setFont(m_Font);
-	m_WarscoreText.setPosition(m_WarscoreTextPosition);
+	sf::Vector2f warIconPosition = { m_Window->getSize().x - 600 - m_SpriteSize - m_OutlineThickness * 5 - (m_SpriteSize + m_OutlineThickness * 4) * m_Index, m_Window->getSize().y - m_SpriteSize - m_OutlineThickness * 2 };
+	setShape(m_WarIconShape, m_WarIconOutlineColor, m_WarIconOutlineColor, m_OutlineThickness, { m_SizeX, m_SizeY }, warIconPosition);
+	setSprite(m_WarIconSprite, m_WarIconTexture, warIconPosition);
+	setText(m_WarscoreText, m_Font, m_CharacterSize, { warIconPosition.x, warIconPosition.y + m_SizeY * 0.5f });
 
 	activate();
 }
@@ -60,57 +53,44 @@ void WarIcon::onDayChange()
 	}
 }
 
+void WarIcon::setWarscore(CharacterID& characterID, std::stringstream& stream)
+{
+	int warscore = m_War->getWarscore(characterID);
+	if (warscore > 100)
+	{
+		warscore = 100;
+	}
+	if (warscore < -100)
+	{
+		warscore = -100;
+	}
+	if (warscore > 0 || warscore == 0)
+	{
+		m_WarscoreText.setFillColor(m_PositiveColor);
+		stream << m_PositiveSign << warscore;
+	}
+	else
+	{
+		m_WarscoreText.setFillColor(m_NegativeColor);
+		stream << warscore;
+	}
+}
+
 void WarIcon::updateInfo()
 {
 	m_War = WarManager::get().getWarAgainst(m_AttackerID, m_DefenderID);
 	if (m_War != nullptr)
 	{
 		std::stringstream stream;
-		//CharacterID playerCharacterID = CharacterManager::get().getPlayerCharacterID();
-		//if (m_AttackerID == playerCharacterID)
-		//{
-			int warscore = m_War->getWarscore(m_AttackerID);
-			if (warscore > 100)
-			{
-				warscore = 100;
-			}
-			if (warscore < -100)
-			{
-				warscore = -100;
-			}
-			if (warscore > 0 || warscore == 0)
-			{
-				m_WarscoreText.setFillColor(m_PositiveColor);
-				stream << m_PositiveSign << warscore;
-			}
-			else
-			{
-				m_WarscoreText.setFillColor(m_NegativeColor);
-				stream << warscore;
-			}
-			/*}
-			else if (m_DefenderID == playerCharacterID)
-			{
-				int warscore = m_War->getWarscore(m_DefenderID);
-				if (warscore > 100)
-				{
-					warscore = 100;
-				}
-				if (warscore < -100)
-				{
-					warscore = -100;
-				}
-				if (warscore > 0 || warscore == 0)
-				{
-					m_WarscoreText.setFillColor(m_PositiveColor);
-					stream << m_PositiveSign << warscore;
-				}
-				else
-				{
-					m_WarscoreText.setFillColor(m_NegativeColor);
-					stream << warscore;
-				}
-			}*/
+		CharacterID playerCharacterID = CharacterManager::get().getPlayerCharacterID();
+		if (m_AttackerID == playerCharacterID)
+		{
+			setWarscore(m_AttackerID, stream);
+		}
+		else if (m_DefenderID == playerCharacterID)
+		{
+			setWarscore(m_DefenderID, stream);
+		}
 		stream << m_PercentSign;
 		m_WarscoreText.setString(stream.str());
 		stream.str(std::string());
@@ -135,7 +115,7 @@ void WarIcon::render()
 	if (m_Active)
 	{
 		m_Window->draw(m_WarIconShape);
-		updateSprite(m_WarIconSprite, m_WarIconTexture, m_WarIconPosition);
+		m_Window->draw(m_WarIconSprite);
 		m_Window->draw(m_WarscoreText);
 	}
 }
@@ -153,14 +133,25 @@ void WarIcon::clickButton()
 	}
 }
 
-void WarIcon::updateSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize)
+void WarIcon::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position)
 {
-	sprite.setTexture(texture, true);
+	shape.setFillColor(fillColor);
+	shape.setOutlineColor(outlineColor);
+	shape.setOutlineThickness(outlineThickness);
+	shape.setSize(size);
+	shape.setPosition(position);
+}
+
+void WarIcon::setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Vector2f position)
+{
+	text.setFont(font);
+	text.setCharacterSize(characterSize);
+	text.setPosition(position);
+}
+
+void WarIcon::setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position)
+{
+	sprite.setTexture(texture);
+	sprite.setScale(m_SpriteSize / sprite.getGlobalBounds().width, m_SpriteSize / sprite.getGlobalBounds().height);
 	sprite.setPosition(position);
-
-	sf::FloatRect localSize = sprite.getLocalBounds();
-
-	sprite.setScale(spriteSize / localSize.width, spriteSize / localSize.height);
-
-	m_Window->draw(sprite);
 }

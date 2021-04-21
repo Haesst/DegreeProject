@@ -34,13 +34,13 @@ public:
 	int m_CharacterSize = 30;
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	sf::RenderWindow* m_Window = nullptr;
-	const std::string m_PositiveSign = "+";
+	const char* m_PositiveSign = "+";
 	sf::Texture m_CoinTexture;
 	sf::Sprite m_CoinSprite;
 	sf::Texture m_ArmyTexture;
 	sf::Sprite m_ArmySprite;
 	const static int m_SpriteSize = 32;
-	sf::Vector2f m_CoinPosition = sf::Vector2f();
-	sf::Vector2f m_ArmyPosition = sf::Vector2f();
+	sf::Vector2f m_CoinPosition;
+	sf::Vector2f m_ArmyPosition;
 	int m_DaySubscriptionHandle = 0;
 };

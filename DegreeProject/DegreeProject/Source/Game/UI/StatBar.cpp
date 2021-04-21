@@ -24,20 +24,20 @@ void StatBar::start()
 	m_CoinTexture = AssetHandler::get().loadImageFromFile("Assets/Graphics/Coins.png");
 	m_ArmyTexture = AssetHandler::get().loadImageFromFile("Assets/Graphics/soldier unit.png");
 
-	m_CoinPosition = sf::Vector2f(m_SizeX * 0.1f + m_Window->getSize().x - m_SizeX - m_OutlineThickness, m_SizeY * 0.3f);
-	m_ArmyPosition = sf::Vector2f(m_SizeX * 0.5f + m_Window->getSize().x - m_SizeX - m_OutlineThickness, m_SizeY * 0.3f);
+	m_CoinPosition = { m_SizeX * 0.1f + m_Window->getSize().x - m_SizeX - m_OutlineThickness, m_SizeY * 0.3f };
+	m_ArmyPosition = { m_SizeX * 0.5f + m_Window->getSize().x - m_SizeX - m_OutlineThickness, m_SizeY * 0.3f };
 
 	float positionX = m_Window->getSize().x - m_SizeX + m_OutlineThickness;
 	float positionY = m_OutlineThickness;
 
 	m_OwnerColor = CharacterManager::get().getPlayerCharacter().m_RegionColor;
 
-	setShape(m_WindowShape, m_FillColor, m_OwnerColor, m_OutlineThickness, sf::Vector2f(m_SizeX, m_SizeY), sf::Vector2f(positionX, positionY));
+	setShape(m_WindowShape, m_FillColor, m_OwnerColor, m_OutlineThickness, { m_SizeX, m_SizeY }, { positionX, positionY });
 
-	setText(m_CurrentGoldText, m_Font, m_CharacterSize, m_OwnerColor, sf::Vector2f(positionX + m_SizeX * 0.2f, positionY));
-	setText(m_CurrentIncomeText, m_Font, (unsigned int)(m_CharacterSize * 0.5f), m_OwnerColor, sf::Vector2f(positionX + m_SizeX * 0.2f, positionY * 4));
-	setText(m_MaxArmyText, m_Font, m_CharacterSize, m_OwnerColor, sf::Vector2f(positionX + m_SizeX * 0.6f, positionY));
-	setText(m_CurrentMaxArmyText, m_Font, (unsigned int)(m_CharacterSize * 0.5f), m_OwnerColor, sf::Vector2f(positionX + m_SizeX * 0.625f, positionY * 4));
+	setText(m_CurrentGoldText, m_Font, m_CharacterSize, m_OwnerColor, { positionX + m_SizeX * 0.2f, positionY });
+	setText(m_CurrentIncomeText, m_Font, (unsigned int)(m_CharacterSize * 0.5f), m_OwnerColor, { positionX + m_SizeX * 0.2f, positionY * 4 });
+	setText(m_MaxArmyText, m_Font, m_CharacterSize, m_OwnerColor, { positionX + m_SizeX * 0.6f, positionY });
+	setText(m_CurrentMaxArmyText, m_Font, (unsigned int)(m_CharacterSize * 0.5f), m_OwnerColor, { positionX + m_SizeX * 0.625f, positionY * 4 });
 
 	setSprite(m_CoinSprite, m_CoinTexture, m_CoinPosition);
 	setSprite(m_ArmySprite, m_ArmyTexture, m_ArmyPosition);
@@ -126,5 +126,5 @@ void StatBar::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Colo
 	shape.setOutlineColor(outlineColor);
 	shape.setOutlineThickness(outlineThickness);
 	shape.setSize(size);
-	shape.setPosition(position.x, position.y);
+	shape.setPosition(position);
 }
