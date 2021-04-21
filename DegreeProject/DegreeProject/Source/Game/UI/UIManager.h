@@ -31,6 +31,7 @@ public:
 	UIID createUIEventElement(CharacterID instigatorID, CharacterID subjectID, UIType type, float giftAmount = 0.0f);
 	UIID createWarIcon(CharacterID attackerID, CharacterID defenderID);
 	void AdjustOwnership(CharacterID conquerorID, CharacterID loserID, unsigned int regionID);
+	void SetRealmTextAsConquered(CharacterID characterID);
 	UIElement& getUIElement(UIID ID);
 	UIText& getUIText(UIID ID);
 	CharacterWindow* m_CharacterWindow = nullptr;
@@ -48,4 +49,5 @@ private:
 	std::unordered_map<CharacterID, UIText*> m_UITexts;
 	std::vector<EventWindow*> m_EventWindows;
 	std::vector<WarIcon*> m_WarIcons;
+	std::vector<CharacterID> m_UITextsToRemove;
 };

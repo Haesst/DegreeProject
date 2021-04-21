@@ -169,10 +169,15 @@ void War::handleOccupiedRegions(CharacterID winningCharacter)
 	{
 		if (winningCharacter != INVALID_CHARACTER_ID)
 		{
-			CharacterManager::get().removeRegion(Map::get().getRegionById(m_WargoalRegion).m_OwnerID, m_WargoalRegion);
+			CharacterID loserCharacter = Map::get().getRegionById(m_WargoalRegion).m_OwnerID;
+			CharacterManager::get().removeRegion(loserCharacter, m_WargoalRegion);
 			CharacterManager::get().addRegion(winningCharacter, m_WargoalRegion);
-			UIManager::get().AdjustOwnership(winningCharacter, Map::get().getRegionById(m_WargoalRegion).m_OwnerID, Map::get().getRegionById(m_WargoalRegion).m_RegionId);
+			UIManager::get().AdjustOwnership(winningCharacter, loserCharacter, Map::get().getRegionById(m_WargoalRegion).m_RegionId);
 			Map::get().setRegionColor(Map::get().getRegionById(m_WargoalRegion).m_RegionId, CharacterManager::get().getCharacter(winningCharacter).m_RegionColor);
+			if (CharacterManager::get().getCharacter(loserCharacter).m_OwnedRegionIDs.size() == 0)
+			{
+				UIManager::get().SetRealmTextAsConquered(loserCharacter);
+			}
 		}
 	}
 

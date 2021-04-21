@@ -93,6 +93,11 @@ void UIManager::AdjustOwnership(CharacterID conquerorID, CharacterID loserID, un
 	m_UITexts[loserID]->loseRegion(regionID);
 }
 
+void UIManager::SetRealmTextAsConquered(CharacterID characterID)
+{
+	m_UITexts[characterID]->m_Conquered = true;
+}
+
 UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D position, Vector2D size)
 {
 	UIID id = m_UIElementsIDs++;
@@ -164,9 +169,9 @@ void UIManager::start()
 void UIManager::update()
 {
 	m_ActiveEventWindows = false;
-	for (unsigned int i = 0; i < m_EventWindows.size(); i++)
+	for (int i = m_EventWindows.size() - 1; i >= 0; i--)
 	{
-		if (!m_EventWindows[i]->m_Dismissed)
+		if (i > 0 && !m_EventWindows[i]->m_Dismissed)
 		{
 			m_ActiveEventWindows = true;
 			m_EventWindows[i]->update();
@@ -182,8 +187,21 @@ void UIManager::update()
 	}
 	for (std::pair<CharacterID, UIText*> uiTextPair : m_UITexts)
 	{
-		uiTextPair.second->update();
+		if(!uiTextPair.second->m_Conquered)
+		{
+			uiTextPair.second->update();
+		}
+		else
+		{
+			m_UITextsToRemove.push_back(uiTextPair.first);
+		}
 	}
+	for (CharacterID characterID : m_UITextsToRemove)
+	{
+		delete m_UITexts[characterID];
+		m_UITexts.erase(characterID);
+	}
+	m_UITextsToRemove.clear();
 	m_CharacterWindow->update();
 	m_RegionWindow->update();
 	m_WarWindow->update();

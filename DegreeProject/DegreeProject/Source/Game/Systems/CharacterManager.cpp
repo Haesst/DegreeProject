@@ -853,6 +853,7 @@ void CharacterManager::handleInheritance(Character& character)
 	}
 	character.m_CurrentWars.clear();
 	character.m_IsPlayerControlled = false;
+	UIManager::get().SetRealmTextAsConquered(character.m_CharacterID);
 
 	if (character.m_UnitEntity != INVALID_UNIT_ID)
 	{

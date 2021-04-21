@@ -50,8 +50,8 @@ public:
 	bool m_Dismissed = false;
 	bool m_MovingWindow = false;
 	Vector2D m_MousePosition = Vector2D();
-	std::vector<const char*> m_MaleTitles = { "Emperor ", "King ", "Duke ", "Count ", "Baron " };
-	std::vector<const char*> m_FemaleTitles = { "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness " };
+	std::vector<const char*> m_MaleTitles = { "Emperor ", "King ", "Duke ", "Count ", "Baron ", "Unlanded " };
+	std::vector<const char*> m_FemaleTitles = { "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness ", "Unlanded " };
 
 	CharacterID m_InstigatorID = INVALID_CHARACTER_ID;
 	sf::RectangleShape m_InstigatorShape;

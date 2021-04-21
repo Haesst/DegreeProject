@@ -1133,6 +1133,10 @@ void CharacterWindow::proposeAlliance()
 void CharacterWindow::assassinate()
 {
 	CharacterManager& characterManager = CharacterManager::get();
+	if (characterManager.getCharacter(m_CurrentCharacterID).m_Dead)
+	{
+		return;
+	}
 	if (characterManager.chancePerPercent(0.5f))
 	{
 		characterManager.killCharacter(m_CurrentCharacterID);
