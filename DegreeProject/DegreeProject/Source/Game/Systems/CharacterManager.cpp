@@ -721,8 +721,10 @@ void CharacterManager::handleInheritance(Character& character)
 	{
 		Character& child = getCharacter(character.m_Children.front());
 		child.m_CurrentGold += character.m_CurrentGold;
-		child.m_UnitEntity = character.m_UnitEntity;
-		child.m_RegionColor = character.m_RegionColor;
+		if (character.m_CharacterTitle < child.m_CharacterTitle)
+		{
+			child.m_RegionColor = character.m_RegionColor;
+		}
 		if (!child.m_IsPlayerControlled)
 		{
 			child.m_IsPlayerControlled = character.m_IsPlayerControlled;
@@ -736,17 +738,36 @@ void CharacterManager::handleInheritance(Character& character)
 			AIManager::get().deactivateAI(child.m_CharacterID);
 			UIManager::get().m_DateBar->updateOwnerColor(child.m_RegionColor);
 		}
-		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
+		if (child.m_OwnedRegionIDs.empty())
 		{
-			child.m_OwnedRegionIDs.push_back(ownedRegionID);
-			Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
-		}
+			for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
+			{
+				addRegion(child.m_CharacterID, ownedRegionID);
+				Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
+				Map::get().getRegionById(ownedRegionID).m_OwnerID = child.m_CharacterID;
+			}
 
-		updateTitle(child);
-		UIManager::get().createUITextElement(Game::m_UIFont, child.m_CharacterID, child.m_KingdomName, child.m_OwnedRegionIDs);
-		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
+			updateTitle(child);
+			UIManager::get().createUITextElement(Game::m_UIFont, child.m_CharacterID, child.m_KingdomName, child.m_OwnedRegionIDs);
+		}
+		else
 		{
-			UIManager::get().AdjustOwnership(child.m_CharacterID, character.m_CharacterID, ownedRegionID);
+			for (unsigned int ownedRegionID : child.m_OwnedRegionIDs)
+			{
+				Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
+			}
+			for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
+			{
+				addRegion(child.m_CharacterID, ownedRegionID);
+				Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
+				Map::get().getRegionById(ownedRegionID).m_OwnerID = child.m_CharacterID;
+			}
+			updateTitle(child);
+			UIManager::get().SetRealmNameOnText(child.m_CharacterID, child.m_KingdomName);
+			for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
+			{
+				UIManager::get().AdjustOwnership(child.m_CharacterID, character.m_CharacterID, ownedRegionID);
+			}
 		}
 	}
 	else if (character.m_Children.size() > 1)
@@ -776,6 +797,7 @@ void CharacterManager::handleInheritance(Character& character)
 						}
 						addRegion(childID, ownedRegionID);
 						Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
+						Map::get().getRegionById(ownedRegionID).m_OwnerID = child.m_CharacterID;
 						break;
 					}
 				}
@@ -809,11 +831,19 @@ void CharacterManager::handleInheritance(Character& character)
 				{
 					child.m_CurrentGold += giveawayGold;
 				}
-				updateTitle(child);
-				UIManager::get().createUITextElement(Game::m_UIFont, childID, child.m_KingdomName, child.m_OwnedRegionIDs);
-				for (unsigned int childOwnedRegionID : child.m_OwnedRegionIDs)
+				if (child.m_CharacterTitle < Title::Unlanded)
 				{
-					UIManager::get().AdjustOwnership(childID, character.m_CharacterID, childOwnedRegionID);
+					updateTitle(child);
+					UIManager::get().SetRealmNameOnText(child.m_CharacterID, child.m_KingdomName);
+					for (unsigned int childOwnedRegionID : child.m_OwnedRegionIDs)
+					{
+						UIManager::get().AdjustOwnership(childID, character.m_CharacterID, childOwnedRegionID);
+					}
+				}
+				else
+				{
+					updateTitle(child);
+					UIManager::get().createUITextElement(Game::m_UIFont, childID, child.m_KingdomName, child.m_OwnedRegionIDs);
 				}
 			}
 		}

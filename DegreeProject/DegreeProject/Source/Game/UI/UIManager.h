@@ -32,6 +32,7 @@ public:
 	UIID createWarIcon(CharacterID attackerID, CharacterID defenderID);
 	void AdjustOwnership(CharacterID conquerorID, CharacterID loserID, unsigned int regionID);
 	void SetRealmTextAsConquered(CharacterID characterID);
+	void SetRealmNameOnText(CharacterID characterID, std::string realmName);
 	UIElement& getUIElement(UIID ID);
 	UIText& getUIText(UIID ID);
 	CharacterWindow* m_CharacterWindow = nullptr;
