@@ -16,9 +16,11 @@ public:
 	void update();
 	void render();
 	void onDayChange();
-	void onMonthChange();
 	void updateStats();
 	void clickButton();
+	void updateOwnerColor(sf::Color& newColor);
+
+	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f& size, Vector2D& position);
 
 	sf::RectangleShape m_WindowShape;
 	sf::RectangleShape m_DecreaseSpeedShape;

@@ -25,7 +25,6 @@ DateBar::DateBar(UIID id, sf::Font font, Vector2D, Vector2D size)
 void DateBar::start()
 {
 	m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { DateBar& datebar = *static_cast<DateBar*>(data); datebar.onDayChange(); }, static_cast<void*>(this));
-	Time::m_GameDate.subscribeToMonthChange(std::bind(&DateBar::onMonthChange, this));
 
 	m_Window = Window::getWindow();
 
@@ -38,52 +37,43 @@ void DateBar::start()
 
 	float positionX = m_Window->getSize().x - m_SizeX - m_OutlineThickness;
 	float positionY = m_Window->getSize().y - m_SizeY - m_OutlineThickness;
+	Vector2D position = { positionX, positionY };
 
-	m_WindowShape.setFillColor(m_FillColor);
-	m_WindowShape.setOutlineColor(m_OwnerColor);
-	m_WindowShape.setOutlineThickness(m_OutlineThickness);
-	m_WindowShape.setSize(sf::Vector2f(m_SizeX, m_SizeY));
-	m_WindowShape.setPosition(positionX, positionY);
+	setShape(m_WindowShape, m_FillColor, m_OwnerColor, m_OutlineThickness, sf::Vector2f(m_SizeX, m_SizeY), position);
 
+	sf::Color buttonFillColor = sf::Color::Transparent;
+	sf::Vector2f buttonSize = sf::Vector2f(sizeY + sizeX, sizeY + sizeX);
 	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 	{
-		m_ButtonShapes[index].setFillColor(sf::Color::Transparent);
-		m_ButtonShapes[index].setOutlineColor(m_OwnerColor);
-		m_ButtonShapes[index].setOutlineThickness(m_ButtonThickness * 0.25f);
-		m_ButtonShapes[index].setSize(sf::Vector2f(sizeY + sizeX, sizeY + sizeX));
-		m_ButtonShapes[index].setPosition(positionX + m_ButtonThickness * 1.25f + m_ButtonThickness * 4.5f * index, positionY + m_SizeY * 0.25f - m_ButtonThickness * 0.25f);
+		Vector2D buttonPos = { positionX + m_ButtonThickness * 1.25f + m_ButtonThickness * 4.5f * index, positionY + m_SizeY * 0.25f - m_ButtonThickness * 0.25f };
+		setShape(m_ButtonShapes[index], buttonFillColor, m_OwnerColor, m_ButtonThickness * 0.25f, buttonSize, buttonPos);
 	}
 
+	sf::Vector2f speedSize = sf::Vector2f(sizeY * 0.5f + sizeX, sizeY + sizeX);
 	for (unsigned int index = 0; index < m_NumberOfSpeeds; index++)
 	{
-		m_SpeedShapes[index].setFillColor(sf::Color::Transparent);
-		m_SpeedShapes[index].setOutlineColor(m_OwnerColor);
-		m_SpeedShapes[index].setOutlineThickness(m_ButtonThickness * 0.25f);
-		m_SpeedShapes[index].setSize(sf::Vector2f(sizeY * 0.5f + sizeX, sizeY + sizeX));
-		m_SpeedShapes[index].setPosition(positionX + m_ButtonThickness * 14.5f + m_ButtonThickness * 2.5f * index, positionY + m_SizeY * 0.25f - m_ButtonThickness * 0.25f);
+		Vector2D buttonPos = { positionX + m_ButtonThickness * 14.5f + m_ButtonThickness * 2.5f * index, positionY + m_SizeY * 0.25f - m_ButtonThickness * 0.25f };
+		setShape(m_SpeedShapes[index], buttonFillColor, m_OwnerColor, m_ButtonThickness * 0.25f, speedSize, buttonPos);
 	}
 
-	m_PauseLeftShape.setFillColor(m_OwnerColor);
-	m_PauseLeftShape.setSize(sf::Vector2f(sizeX, sizeY));
-	m_PauseLeftShape.setPosition(positionX + m_ButtonThickness * 2, positionY + m_SizeY * 0.25f);
+	sf::Vector2f buttonShapeSize = sf::Vector2f(sizeX, sizeY);
 
-	m_PauseRightShape.setFillColor(m_OwnerColor);
-	m_PauseRightShape.setSize(sf::Vector2f(sizeX, sizeY));
-	m_PauseRightShape.setPosition(positionX + m_ButtonThickness * 3, positionY + m_SizeY * 0.25f);
+	Vector2D pauseButtonPosition = { positionX + m_ButtonThickness * 2, positionY + m_SizeY * 0.25f };
+	setShape(m_PauseLeftShape, m_OwnerColor, buttonFillColor, 0.0f, buttonShapeSize, pauseButtonPosition);
 
-	m_DecreaseSpeedShape.setFillColor(m_OwnerColor);
-	m_DecreaseSpeedShape.setSize(sf::Vector2f(sizeX, sizeY));
+	Vector2D pauseRightPosition = { positionX + m_ButtonThickness * 3, positionY + m_SizeY * 0.25f };
+	setShape(m_PauseRightShape, m_OwnerColor, buttonFillColor, 0.0f, buttonShapeSize, pauseRightPosition);
+
+	Vector2D decreaseSpeedPosition = { positionX + m_ButtonThickness * 8.5f, positionY + m_SizeY * 0.5f - m_ButtonThickness * 0.25f };
+	setShape(m_DecreaseSpeedShape, m_OwnerColor, buttonFillColor, 0.0f, buttonShapeSize, decreaseSpeedPosition);
 	m_DecreaseSpeedShape.setRotation(90.0f);
-	m_DecreaseSpeedShape.setPosition(positionX + m_ButtonThickness * 8.5f, positionY + m_SizeY * 0.5f - m_ButtonThickness * 0.25f);
 
-	m_IncreaseSpeedHorizontalShape.setFillColor(m_OwnerColor);
-	m_IncreaseSpeedHorizontalShape.setSize(sf::Vector2f(sizeX, sizeY));
+	Vector2D increaseSpeedHorizontalPos = { positionX + m_ButtonThickness * 13, positionY + m_SizeY * 0.5f - m_ButtonThickness * 0.25f };
+	setShape(m_IncreaseSpeedHorizontalShape, m_OwnerColor, buttonFillColor, 0.0f, buttonShapeSize, increaseSpeedHorizontalPos);
 	m_IncreaseSpeedHorizontalShape.setRotation(90.0f);
-	m_IncreaseSpeedHorizontalShape.setPosition(positionX + m_ButtonThickness * 13, positionY + m_SizeY * 0.5f - m_ButtonThickness * 0.25f);
 
-	m_IncreaseSpeedVerticalShape.setFillColor(m_OwnerColor);
-	m_IncreaseSpeedVerticalShape.setSize(sf::Vector2f(sizeX, sizeY));
-	m_IncreaseSpeedVerticalShape.setPosition(positionX + m_ButtonThickness * 11.5f, positionY + m_SizeY * 0.25f);
+	Vector2D increaseSpeedVerticalPos = { positionX + m_ButtonThickness * 11.5f, positionY + m_SizeY * 0.25f };
+	setShape(m_IncreaseSpeedVerticalShape, m_OwnerColor, buttonFillColor, 0.0f, buttonShapeSize, increaseSpeedVerticalPos);
 
 	m_DateText.setFont(m_Font);
 	m_DateText.setCharacterSize(m_CharacterSize);
@@ -118,35 +108,6 @@ void DateBar::render()
 void DateBar::onDayChange()
 {
 	updateStats();
-}
-
-void DateBar::onMonthChange()
-{
-	m_OwnerColor = CharacterManager::get()->getPlayerCharacter().m_RegionColor;
-
-	m_WindowShape.setOutlineColor(m_OwnerColor);
-
-	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
-	{
-		m_ButtonShapes[index].setOutlineColor(m_OwnerColor);
-	}
-
-	for (unsigned int index = 0; index < m_NumberOfSpeeds; index++)
-	{
-		m_SpeedShapes[index].setOutlineColor(m_OwnerColor);
-	}
-
-	m_PauseLeftShape.setFillColor(m_OwnerColor);
-
-	m_PauseRightShape.setFillColor(m_OwnerColor);
-
-	m_DecreaseSpeedShape.setFillColor(m_OwnerColor);
-
-	m_IncreaseSpeedHorizontalShape.setFillColor(m_OwnerColor);
-
-	m_IncreaseSpeedVerticalShape.setFillColor(m_OwnerColor);
-
-	m_DateText.setFillColor(m_OwnerColor);
 }
 
 void DateBar::updateStats()
@@ -204,4 +165,25 @@ void DateBar::clickButton()
 			m_SpeedShapes[index].setFillColor(sf::Color::Transparent);
 		}
 	}
+}
+
+void DateBar::updateOwnerColor(sf::Color& newColor)
+{
+	m_OwnerColor = newColor;
+
+	m_PauseLeftShape.setFillColor(m_OwnerColor);
+	m_PauseRightShape.setFillColor(m_OwnerColor);
+	m_DecreaseSpeedShape.setFillColor(m_OwnerColor);
+	m_IncreaseSpeedHorizontalShape.setFillColor(m_OwnerColor);
+	m_IncreaseSpeedVerticalShape.setFillColor(m_OwnerColor);
+	m_DateText.setFillColor(m_OwnerColor);
+}
+
+void DateBar::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f& size, Vector2D& position)
+{
+	shape.setFillColor(fillColor);
+	shape.setOutlineColor(outlineColor);
+	shape.setOutlineThickness(outlineThickness);
+	shape.setSize(size);
+	shape.setPosition(position.x, position.y);
 }
