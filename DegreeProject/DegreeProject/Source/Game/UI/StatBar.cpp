@@ -77,7 +77,7 @@ void StatBar::onDayChange()
 
 void StatBar::updateStats()
 {
-	Character& character = CharacterManager::get()->getPlayerCharacter();
+	Character& character = CharacterManager::get().getPlayerCharacter();
 
 	std::stringstream stream;
 	stream << std::fixed << std::setprecision(1) << character.m_CurrentGold;

@@ -432,3 +432,23 @@ float InputHandler::getZoomSpeed()
 {
 	return ZOOM_SPEED;
 }
+
+void InputHandler::setLeftMouseClicked(bool clicked)
+{
+	m_Inputs[LeftMouseClicked] = clicked;
+}
+
+void InputHandler::setRightMouseClicked(bool clicked)
+{
+	m_Inputs[RightMouseClicked] = clicked;
+}
+
+void InputHandler::setLeftMouseReleased(bool released)
+{
+	m_Inputs[LeftMouseReleased] = released;
+}
+
+void InputHandler::setRightMouseReleased(bool released)
+{
+	m_Inputs[RightMouseReleased] = released;
+}

@@ -11,7 +11,7 @@ void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 		return;
 	}
 
-	auto& enemyUnit = UnitManager::get().getUnitOfCharacter(CharacterManager::get()->getCharacter(warmind.m_Opponent).m_CharacterID);
+	auto& enemyUnit = UnitManager::get().getUnitOfCharacter(CharacterManager::get().getCharacter(warmind.m_Opponent).m_CharacterID);
 
 	Vector2DInt battlefieldIntPosition;
 
@@ -31,7 +31,7 @@ void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 
 		else
 		{
-			int randomRegion = rand() % CharacterManager::get()->getCharacter(war->getOpposingForce(warmind.m_OwnerID)).m_OwnedRegionIDs.size();
+			int randomRegion = rand() % CharacterManager::get().getCharacter(war->getOpposingForce(warmind.m_OwnerID)).m_OwnedRegionIDs.size();
 			battlefieldIntPosition = Map::get().getRegionById(randomRegion).m_RegionCapital;
 		}
 	}
@@ -69,8 +69,8 @@ void WarOrders::orderSiegeCapital(WarmindComponent& warmind, Unit& unit)
 			return;
 		}
 
-		int randomRegionIndex = rand() % CharacterManager::get()->getCharacter(enemyCharacter).m_OwnedRegionIDs.size();
-		capitalPosition = Map::get().getRegionCapitalLocation(CharacterManager::get()->getCharacter(enemyCharacter).m_OwnedRegionIDs[randomRegionIndex]);
+		int randomRegionIndex = rand() % CharacterManager::get().getCharacter(enemyCharacter).m_OwnedRegionIDs.size();
+		capitalPosition = Map::get().getRegionCapitalLocation(CharacterManager::get().getCharacter(enemyCharacter).m_OwnedRegionIDs[randomRegionIndex]);
 	}
 
 	UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(startingPosition, capitalPosition));
@@ -108,9 +108,9 @@ void WarOrders::orderAttackArmy(Unit& unit, Unit& enemyUnit)
 
 void WarOrders::orderAttackEnemyRegion(Unit& unit, Unit& enemyUnit)
 {
-	CharacterManager* characterManager = CharacterManager::get();
-	Character& enemyCharacter = characterManager->getCharacter(enemyUnit.m_Owner);
-	Character& character = characterManager->getCharacter(unit.m_Owner);
+	CharacterManager& characterManager = CharacterManager::get();
+	Character& enemyCharacter = characterManager.getCharacter(enemyUnit.m_Owner);
+	Character& character = characterManager.getCharacter(unit.m_Owner);
 
 	Vector2DInt bestRegion;
 	float shortestDistance = FLT_MAX;

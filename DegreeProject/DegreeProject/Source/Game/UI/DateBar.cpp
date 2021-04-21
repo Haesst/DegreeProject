@@ -33,7 +33,7 @@ void DateBar::start()
 	float sizeX = m_ButtonThickness * 0.5f;
 	float sizeY = m_SizeY * 0.5f;
 
-	m_OwnerColor = CharacterManager::get()->getPlayerCharacter().m_RegionColor;
+	m_OwnerColor = CharacterManager::get().getPlayerCharacter().m_RegionColor;
 
 	float positionX = m_Window->getSize().x - m_SizeX - m_OutlineThickness;
 	float positionY = m_Window->getSize().y - m_SizeY - m_OutlineThickness;
@@ -125,6 +125,7 @@ void DateBar::clickButton()
 		{
 			if (m_ButtonShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				InputHandler::setLeftMouseReleased(false);
 				switch (index)
 				{
 					case 0:

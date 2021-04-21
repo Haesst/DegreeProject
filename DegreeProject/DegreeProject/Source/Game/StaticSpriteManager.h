@@ -9,7 +9,7 @@ class StaticSpriteManager
 {
 public:
 	~StaticSpriteManager();
-	static StaticSpriteManager* get();
+	static StaticSpriteManager& get();
 	void start();
 	void update();
 	void render();

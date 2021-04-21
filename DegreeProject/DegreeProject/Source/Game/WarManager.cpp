@@ -27,12 +27,12 @@ void WarManager::endWar(int warHandle, CharacterID winner)
 
 	if (winner != INVALID_CHARACTER_ID)
 	{
-		if (!CharacterManager::get()->getCharacter(getWar(warHandle)->getAttacker()).m_IsPlayerControlled)
+		if (!CharacterManager::get().getCharacter(getWar(warHandle)->getAttacker()).m_IsPlayerControlled)
 		{
 			AIManager::get().getAIDataofCharacter(getWar(warHandle)->getAttacker()).m_CurrentAction = Action::NONE;
 		}
 
-		if (!CharacterManager::get()->getCharacter(getWar(warHandle)->getDefender()).m_IsPlayerControlled)
+		if (!CharacterManager::get().getCharacter(getWar(warHandle)->getDefender()).m_IsPlayerControlled)
 		{
 			AIManager::get().getAIDataofCharacter(getWar(warHandle)->getDefender()).m_CurrentAction = Action::NONE;
 		}
@@ -133,7 +133,7 @@ bool WarManager::isEnemyOfEnemy(Unit& unit, Unit& enemyUnit)
 		{
 			if (character == enemy)
 			{
-				for (auto& war : CharacterManager::get()->getCharacter(character).m_CurrentWars)
+				for (auto& war : CharacterManager::get().getCharacter(character).m_CurrentWars)
 				{
 					if (!WarManager::get().getWar(war)->isAllyOf(enemy, character))
 					{
@@ -328,9 +328,9 @@ void WarManager::createAlliance(const CharacterID& characterOneID, const Charact
 	{
 		if (m_Alliances[characterOneID][index] == characterTwoID)
 		{
-			if (CharacterManager::get()->getCharacter(characterOneID).m_IsPlayerControlled)
+			if (CharacterManager::get().getCharacter(characterOneID).m_IsPlayerControlled)
 			{
-				UIManager::get()->createUIEventElement(characterTwoID, characterOneID, UIType::AllianceDeclined);
+				UIManager::get().createUIEventElement(characterTwoID, characterOneID, UIType::AllianceDeclined);
 			}
 			return;
 		}

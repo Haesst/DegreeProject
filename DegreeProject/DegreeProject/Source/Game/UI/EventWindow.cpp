@@ -21,13 +21,13 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 
 	m_Window = Window::getWindow();
 
-	Character& playerCharacter = CharacterManager::get()->getPlayerCharacter();
+	Character& playerCharacter = CharacterManager::get().getPlayerCharacter();
 	m_OwnerColor = playerCharacter.m_RegionColor;
 
-	Character& instigator = CharacterManager::get()->getCharacter(m_InstigatorID);
+	Character& instigator = CharacterManager::get().getCharacter(m_InstigatorID);
 	m_InstigatorColor = instigator.m_RegionColor;
 
-	Character& subject = CharacterManager::get()->getCharacter(m_SubjectID);
+	Character& subject = CharacterManager::get().getCharacter(m_SubjectID);
 	m_SubjectColor = subject.m_RegionColor;
 
 	AssetHandler& assetHandler = AssetHandler::get();
@@ -205,7 +205,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		{
 			if (instigator.m_Children.size() > 0)
 			{
-				Character& child = CharacterManager::get()->getCharacter(instigator.m_Children.back());
+				Character& child = CharacterManager::get().getCharacter(instigator.m_Children.back());
 				if (child.m_Gender == Gender::Male)
 				{
 					m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyMale.png");
@@ -394,8 +394,8 @@ void EventWindow::dismissRequest()
 
 void EventWindow::acceptRequest()
 {
-	Character& instigator = CharacterManager::get()->getCharacter(m_InstigatorID);
-	Character& subject = CharacterManager::get()->getCharacter(m_SubjectID);
+	Character& instigator = CharacterManager::get().getCharacter(m_InstigatorID);
+	Character& subject = CharacterManager::get().getCharacter(m_SubjectID);
 	switch (m_MessageType)
 	{
 		case UIType::MarriageRequest:
@@ -403,7 +403,7 @@ void EventWindow::acceptRequest()
 			if (!instigator.m_Dead && instigator.m_Spouse == INVALID_CHARACTER_ID
 				&& !subject.m_Dead && subject.m_Spouse == INVALID_CHARACTER_ID)
 			{
-				CharacterManager::get()->onMarriage(m_InstigatorID, m_SubjectID);
+				CharacterManager::get().onMarriage(m_InstigatorID, m_SubjectID);
 			}
 			break;
 		}
@@ -417,12 +417,12 @@ void EventWindow::acceptRequest()
 		}
 		case UIType::PeaceRequest:
 		{
-			CharacterManager::get()->onWarEnded(m_InstigatorID, m_SubjectID);
+			CharacterManager::get().onWarEnded(m_InstigatorID, m_SubjectID);
 			break;
 		}
 		case UIType::CallToArmsRequest:
 		{
-			Character& playerCharacter = CharacterManager::get()->getPlayerCharacter();
+			Character& playerCharacter = CharacterManager::get().getPlayerCharacter();
 
 			for (int handle : WarManager::get().getWarHandlesOfCharacter(m_InstigatorID))
 			{
@@ -443,7 +443,7 @@ void EventWindow::acceptRequest()
 					currentWar->addDefender(playerCharacter.m_CharacterID);
 				}
 
-				UIManager::get()->createWarIcon(currentWar->getAttacker(), currentWar->getDefender());
+				UIManager::get().createWarIcon(currentWar->getAttacker(), currentWar->getDefender());
 			}
 			break;
 		}
@@ -461,6 +461,7 @@ void EventWindow::clickButton()
 		m_MousePosition = InputHandler::getUIMousePosition();
 		if (m_WindowShape.getGlobalBounds().contains(m_MousePosition.x, m_MousePosition.y))
 		{
+			InputHandler::setLeftMouseClicked(false);
 			m_MovingWindow = true;
 		}
 	}
@@ -469,11 +470,13 @@ void EventWindow::clickButton()
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_DismissShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseReleased(false);
 			dismissRequest();
 			closeWindow();
 		}
 		else if (m_AgreeShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseReleased(false);
 			acceptRequest();
 			closeWindow();
 		}
@@ -485,9 +488,10 @@ void EventWindow::clickButton()
 	else if (InputHandler::getRightMouseReleased())
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
-		CharacterWindow& characterWindow = *UIManager::get()->m_CharacterWindow;
+		CharacterWindow& characterWindow = *UIManager::get().m_CharacterWindow;
 		if (m_InstigatorShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setRightMouseReleased(false);
 			characterWindow.m_CurrentCharacterID = m_InstigatorID;
 			characterWindow.checkIfPlayerCharacter();
 			characterWindow.updateInfo();
@@ -495,6 +499,7 @@ void EventWindow::clickButton()
 		}
 		else if (m_SubjectShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setRightMouseReleased(false);
 			characterWindow.m_CurrentCharacterID = m_SubjectID;
 			characterWindow.checkIfPlayerCharacter();
 			characterWindow.updateInfo();

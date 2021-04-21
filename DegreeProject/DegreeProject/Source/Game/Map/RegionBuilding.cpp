@@ -34,6 +34,6 @@ void RegionBuilding::onDayChange(Date)
 		LOG_WARN("Build successful!! Days constructed: {0}, buildtime: {1}", m_DaysBuilt, GameData::m_Buildings[m_BuildingId].m_DaysToConstruct);
 		m_Finished = true;
 		Time::m_GameDate.unsubscribeToDayChange(m_DaySubscribeHandle);
-		CharacterManager::get()->getCharacter(Map::get().getRegionById(m_RegionId).m_OwnerID).m_MaxArmySize += GameData::m_Buildings[m_BuildingId].m_ArmyModifier;
+		CharacterManager::get().getCharacter(Map::get().getRegionById(m_RegionId).m_OwnerID).m_MaxArmySize += GameData::m_Buildings[m_BuildingId].m_ArmyModifier;
 	}
 }

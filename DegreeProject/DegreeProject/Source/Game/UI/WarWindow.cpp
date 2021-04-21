@@ -29,7 +29,7 @@ void WarWindow::start()
 
 	AssetHandler& assethandler = AssetHandler::get();
 
-	Character& playerCharacter = CharacterManager::get()->getPlayerCharacter();
+	Character& playerCharacter = CharacterManager::get().getPlayerCharacter();
 
 	m_MaleCharacterTexture = assethandler.getTextureAtPath("Assets/Graphics/MalePortrait.jpg");
 	m_FemaleCharacterTexture = assethandler.getTextureAtPath("Assets/Graphics/FemalePortrait.jpg");
@@ -222,8 +222,8 @@ void WarWindow::render()
 		m_Window->draw(m_WarscoreShape);
 		m_Window->draw(m_WarscoreProgressShape);
 
-		if (m_AttackerCharacterIDs.front() == CharacterManager::get()->getPlayerCharacterID()
-		 || m_DefenderCharacterIDs.front() == CharacterManager::get()->getPlayerCharacterID())
+		if (m_AttackerCharacterIDs.front() == CharacterManager::get().getPlayerCharacterID()
+		 || m_DefenderCharacterIDs.front() == CharacterManager::get().getPlayerCharacterID())
 		{
 			m_Window->draw(m_SurrenderShape);
 			m_Window->draw(m_WhitePeaceShape);
@@ -295,7 +295,7 @@ void WarWindow::updateInfo()
 
 	if (m_War != nullptr)
 	{
-		Character& attackerMain = CharacterManager::get()->getCharacter(m_AttackerCharacterIDs.front());
+		Character& attackerMain = CharacterManager::get().getCharacter(m_AttackerCharacterIDs.front());
 
 		std::stringstream stream;
 		stream << attackerMain.m_KingdomName << m_CasusBelli << Map::get().getRegionById(m_War->m_WargoalRegion).m_RegionName;
@@ -308,7 +308,7 @@ void WarWindow::updateInfo()
 		stream.str(std::string());
 		stream.clear();
 
-		//CharacterID playerCharacterID = CharacterManager::get()->getPlayerCharacterID();
+		//CharacterID playerCharacterID = CharacterManager::get().getPlayerCharacterID();
 		//if (m_AttackerCharacterIDs.front() == playerCharacterID)
 		//{
 			int warscore = m_War->getWarscore(m_AttackerCharacterIDs.front());
@@ -408,7 +408,7 @@ void WarWindow::updateInfo()
 		unsigned int totalRaisedArmy = 0;
 		for (CharacterID attackerID : m_AttackerCharacterIDs)
 		{
-			Character& attacker = CharacterManager::get()->getCharacter(attackerID);
+			Character& attacker = CharacterManager::get().getCharacter(attackerID);
 			totalArmy += attacker.m_MaxArmySize;
 			totalRaisedArmy += attacker.m_RaisedArmySize;
 		}
@@ -421,7 +421,7 @@ void WarWindow::updateInfo()
 
 		for (CharacterID defenderID : m_DefenderCharacterIDs)
 		{
-			Character& defender = CharacterManager::get()->getCharacter(defenderID);
+			Character& defender = CharacterManager::get().getCharacter(defenderID);
 			totalArmy += defender.m_MaxArmySize;
 			totalRaisedArmy += defender.m_RaisedArmySize;
 		}
@@ -446,6 +446,14 @@ void WarWindow::handleWindow()
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			if (InputHandler::getLeftMouseReleased())
+			{
+				InputHandler::setLeftMouseReleased(false);
+			}
+			if (InputHandler::getRightMouseReleased())
+			{
+				InputHandler::setRightMouseReleased(false);
+			}
 			closeWindow();
 		}
 	}
@@ -470,7 +478,7 @@ void WarWindow::openWindow(CharacterID mainAttackerID, CharacterID mainDefenderI
 			float yOffset = 0.0f;
 			for (CharacterID attackerID : m_War->m_Attackers)
 			{
-				Character& attacker = CharacterManager::get()->getCharacter(attackerID);
+				Character& attacker = CharacterManager::get().getCharacter(attackerID);
 				m_AttackerCharacterIDs.push_back(attackerID);
 				if (attackerID == mainAttackerID)
 				{
@@ -507,7 +515,7 @@ void WarWindow::openWindow(CharacterID mainAttackerID, CharacterID mainDefenderI
 			index = 0;
 			for (CharacterID defenderID : m_War->m_Defenders)
 			{
-				Character& defender = CharacterManager::get()->getCharacter(defenderID);
+				Character& defender = CharacterManager::get().getCharacter(defenderID);
 				m_DefenderCharacterIDs.push_back(defenderID);
 				if (defenderID == mainDefenderID)
 				{
@@ -575,7 +583,7 @@ void WarWindow::closeWindow()
 
 void WarWindow::sendPeaceOffer(PeaceType type)
 {
-	Character& playerCharacter = CharacterManager::get()->getPlayerCharacter();
+	Character& playerCharacter = CharacterManager::get().getPlayerCharacter();
 	CharacterID enemy = INVALID_CHARACTER_ID;
 	if (m_AttackerCharacterIDs.front() == playerCharacter.m_CharacterID)
 	{
@@ -587,7 +595,7 @@ void WarWindow::sendPeaceOffer(PeaceType type)
 	}
 	if (!playerCharacter.m_CurrentWars.empty())
 	{
-		CharacterManager::get()->sendPeaceOffer(playerCharacter.m_CharacterID, enemy, type);
+		CharacterManager::get().sendPeaceOffer(playerCharacter.m_CharacterID, enemy, type);
 
 		if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && playerCharacter.m_CurrentWars.size() == 0)
 		{
@@ -600,12 +608,13 @@ void WarWindow::sendPeaceOffer(PeaceType type)
 void WarWindow::clickButton()
 {
 	if (InputHandler::getLeftMouseReleased()
-	&& (m_AttackerCharacterIDs.front() == CharacterManager::get()->getPlayerCharacterID()
-	 || m_DefenderCharacterIDs.front() == CharacterManager::get()->getPlayerCharacterID()))
+	&& (m_AttackerCharacterIDs.front() == CharacterManager::get().getPlayerCharacterID()
+	 || m_DefenderCharacterIDs.front() == CharacterManager::get().getPlayerCharacterID()))
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_SurrenderShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseReleased(false);
 			m_CurrentPeaceType = PeaceType::Surrender;
 			m_SurrenderShape.setFillColor(m_OwnerColor);
 			m_WhitePeaceShape.setFillColor(sf::Color::Transparent);
@@ -615,6 +624,7 @@ void WarWindow::clickButton()
 		}
 		else if (m_WhitePeaceShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseReleased(false);
 			m_CurrentPeaceType = PeaceType::White_Peace;
 			m_SurrenderShape.setFillColor(sf::Color::Transparent);
 			m_WhitePeaceShape.setFillColor(m_OwnerColor);
@@ -624,6 +634,7 @@ void WarWindow::clickButton()
 		}
 		else if (m_EnforceDemandsShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseReleased(false);
 			m_CurrentPeaceType = PeaceType::Enforce_Demands;
 			m_SurrenderShape.setFillColor(sf::Color::Transparent);
 			m_WhitePeaceShape.setFillColor(sf::Color::Transparent);
@@ -633,6 +644,7 @@ void WarWindow::clickButton()
 		}
 		else if (m_SendShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseReleased(false);
 			if (m_CurrentPeaceType == PeaceType::Surrender || m_CurrentPeaceType == PeaceType::White_Peace || m_CurrentPeaceType == PeaceType::Enforce_Demands)
 			{
 				sendPeaceOffer(m_CurrentPeaceType);
@@ -647,15 +659,17 @@ void WarWindow::clickButton()
 	}
 	else if (InputHandler::getRightMouseReleased())
 	{
+		CharacterWindow& characterWindow = *UIManager::get().m_CharacterWindow;
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		for (unsigned int index = 0; index < m_AttackerCharacterShapes.size(); index++)
 		{
 			if (m_AttackerCharacterShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				UIManager::get()->m_CharacterWindow->m_CurrentCharacterID = m_AttackerCharacterIDs[index];
-				UIManager::get()->m_CharacterWindow->checkIfPlayerCharacter();
-				UIManager::get()->m_CharacterWindow->updateInfo();
-				UIManager::get()->m_CharacterWindow->openWindow();
+				InputHandler::setRightMouseReleased(false);
+				characterWindow.m_CurrentCharacterID = m_AttackerCharacterIDs[index];
+				characterWindow.checkIfPlayerCharacter();
+				characterWindow.updateInfo();
+				characterWindow.openWindow();
 				return;
 			}
 		}
@@ -663,10 +677,11 @@ void WarWindow::clickButton()
 		{
 			if (m_DefenderCharacterShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
-				UIManager::get()->m_CharacterWindow->m_CurrentCharacterID = m_DefenderCharacterIDs[index];
-				UIManager::get()->m_CharacterWindow->checkIfPlayerCharacter();
-				UIManager::get()->m_CharacterWindow->updateInfo();
-				UIManager::get()->m_CharacterWindow->openWindow();
+				InputHandler::setRightMouseReleased(false);
+				characterWindow.m_CurrentCharacterID = m_DefenderCharacterIDs[index];
+				characterWindow.checkIfPlayerCharacter();
+				characterWindow.updateInfo();
+				characterWindow.openWindow();
 				return;
 			}
 		}

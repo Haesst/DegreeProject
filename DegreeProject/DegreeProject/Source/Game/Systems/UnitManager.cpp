@@ -20,7 +20,7 @@ void UnitManager::start()
 
 	for (auto& unit : m_Units)
 	{
-		unit.m_RepresentedForce = CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize;
+		unit.m_RepresentedForce = CharacterManager::get().getCharacter(unit.m_Owner).m_MaxArmySize;
 	}
 }
 
@@ -30,15 +30,15 @@ void UnitManager::update()
 
 	for (auto& unit : m_Units)
 	{
-		if (!unit.m_Raised && (unsigned int)unit.m_RepresentedForce < CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize)
+		if (!unit.m_Raised && (unsigned int)unit.m_RepresentedForce < CharacterManager::get().getCharacter(unit.m_Owner).m_MaxArmySize)
 		{
 			if (m_LastDay < currentDate)
 			{
 				unit.m_RepresentedForce += 1;
 
-				if ((unsigned int)unit.m_RepresentedForce > CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize)
+				if ((unsigned int)unit.m_RepresentedForce > CharacterManager::get().getCharacter(unit.m_Owner).m_MaxArmySize)
 				{
-					unit.m_RepresentedForce = CharacterManager::get()->getCharacter(unit.m_Owner).m_MaxArmySize;
+					unit.m_RepresentedForce = CharacterManager::get().getCharacter(unit.m_Owner).m_MaxArmySize;
 				}
 			}
 		}
@@ -55,7 +55,7 @@ void UnitManager::update()
 		unitCombat(unit);
 		// Siege
 		
-		//if (unit.m_Owner == CharacterManager::get()->getPlayerCharacter().m_CharacterID)
+		//if (unit.m_Owner == CharacterManager::get().getPlayerCharacter().m_CharacterID)
 		//{
 		//	unitSiege(unit);
 		//}
@@ -217,7 +217,7 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 	unit.m_Position = Map::get().convertToScreen(location);
 	unit.m_LastPosition = unit.m_Position;
 	unit.m_Raised = true;
-	unit.m_Sprite.setColor(CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_RegionColor);
+	unit.m_Sprite.setColor(CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner).m_RegionColor);
 
 	for (auto& squareData : Map::get().m_MapSquareData)
 	{
@@ -232,7 +232,7 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 
 	startConquerRegion(unit);
 
-	CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_RaisedArmySize = unit.m_RepresentedForce;
+	CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner).m_RaisedArmySize = unit.m_RepresentedForce;
 }
 
 void UnitManager::dismissUnit(UnitID unitID)
@@ -564,13 +564,13 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 				war->addWarscore(getUnitWithId(unitID).m_Owner, 50);
 			}
 
-			LOG_INFO("{0} won the battle against {1}", CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get()->getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
+			LOG_INFO("{0} won the battle against {1}", CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get().getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
 		}
 	}
 
 	else
 	{
-		LOG_INFO("{0} won the battle against {1}", CharacterManager::get()->getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get()->getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
+		LOG_INFO("{0} won the battle against {1}", CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get().getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
 		dismissUnit(unitID);
 		getUnitWithId(unitID).m_RepresentedForce = getUnitWithId(unitID).m_RepresentedForce * 0.5f;
 		
@@ -638,9 +638,9 @@ void UnitManager::unitSiege(Unit& unit)
 
 		if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
 		{
-			CharacterManager* characterManager = CharacterManager::get();
-			Character& attacker = characterManager->getCharacter(unit.m_Owner);
-			Character& defender = characterManager->getCharacter(region.m_OwnerID);
+			CharacterManager& characterManager = CharacterManager::get();
+			Character& attacker = characterManager.getCharacter(unit.m_Owner);
+			Character& defender = characterManager.getCharacter(region.m_OwnerID);
 			War* currentWar = WarManager::get().getWarAgainst(attacker.m_CharacterID, defender.m_CharacterID);
 
 			if (currentWar == nullptr && !skipWarCheck)
@@ -692,7 +692,7 @@ void UnitManager::unitSiege(Unit& unit)
 
 				bool allRegionsSiezed = true;
 
-				for (auto ID : CharacterManager::get()->getCharacter(currentWar->getDefender()).m_OwnedRegionIDs)
+				for (auto ID : CharacterManager::get().getCharacter(currentWar->getDefender()).m_OwnedRegionIDs)
 				{
 					if (Map::get().getRegionById(ID).m_OccupiedBy == INVALID_CHARACTER_ID)
 					{
@@ -748,7 +748,7 @@ void UnitManager::startConquerRegion(Unit& unit)
 				continue;
 			}
 
-			if (region.m_OccupiedBy != INVALID_CHARACTER_ID && CharacterManager::get()->isAlliedWith(region.m_OccupiedBy, unit.m_Owner))
+			if (region.m_OccupiedBy != INVALID_CHARACTER_ID && CharacterManager::get().isAlliedWith(region.m_OccupiedBy, unit.m_Owner))
 			{
 				continue;
 			}
@@ -759,7 +759,7 @@ void UnitManager::startConquerRegion(Unit& unit)
 			}
 
 			bool allyFoundSieging = false;
-			Character& unitOwner = CharacterManager::get()->getCharacter(unit.m_Owner);
+			Character& unitOwner = CharacterManager::get().getCharacter(unit.m_Owner);
 
 			std::vector alliesInSquare = getAlliesAtSquare(unitOwner, currentMapPosition);
 

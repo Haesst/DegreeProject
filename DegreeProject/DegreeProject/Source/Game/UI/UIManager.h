@@ -22,7 +22,7 @@ class UIManager
 public:
 	UIManager();
 	~UIManager();
-	static UIManager* get();
+	static UIManager& get();
 	void start();
 	void update();
 	void render();
@@ -37,6 +37,8 @@ public:
 	RegionWindow* m_RegionWindow = nullptr;
 	WarWindow* m_WarWindow = nullptr;
 	MainMenu* m_MainMenu = nullptr;
+	StatBar* m_StatBar = nullptr;
+	DateBar* m_DateBar = nullptr;
 	bool m_ActiveWarIcons = false;
 	bool m_ActiveEventWindows = false;
 private:
@@ -46,6 +48,4 @@ private:
 	std::unordered_map<CharacterID, UIText*> m_UITexts;
 	std::vector<EventWindow*> m_EventWindows;
 	std::vector<WarIcon*> m_WarIcons;
-	StatBar* m_StatBar = nullptr;
-	DateBar* m_DateBar = nullptr;
 };

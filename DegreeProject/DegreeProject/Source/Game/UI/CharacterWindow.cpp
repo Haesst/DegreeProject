@@ -220,7 +220,7 @@ void CharacterWindow::start()
 {
 	m_Window = Window::getWindow();
 
-	m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
+	m_PlayerCharacter = &CharacterManager::get().getPlayerCharacter();
 }
 
 void CharacterWindow::update()
@@ -357,6 +357,7 @@ void CharacterWindow::clickOnMap()
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setRightMouseClicked(false);
 			Vector2DInt mouseMapPosition = InputHandler::getMouseMapPosition();
 			Map& map = Map::get();
 			if (map.mapSquareDataContainsKey(mouseMapPosition))
@@ -390,6 +391,7 @@ void CharacterWindow::clickOnMap()
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseClicked(false);
 			closeWindow();
 		}
 	}
@@ -431,7 +433,7 @@ void CharacterWindow::updateParents()
 {
 	if (m_FatherID != INVALID_CHARACTER_ID)
 	{
-		Character& father = CharacterManager::get()->getCharacter(m_FatherID);
+		Character& father = CharacterManager::get().getCharacter(m_FatherID);
 		m_FatherName.setFillColor(father.m_RegionColor);
 		m_FatherName.setString(father.m_Name);
 		m_FatherShape.setOutlineColor(father.m_RegionColor);
@@ -443,7 +445,7 @@ void CharacterWindow::updateParents()
 
 	if (m_MotherID != INVALID_CHARACTER_ID)
 	{
-		Character& mother = CharacterManager::get()->getCharacter(m_MotherID);
+		Character& mother = CharacterManager::get().getCharacter(m_MotherID);
 		m_MotherName.setFillColor(mother.m_RegionColor);
 		m_MotherName.setString(mother.m_Name);
 		m_MotherShape.setOutlineColor(mother.m_RegionColor);
@@ -491,7 +493,7 @@ void CharacterWindow::updateTraits()
 	stream.str(std::string());
 	stream.clear();
 
-	CharacterManager& characterManager = *CharacterManager::get();
+	CharacterManager& characterManager = CharacterManager::get();
 
 	if (m_CurrentCharacter->m_Spouse != INVALID_CHARACTER_ID)
 	{
@@ -558,7 +560,7 @@ void CharacterWindow::updateTraits()
 
 void CharacterWindow::updateChildren()
 {
-	CharacterManager& characterManager = *CharacterManager::get();
+	CharacterManager& characterManager = CharacterManager::get();
 	unsigned int sizeChildren = m_CurrentCharacter->m_Children.size();
 	for (unsigned int index = 0; index < sizeChildren; index++)
 	{
@@ -605,7 +607,7 @@ void CharacterWindow::updateChildren()
 
 void CharacterWindow::updateAllies()
 {
-	CharacterManager& characterManager = *CharacterManager::get();
+	CharacterManager& characterManager = CharacterManager::get();
 	m_AlliesIDs = WarManager::get().getAlliances(m_CurrentCharacterID);
 	unsigned int sizeAlliances = m_AlliesIDs.size();
 	for (unsigned int index = 0; index < sizeAlliances; index++)
@@ -634,7 +636,7 @@ void CharacterWindow::updateAllies()
 
 void CharacterWindow::updateWars()
 {
-	CharacterManager& characterManager = *CharacterManager::get();
+	CharacterManager& characterManager = CharacterManager::get();
 	WarManager& warManager = WarManager::get();
 	War* war = nullptr;
 	unsigned int sizeWars = m_CurrentCharacter->m_CurrentWars.size();
@@ -683,7 +685,7 @@ void CharacterWindow::updateInfo()
 {
 	if (m_CurrentCharacterID != INVALID_CHARACTER_ID)
 	{
-		CharacterManager& characterManager = *CharacterManager::get();
+		CharacterManager& characterManager = CharacterManager::get();
 		m_PlayerCharacter = &characterManager.getPlayerCharacter();
 		m_CurrentCharacter = &characterManager.getCharacter(m_CurrentCharacterID);
 		m_FatherID = m_CurrentCharacter->m_Father;
@@ -799,6 +801,7 @@ void CharacterWindow::handleWindow()
 	InputHandler::setCharacterWindowOpen(m_Visible);
 	if (InputHandler::getRightMouseReleased() && !InputHandler::getPlayerUnitSelected() && m_Open && !m_Visible)
 	{
+		InputHandler::setRightMouseReleased(false);
 		openWindow();
 	}
 	else if (m_Visible && (InputHandler::getPlayerUnitSelected() || InputHandler::getEscapePressed()))
@@ -841,6 +844,7 @@ void CharacterWindow::clickButton()
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_MarriedSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseReleased(false);
 			m_ShowSpouseName = true;
 		}
 		else
@@ -849,6 +853,7 @@ void CharacterWindow::clickButton()
 		}
 		if (m_FatherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseReleased(false);
 			m_ShowFatherName = true;
 		}
 		else
@@ -857,6 +862,7 @@ void CharacterWindow::clickButton()
 		}
 		if (m_MotherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseReleased(false);
 			m_ShowMotherName = true;
 		}
 		else
@@ -871,6 +877,7 @@ void CharacterWindow::clickButton()
 			}
 			if (m_OwnedRegionShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				InputHandler::setLeftMouseReleased(false);
 				m_OwnedRegionsShowInfo[index] = true;
 			}
 			else
@@ -886,6 +893,7 @@ void CharacterWindow::clickButton()
 			}
 			if (m_DiplomacySprites[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				InputHandler::setLeftMouseReleased(false);
 				m_DiplomacyShowInfo[index] = true;
 			}
 			else
@@ -901,6 +909,7 @@ void CharacterWindow::clickButton()
 			}
 			if (m_ChildrenShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				InputHandler::setLeftMouseReleased(false);
 				m_ShowChildrenNames[index] = true;
 			}
 			else
@@ -916,6 +925,7 @@ void CharacterWindow::clickButton()
 			}
 			if (m_TraitsSprites[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				InputHandler::setLeftMouseReleased(false);
 				m_TraitsShowInfo[index] = true;
 			}
 			else
@@ -929,27 +939,31 @@ void CharacterWindow::clickButton()
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_MarriedSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setRightMouseReleased(false);
 			m_CurrentCharacterID = m_SpouseID;
 			checkIfPlayerCharacter();
 			updateInfo();
 		}
 		else if (m_FatherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setRightMouseReleased(false);
 			m_CurrentCharacterID = m_FatherID;
 			checkIfPlayerCharacter();
 			updateInfo();
 		}
 		else if (m_MotherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setRightMouseReleased(false);
 			m_CurrentCharacterID = m_MotherID;
 			checkIfPlayerCharacter();
 			updateInfo();
 		}
-		CharacterManager& characterManager = *CharacterManager::get();
+		CharacterManager& characterManager = CharacterManager::get();
 		for (unsigned int index = 0; index < m_ChildrenShapes.size(); index++)
 		{
 			if (m_ChildrenShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				InputHandler::setRightMouseReleased(false);
 				m_CurrentCharacterID = characterManager.getCharacter(m_CurrentCharacterID).m_Children[index];
 				checkIfPlayerCharacter();
 				updateInfo();
@@ -960,6 +974,7 @@ void CharacterWindow::clickButton()
 		{
 			if (m_AlliesShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				InputHandler::setRightMouseReleased(false);
 				m_CurrentCharacterID = m_AlliesIDs[index];
 				checkIfPlayerCharacter();
 				updateInfo();
@@ -971,17 +986,19 @@ void CharacterWindow::clickButton()
 		{
 			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				InputHandler::setRightMouseReleased(false);
 				m_CurrentCharacterID = warManager.getWar(m_CurrentCharacter->m_CurrentWars[index])->getOpposingForce(m_CurrentCharacterID);
 				checkIfPlayerCharacter();
 				updateInfo();
 				break;
 			}
 		}
-		UIManager& uiManager = *UIManager::get();
+		UIManager& uiManager = UIManager::get();
 		for (unsigned int index = 0; index < m_OwnedRegionShapes.size(); index++)
 		{
 			if (m_OwnedRegionShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				InputHandler::setRightMouseReleased(false);
 				closeWindow();
 				RegionWindow& regionWindow = *uiManager.m_RegionWindow;
 				regionWindow.m_CurrentMapRegion = &Map::get().getRegionById(m_CurrentCharacter->m_OwnedRegionIDs[index]);
@@ -998,6 +1015,7 @@ void CharacterWindow::clickButton()
 		{
 			if (m_ButtonShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				InputHandler::setLeftMouseReleased(false);
 				switch (index)
 				{
 				case 0:
@@ -1032,11 +1050,12 @@ void CharacterWindow::clickButton()
 				}
 			}
 		}
-		UIManager& uiManager = *UIManager::get();
+		UIManager& uiManager = UIManager::get();
 		for (unsigned int index = 0; index < m_WarShapes.size(); index++)
 		{
 			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				InputHandler::setLeftMouseReleased(false);
 				closeWindow();
 				InputHandler::m_Inputs[LeftMouseReleased] = false;
 				uiManager.m_WarWindow->openWindow(m_WarAttackers[index], m_WarDefenders[index], Time::m_GameDate.m_Date);
@@ -1048,7 +1067,7 @@ void CharacterWindow::clickButton()
 
 void CharacterWindow::declareWar()
 {
-	UIManager& uiManager = *UIManager::get();
+	UIManager& uiManager = UIManager::get();
 	for (CharacterID& allyID : WarManager::get().getAlliances(m_PlayerCharacter->m_CharacterID))
 	{
 		if (allyID == m_CurrentCharacterID)
@@ -1075,7 +1094,7 @@ void CharacterWindow::declareWar()
 		uiManager.createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::WarDeclaration);
 		uiManager.createWarIcon(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 
-		CharacterManager::get()->callAllies(m_PlayerCharacter->m_CharacterID, warHandle);
+		CharacterManager::get().callAllies(m_PlayerCharacter->m_CharacterID, warHandle);
 
 		Game::m_Sound.pause();
 		if (Game::m_BattleSound.getStatus() != sf::SoundSource::Playing)
@@ -1091,7 +1110,7 @@ void CharacterWindow::offerPeace()
 	War* war = warManager.getWarAgainst(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 	if (war != nullptr)
 	{
-		CharacterManager::get()->sendPeaceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, PeaceType::Enforce_Demands);
+		CharacterManager::get().sendPeaceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, PeaceType::Enforce_Demands);
 
 		if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && m_PlayerCharacter->m_CurrentWars.size() == 0)
 		{
@@ -1103,25 +1122,25 @@ void CharacterWindow::offerPeace()
 
 void CharacterWindow::proposeMarriage()
 {
-	CharacterManager::get()->marry(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
+	CharacterManager::get().marry(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 }
 
 void CharacterWindow::proposeAlliance()
 {
-	CharacterManager::get()->sendAllianceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
+	CharacterManager::get().sendAllianceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 }
 
 void CharacterWindow::assassinate()
 {
-	CharacterManager& characterManager = *CharacterManager::get();
+	CharacterManager& characterManager = CharacterManager::get();
 	if (characterManager.chancePerPercent(0.5f))
 	{
 		characterManager.killCharacter(m_CurrentCharacterID);
-		UIManager::get()->createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationSuccess);
+		UIManager::get().createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationSuccess);
 	}
 	else
 	{
-		UIManager::get()->createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationFailure);
+		UIManager::get().createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationFailure);
 	}
 }
 

@@ -117,7 +117,7 @@ void Player::tryToSelectUnit()
 					continue;
 				}
 
-				CharacterID playerCharacter = CharacterManager::get()->getPlayerCharacterID();
+				CharacterID playerCharacter = CharacterManager::get().getPlayerCharacterID();
 
 				for (auto& unitID : squareData.m_EntitiesInSquare)
 				{
@@ -177,7 +177,7 @@ void Player::tryToSelectUnit()
 							continue;
 						}
 
-						CharacterID playerCharacter = CharacterManager::get()->getPlayerCharacterID();
+						CharacterID playerCharacter = CharacterManager::get().getPlayerCharacterID();
 
 						for (auto& unitID : squareData.m_EntitiesInSquare)
 						{

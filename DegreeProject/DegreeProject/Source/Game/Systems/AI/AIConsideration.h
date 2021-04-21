@@ -42,8 +42,8 @@ struct ArmySizeConsideration : public Consideration
 			return 0.0f;
 		}
 
-		auto contextCharComp = CharacterManager::get()->getCharacter(context);
-		auto targetCharComp = CharacterManager::get()->getCharacter(target);
+		auto contextCharComp = CharacterManager::get().getCharacter(context);
+		auto targetCharComp = CharacterManager::get().getCharacter(target);
 
 		float armySizeDiff = (float)contextCharComp.m_MaxArmySize - targetCharComp.m_MaxArmySize;
 
@@ -82,12 +82,12 @@ struct UpgradeSettlementConsideration : public Consideration
 
 	float evaluate(CharacterID context, int& outRegion)
 	{
-		CharacterManager* characterManager = CharacterManager::get();
+		CharacterManager& characterManager = CharacterManager::get();
 
 		unsigned int lowestTax = INT_MAX;
 		unsigned int targetRegionID = INT_MAX;
 
-		for (auto& region : characterManager->getCharacter(context).m_OwnedRegionIDs)
+		for (auto& region : characterManager.getCharacter(context).m_OwnedRegionIDs)
 		{
 			if (Map::get().getRegionById(region).m_RegionTax < lowestTax)
 			{
@@ -128,7 +128,7 @@ struct UpgradeSettlementConsideration : public Consideration
 
 		Building building = GameData::m_Buildings[buildingId];
 
-		if ((characterManager->getCharacter(context).m_CurrentGold - building.m_Cost) > 20)
+		if ((characterManager.getCharacter(context).m_CurrentGold - building.m_Cost) > 20)
 		{
 			goldSurplusWeight += .5f;
 		}
@@ -162,8 +162,8 @@ struct GoldConsideration : public Consideration
 			return 0.0f;
 		}
 
-		auto contextCharComp = CharacterManager::get()->getCharacter(context);
-		auto targetCharComp = CharacterManager::get()->getCharacter(target);
+		auto contextCharComp = CharacterManager::get().getCharacter(context);
+		auto targetCharComp = CharacterManager::get().getCharacter(target);
 
 		float targetGold = (float)targetCharComp.m_CurrentGold;
 		float contextGold = (float)contextCharComp.m_CurrentGold;
@@ -209,7 +209,7 @@ struct ExpansionConsideration : public Consideration
 
 		Vector2DInt wantedRegionPos = Map::get().getRegionById(regionIndex).m_RegionCapital;
 
-		for (int ownedRegion : CharacterManager::get()->getCharacter(context).m_OwnedRegionIDs)
+		for (int ownedRegion : CharacterManager::get().getCharacter(context).m_OwnedRegionIDs)
 		{
 			Vector2DInt regionPos = Map::get().getRegionById(ownedRegion).m_RegionCapital;
 
@@ -231,7 +231,7 @@ struct ExpansionConsideration : public Consideration
 		int wantedRegionTax = Map::get().getRegionById(regionIndex).m_RegionTax;
 
 		std::vector<int> regionTax;
-		for (int region : CharacterManager::get()->getCharacter(context).m_OwnedRegionIDs)
+		for (int region : CharacterManager::get().getCharacter(context).m_OwnedRegionIDs)
 		{
 			regionTax.push_back(Map::get().getRegionById(region).m_RegionTax);
 		}

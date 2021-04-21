@@ -105,6 +105,7 @@ void MainMenu::clickButton()
 		{
 			if (m_ButtonShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				InputHandler::setLeftMouseReleased(false);
 				if (m_ButtonStrings[index] == std::string("Resume"))
 				{
 					closeWindow();
@@ -122,7 +123,7 @@ void MainMenu::handleWindow()
 {
 	if (!m_Visible && InputHandler::getEscapePressed() && !InputHandler::getCharacterWindowOpen() && !InputHandler::getRegionWindowOpen() && !InputHandler::getWarWindowOpen())
 	{
-		m_OwnerColor = CharacterManager::get()->getPlayerCharacter().m_RegionColor;
+		m_OwnerColor = CharacterManager::get().getPlayerCharacter().m_RegionColor;
 		openWindow();
 	}
 	else if (m_Visible && InputHandler::getEscapePressed())

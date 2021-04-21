@@ -176,7 +176,7 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, Pea
 	}
 
 	bool allRegionsSiezed = true;
-	for (auto ID : CharacterManager::get()->getCharacter(reciever).m_OwnedRegionIDs)
+	for (auto ID : CharacterManager::get().getCharacter(reciever).m_OwnedRegionIDs)
 	{
 		if (Map::get().getRegionById(ID).m_OccupiedBy == INVALID_CHARACTER_ID)
 		{
@@ -207,8 +207,8 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, Pea
 		acceptance -= .4f;
 	}
 
-	int senderArmySize = CharacterManager::get()->getCharacter(sender).m_RaisedArmySize;
-	int recieverArmySize = CharacterManager::get()->getCharacter(reciever).m_RaisedArmySize;
+	int senderArmySize = CharacterManager::get().getCharacter(sender).m_RaisedArmySize;
+	int recieverArmySize = CharacterManager::get().getCharacter(reciever).m_RaisedArmySize;
 
 	if (senderArmySize > recieverArmySize)
 	{
@@ -257,9 +257,9 @@ bool AIManager::handleAllianceRequest(CharacterID sender, CharacterID reciever)
 bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, int war)
 {
 	War* currentWar = WarManager::get().getWar(war);
-	CharacterManager* characterManager = CharacterManager::get();
+	CharacterManager& characterManager = CharacterManager::get();
 
-	if (currentWar->getAttacker() == characterManager->getCharacter(sender).m_CharacterID)
+	if (currentWar->getAttacker() == characterManager.getCharacter(sender).m_CharacterID)
 	{
 		for (auto ally : WarManager::get().getAlliances(sender))
 		{
@@ -270,7 +270,7 @@ bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, i
 		}
 	}
 
-	else if (currentWar->getDefender() == characterManager->getCharacter(sender).m_CharacterID)
+	else if (currentWar->getDefender() == characterManager.getCharacter(sender).m_CharacterID)
 	{
 		for (auto ally : WarManager::get().getAlliances(reciever))
 		{
@@ -281,7 +281,7 @@ bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, i
 		}
 	}
 	
-	for (auto& handle : CharacterManager::get()->getCharacter(reciever).m_CurrentWars)
+	for (auto& handle : CharacterManager::get().getCharacter(reciever).m_CurrentWars)
 	{
 		if (handle == currentWar->getHandle())
 		{
@@ -295,14 +295,14 @@ bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, i
 
 void AIManager::update()
 {
-	CharacterManager* characterManager = CharacterManager::get();
+	CharacterManager& characterManager = CharacterManager::get();
 	WarManager& warManager = WarManager::get();
 	UnitManager& unitManager = UnitManager::get();
 	Map& map = Map::get();
 
 	for (auto& data : m_AIDatas)
 	{
-		if (characterManager->getCharacter(data.m_OwnerID).m_CharacterTitle == Title::Unlanded)
+		if (characterManager.getCharacter(data.m_OwnerID).m_CharacterTitle == Title::Unlanded)
 		{
 			continue;
 		}
@@ -317,7 +317,7 @@ void AIManager::update()
 				continue;
 			}
 
-			if (data.m_CurrentAction != Action::War && characterManager->getCharacter(data.m_OwnerID).m_CurrentWars.size() == 0)
+			if (data.m_CurrentAction != Action::War && characterManager.getCharacter(data.m_OwnerID).m_CurrentWars.size() == 0)
 			{
 				if (expansionDecision(data.m_OwnerID) > .3f)
 				{
@@ -347,7 +347,7 @@ void AIManager::update()
 			data.m_SettlementToUpgrade = regionID;
 			data.m_Evaluations.push_back(std::make_pair(settlementEval, Action::War));
 
-			if (characterManager->getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
+			if (characterManager.getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
 			{
 				CharacterID potentialSpouse = getPotentialSpouse(data);
 
@@ -359,7 +359,7 @@ void AIManager::update()
 				}
 			}
 
-			for (auto& war : characterManager->getCharacter(data.m_OwnerID).m_CurrentWars)
+			for (auto& war : characterManager.getCharacter(data.m_OwnerID).m_CurrentWars)
 			{
 				if (Time::m_GameDate.m_Date.m_Month - warManager.getWar(war)->getStartDate().m_Month >= 4)
 				{
@@ -369,7 +369,7 @@ void AIManager::update()
 					{
 						if (warManager.isValidWar(*warManager.getWar(war)))
 						{
-							characterManager->sendPeaceOffer(data.m_OwnerID, warManager.getWar(war)->getOpposingForce(data.m_OwnerID), PeaceType::White_Peace);
+							characterManager.sendPeaceOffer(data.m_OwnerID, warManager.getWar(war)->getOpposingForce(data.m_OwnerID), PeaceType::White_Peace);
 						}
 					}
 				}
@@ -406,7 +406,7 @@ void AIManager::update()
 
 		if (warmind.m_TickAccu > warmind.m_AtWarTickRate)
 		{
-			if (characterManager->getCharacter(warmind.m_OwnerID).m_CurrentWars.empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
+			if (characterManager.getCharacter(warmind.m_OwnerID).m_CurrentWars.empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
 			{
 				unitManager.dismissUnit(unitManager.getUnitOfCharacter(warmind.m_OwnerID).m_UnitID);
 				warmind.m_Active = false;
@@ -427,7 +427,7 @@ void AIManager::update()
 
 				else
 				{
-					Character& character = characterManager->getCharacter(warmind.m_OwnerID);
+					Character& character = characterManager.getCharacter(warmind.m_OwnerID);
 					if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f && character.m_MaxArmySize > 0)
 					{
 						unitManager.raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
@@ -448,9 +448,9 @@ CharacterID AIManager::getPotentialSpouse(AIData& data)
 	{
 		if (Map::get().getRegionById(region).m_OwnerID != data.m_OwnerID)
 		{
-			if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Gender != CharacterManager::get()->getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
+			if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Gender != CharacterManager::get().getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
 			{
-				if (CharacterManager::get()->getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
+				if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
 				{
 					continue;
 				}
@@ -488,7 +488,7 @@ CharacterID AIManager::getPotentialAlly(AIData& data)
 	{
 		if (Map::get().getRegionById(region).m_OwnerID != data.m_OwnerID)
 		{
-			if (CharacterManager::get()->getCharacter(Map::get().getRegionById(region).m_OwnerID).m_CharacterTitle == Title::Unlanded)
+			if (CharacterManager::get().getCharacter(Map::get().getRegionById(region).m_OwnerID).m_CharacterTitle == Title::Unlanded)
 			{
 				continue;
 			}
@@ -535,7 +535,7 @@ float AIManager::warDecision(CharacterID ID)
 	GoldConsideration goldConsideration;
 	ArmySizeConsideration armySizeConsideration;
 
-	//Personality personality = m_Personalities[CharacterManager::get()->getCharacter(ID).m_PersonalityIndex];
+	//Personality personality = m_Personalities[CharacterManager::get().getCharacter(ID).m_PersonalityIndex];
 	goldConsideration.setContext(ID);
 	armySizeConsideration.setContext(ID);
 
@@ -543,7 +543,7 @@ float AIManager::warDecision(CharacterID ID)
 	float enemyArmyEvaluation = armySizeConsideration.evaluate(ID, getWarmindOfCharacter(ID).m_Opponent);
 	float allyDebuff = 0.0f;
 
-	if (CharacterManager::get()->isAlliedWith(ID, getWarmindOfCharacter(ID).m_Opponent))
+	if (CharacterManager::get().isAlliedWith(ID, getWarmindOfCharacter(ID).m_Opponent))
 	{
 		return 0.0f;
 	}
@@ -570,7 +570,7 @@ float AIManager::expansionDecision(CharacterID ID)
 	//Get characters in certain range,
 	std::vector<int> regionIndexes = Map::get().getRegionIDs();
 
-	Character& character = CharacterManager::get()->getCharacter(ID);
+	Character& character = CharacterManager::get().getCharacter(ID);
 
 	for (size_t i = 0; i < regionIndexes.size(); i++)
 	{
@@ -657,7 +657,7 @@ void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target
 
 		else
 		{
-			if (Map::get().regionOccupiedByFriendlies(CharacterManager::get()->getCharacter(unit.m_Owner), warmind.m_WargoalRegionId))
+			if (Map::get().regionOccupiedByFriendlies(CharacterManager::get().getCharacter(unit.m_Owner), warmind.m_WargoalRegionId))
 			{
 				m_Orders.orderAttackEnemyRegion(unit, enemyUnit);
 				return;
@@ -671,7 +671,7 @@ void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target
 
 void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*target*/, Unit& unit, Unit& enemyUnit)
 {
-	if (CharacterManager::get()->ownsRegion(unit.m_Owner, enemyUnit.m_SeizingRegionID))
+	if (CharacterManager::get().ownsRegion(unit.m_Owner, enemyUnit.m_SeizingRegionID))
 	{
 		m_Orders.orderAttackArmy(unit, enemyUnit);
 		return;
@@ -679,7 +679,7 @@ void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*targ
 
 	if (enemyUnit.m_RepresentedForce < unit.m_RepresentedForce)
 	{
-		if (CharacterManager::get()->getCharacter(enemyUnit.m_Owner).m_OwnedRegionIDs.size() > 0)
+		if (CharacterManager::get().getCharacter(enemyUnit.m_Owner).m_OwnedRegionIDs.size() > 0)
 		{
 			m_Orders.orderAttackEnemyRegion(unit, enemyUnit);
 			return;
@@ -691,15 +691,15 @@ void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*targ
 
 void AIManager::warAction(AIData& data)
 {
-	CharacterManager* characterManager = CharacterManager::get();
+	CharacterManager& characterManager = CharacterManager::get();
 	unsigned int opponent = getWarmindOfCharacter(data.m_OwnerID).m_Opponent;
 
-	if (opponent == INT_MAX || opponent == characterManager->getCharacter(data.m_OwnerID).m_Spouse)
+	if (opponent == INT_MAX || opponent == characterManager.getCharacter(data.m_OwnerID).m_Spouse)
 	{
 		return;
 	}
 
-	if (characterManager->isAlliedWith(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
+	if (characterManager.isAlliedWith(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
 	{
 		return;
 	}
@@ -707,35 +707,35 @@ void AIManager::warAction(AIData& data)
 	int warHandle = WarManager::get().createWar(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent, getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
 	War* war = WarManager::get().getWar(warHandle);
 
-	characterManager->getCharacter(war->getAttacker()).m_CurrentWars.push_back(warHandle);
-	characterManager->getCharacter(war->getDefender()).m_CurrentWars.push_back(warHandle);
-	characterManager->callAllies(data.m_OwnerID, warHandle);
+	characterManager.getCharacter(war->getAttacker()).m_CurrentWars.push_back(warHandle);
+	characterManager.getCharacter(war->getDefender()).m_CurrentWars.push_back(warHandle);
+	characterManager.callAllies(data.m_OwnerID, warHandle);
 
 	getWarmindOfCharacter(data.m_OwnerID).m_Active = true;
 
 	WarmindComponent& warmind = getWarmindOfCharacter(data.m_OwnerID);
 
-	if (!characterManager->getCharacter(warmind.m_Opponent).m_IsPlayerControlled)
+	if (!characterManager.getCharacter(warmind.m_Opponent).m_IsPlayerControlled)
 	{
 		getWarmindOfCharacter(warmind.m_Opponent).m_Active = true;
 		getWarmindOfCharacter(warmind.m_Opponent).m_Opponent = warmind.m_OwnerID;
 	}
 	else
 	{
-		UIManager::get()->createUIEventElement(warmind.m_OwnerID, characterManager->getPlayerCharacterID(), UIType::WarDeclaration);
-		UIManager::get()->createWarIcon(warmind.m_OwnerID, characterManager->getPlayerCharacterID());
-		characterManager->callAllies(warmind.m_OwnerID, warHandle);
-		characterManager->callAllies(characterManager->getPlayerCharacterID(), warHandle);
+		UIManager::get().createUIEventElement(warmind.m_OwnerID, characterManager.getPlayerCharacterID(), UIType::WarDeclaration);
+		UIManager::get().createWarIcon(warmind.m_OwnerID, characterManager.getPlayerCharacterID());
+		characterManager.callAllies(warmind.m_OwnerID, warHandle);
+		characterManager.callAllies(characterManager.getPlayerCharacterID(), warHandle);
 	}
 
-	LOG_INFO("{0} Declared war against {1}", characterManager->getCharacter(data.m_OwnerID).m_Name, characterManager->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Name);
+	LOG_INFO("{0} Declared war against {1}", characterManager.getCharacter(data.m_OwnerID).m_Name, characterManager.getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Name);
 	data.m_LastAction = Action::War;
 	data.m_CurrentAction = Action::War;
 
-	if (!characterManager->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_IsPlayerControlled)
+	if (!characterManager.getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_IsPlayerControlled)
 	{
-		getAIDataofCharacter(characterManager->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_CurrentAction = Action::War;
-		getAIDataofCharacter(characterManager->getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_LastAction = Action::War;
+		getAIDataofCharacter(characterManager.getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_CurrentAction = Action::War;
+		getAIDataofCharacter(characterManager.getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_LastAction = Action::War;
 	}
 }
 
@@ -766,7 +766,7 @@ void AIManager::upgradeAction(AIData& data)
 	{
 		if (Map::get().getRegionById(data.m_SettlementToUpgrade).m_BuildingSlots[i].m_BuildingId == INVALID_BUILDING_ID)
 		{
-			CharacterManager::get()->constructBuilding(data.m_OwnerID, buildingId, data.m_SettlementToUpgrade, i);
+			CharacterManager::get().constructBuilding(data.m_OwnerID, buildingId, data.m_SettlementToUpgrade, i);
 			data.m_LastAction = Action::Upgrade_Settlement;
 			break;
 		}
@@ -780,7 +780,7 @@ void AIManager::marriageAction(AIData& data)
 		return;
 	}
 
-	CharacterManager::get()->marry(data.m_OwnerID, data.m_PotentialSpouseID);
+	CharacterManager::get().marry(data.m_OwnerID, data.m_PotentialSpouseID);
 }
 
 void AIManager::allianceAction(AIData& data)
@@ -790,7 +790,7 @@ void AIManager::allianceAction(AIData& data)
 		return;
 	}
 
-	CharacterManager::get()->sendAllianceOffer(data.m_OwnerID, data.m_PotentialAllyID);
+	CharacterManager::get().sendAllianceOffer(data.m_OwnerID, data.m_PotentialAllyID);
 }
 
 void AIManager::handleHighestEvaluation(AIData& data)
@@ -857,7 +857,7 @@ bool AIManager::weightedRandom(float weight)
 int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 {
 	WarManager* warManager = &WarManager::get();
-	Character& character = CharacterManager::get()->getCharacter(warmind.m_OwnerID);
+	Character& character = CharacterManager::get().getCharacter(warmind.m_OwnerID);
 
 	if (!character.m_CurrentWars.empty())
 	{

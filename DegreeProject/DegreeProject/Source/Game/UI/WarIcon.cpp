@@ -66,7 +66,7 @@ void WarIcon::updateInfo()
 	if (m_War != nullptr)
 	{
 		std::stringstream stream;
-		//CharacterID playerCharacterID = CharacterManager::get()->getPlayerCharacterID();
+		//CharacterID playerCharacterID = CharacterManager::get().getPlayerCharacterID();
 		//if (m_AttackerID == playerCharacterID)
 		//{
 			int warscore = m_War->getWarscore(m_AttackerID);
@@ -147,7 +147,8 @@ void WarIcon::clickButton()
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_WarIconShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
-			UIManager::get()->m_WarWindow->openWindow(m_AttackerID, m_DefenderID, m_WarStartDate);
+			InputHandler::setLeftMouseReleased(false);
+			UIManager::get().m_WarWindow->openWindow(m_AttackerID, m_DefenderID, m_WarStartDate);
 		}
 	}
 }

@@ -51,9 +51,9 @@ void War::addWarscore(CharacterID ID, int warScore)
 
 		if (m_AttackerWarscore >= 100)
 		{
-			if (!CharacterManager::get()->getCharacter(getAttacker()).m_IsPlayerControlled)
+			if (!CharacterManager::get().getCharacter(getAttacker()).m_IsPlayerControlled)
 			{
-				CharacterManager::get()->sendPeaceOffer(getAttacker(), getDefender(), PeaceType::Enforce_Demands);
+				CharacterManager::get().sendPeaceOffer(getAttacker(), getDefender(), PeaceType::Enforce_Demands);
 				return;
 			}
 		}
@@ -66,9 +66,9 @@ void War::addWarscore(CharacterID ID, int warScore)
 
 		if (m_DefenderWarscore >= 100)
 		{
-			if (!CharacterManager::get()->getCharacter(getDefender()).m_IsPlayerControlled)
+			if (!CharacterManager::get().getCharacter(getDefender()).m_IsPlayerControlled)
 			{
-				CharacterManager::get()->sendPeaceOffer(getDefender(), getAttacker(), PeaceType::Enforce_Demands);
+				CharacterManager::get().sendPeaceOffer(getDefender(), getAttacker(), PeaceType::Enforce_Demands);
 				return;
 			}
 		}
@@ -82,13 +82,13 @@ void War::endWar(CharacterID winningCharacter)
 	{
 		index = 0;
 
-		for (auto& war : CharacterManager::get()->getCharacter(ID).m_CurrentWars)
+		for (auto& war : CharacterManager::get().getCharacter(ID).m_CurrentWars)
 		{
 			if (war == getHandle())
 			{
-				CharacterManager::get()->getCharacter(ID).m_CurrentWars.erase(CharacterManager::get()->getCharacter(ID).m_CurrentWars.begin() + index);
+				CharacterManager::get().getCharacter(ID).m_CurrentWars.erase(CharacterManager::get().getCharacter(ID).m_CurrentWars.begin() + index);
 
-				if (CharacterManager::get()->getCharacter(ID).m_IsPlayerControlled == false)
+				if (CharacterManager::get().getCharacter(ID).m_IsPlayerControlled == false)
 				{
 					AIManager::get().getWarmindOfCharacter(ID).m_PrioritizedWarHandle = -1;
 				}
@@ -101,15 +101,15 @@ void War::endWar(CharacterID winningCharacter)
 
 	for (auto ID : m_Defenders)
 	{
-		for (auto& war : CharacterManager::get()->getCharacter(ID).m_CurrentWars)
+		for (auto& war : CharacterManager::get().getCharacter(ID).m_CurrentWars)
 		{
 			index = 0;
 
 			if (war == getHandle())
 			{
-				CharacterManager::get()->getCharacter(ID).m_CurrentWars.erase(CharacterManager::get()->getCharacter(ID).m_CurrentWars.begin() + index);
+				CharacterManager::get().getCharacter(ID).m_CurrentWars.erase(CharacterManager::get().getCharacter(ID).m_CurrentWars.begin() + index);
 
-				if (CharacterManager::get()->getCharacter(ID).m_IsPlayerControlled == false)
+				if (CharacterManager::get().getCharacter(ID).m_IsPlayerControlled == false)
 				{
 					AIManager::get().getWarmindOfCharacter(ID).m_PrioritizedWarHandle = -1;
 				}
@@ -137,7 +137,7 @@ void War::addAttacker(CharacterID character)
 	}
 
 	m_Attackers.push_back(character);
-	CharacterManager::get()->getCharacter(character).m_CurrentWars.push_back(m_Handle);
+	CharacterManager::get().getCharacter(character).m_CurrentWars.push_back(m_Handle);
 }
 
 void War::addDefender(CharacterID character)
@@ -151,13 +151,13 @@ void War::addDefender(CharacterID character)
 	}
 
 	m_Defenders.push_back(character);
-	CharacterManager::get()->getCharacter(character).m_CurrentWars.push_back(m_Handle);
+	CharacterManager::get().getCharacter(character).m_CurrentWars.push_back(m_Handle);
 }
 
 void War::handleOccupiedRegions(CharacterID winningCharacter)
 {
-	Character& attacker = CharacterManager::get()->getCharacter(m_Attackers[0]);
-	Character& defender = CharacterManager::get()->getCharacter(m_Defenders[0]);
+	Character& attacker = CharacterManager::get().getCharacter(m_Attackers[0]);
+	Character& defender = CharacterManager::get().getCharacter(m_Defenders[0]);
 
 	for (auto& region : m_AttackerOccupiedRegions)
 	{
@@ -169,10 +169,10 @@ void War::handleOccupiedRegions(CharacterID winningCharacter)
 	{
 		if (winningCharacter != INVALID_CHARACTER_ID)
 		{
-			CharacterManager::get()->removeRegion(Map::get().getRegionById(m_WargoalRegion).m_OwnerID, m_WargoalRegion);
-			CharacterManager::get()->addRegion(winningCharacter, m_WargoalRegion);
-			UIManager::get()->AdjustOwnership(winningCharacter, Map::get().getRegionById(m_WargoalRegion).m_OwnerID, Map::get().getRegionById(m_WargoalRegion).m_RegionId);
-			Map::get().setRegionColor(Map::get().getRegionById(m_WargoalRegion).m_RegionId, CharacterManager::get()->getCharacter(winningCharacter).m_RegionColor);
+			CharacterManager::get().removeRegion(Map::get().getRegionById(m_WargoalRegion).m_OwnerID, m_WargoalRegion);
+			CharacterManager::get().addRegion(winningCharacter, m_WargoalRegion);
+			UIManager::get().AdjustOwnership(winningCharacter, Map::get().getRegionById(m_WargoalRegion).m_OwnerID, Map::get().getRegionById(m_WargoalRegion).m_RegionId);
+			Map::get().setRegionColor(Map::get().getRegionById(m_WargoalRegion).m_RegionId, CharacterManager::get().getCharacter(winningCharacter).m_RegionColor);
 		}
 	}
 

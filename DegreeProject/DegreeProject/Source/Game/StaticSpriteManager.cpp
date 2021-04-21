@@ -11,13 +11,13 @@ StaticSpriteManager::~StaticSpriteManager()
 	delete m_Instance;
 }
 
-StaticSpriteManager* StaticSpriteManager::get()
+StaticSpriteManager& StaticSpriteManager::get()
 {
 	if (m_Instance == nullptr)
 	{
 		m_Instance = new StaticSpriteManager();
 	}
-	return m_Instance;
+	return *m_Instance;
 }
 
 void StaticSpriteManager::start()

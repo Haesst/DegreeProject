@@ -37,7 +37,7 @@ public:
 	void onMarriage(CharacterID sender, CharacterID reciever);
 	void marry(CharacterID character, CharacterID spouse);
 
-	static CharacterManager* get();
+	static CharacterManager& get();
 	
 	CharacterID createCharacterWithRandomBirthday(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge);
 	CharacterID createCharacter(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday);

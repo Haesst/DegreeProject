@@ -26,6 +26,10 @@ public:
 	static bool getRightMouseClicked();
 	static bool getLeftMouseReleased();
 	static bool getRightMouseReleased();
+	static void setLeftMouseClicked(bool clicked);
+	static void setRightMouseClicked(bool clicked);
+	static void setLeftMouseReleased(bool released);
+	static void setRightMouseReleased(bool released);
 	static Vector2D getMousePosition();
 	static Vector2D getUIMousePosition();
 	static Vector2DInt getMouseMapPosition();

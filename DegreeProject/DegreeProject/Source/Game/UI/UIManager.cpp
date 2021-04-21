@@ -13,13 +13,13 @@
 UIManager* UIManager::m_Instance = nullptr;
 UIID UIManager::m_UIElementsIDs = 1;
 
-UIManager* UIManager::get()
+UIManager& UIManager::get()
 {
 	if (m_Instance == nullptr)
 	{
 		m_Instance = new UIManager();
 	}
-	return m_Instance;
+	return *m_Instance;
 }
 
 UIManager::UIManager()
@@ -163,6 +163,23 @@ void UIManager::start()
 
 void UIManager::update()
 {
+	m_ActiveEventWindows = false;
+	for (unsigned int i = 0; i < m_EventWindows.size(); i++)
+	{
+		if (!m_EventWindows[i]->m_Dismissed)
+		{
+			m_ActiveEventWindows = true;
+			m_EventWindows[i]->update();
+		}
+	}
+	if (!m_ActiveEventWindows)
+	{
+		for (unsigned int i = 0; i < m_EventWindows.size(); i++)
+		{
+			delete m_EventWindows[i];
+		}
+		m_EventWindows.clear();
+	}
 	for (std::pair<CharacterID, UIText*> uiTextPair : m_UITexts)
 	{
 		uiTextPair.second->update();
@@ -187,23 +204,6 @@ void UIManager::update()
 			delete m_WarIcons[i];
 		}
 		m_WarIcons.clear();
-	}
-	m_ActiveEventWindows = false;
-	for (unsigned int i = 0; i < m_EventWindows.size(); i++)
-	{
-		if (!m_EventWindows[i]->m_Dismissed)
-		{
-			m_ActiveEventWindows = true;
-			m_EventWindows[i]->update();
-		}
-	}
-	if (!m_ActiveEventWindows)
-	{
-		for (unsigned int i = 0; i < m_EventWindows.size(); i++)
-		{
-			delete m_EventWindows[i];
-		}
-		m_EventWindows.clear();
 	}
 	m_MainMenu->update();
 }

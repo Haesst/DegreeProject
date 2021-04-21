@@ -41,7 +41,7 @@ void RegionWindow::start()
 
 	m_CharacterPosition = sf::Vector2f(m_OutlineThickness + m_SpriteSize, (float)(m_Window->getSize().y - m_SpriteSize * 8));
 
-	m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
+	m_PlayerCharacter = &CharacterManager::get().getPlayerCharacter();
 
 	float positionX = m_OutlineThickness;
 	float positionY = m_Window->getSize().y - m_SizeY - m_OutlineThickness;
@@ -147,6 +147,7 @@ void RegionWindow::clickOnMap()
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseClicked(false);
 			Vector2DInt mouseMapPosition = InputHandler::getMouseMapPosition();
 			Map& map = Map::get();
 			if (map.mapSquareDataContainsKey(mouseMapPosition))
@@ -181,6 +182,7 @@ void RegionWindow::clickOnMap()
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setRightMouseClicked(false);
 			closeWindow();
 		}
 	}
@@ -218,9 +220,9 @@ void RegionWindow::updateInfo()
 {
 	if (m_CurrentMapRegion != nullptr)
 	{
-		m_PlayerCharacter = &CharacterManager::get()->getPlayerCharacter();
+		m_PlayerCharacter = &CharacterManager::get().getPlayerCharacter();
 
-		Character& character = CharacterManager::get()->getCharacter(m_CurrentMapRegion->m_OwnerID);
+		Character& character = CharacterManager::get().getCharacter(m_CurrentMapRegion->m_OwnerID);
 
 		m_OwnerColor = character.m_RegionColor;
 
@@ -296,6 +298,7 @@ void RegionWindow::handleWindow()
 	InputHandler::setRegionWindowOpen(m_Visible);
 	if (InputHandler::getLeftMouseReleased() && !InputHandler::getPlayerUnitSelected() && m_Open && !m_Visible)
 	{
+		InputHandler::setLeftMouseReleased(false);
 		openWindow();
 	}
 	else if (m_Visible && (InputHandler::getPlayerUnitSelected() || InputHandler::getEscapePressed()))
@@ -339,6 +342,7 @@ void RegionWindow::clickButton()
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_RegionTaxSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseReleased(false);
 			m_ShowTaxInfo = true;
 		}
 		else
@@ -347,6 +351,7 @@ void RegionWindow::clickButton()
 		}
 		if (m_RegionManpowerSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseReleased(false);
 			m_ShowManpowerInfo = true;
 		}
 		else
@@ -359,6 +364,7 @@ void RegionWindow::clickButton()
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_RaiseArmyShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setLeftMouseReleased(false);
 			Unit& unit = UnitManager::get().getUnitWithId(m_PlayerCharacter->m_UnitEntity);
 			if (unit.m_Raised)
 			{
@@ -377,11 +383,12 @@ void RegionWindow::clickButton()
 			}
 			return;
 		}
-		CharacterManager& characterManager = *CharacterManager::get();
+		CharacterManager& characterManager = CharacterManager::get();
 		for (unsigned int index = 0; index < NUMBER_OF_BUILDING_SLOTS; index++)
 		{
 			if (m_BuildingSlotShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				InputHandler::setLeftMouseReleased(false);
 				characterManager.constructBuilding(m_PlayerCharacter->m_CharacterID, index + 1, m_CurrentRegionID, index);
 				break;
 			}
@@ -390,9 +397,10 @@ void RegionWindow::clickButton()
 	if (InputHandler::getRightMouseReleased())
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
-		CharacterWindow& characterWindow = *UIManager::get()->m_CharacterWindow;
+		CharacterWindow& characterWindow = *UIManager::get().m_CharacterWindow;
 		if (m_CharacterSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
+			InputHandler::setRightMouseReleased(false);
 			closeWindow();
 			characterWindow.m_CurrentCharacterID = m_CurrentMapRegion->m_OwnerID;
 			characterWindow.checkIfPlayerCharacter();

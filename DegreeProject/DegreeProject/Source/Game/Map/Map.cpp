@@ -235,7 +235,7 @@ void Map::render()
 
 		if (region.m_OccupiedBy != INVALID_CHARACTER_ID)
 		{
-			occupiedColor = CharacterManager::get()->getCharacter(region.m_OccupiedBy).m_RegionColor;
+			occupiedColor = CharacterManager::get().getCharacter(region.m_OccupiedBy).m_RegionColor;
 		}
 
 		renderSquares(region.m_VertexArray, region.m_HighlightColor, occupiedColor, m_Data.m_LandTexture, region.m_Highlighted);
@@ -380,7 +380,7 @@ void Map::startConstructionOfBuilding(int buildingId, int buildSlot, int regionI
 {
 	// not working -> int maxBuildings = (sizeof(RegionBuilding) / sizeof(*GetRegionById(regionId).m_BuildingSlots));
 	ASSERT(buildSlot >= 0 /*&& buildSlot < maxBuildings */, "Invalid buildslot");
-	float characterGold = CharacterManager::get()->getCharacter(getRegionById(regionId).m_OwnerID).m_CurrentGold; // EntityManager::get().getComponent<CharacterComponent>(getRegionById(regionId).m_OwnerID).m_CurrentGold;
+	float characterGold = CharacterManager::get().getCharacter(getRegionById(regionId).m_OwnerID).m_CurrentGold; // EntityManager::get().getComponent<CharacterComponent>(getRegionById(regionId).m_OwnerID).m_CurrentGold;
 	int buildingCost = GameData::m_Buildings[buildingId].m_Cost;
 	ASSERT(characterGold >= (float)buildingCost, "Not enough money to build");
 
