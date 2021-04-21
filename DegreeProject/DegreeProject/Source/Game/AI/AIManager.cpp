@@ -666,7 +666,7 @@ void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target
 		Vector2D enemyUnitPosition = enemyUnit.m_Position;
 
 		float distance = (unitPosition - enemyUnitPosition).getLength();
-		if (distance < 100.0f)
+		if (distance < 50.0f)
 		{
 			//Hunt enemy army
 			m_Orders.orderFightEnemyArmy(warmind, unit);
@@ -736,7 +736,6 @@ void AIManager::warAction(AIData& data)
 	{
 		UIManager::get().createUIEventElement(warmind.m_OwnerID, characterManager.getPlayerCharacterID(), UIType::WarDeclaration);
 		UIManager::get().createWarIcon(warmind.m_OwnerID, characterManager.getPlayerCharacterID());
-		characterManager.callAllies(warmind.m_OwnerID, warHandle);
 		characterManager.callAllies(characterManager.getPlayerCharacterID(), warHandle);
 	}
 
