@@ -11,6 +11,8 @@ UIText::UIText(UIID id, sf::Font font, std::string countryName, std::vector<unsi
 	m_CountryName = countryName;
 	m_OwnedRegionIDs = ownedRegions;
 	m_Window = Window::getWindow();
+
+	adjustText();
 }
 
 void UIText::start()

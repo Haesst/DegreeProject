@@ -98,6 +98,11 @@ void UIManager::SetRealmTextAsConquered(CharacterID characterID)
 	m_UITexts[characterID]->m_Conquered = true;
 }
 
+void UIManager::SetRealmNameOnText(CharacterID characterID, std::string realmName)
+{
+	m_UITexts[characterID]->m_CountryName = realmName;
+}
+
 UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D position, Vector2D size)
 {
 	UIID id = m_UIElementsIDs++;

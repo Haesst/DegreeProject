@@ -182,12 +182,12 @@ void DateBar::updateOwnerColor(sf::Color& newColor)
 
 	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 	{
-		m_ButtonShapes[index].setFillColor(m_OwnerColor);
+		m_ButtonShapes[index].setOutlineColor(m_OwnerColor);
 	}
 
 	for (unsigned int index = 0; index < m_NumberOfSpeeds; index++)
 	{
-		m_SpeedShapes[index].setFillColor(m_OwnerColor);
+		m_SpeedShapes[index].setOutlineColor(m_OwnerColor);
 	}
 }
 
