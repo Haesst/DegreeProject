@@ -422,21 +422,28 @@ void EventWindow::acceptRequest()
 		}
 		case UIType::CallToArmsRequest:
 		{
-			std::vector<War> wars = WarManager::get().getWarsOfCharacter(m_InstigatorID);
 			Character& playerCharacter = CharacterManager::get()->getPlayerCharacter();
-			for (War& war : wars)
+
+			for (int handle : WarManager::get().getWarHandlesOfCharacter(m_InstigatorID))
 			{
-				if (war.isAttacker(m_InstigatorID))
+				War* currentWar = WarManager::get().getWar(handle);
+
+				if (currentWar == nullptr)
 				{
-					war.addAttacker(playerCharacter.m_CharacterID);
+					continue;
 				}
 
-				else if (war.isDefender(m_InstigatorID))
+				if (currentWar->isAttacker(m_InstigatorID))
 				{
-					war.addDefender(playerCharacter.m_CharacterID);
+					currentWar->addAttacker(playerCharacter.m_CharacterID);
 				}
 
-				UIManager::get()->createWarIcon(war.getAttacker(), war.getDefender());
+				else if (currentWar->isDefender(m_InstigatorID))
+				{
+					currentWar->addDefender(playerCharacter.m_CharacterID);
+				}
+
+				UIManager::get()->createWarIcon(currentWar->getAttacker(), currentWar->getDefender());
 			}
 			break;
 		}

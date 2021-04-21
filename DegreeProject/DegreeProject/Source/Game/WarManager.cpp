@@ -224,6 +224,21 @@ std::vector<War> WarManager::getWarsOfCharacter(CharacterID ID)
 	return wars;
 }
 
+std::vector<int> WarManager::getWarHandlesOfCharacter(CharacterID ID)
+{
+	std::vector<int> wars;
+
+	for (auto& war : m_Wars)
+	{
+		if (war.second.isAttacker(ID) || war.second.isDefender(ID))
+		{
+			wars.push_back(war.second.getHandle());
+		}
+	}
+
+	return wars;
+}
+
 std::vector<CharacterID> WarManager::getOpposingSide(CharacterID ID)
 {
 	std::vector<CharacterID> enemies;
@@ -253,7 +268,6 @@ std::vector<CharacterID> WarManager::getOpposingSide(CharacterID ID)
 
 void WarManager::removeAllyFromWar(CharacterID ally, int warHandle)
 {
-	Character& character = CharacterManager::get()->getCharacter(ally);
 	War* war = getWar(warHandle);
 
 	if (war->isAttacker(ally))

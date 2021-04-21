@@ -30,6 +30,7 @@ public:
 	void update();
 
 	std::vector<War> getWarsOfCharacter(CharacterID ID);
+	std::vector<int> getWarHandlesOfCharacter(CharacterID ID);
 	std::vector<CharacterID> getOpposingSide(CharacterID ID);
 
 	void removeAllyFromWar(CharacterID ally, int warHandle);
