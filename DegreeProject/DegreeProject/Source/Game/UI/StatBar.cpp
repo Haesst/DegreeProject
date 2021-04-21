@@ -115,7 +115,7 @@ void StatBar::setText(sf::Text& text, sf::Font& font, unsigned int characterSize
 
 void StatBar::setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position)
 {
-	sprite.setTexture(texture);
+	sprite.setTexture(texture, true);
 	sprite.setScale(m_SpriteSize / sprite.getLocalBounds().width, m_SpriteSize / sprite.getLocalBounds().height);
 	sprite.setPosition(position);
 }

@@ -151,7 +151,7 @@ void WarIcon::setText(sf::Text& text, sf::Font& font, unsigned int characterSize
 
 void WarIcon::setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position)
 {
-	sprite.setTexture(texture);
+	sprite.setTexture(texture, true);
 	sprite.setScale(m_SpriteSize / sprite.getGlobalBounds().width, m_SpriteSize / sprite.getGlobalBounds().height);
 	sprite.setPosition(position);
 }

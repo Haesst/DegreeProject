@@ -460,7 +460,7 @@ void WarWindow::setText(sf::Text& text, sf::Font& font, unsigned int characterSi
 
 void WarWindow::setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize)
 {
-	sprite.setTexture(texture);
+	sprite.setTexture(texture, true);
 	sprite.setScale(spriteSize / sprite.getLocalBounds().width, spriteSize / sprite.getLocalBounds().height);
 	sprite.setPosition(position);
 }
