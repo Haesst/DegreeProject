@@ -20,7 +20,8 @@ public:
 	void clickButton();
 	void updateOwnerColor(sf::Color& newColor);
 
-	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f& size, Vector2D& position);
+	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
+	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position);
 
 	sf::RectangleShape m_WindowShape;
 	sf::RectangleShape m_DecreaseSpeedShape;
