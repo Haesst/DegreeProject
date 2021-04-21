@@ -207,10 +207,8 @@ void UIManager::update()
 		m_UITexts.erase(characterID);
 	}
 	m_UITextsToRemove.clear();
-	m_CharacterWindow->update();
-	m_RegionWindow->update();
-	m_WarWindow->update();
 	m_DateBar->update();
+	m_WarWindow->update();
 	m_ActiveWarIcons = false;
 	for (unsigned int i = 0; i < m_WarIcons.size(); i++)
 	{
@@ -228,6 +226,8 @@ void UIManager::update()
 		}
 		m_WarIcons.clear();
 	}
+	m_CharacterWindow->update();
+	m_RegionWindow->update();
 	m_MainMenu->update();
 }
 

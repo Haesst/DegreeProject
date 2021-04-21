@@ -443,17 +443,19 @@ void WarWindow::handleWindow()
 	InputHandler::setWarWindowOpen(m_Visible);
 	if (m_Visible && (InputHandler::getLeftMouseReleased() || InputHandler::getRightMouseReleased()))
 	{
-		Vector2D mousePosition = InputHandler::getUIMousePosition();
-		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		if (InputHandler::getLeftMouseReleased())
 		{
-			if (InputHandler::getLeftMouseReleased())
-			{
-				InputHandler::setLeftMouseReleased(false);
-			}
-			if (InputHandler::getRightMouseReleased())
-			{
-				InputHandler::setRightMouseReleased(false);
-			}
+			InputHandler::setLeftMouseReleased(false);
+		}
+		if (InputHandler::getRightMouseReleased())
+		{
+			InputHandler::setRightMouseReleased(false);
+		}
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
+		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y)
+		 && !m_AttackerCharacterShapes.front().getGlobalBounds().contains(mousePosition.x, mousePosition.y)
+		 && !m_DefenderCharacterShapes.front().getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		{
 			closeWindow();
 		}
 	}
