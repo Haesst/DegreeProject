@@ -202,8 +202,9 @@ void Player::tryToSelectUnit()
 
 void Player::moveUnit()
 {
-	if (InputHandler::getRightMouseReleased() == true && m_SelectedUnitID != INVALID_UNIT_ID)
+	if (InputHandler::getRightMouseReleased() && m_SelectedUnitID != INVALID_UNIT_ID)
 	{
+		InputHandler::setRightMouseReleased(false);
 		Vector2DInt mousePosition = InputHandler::getMouseMapPosition();
 		Vector2DInt unitPosition = Map::get().convertToMap(UnitManager::get().getUnitWithId(m_SelectedUnitID).m_Position);
 

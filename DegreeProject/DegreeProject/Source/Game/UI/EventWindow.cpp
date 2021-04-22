@@ -358,7 +358,7 @@ void EventWindow::acceptRequest()
 		}
 		case UIType::AllianceRequest:
 		{
-			if (!instigator.m_Dead && !subject.m_Dead)
+			if (!instigator.m_Dead && !subject.m_Dead && WarManager::get().getWarHandleAgainst(m_InstigatorID, m_SubjectID) == -1)
 			{
 				WarManager::get().createAlliance(m_InstigatorID, m_SubjectID);
 			}
@@ -366,7 +366,10 @@ void EventWindow::acceptRequest()
 		}
 		case UIType::PeaceRequest:
 		{
-			CharacterManager::get().onWarEnded(m_InstigatorID, m_SubjectID);
+			if (WarManager::get().getWarHandleAgainst(m_InstigatorID, m_SubjectID) != -1)
+			{
+				CharacterManager::get().onWarEnded(m_InstigatorID, m_SubjectID);
+			}
 			break;
 		}
 		case UIType::CallToArmsRequest:

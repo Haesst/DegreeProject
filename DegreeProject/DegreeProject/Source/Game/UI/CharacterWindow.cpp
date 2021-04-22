@@ -988,8 +988,8 @@ void CharacterWindow::assassinate()
 	}
 	if (characterManager.chancePerPercent(0.5f))
 	{
-		characterManager.killCharacter(m_CurrentCharacterID);
 		UIManager::get().createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationSuccess);
+		characterManager.killCharacter(m_CurrentCharacterID);
 	}
 	else
 	{
