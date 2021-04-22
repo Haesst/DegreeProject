@@ -42,6 +42,8 @@ void WarManager::endWar(int warHandle, CharacterID winner)
 	{
 		invalidateWarsForRegionOnWonWar(*getWar(warHandle));
 	}
+
+	handleOccupiedRegions(warHandle, winner);
 	
 	for (auto& pair : m_Wars)
 	{
