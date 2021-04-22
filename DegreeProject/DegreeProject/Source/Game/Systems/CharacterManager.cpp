@@ -60,12 +60,7 @@ void CharacterManager::createUnlandedCharacters(size_t amount)
 {
 	for (size_t i = 0; i < amount; ++i)
 	{
-		bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
-		Gender gender = male ? Gender::Male : Gender::Female;
-		char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
-		std::vector<unsigned int> regions = std::vector<unsigned int>();
-
-		createCharacterWithRandomBirthday(name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::White, false, 1, 72);
+		m_CharacterCreator.createRandomUnlandedCharacter(m_CharacterPool, CharacterConstants::m_MinAgeNewUnlandedChar, CharacterConstants::m_MaxAgeNewUnlandedChar);
 	}
 }
 
@@ -646,13 +641,16 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	}
 }
 
-void CharacterManager::updateTitle(Character& character)
+void CharacterManager::updateTitleAndUIText(Character& character)
 {
+	bool createNewUI = character.m_CharacterTitle >= Title::Unlanded;
 	if (character.m_OwnedRegionIDs.size() == 0)
 	{
 		character.m_CharacterTitle = Title::Unlanded;
 		character.m_KingdomName = "Unlanded ";
+		return;
 	}
+
 	if (character.m_OwnedRegionIDs.size() == 1)
 	{
 		character.m_CharacterTitle = Title::Baron;
@@ -678,38 +676,38 @@ void CharacterManager::updateTitle(Character& character)
 		character.m_CharacterTitle = Title::Emperor;
 		character.m_KingdomName = "Empire of " + Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
 	}
+
+	if (createNewUI)
+	{
+		UIManager::get().createUITextElement(Game::m_UIFont, character.m_CharacterID, character.m_KingdomName, character.m_OwnedRegionIDs);
+	}
+	else
+	{
+		UIManager::get().SetRealmNameOnText(character.m_CharacterID, character.m_KingdomName);
+	}
 }
 
 void CharacterManager::handleInheritance(Character& character)
 {
 	if (character.m_Children.size() <= 0)
 	{
-		float giveawayGold = character.m_CurrentGold / character.m_OwnedRegionIDs.size();
 		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
 		{
-			for (Character& otherCharacter : m_Characters)
-			{
-				if (otherCharacter.m_CharacterTitle == Title::Unlanded && !otherCharacter.m_Dead && otherCharacter.m_Father == INVALID_CHARACTER_ID && otherCharacter.m_Mother == INVALID_CHARACTER_ID)
-				{
-					addRegion(otherCharacter.m_CharacterID, ownedRegionID);
-					otherCharacter.m_CurrentGold += giveawayGold;
-					otherCharacter.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
-					updateTitle(otherCharacter);
-					Map::get().setRegionColor(ownedRegionID, otherCharacter.m_RegionColor);
-					UIManager::get().createUITextElement(Game::m_UIFont, otherCharacter.m_CharacterID, otherCharacter.m_KingdomName, otherCharacter.m_OwnedRegionIDs);
-					UIManager::get().AdjustOwnership(otherCharacter.m_CharacterID, character.m_CharacterID, ownedRegionID);
-					break;
-				}
-			}
+			Character& newCharacter = getCharacter(m_CharacterCreator.createRandomUnlandedCharacter(m_CharacterPool, CharacterConstants::m_MinAgeNewUnlandedChar, CharacterConstants::m_MaxAgeNewUnlandedChar));
+			addRegion(newCharacter.m_CharacterID, ownedRegionID);
+			newCharacter.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
+			updateTitleAndUIText(newCharacter);
+			Map::get().setRegionColor(ownedRegionID, newCharacter.m_RegionColor);
+			UIManager::get().AdjustOwnership(newCharacter.m_CharacterID, character.m_CharacterID, ownedRegionID);
 		}
-		return; // Todo: Create new
+		return;
 	}
 
 	if (character.m_OwnedRegionIDs.size() > 0)
 	{
 		// Todo: Get alive children instead of children
 		size_t regionsByChild = character.m_OwnedRegionIDs.size() / character.m_Children.size();
-		int giveOneMoreToChildren = character.m_OwnedRegionIDs.size() % character.m_Children.size();
+		size_t giveOneMoreToChildren = character.m_OwnedRegionIDs.size() % character.m_Children.size();
 		float goldByChild = character.m_CurrentGold / character.m_Children.size();
 
 		size_t currentChild = 0;
@@ -754,16 +752,7 @@ void CharacterManager::handleInheritance(Character& character)
 			{
 				if (giveOneMoreToChildren <= currentChild || childGotOneMore)
 				{
-					if (currentChildCharacter->m_CharacterTitle >= Title::Unlanded)
-					{
-						updateTitle(*currentChildCharacter);
-						UIManager::get().createUITextElement(Game::m_UIFont, currentChildCharacter->m_CharacterID, currentChildCharacter->m_KingdomName, currentChildCharacter->m_OwnedRegionIDs);
-					}
-					else
-					{
-						updateTitle(*currentChildCharacter);
-						UIManager::get().SetRealmNameOnText(currentChildCharacter->m_CharacterID, currentChildCharacter->m_KingdomName);
-					}
+					updateTitleAndUIText(*currentChildCharacter);
 
 					UIManager::get().AdjustOwnerships(currentChildCharacter->m_CharacterID, character.m_CharacterID, currentChildCharacter->m_OwnedRegionIDs);
 
@@ -778,17 +767,8 @@ void CharacterManager::handleInheritance(Character& character)
 				}
 			}
 		}
-
-		if (currentChildCharacter->m_CharacterTitle >= Title::Unlanded)
-		{
-			updateTitle(*currentChildCharacter);
-			UIManager::get().createUITextElement(Game::m_UIFont, currentChildCharacter->m_CharacterID, currentChildCharacter->m_KingdomName, currentChildCharacter->m_OwnedRegionIDs);
-		}
-		else
-		{
-			updateTitle(*currentChildCharacter);
-			UIManager::get().SetRealmNameOnText(currentChildCharacter->m_CharacterID, currentChildCharacter->m_KingdomName);
-		}
+		
+		updateTitleAndUIText(*currentChildCharacter);
 	}
 
 	character.m_IsPlayerControlled = false;
@@ -804,7 +784,6 @@ void CharacterManager::handleInheritance(Character& character)
 bool CharacterManager::chancePerPercent(float weight)
 {
 	float f = rand() * 1.0f / RAND_MAX;
-	//float vv = weight / 10.0f;
 	return f < weight;
 }
 

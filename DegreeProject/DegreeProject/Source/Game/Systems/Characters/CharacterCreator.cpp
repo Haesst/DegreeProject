@@ -9,6 +9,16 @@
 #include "Game/Map/MapRegion.h"
 #include "Game/AI/AIManager.h"
 
+CharacterID CharacterCreator::createRandomUnlandedCharacter(CharacterPool& characterPool, int minAge, int maxAge)
+{
+	bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
+	Gender gender = male ? Gender::Male : Gender::Female;
+	char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
+	std::vector<unsigned int> regions = std::vector<unsigned int>();
+
+	return createCharacterWithRandomBirthday(characterPool, name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::Black, false, minAge, maxAge);
+}
+
 CharacterID CharacterCreator::createCharacterWithRandomBirthday(CharacterPool& characterPool, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge)
 {
 	ASSERT(minAge <= maxAge, "Minimum age can't be less than maximum age");

@@ -77,7 +77,7 @@ private:
 	void createUnlandedCharacters(size_t amount);
 
 	void handleInheritance(Character& character);
-	void updateTitle(Character& character);
+	void updateTitleAndUIText(Character& character);
 private:
 	static CharacterManager* m_Instance;
 	static CharacterID m_CharacterIDs;

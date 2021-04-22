@@ -6,6 +6,9 @@ namespace CharacterConstants
 	static const size_t m_PoolGrowSize = 10000;
 	static const size_t m_UnlandedCharactersAtStart = 200;
 
+	static const unsigned int m_MinAgeNewUnlandedChar = 1;
+	static const unsigned int m_MaxAgeNewUnlandedChar = 72;
+
 	static const unsigned int m_LowerBaseFertility = 15;
 	static const unsigned int m_UpperBaseFertility = 40;
 	static const float m_OneOverOneHundred = 1.0f / 100.0f;
