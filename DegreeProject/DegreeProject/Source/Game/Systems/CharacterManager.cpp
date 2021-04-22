@@ -650,31 +650,33 @@ void CharacterManager::updateTitleAndUIText(Character& character)
 		return;
 	}
 
+	std::stringstream stream;
 	if (character.m_OwnedRegionIDs.size() == 1)
 	{
 		character.m_CharacterTitle = Title::Baron;
-		character.m_KingdomName = "Barony of " + Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
+		stream << "Barony of ";
 	}
 	else if (character.m_OwnedRegionIDs.size() == 2 || character.m_OwnedRegionIDs.size() == 3)
 	{
 		character.m_CharacterTitle = Title::Count;
-		character.m_KingdomName = "County of " + Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
+		stream << "County of ";
 	}
 	else if (character.m_OwnedRegionIDs.size() == 4)
 	{
 		character.m_CharacterTitle = Title::Duke;
-		character.m_KingdomName = "Duchy of " + Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
+		stream << "Duchy of ";
 	}
 	else if (character.m_OwnedRegionIDs.size() <= 6)
 	{
 		character.m_CharacterTitle = Title::King;
-		character.m_KingdomName = "Kingdom of " + Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
+		stream << "Kingdom of ";
 	}
 	else if (character.m_OwnedRegionIDs.size() >= 9)
 	{
 		character.m_CharacterTitle = Title::Emperor;
-		character.m_KingdomName = "Empire of " + Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
+		stream << "Empire of ";
 	}
+	character.m_KingdomName = stream.str();
 
 	if (createNewUI)
 	{

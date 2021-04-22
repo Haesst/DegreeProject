@@ -72,6 +72,9 @@
     <ClInclude Include="Source\Game\Data\Character.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Data\CharacterConstants.h">
+      <Filter>Game\Data</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Data\HeraldicShield.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
@@ -141,6 +144,9 @@
     <ClInclude Include="Source\Game\Systems\CharacterManager.h">
       <Filter>Game\Systems</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\Systems\Characters\CharacterCreator.h">
+      <Filter>Game\Systems\Characters</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Systems\Characters\CharacterNamePool.h">
       <Filter>Game\Systems\Characters</Filter>
     </ClInclude>
@@ -189,8 +195,6 @@
     <ClInclude Include="Source\Game\WarManager.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\Data\CharacterConstants.h" />
-    <ClInclude Include="Source\Game\Systems\Characters\CharacterCreator.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
@@ -253,6 +257,9 @@
     <ClCompile Include="Source\Game\Systems\CharacterManager.cpp">
       <Filter>Game\Systems</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\Systems\Characters\CharacterCreator.cpp">
+      <Filter>Game\Systems\Characters</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Game\Systems\Characters\CharacterNamePool.cpp">
       <Filter>Game\Systems\Characters</Filter>
     </ClCompile>
@@ -302,6 +309,5 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Game\Systems\Characters\CharacterCreator.cpp" />
   </ItemGroup>
 </Project>

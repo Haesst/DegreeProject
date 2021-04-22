@@ -9,6 +9,18 @@ struct Character;
 struct HeraldicShield;
 enum class Gender;
 
+enum class Traits
+{
+	Male,
+	Fertility,
+	Beautiful,
+	Ugly,
+	Sterile,
+	Spouse,
+	Pregnant,
+	Female
+};
+
 class CharacterWindow
 {
 public:
@@ -23,6 +35,7 @@ public:
 	void updateInfo();
 	void updateParents();
 	void updateTraits();
+	void enableTrait(Traits trait, unsigned int& traitIndex);
 	void updateChildren();
 	void updateAllies();
 	void updateWars();
@@ -35,7 +48,9 @@ public:
 	void proposeMarriage();
 	void proposeAlliance();
 	void assassinate();
-
+	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
+	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string = "");
+	void setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize = m_SpriteSize);
 	bool checkIfPlayerCharacter();
 
 	sf::RectangleShape m_WindowShape;
@@ -71,26 +86,23 @@ public:
 	std::vector<CharacterID> m_WarDefenders = std::vector<CharacterID>();
 	std::vector<CharacterID> m_WarAttackers = std::vector<CharacterID>();
 
-	std::vector<sf::Sprite> m_TraitsSprites = std::vector<sf::Sprite>();
-	std::vector<sf::Text> m_TraitsInfo = std::vector<sf::Text>();
-	std::vector<bool> m_TraitsShowInfo = std::vector<bool>();
+	const unsigned int m_NumberOfTraits = 8;
+	std::vector<sf::Texture> m_TraitTextures = std::vector<sf::Texture>();
+	std::vector<sf::Sprite> m_TraitSprites = std::vector<sf::Sprite>();
+	std::vector<sf::Text> m_TraitTexts = std::vector<sf::Text>();
+	std::vector<sf::Vector2f> m_TraitPositions = std::vector<sf::Vector2f>();
+	std::vector<bool> m_TraitsShowText = std::vector<bool>();
+	std::vector<bool> m_TraitsEnabled = std::vector<bool>();
+	std::vector<const char*> m_TraitStrings = { "Male", "Fertility: ", "Beautiful", "Ugly", "Sterile", "Spouse: ", "Pregnant", "Female" };
 
-	sf::Texture m_RegionTexture;
-	sf::Texture m_ChildTexture;
-	sf::Texture m_AllianceTexture;
-	sf::Texture m_WarTexture;
-	sf::Texture m_ParentTexture;
-
-	sf::Texture m_FertilityTexture;
-	sf::Texture m_BeautifulTexture;
-	sf::Texture m_UglyTexture;
-	sf::Texture m_SterileTexture;
 	sf::Texture m_MaleChildTexture;
 	sf::Texture m_FemaleChildTexture;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
 	sf::Color m_DeclareWarColor = sf::Color(210, 32, 60);
 	sf::Color m_MakePeaceColor = sf::Color(67, 175, 17);
+	sf::Color m_TransparentColor = sf::Color::Transparent;
+
 	float m_SizeX = 600.0f;
 	float m_SizeY = 1060.0f;
 	float m_OutlineThickness = 10.0f;
@@ -106,14 +118,6 @@ public:
 	unsigned int m_CurrentRegionID = 0;
 	CharacterID m_CurrentCharacterID = INVALID_CHARACTER_ID;
 	const char* m_Dash = "/";
-	const char* m_PregnantTrait = "Pregnant";
-	const char* m_BeautifulTrait = "Beautiful";
-	const char* m_UglyTrait = "Ugly";
-	const char* m_SterileTrait = "Sterile";
-	const char* m_Male = "Male";
-	const char* m_Female = "Female";
-	const char* m_Fertility = "Fertility: ";
-	const char* m_Spouse = "Spouse: ";
 	std::vector<const char*> m_MaleTitles = { "Emperor ", "King ", "Duke ", "Count ", "Baron " };
 	std::vector<const char*> m_FemaleTitles = { "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness " };
 	int m_CharacterSize = 25;
