@@ -366,13 +366,13 @@ void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& chara
 
 	else
 	{
+		if (!warManager.isValidWar(warmind.m_PrioritizedWarHandle))
+		{
+			considerPrioritizedWar(warmind);
+		}
+
 		if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
 		{
-			if (!warManager.isValidWar(*warManager.getWar(warmind.m_PrioritizedWarHandle)))
-			{
-				considerPrioritizedWar(warmind);
-			}
-
 			CharacterID opposingForce = warManager.getOpposingForce(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID);
 			considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), opposingForce);
 		}
@@ -384,7 +384,7 @@ void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& chara
 			{
 				unitManager.raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
 
-				if (warmind.m_PrioritizedWarHandle != -1)
+				if (warmind.m_PrioritizedWarHandle != -1 && warManager.isValidWar(warmind.m_PrioritizedWarHandle))
 				{
 					considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warManager.getOpposingForce(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID));
 				}
@@ -450,14 +450,12 @@ void AIManager::UpdateAIData(CharacterManager& characterManager, AIData& data, W
 
 	for (auto& war : WarManager::get().getWarHandlesOfCharacter(data.m_OwnerID))
 	{
-		War* currentWar = WarManager::get().getWar(war);
-
-		if (!warManager.isValidWar(*currentWar))
+		if (!warManager.isValidWar(war))
 		{
 			continue;
 		}
 
-		if (Time::m_GameDate.m_Date.m_Month - currentWar->getStartDate().m_Month >= 4)
+		if (Time::m_GameDate.m_Date.m_Month - warManager.getWar(war)->getStartDate().m_Month >= 4)
 		{
 			bool sendOffer = (rand() % 100) < 20;
 
@@ -899,7 +897,7 @@ int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 	{
 		warmind.m_PrioritizedWarHandle = warManager->getWarHandlesOfCharacter(warmind.m_OwnerID).front();
 
-		if (warManager->getWar(warmind.m_PrioritizedWarHandle) != nullptr)
+		if (warManager->isValidWar(warmind.m_PrioritizedWarHandle))
 		{
 			warmind.m_Opponent = warManager->getOpposingForce(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID);
 			return warmind.m_PrioritizedWarHandle;
@@ -915,7 +913,7 @@ void AIManager::considerOrders(WarmindComponent& warmind, Unit& unit, CharacterI
 
 	if (warmind.m_PrioritizedWarHandle == -1)
 	{
-		considerPrioritizedWar(warmind);
+		return;
 	}
 
 	Unit& enemyUnit = UnitManager::get().getUnitOfCharacter(target);

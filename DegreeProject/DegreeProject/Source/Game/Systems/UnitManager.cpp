@@ -680,7 +680,7 @@ void UnitManager::unitSiege(Unit& unit)
 					warManager.addWarscore(war->getHandle(), defender.m_CharacterID, -50);
 				}
 
-				if (!WarManager::get().isValidWar(*war))
+				if (!WarManager::get().isValidWar(currentWar))
 				{
 					return;
 				}

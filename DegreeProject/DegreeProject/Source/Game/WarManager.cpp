@@ -84,7 +84,6 @@ War* WarManager::getWar(int handle)
 		}
 	}
 
-
 	return nullptr;
 }
 
@@ -158,13 +157,18 @@ bool WarManager::isEnemyOfEnemy(Unit& unit, Unit& enemyUnit)
 	return false;
 }
 
-bool WarManager::isValidWar(War& war)
+bool WarManager::isValidWar(int warHandle)
 {
 	for (auto ID : m_Wars)
 	{
-		if (ID.first == war.getHandle())
+		if (ID.first == warHandle)
 		{
-			return true;
+			if (getWar(warHandle)->m_Attackers.size() > 0 && getWar(warHandle)->m_Defenders.size() > 0)
+			{
+				return true;
+			}
+
+			return false;
 		}
 	}
 
@@ -173,13 +177,26 @@ bool WarManager::isValidWar(War& war)
 
 void WarManager::update()
 {
+	std::vector<int> invalidHandles;
+
 	for (auto& war : m_Wars)
 	{
 		War* currentWar = getWar(war.second.getHandle());
+		
+		if (currentWar == nullptr)
+		{
+			continue;
+		}
+
+		if (!isValidWar(currentWar->getHandle()))
+		{
+			invalidHandles.push_back(currentWar->getHandle());
+			continue;
+		}
 
 		if (Map::get().getRegionById(war.second.m_WargoalRegion).m_OccupiedBy == INVALID_CHARACTER_ID)
 		{
-			if (isValidWar(war.second))
+			if (isValidWar(war.second.getHandle()))
 			{
 				war.second.warGoalRegionTimerAccu += Time::deltaTime();
 			}
@@ -219,6 +236,11 @@ void WarManager::update()
 				war.second.warGoalRegionTimerAccu = 0;
 			}
 		}
+	}
+
+	for (int handle : invalidHandles)
+	{
+		eraseWar(handle);
 	}
 }
 
@@ -686,6 +708,23 @@ void WarManager::breakAlliance(const CharacterID& characterOneID, const Characte
 std::vector<CharacterID> WarManager::getAlliances(const CharacterID& character)
 {
 	return m_Alliances[character];
+}
+
+void WarManager::eraseWar(int handle)
+{
+	int index = 0;
+
+	for (auto& war : m_Wars)
+	{
+		if (war.second.getHandle() == handle)
+		{
+			break;
+		}
+
+		index++;
+	}
+
+	m_Wars.erase(m_Wars.begin() + index);
 }
 
 void WarManager::removeAlly(CharacterID character, CharacterID ally)

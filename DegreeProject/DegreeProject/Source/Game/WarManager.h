@@ -29,7 +29,7 @@ public:
 
 	bool atWarWith(CharacterID character, CharacterID enemy); 
 	bool isEnemyOfEnemy(Unit& unit, Unit& enemyUnit);
-	bool isValidWar(War& war);
+	bool isValidWar(int warHandle);
 	bool isWinning(int warHandle, CharacterID ID, CharacterID enemyID);
 	bool alliesInWar(int warHandle, CharacterID ID);
 	bool isAllyOf(int warHandle, CharacterID potentialAlly, CharacterID allyOf);
@@ -70,7 +70,8 @@ public:
 	}
 
 private:
-	
+	void eraseWar(int handle);
+
 	int m_Warhandle = 0;
 	
 	std::vector<std::pair<int, War>> m_Wars = std::vector<std::pair<int, War>>();
