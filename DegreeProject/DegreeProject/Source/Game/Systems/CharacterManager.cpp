@@ -242,6 +242,7 @@ bool CharacterManager::isAlliedWith(CharacterID character, CharacterID other)
 void CharacterManager::callAllies(CharacterID character, int war)
 {
 	War* currentWar = WarManager::get().getWar(war);
+	WarManager& warManager = WarManager::get();
 	AIManager* aiManager = &AIManager::get();
 
 	for (auto ID : WarManager::get().getAlliances(character))
@@ -250,13 +251,13 @@ void CharacterManager::callAllies(CharacterID character, int war)
 		{
 			if (aiManager->handleWarCallRequest(character, ID, war))
 			{
-				if (character == currentWar->getAttacker())
+				if (character == warManager.getAttacker(war))
 				{
 					aiManager->getWarmindOfCharacter(ID).m_Active = true;
 					currentWar->m_Attackers.push_back(ID);
 				}
 	
-				else if (character == currentWar->getDefender())
+				else if (character == warManager.getDefender(war))
 				{
 					aiManager->getWarmindOfCharacter(ID).m_Active = true;
 					currentWar->m_Defenders.push_back(ID);
@@ -582,25 +583,25 @@ void CharacterManager::onMonthChange(Date)
 void CharacterManager::killCharacter(CharacterID characterID)
 {
 	Character& character = getCharacter(characterID);
-	WarManager* warManager = &WarManager::get();
+	WarManager& warManager = WarManager::get();
 
 	for (auto& region : getCharacter(characterID).m_OwnedRegionIDs)
 	{
 		WarManager::get().invalidateWarsForRegion(region);
 	}
 
-	for (auto& war : warManager->getWarHandlesOfCharacter(characterID))
+	for (auto& war : warManager.getWarHandlesOfCharacter(characterID))
 	{
-		War* currentWar = warManager->getWar(war);
+		War* currentWar = warManager.getWar(war);
 
-		if (currentWar->isAllyOf(characterID, currentWar->getAttacker()))
+		if (warManager.isAllyOf(war, characterID, warManager.getAttacker(war)))
 		{
-			warManager->removeAllyFromWar(characterID, currentWar->getHandle());
+			warManager.removeAllyFromWar(characterID, currentWar->getHandle());
 		}
 
-		else if (currentWar->isAllyOf(characterID, currentWar->getDefender()))
+		else if (warManager.isAllyOf(war, characterID, warManager.getDefender(war)))
 		{
-			warManager->removeAllyFromWar(characterID, war);
+			warManager.removeAllyFromWar(characterID, war);
 		}
 	}
 

@@ -27,24 +27,22 @@ void WarManager::endWar(int warHandle, CharacterID winner)
 
 	if (winner != INVALID_CHARACTER_ID)
 	{
-		if (!CharacterManager::get().getCharacter(getWar(warHandle)->getAttacker()).m_IsPlayerControlled)
+		if (!CharacterManager::get().getCharacter(getAttacker(warHandle)).m_IsPlayerControlled)
 		{
-			AIManager::get().getAIDataofCharacter(getWar(warHandle)->getAttacker()).m_CurrentAction = Action::NONE;
+			AIManager::get().getAIDataofCharacter(getAttacker(warHandle)).m_CurrentAction = Action::NONE;
 		}
 
-		if (!CharacterManager::get().getCharacter(getWar(warHandle)->getDefender()).m_IsPlayerControlled)
+		if (!CharacterManager::get().getCharacter(getDefender(warHandle)).m_IsPlayerControlled)
 		{
-			AIManager::get().getAIDataofCharacter(getWar(warHandle)->getDefender()).m_CurrentAction = Action::NONE;
+			AIManager::get().getAIDataofCharacter(getDefender(warHandle)).m_CurrentAction = Action::NONE;
 		}
 	}
 
-	if (getWar(warHandle)->getAttacker() == winner)
+	if (getAttacker(warHandle) == winner)
 	{
 		invalidateWarsForRegionOnWonWar(*getWar(warHandle));
 	}
 	
-	getWar(warHandle)->endWar(winner);
-
 	for (auto& pair : m_Wars)
 	{
 		if (pair.first == warHandle)
@@ -75,17 +73,17 @@ bool WarManager::atWarWith(CharacterID character, CharacterID enemy)
 {
 	for (auto& war : m_Wars)
 	{
-		if (war.second.isAttacker(character))
+		if (isAttacker(war.second.getHandle(), character))
 		{
-			if (war.second.isDefender(enemy))
+			if (isDefender(war.second.getHandle(), enemy))
 			{
 				return true;
 			}
 		}
 
-		else if (war.second.isDefender(character))
+		else if (isDefender(war.second.getHandle(), character))
 		{
-			if (war.second.isAttacker(enemy))
+			if (isAttacker(war.second.getHandle(), enemy))
 			{
 				return true;
 			}
@@ -158,6 +156,8 @@ void WarManager::update()
 {
 	for (auto& war : m_Wars)
 	{
+		War* currentWar = getWar(war.second.getHandle());
+
 		if (Map::get().getRegionById(war.second.m_WargoalRegion).m_OccupiedBy == INVALID_CHARACTER_ID)
 		{
 			if (isValidWar(war.second))
@@ -167,13 +167,13 @@ void WarManager::update()
 
 			if (war.second.warGoalRegionTimerAccu >= war.second.warGoalRegionCapturedTimer)
 			{
-				war.second.addWarscore(war.second.getDefender(), 5);
+				addWarscore(currentWar->getHandle(), getDefender(currentWar->getHandle()), 5);
 
 				if (war.second.m_DefenderOccupiedRegions.size() > war.second.m_AttackerOccupiedRegions.size())
 				{
 					for (auto ID : war.second.m_DefenderOccupiedRegions)
 					{
-						war.second.addWarscore(war.second.getDefender(), 1);
+						addWarscore(currentWar->getHandle(), getDefender(currentWar->getHandle()), 1);
 					}
 				}
 
@@ -183,17 +183,17 @@ void WarManager::update()
 
 		else if (Map::get().getRegionById(war.second.m_WargoalRegion).m_OccupiedBy != INVALID_CHARACTER_ID)
 		{
-			war.second.warGoalRegionTimerAccu += Time::deltaTime();
+			currentWar->warGoalRegionTimerAccu += Time::deltaTime();
 
-			if (war.second.warGoalRegionTimerAccu >= war.second.warGoalRegionCapturedTimer)
+			if (currentWar->warGoalRegionTimerAccu >= currentWar->warGoalRegionCapturedTimer)
 			{
-				war.second.addWarscore(war.second.getAttacker(), 5);
+				addWarscore(currentWar->getHandle(), getAttacker(currentWar->getHandle()), 5);
 
 				if (war.second.m_AttackerOccupiedRegions.size() > war.second.m_DefenderOccupiedRegions.size())
 				{
 					for (auto ID : war.second.m_AttackerOccupiedRegions)
 					{
-						war.second.addWarscore(war.second.getAttacker(), 1);
+						addWarscore(currentWar->getHandle(), getAttacker(currentWar->getHandle()), 1);
 					}
 				}
 
@@ -201,6 +201,320 @@ void WarManager::update()
 			}
 		}
 	}
+}
+
+bool WarManager::isWinning(int warHandle, CharacterID ID, CharacterID enemyID)
+{
+	War* war = getWar(warHandle);
+
+	if (getWarscore(war->getHandle(), ID) > getWarscore(war->getHandle(), enemyID))
+	{
+		return true;
+	}
+
+	return false;
+}
+
+int WarManager::getWarscore(int warHandle, CharacterID ID)
+{
+	War* war = getWar(warHandle);
+
+	if (war == nullptr)
+	{
+		return -1;
+	}
+
+	if (!war->m_Attackers.empty() && !war->m_Defenders.empty()) //Todo: real solution
+
+
+		if (getAttacker(war->getHandle()) == ID)
+		{
+			return war->m_AttackerWarscore;
+		}
+
+		else if (getDefender(war->getHandle()) == ID)
+		{
+			return war->m_DefenderWarscore;
+		}
+
+	return -1;
+}
+
+void WarManager::addWarscore(int warHandle, CharacterID ID, int warScore)
+{
+	War* war = getWar(warHandle);
+
+	if (war == nullptr)
+	{
+		return;
+	}
+
+	if (isAttacker(war->getHandle(), ID))
+	{
+		war->m_AttackerWarscore += warScore;
+		war->m_DefenderWarscore -= warScore;
+
+		if (war->m_AttackerWarscore >= 100)
+		{
+			if (!CharacterManager::get().getCharacter(getAttacker(war->getHandle())).m_IsPlayerControlled)
+			{
+				CharacterManager::get().sendPeaceOffer(getAttacker(war->getHandle()), getDefender(war->getHandle()), PeaceType::Enforce_Demands);
+				return;
+			}
+		}
+	}
+
+	else if (isDefender(war->getHandle(), ID))
+	{
+		war->m_DefenderWarscore += warScore;
+		war->m_AttackerWarscore -= warScore;
+
+		if (war->m_DefenderWarscore >= 100)
+		{
+			if (!CharacterManager::get().getCharacter(getDefender(war->getHandle())).m_IsPlayerControlled)
+			{
+				CharacterManager::get().sendPeaceOffer(getDefender(war->getHandle()), getAttacker(war->getHandle()), PeaceType::Enforce_Demands);
+				return;
+			}
+		}
+	}
+}
+
+void WarManager::addAttacker(int warHandle, CharacterID character)
+{
+	War* war = getWar(warHandle);
+
+	if (war == nullptr)
+	{
+		return;
+	}
+
+	for (auto ID : war->m_Attackers)
+	{
+		if (ID == character)
+		{
+			return;
+		}
+	}
+
+	war->m_Attackers.push_back(character);
+}
+
+void WarManager::addDefender(int warHandle, CharacterID character)
+{
+	War* war = getWar(warHandle);
+
+	if (war == nullptr)
+	{
+		return;
+	}
+
+	for (auto ID : war->m_Defenders)
+	{
+		if (ID == character)
+		{
+			return;
+		}
+	}
+
+	war->m_Defenders.push_back(character);
+}
+
+void WarManager::handleOccupiedRegions(int warHandle, CharacterID winningCharacter)
+{
+	War* war = getWar(warHandle);
+
+	if (war == nullptr)
+	{
+		return;
+	}
+
+	Character& attacker = CharacterManager::get().getCharacter(war->m_Attackers[0]);
+	Character& defender = CharacterManager::get().getCharacter(war->m_Defenders[0]);
+
+	for (auto& region : war->m_AttackerOccupiedRegions)
+	{
+		Map::get().getRegionById(region).m_OccupiedBy = INVALID_CHARACTER_ID;
+		defender.m_MaxArmySize += Map::get().getRegionById(region).m_ManPower;
+	}
+
+	if (getAttacker(war->getHandle()) == winningCharacter)
+	{
+		if (winningCharacter != INVALID_CHARACTER_ID)
+		{
+			CharacterID loserCharacter = Map::get().getRegionById(war->m_WargoalRegion).m_OwnerID;
+			CharacterManager::get().removeRegion(loserCharacter, war->m_WargoalRegion);
+			CharacterManager::get().addRegion(winningCharacter, war->m_WargoalRegion);
+			UIManager::get().AdjustOwnership(winningCharacter, loserCharacter, Map::get().getRegionById(war->m_WargoalRegion).m_RegionId);
+			Map::get().setRegionColor(Map::get().getRegionById(war->m_WargoalRegion).m_RegionId, CharacterManager::get().getCharacter(winningCharacter).m_RegionColor);
+			if (CharacterManager::get().getCharacter(loserCharacter).m_OwnedRegionIDs.size() == 0)
+			{
+				UIManager::get().SetRealmTextAsConquered(loserCharacter);
+			}
+		}
+	}
+
+	for (auto& region : war->m_DefenderOccupiedRegions)
+	{
+		Map::get().getRegionById(region).m_OccupiedBy = INVALID_CHARACTER_ID;
+		attacker.m_MaxArmySize += Map::get().getRegionById(region).m_ManPower;
+	}
+}
+
+bool WarManager::alliesInWar(int warHandle, CharacterID ID)
+{
+	War* war = getWar(warHandle);
+
+	if (war == nullptr)
+	{
+		return false;
+	}
+
+	if (ID == getAttacker(war->getHandle()))
+	{
+		if (WarManager::get().getAlliances(ID).size() + 1 == war->m_Attackers.size())
+		{
+			return true;
+		}
+	}
+
+	if (ID == getAttacker(war->getHandle()))
+	{
+		if (WarManager::get().getAlliances(ID).size() + 1 == war->m_Defenders.size())
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool WarManager::isAllyOf(int warHandle, CharacterID potentialAlly, CharacterID allyOf)
+{
+	War* war = getWar(warHandle);
+
+	if (war == nullptr)
+	{
+		return false;
+	}
+
+	if (isAttacker(war->getHandle(), allyOf))
+	{
+		unsigned int index = 0;
+
+		for (auto& attacker : war->m_Attackers)
+		{
+			if (attacker == potentialAlly)
+			{
+				return true;
+			}
+
+			index++;
+		}
+	}
+
+	else if (isDefender(war->getHandle(), allyOf))
+	{
+		unsigned int index = 0;
+
+		for (auto& defender : war->m_Defenders)
+		{
+			if (defender == potentialAlly)
+			{
+				return true;
+			}
+
+			index++;
+		}
+	}
+
+	return false;
+}
+
+bool WarManager::isAttacker(int warHandle, CharacterID ent)
+{
+	War* war = getWar(warHandle);
+
+	if (war == nullptr)
+	{
+		return false;
+	}
+
+	for (auto ID : war->m_Attackers)
+	{
+		if (ent == ID)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool WarManager::isDefender(int warHandle, CharacterID ent)
+{
+	War* war = getWar(warHandle);
+
+	if (war == nullptr)
+	{
+		return false;
+	}
+
+	for (auto ID : war->m_Defenders)
+	{
+		if (ent == ID)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
+CharacterID WarManager::getOpposingForce(int warHandle, CharacterID ID)
+{
+	War* war = getWar(warHandle);
+
+	if (war == nullptr)
+	{
+		return INVALID_CHARACTER_ID;
+	}
+
+	if (isAttacker(war->getHandle(), ID))
+	{
+		return getDefender(war->getHandle());
+	}
+
+	else if (isDefender(war->getHandle(), ID))
+	{
+		return getAttacker(war->getHandle());
+	}
+
+	return INVALID_CHARACTER_ID;
+}
+
+CharacterID WarManager::getAttacker(int warHandle)
+{
+	War* war = getWar(warHandle);
+
+	if (war == nullptr)
+	{
+		return INVALID_CHARACTER_ID;
+	}
+
+	return war->m_Attackers[0];
+}
+
+CharacterID WarManager::getDefender(int warHandle)
+{
+	War* war = getWar(warHandle);
+
+	if (war == nullptr)
+	{
+		return INVALID_CHARACTER_ID;
+	}
+
+	return war->m_Defenders[0];
 }
 
 std::vector<int> WarManager::getWarsForRegion(int regionID)
@@ -224,7 +538,7 @@ std::vector<int> WarManager::getWarHandlesOfCharacter(CharacterID ID)
 
 	for (auto& war : m_Wars)
 	{
-		if (war.second.isAttacker(ID) || war.second.isDefender(ID))
+		if (isAttacker(war.second.getHandle(), ID || isDefender(war.second.getHandle(), ID)))
 		{
 			wars.push_back(war.second.getHandle());
 		}
@@ -241,8 +555,7 @@ std::vector<CharacterID> WarManager::getOpposingSide(CharacterID ID)
 	for (auto& war : wars)
 	{
 		War* currentWar = getWar(war);
-
-		if (currentWar->isAttacker(ID))
+		if (isAttacker(currentWar->getHandle(), ID))
 		{
 			for (auto defender : currentWar->m_Defenders)
 			{
@@ -250,7 +563,7 @@ std::vector<CharacterID> WarManager::getOpposingSide(CharacterID ID)
 			}
 		}
 
-		if (currentWar->isDefender(ID))
+		if (isDefender(currentWar->getHandle(), ID))
 		{
 			for (auto attacker : currentWar->m_Attackers)
 			{
@@ -266,7 +579,7 @@ void WarManager::removeAllyFromWar(CharacterID ally, int warHandle)
 {
 	War* war = getWar(warHandle);
 
-	if (war->isAttacker(ally))
+	if (isAttacker(war->getHandle(), ally))
 	{
 		unsigned int index = 0;
 
@@ -282,7 +595,7 @@ void WarManager::removeAllyFromWar(CharacterID ally, int warHandle)
 		}
 	}
 
-	else if (war->isDefender(ally))
+	else if (isDefender(war->getHandle(), ally))
 	{
 		unsigned int index = 0;
 
@@ -303,18 +616,36 @@ War* WarManager::getWarAgainst(CharacterID character, CharacterID enemy)
 {
 	for (auto& pair : m_Wars)
 	{
-		if (pair.second.isAttacker(character) && pair.second.isDefender(enemy))
+		if (isAttacker(pair.second.getHandle(), character) && isDefender(pair.second.getHandle(), enemy))
 		{
 			return &pair.second;
 		}
 
-		else if (pair.second.isDefender(character) && pair.second.isAttacker(enemy))
+		else if (isDefender(pair.second.getHandle(), character) && isAttacker(pair.second.getHandle(), enemy))
 		{
 			return &pair.second;
 		}
 	}
 
 	return nullptr;
+}
+
+int WarManager::getWarHandleAgainst(CharacterID character, CharacterID enemy)
+{
+	for (auto& pair : m_Wars)
+	{
+		if (isAttacker(pair.second.getHandle(), character) && isDefender(pair.second.getHandle(), enemy))
+		{
+			return pair.second.getHandle();
+		}
+
+		else if (isDefender(pair.second.getHandle(), character) && isAttacker(pair.second.getHandle(), enemy))
+		{
+			return pair.second.getHandle();
+		}
+	}
+
+	return -1;
 }
 
 void WarManager::createAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID)

@@ -8,28 +8,7 @@ struct War
 {
 	War(CharacterID attacker, CharacterID defender, int warGoalRegion, int handle);
 
-	bool isWinning(CharacterID ID, CharacterID enemyID);
-	int getWarscore(CharacterID ID);
-	void addWarscore(CharacterID ID, int warScore);
-	void endWar(CharacterID winningEntity);
-
-	void addAttacker(CharacterID character);
-	void addDefender(CharacterID character);
-
-	void handleOccupiedRegions(CharacterID winningCharacter);
-
-	bool alliesInWar(CharacterID ID);
-	bool isAllyOf(CharacterID potentialAlly, CharacterID allyOf);
-
-	bool isAttacker(CharacterID ent);
-	bool isDefender(CharacterID ent);
-
 	int getHandle();
-
-	CharacterID getOpposingForce(CharacterID character);
-
-	CharacterID getAttacker();
-	CharacterID getDefender();
 	Date getStartDate();
 
 public:

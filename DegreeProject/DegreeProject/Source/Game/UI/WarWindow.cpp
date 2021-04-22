@@ -180,7 +180,9 @@ void WarWindow::onDayChange()
 
 void WarWindow::setWarscore(CharacterID& characterID, std::stringstream& stream, int& warscore)
 {
-	warscore = m_War->getWarscore(characterID);
+	WarManager& warManager = WarManager::get();
+
+	warscore = warManager.getWarscore(m_War->getHandle(), characterID);
 	if (warscore > 100)
 	{
 		warscore = 100;
@@ -203,6 +205,7 @@ void WarWindow::setWarscore(CharacterID& characterID, std::stringstream& stream,
 
 void WarWindow::updateInfo()
 {
+	WarManager& warManager = WarManager::get();
 	m_War = WarManager::get().getWarAgainst(m_AttackerCharacterIDs.front(), m_DefenderCharacterIDs.front());
 
 	if (m_War != nullptr)

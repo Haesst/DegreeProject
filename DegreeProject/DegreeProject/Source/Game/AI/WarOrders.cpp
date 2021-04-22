@@ -6,6 +6,8 @@
 
 void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 {
+	WarManager& warManager = WarManager::get();
+
 	if (warmind.m_PrioritizedWarHandle == -1)
 	{
 		return;
@@ -31,9 +33,9 @@ void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 
 		else
 		{
-			if (CharacterManager::get().getCharacter(war->getOpposingForce(warmind.m_OwnerID)).m_OwnedRegionIDs.size() > 0)
+			if (CharacterManager::get().getCharacter(warManager.getOpposingForce(war->getHandle(), warmind.m_OwnerID)).m_OwnedRegionIDs.size() > 0)
 			{
-				int randomRegion = rand() % CharacterManager::get().getCharacter(war->getOpposingForce(warmind.m_OwnerID)).m_OwnedRegionIDs.size();
+				int randomRegion = rand() % CharacterManager::get().getCharacter(warManager.getOpposingForce(war->getHandle(), warmind.m_OwnerID)).m_OwnedRegionIDs.size();
 				battlefieldIntPosition = Map::get().getRegionById(randomRegion).m_RegionCapital;
 			}
 		}
@@ -54,18 +56,18 @@ void WarOrders::orderSiegeCapital(WarmindComponent& warmind, Unit& unit)
 	Vector2DInt startingPosition = Map::convertToMap(unitPosition);
 
 	Vector2DInt capitalPosition;
-	WarManager* warManager = &WarManager::get();
+	WarManager& warManager = WarManager::get();
 
-	War& currentWar = *warManager->getWar(warmind.m_PrioritizedWarHandle);
+	War* currentWar = warManager.getWar(warmind.m_PrioritizedWarHandle);
 
-	if (currentWar.isAttacker(warmind.m_OwnerID))
+	if (warManager.isAttacker(currentWar->getHandle(), warmind.m_OwnerID))
 	{
 		capitalPosition = Map::get().getRegionCapitalLocation(warmind.m_WargoalRegionId);
 	}
 
 	else
 	{
-		CharacterID enemyCharacter = currentWar.getAttacker();
+		CharacterID enemyCharacter = warManager.getAttacker(currentWar->getHandle());
 
 		if (unit.m_DaysSeizing > 0)
 		{

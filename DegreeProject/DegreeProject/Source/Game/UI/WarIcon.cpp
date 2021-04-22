@@ -55,7 +55,9 @@ void WarIcon::onDayChange()
 
 void WarIcon::setWarscore(CharacterID& characterID, std::stringstream& stream)
 {
-	int warscore = m_War->getWarscore(characterID);
+	WarManager& warManager = WarManager::get();
+
+	int warscore = warManager.getWarscore(m_War->getHandle(), characterID);
 	if (warscore > 100)
 	{
 		warscore = 100;

@@ -372,27 +372,21 @@ void EventWindow::acceptRequest()
 		case UIType::CallToArmsRequest:
 		{
 			Character& playerCharacter = CharacterManager::get().getPlayerCharacter();
+			WarManager& warManager = WarManager::get();
 
 			for (int handle : WarManager::get().getWarHandlesOfCharacter(m_InstigatorID))
 			{
-				War* currentWar = WarManager::get().getWar(handle);
-
-				if (currentWar == nullptr)
+				if (warManager.isAttacker(handle, m_InstigatorID))
 				{
-					continue;
+					warManager.addAttacker(handle, playerCharacter.m_CharacterID);
 				}
 
-				if (currentWar->isAttacker(m_InstigatorID))
+				else if (warManager.isDefender(handle, m_InstigatorID))
 				{
-					currentWar->addAttacker(playerCharacter.m_CharacterID);
+					warManager.addDefender(handle, playerCharacter.m_CharacterID);
 				}
 
-				else if (currentWar->isDefender(m_InstigatorID))
-				{
-					currentWar->addDefender(playerCharacter.m_CharacterID);
-				}
-
-				UIManager::get().createWarIcon(currentWar->getAttacker(), currentWar->getDefender());
+				UIManager::get().createWarIcon(warManager.getAttacker(handle), warManager.getDefender(handle));
 			}
 			break;
 		}

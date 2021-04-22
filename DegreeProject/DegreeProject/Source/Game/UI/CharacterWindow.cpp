@@ -643,11 +643,11 @@ void CharacterWindow::updateWars()
 	{
 		int warHandle = warManager.getWarHandlesOfCharacter(m_CurrentCharacter->m_CharacterID)[index];
 		War* currentWar = warManager.getWar(warHandle);
-		CharacterID defenderID = currentWar->getDefender();
-		CharacterID attackerID = currentWar->getAttacker();
+		CharacterID defenderID = warManager.getDefender(warHandle);
+		CharacterID attackerID = warManager.getAttacker(warHandle);
 		CharacterID opponentID;
 
-		if (currentWar->isAttacker(m_CurrentCharacterID))
+		if (warManager.isAttacker(warHandle, m_CurrentCharacterID))
 		{
 			opponentID = defenderID;
 		}
@@ -986,7 +986,7 @@ void CharacterWindow::clickButton()
 			{
 				InputHandler::setRightMouseReleased(false);
 				std::vector<int> wars = warManager.getWarHandlesOfCharacter(m_CurrentCharacter->m_CharacterID);
-				m_CurrentCharacterID = warManager.getWar(wars[index])->getOpposingForce(m_CurrentCharacterID);
+				m_CurrentCharacterID = warManager.getWar(wars[index])->getHandle(), warManager.getOpposingForce(warManager.getWar(wars[index])->getHandle(), m_CurrentCharacterID);
 				checkIfPlayerCharacter();
 				updateInfo();
 				break;

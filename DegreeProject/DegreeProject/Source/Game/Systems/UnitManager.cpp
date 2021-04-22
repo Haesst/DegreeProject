@@ -554,14 +554,14 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 
 		if (war != nullptr)
 		{
-			if (war->isDefender(unitID))
+			if (warManager->isDefender(war->getHandle(), unitID))
 			{
-				war->addWarscore(getUnitWithId(unitID).m_Owner, 100);
+				warManager->addWarscore(war->getHandle(), getUnitWithId(unitID).m_Owner, 100);
 			}
 
 			else
 			{
-				war->addWarscore(getUnitWithId(unitID).m_Owner, 50);
+				warManager->addWarscore(war->getHandle(), getUnitWithId(unitID).m_Owner, 50);
 			}
 
 			LOG_INFO("{0} won the battle against {1}", CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get().getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
@@ -576,14 +576,14 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		
 		if (war != nullptr)
 		{
-			if (war->isDefender(enemyID))
+			if (warManager->isDefender(war->getHandle(), enemyID))
 			{
-				war->addWarscore(getUnitWithId(enemyID).m_Owner, 100);
+				warManager->addWarscore(war->getHandle(), getUnitWithId(enemyID).m_Owner, 100);
 			}
 
 			else
 			{
-				war->addWarscore(getUnitWithId(enemyID).m_Owner, 50);
+				warManager->addWarscore(war->getHandle(), getUnitWithId(enemyID).m_Owner, 50);
 			}
 		}
 	}
@@ -641,9 +641,10 @@ void UnitManager::unitSiege(Unit& unit)
 			CharacterManager& characterManager = CharacterManager::get();
 			Character& attacker = characterManager.getCharacter(unit.m_Owner);
 			Character& defender = characterManager.getCharacter(region.m_OwnerID);
-			War* currentWar = WarManager::get().getWarAgainst(attacker.m_CharacterID, defender.m_CharacterID);
+			int currentWar = WarManager::get().getWarHandleAgainst(attacker.m_CharacterID, defender.m_CharacterID);
+			WarManager& warManager = WarManager::get();
 
-			if (currentWar == nullptr && !skipWarCheck)
+			if (currentWar == -1 && !skipWarCheck)
 			{
 				return;
 			}
@@ -654,7 +655,7 @@ void UnitManager::unitSiege(Unit& unit)
 
 				if (siegedWar != nullptr)
 				{
-					siegedWar->addWarscore(region.m_OccupiedBy, -50);
+					warManager.addWarscore(siegedWar->getHandle(), region.m_OccupiedBy, -50);
 				}
 
 				region.m_OccupiedBy = INVALID_CHARACTER_ID;
@@ -669,15 +670,17 @@ void UnitManager::unitSiege(Unit& unit)
 
 			if (defender.m_CharacterID == region.m_OwnerID)
 			{
-				currentWar->m_AttackerOccupiedRegions.push_back(region.m_RegionId);
+				War* war = warManager.getWar(currentWar);
 
-				if (currentWar->m_AttackerWarscore < 100)
+				war->m_AttackerOccupiedRegions.push_back(region.m_RegionId);
+
+				if (war->m_AttackerWarscore < 100)
 				{
-					currentWar->addWarscore(attacker.m_CharacterID, 50);
-					currentWar->addWarscore(defender.m_CharacterID, -50);
+					warManager.addWarscore(war->getHandle(), attacker.m_CharacterID, 50);
+					warManager.addWarscore(war->getHandle(), defender.m_CharacterID, -50);
 				}
 
-				if (!WarManager::get().isValidWar(*currentWar))
+				if (!WarManager::get().isValidWar(*war))
 				{
 					return;
 				}
@@ -692,7 +695,7 @@ void UnitManager::unitSiege(Unit& unit)
 
 				bool allRegionsSiezed = true;
 
-				for (auto ID : CharacterManager::get().getCharacter(currentWar->getDefender()).m_OwnedRegionIDs)
+				for (auto ID : CharacterManager::get().getCharacter(warManager.getDefender(war->getHandle())).m_OwnedRegionIDs)
 				{
 					if (Map::get().getRegionById(ID).m_OccupiedBy == INVALID_CHARACTER_ID)
 					{
@@ -700,16 +703,18 @@ void UnitManager::unitSiege(Unit& unit)
 					}
 				}
 
-				if (allRegionsSiezed && currentWar->m_AttackerWarscore < 100)
+				if (allRegionsSiezed && war->m_AttackerWarscore < 100)
 				{
-					currentWar->addWarscore(currentWar->getAttacker(), 100);
+					warManager.addWarscore(war->getHandle(), warManager.getAttacker(war->getHandle()), 100);
 				}
 			}
 
 			else if (attacker.m_CharacterID == region.m_OwnerID)
 			{
-				currentWar->m_DefenderOccupiedRegions.push_back(region.m_RegionId);
-				currentWar->addWarscore(currentWar->getDefender(), 50);
+				War* war = warManager.getWar(currentWar);
+
+				war->m_DefenderOccupiedRegions.push_back(region.m_RegionId);
+				warManager.addWarscore(currentWar, warManager.getDefender(currentWar), 50);
 				region.m_OccupiedBy = defender.m_CharacterID;
 
 				//Loot

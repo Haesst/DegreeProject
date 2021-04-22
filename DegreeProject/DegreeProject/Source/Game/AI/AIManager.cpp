@@ -163,8 +163,8 @@ bool AIManager::handleRecieveMarriageRequest(CharacterID reciever, CharacterID s
 
 bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, PeaceType type)
 {
-	War* war = WarManager::get().getWarAgainst(sender, reciever);
-	ASSERT(war != NULL, "This war doesn't exist");
+	WarManager& warManager = WarManager::get();
+	int war = warManager.getWarHandleAgainst(sender, reciever);
 
 	if (type == PeaceType::Surrender)
 	{
@@ -186,14 +186,14 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, Pea
 		return true;
 	}
 
-	if (type == PeaceType::Enforce_Demands && war->getWarscore(sender) >= 100)
+	if (type == PeaceType::Enforce_Demands && warManager.getWarscore(war, sender) >= 100)
 	{
 		return true;
 	}
 
 	float acceptance = 0.0f;
 
-	if (war->getWarscore(sender) > war->getWarscore(reciever))
+	if (warManager.getWarscore(war, sender) > warManager.getWarscore(war, reciever))
 	{
 		acceptance += .4f;
 	}
@@ -216,9 +216,9 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, Pea
 		acceptance -= .3f;
 	}
 
-	if (Map::get().getRegionById(war->m_WargoalRegion).m_OccupiedBy == war->getAttacker())
+	if (Map::get().getRegionById(warManager.getWar(war)->m_WargoalRegion).m_OccupiedBy == warManager.getAttacker(war))
 	{
-		if (war->getAttacker() == sender)
+		if (warManager.getAttacker(war) == sender)
 		{
 			acceptance += .5f;
 		}
@@ -252,25 +252,26 @@ bool AIManager::handleAllianceRequest(CharacterID sender, CharacterID reciever)
 
 bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, int war)
 {
-	War* currentWar = WarManager::get().getWar(war);
+	WarManager& warManager = WarManager::get();
+	int currentWar = warManager.getWar(war)->getHandle();
 	CharacterManager& characterManager = CharacterManager::get();
 
-	if (currentWar->getAttacker() == characterManager.getCharacter(sender).m_CharacterID)
+	if (warManager.getAttacker(currentWar) == characterManager.getCharacter(sender).m_CharacterID)
 	{
 		for (auto ally : WarManager::get().getAlliances(sender))
 		{
-			if (ally == currentWar->getDefender())
+			if (ally == warManager.getDefender(currentWar))
 			{
 				return false;
 			}
 		}
 	}
 
-	else if (currentWar->getDefender() == characterManager.getCharacter(sender).m_CharacterID)
+	else if (warManager.getDefender(currentWar) == characterManager.getCharacter(sender).m_CharacterID)
 	{
 		for (auto ally : WarManager::get().getAlliances(reciever))
 		{
-			if (ally == currentWar->getAttacker())
+			if (ally == warManager.getAttacker(currentWar))
 			{
 				return false;
 			}
@@ -279,7 +280,7 @@ bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, i
 
 	for (auto& handle : WarManager::get().getWarHandlesOfCharacter(reciever))
 	{
-		if (handle == currentWar->getHandle())
+		if (handle == currentWar)
 		{
 			//Already in that war
 			return false;
@@ -361,7 +362,7 @@ void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& chara
 	{
 		if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
 		{
-			considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warManager.getWar(warmind.m_PrioritizedWarHandle)->getOpposingForce(warmind.m_OwnerID));
+			considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warManager.getOpposingForce(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID));
 		}
 
 		else
@@ -445,7 +446,7 @@ void AIManager::UpdateAIData(CharacterManager& characterManager, AIData& data, W
 
 			if (sendOffer)
 			{
-				characterManager.sendPeaceOffer(data.m_OwnerID, currentWar->getOpposingForce(data.m_OwnerID), PeaceType::White_Peace);
+				characterManager.sendPeaceOffer(data.m_OwnerID, warManager.getOpposingForce(war, data.m_OwnerID), PeaceType::White_Peace);
 			}
 		}
 	}
@@ -883,7 +884,7 @@ int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 
 		if (warManager->getWar(warmind.m_PrioritizedWarHandle) != nullptr)
 		{
-			warmind.m_Opponent = warManager->getWar(warmind.m_PrioritizedWarHandle)->getOpposingForce(warmind.m_OwnerID);
+			warmind.m_Opponent = warManager->getOpposingForce(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID);
 			return warmind.m_PrioritizedWarHandle;
 		}
 	}
@@ -895,6 +896,11 @@ void AIManager::considerOrders(WarmindComponent& warmind, Unit& unit, CharacterI
 {
 	WarManager* warManager = &WarManager::get();
 
+	if(target == INVALID_CHARACTER_ID)
+	{
+		return;
+	}
+
 	if (warmind.m_PrioritizedWarHandle == -1)
 	{
 		considerPrioritizedWar(warmind);
@@ -904,12 +910,12 @@ void AIManager::considerOrders(WarmindComponent& warmind, Unit& unit, CharacterI
 
 	if (warManager->getWar(warmind.m_PrioritizedWarHandle) != nullptr)
 	{
-		if (warManager->getWar(warmind.m_PrioritizedWarHandle)->isDefender(warmind.m_OwnerID))
+		if (warManager->isDefender(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID))
 		{
 			giveDefenderOrders(warmind, target, unit, enemyUnit);
 		}
 
-		else if (warManager->getWar(warmind.m_PrioritizedWarHandle)->isAttacker(warmind.m_OwnerID))
+		else if (warManager->isAttacker(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID))
 		{
 			giveAttackerOrders(warmind, target, unit, enemyUnit);
 		}
