@@ -240,7 +240,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		case UIType::Death:
 		{
 			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Dead.png");
-			stream << "\njust died!";
+			stream << "\nof the " << instigator.m_KingdomName << "\njust died!";
 			break;
 		}
 		default:

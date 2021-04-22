@@ -183,12 +183,12 @@ void UIManager::update()
 {
 	m_MainMenu->update();
 	m_ActiveEventWindows = false;
-	for (unsigned int i = 0; i < m_EventWindows.size(); i++)
+	for (std::vector<EventWindow*>::reverse_iterator eventWindowIterator = m_EventWindows.rbegin(); eventWindowIterator != m_EventWindows.rend(); ++eventWindowIterator)
 	{
-		if (!m_EventWindows[i]->m_Dismissed)
+		if (!(*eventWindowIterator)->m_Dismissed)
 		{
 			m_ActiveEventWindows = true;
-			m_EventWindows[i]->update();
+			(*eventWindowIterator)->update();
 		}
 	}
 	if (!m_ActiveEventWindows)

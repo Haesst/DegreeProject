@@ -676,6 +676,7 @@ void CharacterManager::updateTitleAndUIText(Character& character)
 		character.m_CharacterTitle = Title::Emperor;
 		stream << "Empire of ";
 	}
+	stream << Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
 	character.m_KingdomName = stream.str();
 
 	if (createNewUI)
