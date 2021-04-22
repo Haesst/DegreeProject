@@ -600,7 +600,7 @@ void CharacterWindow::updateInfo()
 		std::stringstream stream;
 		if (m_Gender == Gender::Male)
 		{
-			if (m_CurrentCharacter->m_CharacterTitle != Title::Unlanded)
+			if (m_CurrentCharacter->m_CharacterTitle >= Title::Unlanded)
 			{
 				stream << m_CurrentCharacter->m_Name;
 			}
@@ -612,7 +612,7 @@ void CharacterWindow::updateInfo()
 		}
 		else
 		{
-			if (m_CurrentCharacter->m_CharacterTitle != Title::Unlanded)
+			if (m_CurrentCharacter->m_CharacterTitle >= Title::Unlanded)
 			{
 				stream << m_CurrentCharacter->m_Name;
 			}

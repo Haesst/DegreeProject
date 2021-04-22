@@ -183,9 +183,9 @@ void UIManager::update()
 {
 	m_MainMenu->update();
 	m_ActiveEventWindows = false;
-	for (int i = m_EventWindows.size() - 1; i >= 0; i--)
+	for (unsigned int i = 0; i < m_EventWindows.size(); i++)
 	{
-		if (i > 0 && !m_EventWindows[i]->m_Dismissed)
+		if (!m_EventWindows[i]->m_Dismissed)
 		{
 			m_ActiveEventWindows = true;
 			m_EventWindows[i]->update();
