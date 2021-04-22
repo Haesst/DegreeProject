@@ -93,6 +93,14 @@ void UIManager::AdjustOwnership(CharacterID conquerorID, CharacterID loserID, un
 	m_UITexts[loserID]->loseRegion(regionID);
 }
 
+void UIManager::AdjustOwnerships(CharacterID conquerorID, CharacterID loserID, std::vector<unsigned int>& regionIDs)
+{
+	for (auto& id : regionIDs)
+	{
+		AdjustOwnership(conquerorID, loserID, id);
+	}
+}
+
 void UIManager::SetRealmTextAsConquered(CharacterID characterID)
 {
 	m_UITexts[characterID]->m_Conquered = true;

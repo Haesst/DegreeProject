@@ -104,10 +104,11 @@ void AIManager::initAI(CharacterID ID)
 	data.m_OwnerID = ID;
 	data.m_LastAction = Action::NONE;
 	data.m_CurrentAction = Action::NONE;
-	m_AIDatas.push_back(data);
 
 	int randomTickRate = (rand() % 3) + 1;
 	data.m_TickPrio = randomTickRate;
+
+	m_AIDatas.push_back(data);
 	m_TickPrio[randomTickRate].push_back(data);
 }
 

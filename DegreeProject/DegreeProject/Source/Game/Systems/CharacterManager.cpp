@@ -682,152 +682,7 @@ void CharacterManager::updateTitle(Character& character)
 
 void CharacterManager::handleInheritance(Character& character)
 {
-	if (character.m_Children.size() == 1)
-	{
-		Character& child = getCharacter(character.m_Children.front());
-		child.m_CurrentGold += character.m_CurrentGold;
-		if (character.m_CharacterTitle < child.m_CharacterTitle)
-		{
-			child.m_RegionColor = character.m_RegionColor;
-		}
-		if (!child.m_IsPlayerControlled)
-		{
-			child.m_IsPlayerControlled = character.m_IsPlayerControlled;
-		}
-
-		if (child.m_IsPlayerControlled)
-		{
-			m_PlayerCharacterID = child.m_CharacterID;
-			m_PlayerCharacter = &child;
-
-			AIManager::get().deactivateAI(child.m_CharacterID);
-			UIManager::get().m_DateBar->updateOwnerColor(child.m_RegionColor);
-			UIManager::get().m_StatBar->updateOwnerColor(child.m_RegionColor);
-		}
-		if (child.m_OwnedRegionIDs.empty())
-		{
-			for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
-			{
-				addRegion(child.m_CharacterID, ownedRegionID);
-				Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
-				Map::get().getRegionById(ownedRegionID).m_OwnerID = child.m_CharacterID;
-			}
-
-			updateTitle(child);
-			UIManager::get().createUITextElement(Game::m_UIFont, child.m_CharacterID, child.m_KingdomName, child.m_OwnedRegionIDs);
-		}
-		else
-		{
-			for (unsigned int ownedRegionID : child.m_OwnedRegionIDs)
-			{
-				Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
-			}
-			for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
-			{
-				addRegion(child.m_CharacterID, ownedRegionID);
-				Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
-				Map::get().getRegionById(ownedRegionID).m_OwnerID = child.m_CharacterID;
-			}
-			updateTitle(child);
-			UIManager::get().SetRealmNameOnText(child.m_CharacterID, child.m_KingdomName);
-			for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
-			{
-				UIManager::get().AdjustOwnership(child.m_CharacterID, character.m_CharacterID, ownedRegionID);
-			}
-		}
-	}
-	else if (character.m_Children.size() > 1)
-	{
-		unsigned int children = character.m_Children.size();
-		unsigned int regions = character.m_OwnedRegionIDs.size();
-		float giveawayGold = character.m_CurrentGold / children;
-		float giveawayRegions = (float)regions / children;
-		unsigned int numberOfLoops = 1;
-		if (giveawayRegions > 1)
-		{
-			numberOfLoops = (int)ceilf(giveawayRegions);
-		}
-		for (unsigned int index = 0; index < numberOfLoops; index++)
-		{
-			for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
-			{
-				for (CharacterID childID : character.m_Children)
-				{
-					Character& child = getCharacter(childID);
-					if (!child.m_Dead && !child.m_Inherited)
-					{
-						child.m_Inherited = true;
-						if (child.m_RegionColor == sf::Color::Black)
-						{
-							child.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
-						}
-						addRegion(childID, ownedRegionID);
-						Map::get().setRegionColor(ownedRegionID, child.m_RegionColor);
-						Map::get().getRegionById(ownedRegionID).m_OwnerID = child.m_CharacterID;
-						break;
-					}
-				}
-			}
-			for (CharacterID childID : character.m_Children)
-			{
-				getCharacter(childID).m_Inherited = false;
-			}
-			if (numberOfLoops - index != 1 && numberOfLoops > 1)
-			{
-				for (unsigned int i = 0; i < children; i++)
-				{
-					character.m_OwnedRegionIDs[i] = character.m_OwnedRegionIDs[character.m_OwnedRegionIDs.size() - 1];
-					character.m_OwnedRegionIDs.pop_back();
-				}
-			}
-		}
-		for (CharacterID childID : character.m_Children)
-		{
-			Character& child = getCharacter(childID);
-			if (child.m_OwnedRegionIDs.size() > 0)
-			{
-				if (children > regions)
-				{
-					for (unsigned int i = 0; i < child.m_OwnedRegionIDs.size(); i++)
-					{
-						child.m_CurrentGold += giveawayGold;
-					}
-				}
-				else
-				{
-					child.m_CurrentGold += giveawayGold;
-				}
-				if (child.m_CharacterTitle < Title::Unlanded)
-				{
-					updateTitle(child);
-					UIManager::get().SetRealmNameOnText(child.m_CharacterID, child.m_KingdomName);
-					for (unsigned int childOwnedRegionID : child.m_OwnedRegionIDs)
-					{
-						UIManager::get().AdjustOwnership(childID, character.m_CharacterID, childOwnedRegionID);
-					}
-				}
-				else
-				{
-					updateTitle(child);
-					UIManager::get().createUITextElement(Game::m_UIFont, childID, child.m_KingdomName, child.m_OwnedRegionIDs);
-				}
-			}
-		}
-		Character& child = CharacterManager::get().getCharacter(character.m_Children.front());
-		if (!child.m_IsPlayerControlled)
-		{
-			child.m_IsPlayerControlled = character.m_IsPlayerControlled;
-		}
-		if (child.m_IsPlayerControlled)
-		{
-			m_PlayerCharacterID = child.m_CharacterID;
-			m_PlayerCharacter = &child;
-			AIManager::get().deactivateAI(child.m_CharacterID);
-			UIManager::get().m_DateBar->updateOwnerColor(child.m_RegionColor);
-			UIManager::get().m_StatBar->updateOwnerColor(child.m_RegionColor);
-		}
-	}
-	else
+	if (character.m_Children.size() <= 0)
 	{
 		float giveawayGold = character.m_CurrentGold / character.m_OwnedRegionIDs.size();
 		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
@@ -846,6 +701,93 @@ void CharacterManager::handleInheritance(Character& character)
 					break;
 				}
 			}
+		}
+		return; // Todo: Create new
+	}
+
+	if (character.m_OwnedRegionIDs.size() > 0)
+	{
+		// Todo: Get alive children instead of children
+		size_t regionsByChild = character.m_OwnedRegionIDs.size() / character.m_Children.size();
+		int giveOneMoreToChildren = character.m_OwnedRegionIDs.size() % character.m_Children.size();
+		float goldByChild = character.m_CurrentGold / character.m_Children.size();
+
+		size_t currentChild = 0;
+		size_t currentChildInheritedRegions = 0;
+		Character* currentChildCharacter = &getCharacter(character.m_Children[currentChild]);
+		currentChildCharacter->m_CurrentGold += goldByChild;
+		bool childGotOneMore = false;
+
+		if (!currentChildCharacter->m_IsPlayerControlled)
+		{
+			currentChildCharacter->m_IsPlayerControlled = character.m_IsPlayerControlled;
+		}
+		if (currentChildCharacter->m_IsPlayerControlled)
+		{
+			if (currentChildCharacter->m_RegionColor == sf::Color::Black)
+			{
+				currentChildCharacter->m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
+			} // Todo: Create character color on birth
+
+			m_PlayerCharacterID = currentChildCharacter->m_CharacterID;
+			m_PlayerCharacter = currentChildCharacter;
+			AIManager::get().deactivateAI(currentChildCharacter->m_CharacterID);
+			UIManager::get().m_DateBar->updateOwnerColor(currentChildCharacter->m_RegionColor);
+			UIManager::get().m_StatBar->updateOwnerColor(currentChildCharacter->m_RegionColor);
+		}
+
+		for (size_t i = 0; i < character.m_OwnedRegionIDs.size(); ++i)
+		{
+			currentChildCharacter->m_OwnedRegionIDs.push_back(character.m_OwnedRegionIDs[i]);
+			currentChildInheritedRegions++;
+
+			if (currentChildCharacter->m_RegionColor == sf::Color::Black)
+			{
+				currentChildCharacter->m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
+			} // Todo: Create character color on birth
+
+			MapRegion& region = Map::get().getRegionById(character.m_OwnedRegionIDs[i]);
+			region.m_OwnerID = currentChildCharacter->m_CharacterID;
+			Map::get().setRegionColor(region.m_RegionId, currentChildCharacter->m_RegionColor);
+
+			if (currentChildInheritedRegions >= regionsByChild && i < character.m_OwnedRegionIDs.size() - 1)
+			{
+				if (giveOneMoreToChildren <= currentChild || childGotOneMore)
+				{
+					if (currentChildCharacter->m_CharacterTitle >= Title::Unlanded)
+					{
+						updateTitle(*currentChildCharacter);
+						UIManager::get().createUITextElement(Game::m_UIFont, currentChildCharacter->m_CharacterID, currentChildCharacter->m_KingdomName, currentChildCharacter->m_OwnedRegionIDs);
+					}
+					else
+					{
+						updateTitle(*currentChildCharacter);
+						UIManager::get().SetRealmNameOnText(currentChildCharacter->m_CharacterID, currentChildCharacter->m_KingdomName);
+					}
+
+					UIManager::get().AdjustOwnerships(currentChildCharacter->m_CharacterID, character.m_CharacterID, currentChildCharacter->m_OwnedRegionIDs);
+
+					++currentChild;
+					currentChildCharacter = &getCharacter(character.m_Children[currentChild]);
+					currentChildInheritedRegions = 0;
+					currentChildCharacter->m_CurrentGold += goldByChild;
+				}
+				else
+				{
+					childGotOneMore = true;
+				}
+			}
+		}
+
+		if (currentChildCharacter->m_CharacterTitle >= Title::Unlanded)
+		{
+			updateTitle(*currentChildCharacter);
+			UIManager::get().createUITextElement(Game::m_UIFont, currentChildCharacter->m_CharacterID, currentChildCharacter->m_KingdomName, currentChildCharacter->m_OwnedRegionIDs);
+		}
+		else
+		{
+			updateTitle(*currentChildCharacter);
+			UIManager::get().SetRealmNameOnText(currentChildCharacter->m_CharacterID, currentChildCharacter->m_KingdomName);
 		}
 	}
 

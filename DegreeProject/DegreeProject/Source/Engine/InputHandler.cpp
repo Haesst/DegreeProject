@@ -135,6 +135,11 @@ void InputHandler::handleInputEvents()
 				Time::setGameSpeed(5);
 				break;
 			}
+			case sf::Keyboard::U:
+			{
+				CharacterManager::get().killCharacter(CharacterManager::get().getPlayerCharacterID());
+				break;
+			}
 			default:
 			{
 				break;

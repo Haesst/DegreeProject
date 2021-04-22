@@ -145,10 +145,6 @@ void Game::addEntitys()
 	UIManager::get().createUITextElement(m_UIFont, char2, CharacterManager::get().getCharacter(char2).m_KingdomName, id2);
 
 	CharacterManager::get().addTrait(char2, CharacterManager::get().getTrait("Beautiful"));
-	Character& c = CharacterManager::get().getCharacter(char1);
-	Character& c2 = CharacterManager::get().getCharacter(char0);
-	LOG_INFO("{0}'s opinion of Player: {1}", c.m_Name, CharacterManager::get().getCharacterOpinion(char1, char2));
-	LOG_INFO("{0}'s opinion of Player: {1}", c2.m_Name, CharacterManager::get().getCharacterOpinion(char0, char2));
 
 	std::vector<unsigned int> characterFourRegions{ 18, 20 };
 	std::vector<unsigned int> characterFiveRegions{ 19 };
@@ -215,8 +211,7 @@ void Game::addEntitys()
 
 CharacterID Game::createCharacter(std::vector<unsigned int>& ownedRegions, Title title, Gender gender, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color)
 {
-
-	CharacterID character = CharacterManager::get().createCharacterWithRandomBirthday(characterName, title, gender, ownedRegions, realmName, army, (float)gold, color, playerControlled, 17, 63);
+	CharacterID character = CharacterManager::get().createCharacterWithRandomBirthday(characterName, title, gender, ownedRegions, realmName, army, (float)gold, color, playerControlled, 17, 62);
 
 	for (int i : ownedRegions)
 	{
