@@ -63,7 +63,7 @@ void WarWindow::start()
 	setText(m_WarscoreAmountText, m_Font, m_CharacterSize, m_PositiveColor, m_WarscoreAmountTextPosition);
 
 	m_AttackersTextPosition = { m_AttackerPosition.x - m_PositionX, m_PositionY };
-	setText(m_AttackerArmyText, m_Font, m_CharacterSize, m_AttackerColor, m_AttackersTextPosition, m_Attackers);
+	setText(m_AttackersText, m_Font, m_CharacterSize, m_AttackerColor, m_AttackersTextPosition, m_Attackers);
 
 	m_AttackerArmyTextPosition = { m_AttackerPosition.x - m_PositionX, m_PositionY + m_SpriteSize };
 	setText(m_AttackerArmyText, m_Font, m_CharacterSize, m_TextColor, m_AttackerArmyTextPosition, m_TotalSoldiers);
@@ -205,9 +205,7 @@ void WarWindow::setWarscore(CharacterID& characterID, std::stringstream& stream,
 
 void WarWindow::updateInfo()
 {
-	WarManager& warManager = WarManager::get();
 	m_War = WarManager::get().getWarAgainst(m_AttackerCharacterIDs.front(), m_DefenderCharacterIDs.front());
-
 	if (m_War != nullptr)
 	{
 		Character& attackerMain = CharacterManager::get().getCharacter(m_AttackerCharacterIDs.front());
