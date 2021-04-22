@@ -93,6 +93,10 @@ void WarIcon::updateInfo()
 		{
 			setWarscore(m_DefenderID, stream);
 		}
+		else
+		{
+			setWarscore(m_AttackerID, stream);
+		}
 		stream << m_PercentSign;
 		m_WarscoreText.setString(stream.str());
 		stream.str(std::string());
