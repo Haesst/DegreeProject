@@ -20,30 +20,30 @@ public:
 	//Returns handle to war
 	int createWar(CharacterID attacker, CharacterID defender, int warGoalRegion);
 	void endWar(int warHandle, CharacterID winner);
+	
 	War* getWar(int handle);
 	War* getWarAgainst(CharacterID character, CharacterID enemy);
+
 	int getWarHandleAgainst(CharacterID character, CharacterID enemy);
+	int getWarscore(int warHandle, CharacterID ID);
+
 	bool atWarWith(CharacterID character, CharacterID enemy); 
-	void invalidateWarsForRegionOnWonWar(War& wonWar);
-	void invalidateWarsForRegion(int regionID);
 	bool isEnemyOfEnemy(Unit& unit, Unit& enemyUnit);
 	bool isValidWar(War& war);
-	void update();
-
 	bool isWinning(int warHandle, CharacterID ID, CharacterID enemyID);
-	int getWarscore(int warHandle, CharacterID ID);
-	void addWarscore(int warHandle, CharacterID ID, int warScore);
-
-	void addAttacker(int warHandle, CharacterID character);
-	void addDefender(int warHandle, CharacterID character);
-
-	void handleOccupiedRegions(int warHandle, CharacterID winningCharacter);
-	
 	bool alliesInWar(int warHandle, CharacterID ID);
 	bool isAllyOf(int warHandle, CharacterID potentialAlly, CharacterID allyOf);
-
 	bool isAttacker(int warHandle, CharacterID ent);
 	bool isDefender(int warHandle, CharacterID ent);
+
+	void invalidateWarsForRegionOnWonWar(War& wonWar);
+	void invalidateWarsForRegion(int regionID);
+	void update();
+	void addWarscore(int warHandle, CharacterID ID, int warScore);
+	void addAttacker(int warHandle, CharacterID character);
+	void addDefender(int warHandle, CharacterID character);
+	void handleOccupiedRegions(int warHandle, CharacterID winningCharacter);
+	void removeAllyFromWar(CharacterID ally, int warHandle);
 
 	CharacterID getOpposingForce(int warHandle, CharacterID ID);
 	CharacterID getAttacker(int warHandle);
@@ -51,9 +51,8 @@ public:
 
 	std::vector<int> getWarsForRegion(int regionID);
 	std::vector<int> getWarHandlesOfCharacter(CharacterID ID);
-	std::vector<CharacterID> getOpposingSide(CharacterID ID);
 
-	void removeAllyFromWar(CharacterID ally, int warHandle);
+	std::vector<CharacterID> getOpposingSide(CharacterID ID);
 
 	// Alliances
 	void createAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID);

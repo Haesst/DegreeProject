@@ -351,6 +351,11 @@ void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& chara
 	else if (warmind.m_Active && warmind.m_PrioritizedWarHandle == -1)
 	{
 		warmind.m_PrioritizedWarHandle = considerPrioritizedWar(warmind);
+
+		if (warmind.m_PrioritizedWarHandle == -1)
+		{
+			return;
+		}
 	}
 
 	if (warManager.getWarHandlesOfCharacter(warmind.m_OwnerID).empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
@@ -363,7 +368,13 @@ void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& chara
 	{
 		if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
 		{
-			considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warManager.getOpposingForce(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID));
+			if (!warManager.isValidWar(*warManager.getWar(warmind.m_PrioritizedWarHandle)))
+			{
+				considerPrioritizedWar(warmind);
+			}
+
+			CharacterID opposingForce = warManager.getOpposingForce(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID);
+			considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), opposingForce);
 		}
 
 		else
@@ -372,6 +383,11 @@ void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& chara
 			if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f && character.m_MaxArmySize > 0)
 			{
 				unitManager.raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
+
+				if (warmind.m_PrioritizedWarHandle != -1)
+				{
+					considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warManager.getOpposingForce(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID));
+				}
 			}
 		}
 	}
@@ -896,11 +912,6 @@ int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 void AIManager::considerOrders(WarmindComponent& warmind, Unit& unit, CharacterID target)
 {
 	WarManager* warManager = &WarManager::get();
-
-	if(target == INVALID_CHARACTER_ID)
-	{
-		return;
-	}
 
 	if (warmind.m_PrioritizedWarHandle == -1)
 	{

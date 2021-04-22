@@ -13,6 +13,20 @@ int WarManager::createWar(CharacterID attacker, CharacterID defender, int warGoa
 {
 	int handle = m_Warhandle++;
 	m_Wars.push_back(std::make_pair(handle, War(attacker, defender, warGoalRegion, handle)));
+
+	CharacterManager& characterManager = CharacterManager::get();
+	AIManager& aiManager = AIManager::get();
+
+	if (!characterManager.getCharacter(attacker).m_IsPlayerControlled)
+	{
+		aiManager.getWarmindOfCharacter(attacker).m_Active = true;
+	}
+
+	if (!characterManager.getCharacter(defender).m_IsPlayerControlled)
+	{
+		aiManager.getWarmindOfCharacter(defender).m_Active = true;
+	}
+
 	return handle;
 }
 
@@ -30,11 +44,14 @@ void WarManager::endWar(int warHandle, CharacterID winner)
 		if (!CharacterManager::get().getCharacter(getAttacker(warHandle)).m_IsPlayerControlled)
 		{
 			AIManager::get().getAIDataofCharacter(getAttacker(warHandle)).m_CurrentAction = Action::NONE;
+			AIManager::get().getWarmindOfCharacter(getAttacker(warHandle)).m_PrioritizedWarHandle = -1;
+
 		}
 
 		if (!CharacterManager::get().getCharacter(getDefender(warHandle)).m_IsPlayerControlled)
 		{
 			AIManager::get().getAIDataofCharacter(getDefender(warHandle)).m_CurrentAction = Action::NONE;
+			AIManager::get().getWarmindOfCharacter(getDefender(warHandle)).m_PrioritizedWarHandle = -1;
 		}
 	}
 
@@ -475,24 +492,17 @@ bool WarManager::isDefender(int warHandle, CharacterID ent)
 
 CharacterID WarManager::getOpposingForce(int warHandle, CharacterID ID)
 {
-	War* war = getWar(warHandle);
-
-	if (war == nullptr)
+	if (isAttacker(warHandle, ID))
 	{
-		return INVALID_CHARACTER_ID;
+		return getDefender(warHandle);
 	}
 
-	if (isAttacker(war->getHandle(), ID))
+	else if (isDefender(warHandle, ID))
 	{
-		return getDefender(war->getHandle());
+		return getAttacker(warHandle);
 	}
 
-	else if (isDefender(war->getHandle(), ID))
-	{
-		return getAttacker(war->getHandle());
-	}
-
-	return INVALID_CHARACTER_ID;
+ 	return INVALID_CHARACTER_ID;
 }
 
 CharacterID WarManager::getAttacker(int warHandle)
@@ -540,7 +550,7 @@ std::vector<int> WarManager::getWarHandlesOfCharacter(CharacterID ID)
 
 	for (auto& war : m_Wars)
 	{
-		if (isAttacker(war.second.getHandle(), ID || isDefender(war.second.getHandle(), ID)))
+		if(isAttacker(war.second.getHandle(), ID) || isDefender(war.second.getHandle(), ID))
 		{
 			wars.push_back(war.second.getHandle());
 		}
@@ -556,18 +566,17 @@ std::vector<CharacterID> WarManager::getOpposingSide(CharacterID ID)
 
 	for (auto& war : wars)
 	{
-		War* currentWar = getWar(war);
-		if (isAttacker(currentWar->getHandle(), ID))
+		if (isAttacker(war, ID))
 		{
-			for (auto defender : currentWar->m_Defenders)
+			for (auto defender : getWar(war)->m_Defenders)
 			{
 				enemies.push_back(defender);
 			}
 		}
 
-		if (isDefender(currentWar->getHandle(), ID))
+		if (isDefender(war, ID))
 		{
-			for (auto attacker : currentWar->m_Attackers)
+			for (auto attacker : getWar(war)->m_Attackers)
 			{
 				enemies.push_back(attacker);
 			}

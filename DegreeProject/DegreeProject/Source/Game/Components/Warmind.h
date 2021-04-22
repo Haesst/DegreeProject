@@ -9,7 +9,6 @@ struct WarmindComponent
 	CharacterID m_Opponent;
 
 	bool m_Active = false;
-	bool m_AtWar = false;
 	bool m_RecentlyAtWar = false; //Flag for starting war
 
 	int m_PrioritizedWarHandle = -1;
