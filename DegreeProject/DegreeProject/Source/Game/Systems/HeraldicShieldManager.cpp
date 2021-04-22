@@ -56,7 +56,7 @@ HeraldicShield HeraldicShieldManager::generateRandomShield()
 	HeraldicShield shield;
 	shield.m_BaseColor = generateRandomColor();
 	shield.m_PatternColor = generateRandomColor();
-	shield.m_PatternId = (rand() / (RAND_MAX / m_PatternTextures.size()));
+	shield.m_PatternId = rand() % m_PatternTextures.size();
 	return shield;
 }
 

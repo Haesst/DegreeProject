@@ -13,6 +13,7 @@
 #include "Game/Game.h"
 #include "Game/Player.h"
 #include "Game/Data/Trait.h"
+#include "Game/Data/CharacterConstants.h"
 #include <random>
 #include <math.h>
 
@@ -35,15 +36,52 @@ CharacterManager& CharacterManager::get()
 	return *m_Instance;
 }
 
+CharacterID CharacterManager::getNewCharacterID()
+{
+	return m_CharacterIDs++;
+}
+
+void CharacterManager::setPlayerCharacter(Character& character)
+{
+	ASSERT(m_PlayerCharacter == nullptr, "No multiplayer game yet, only one player controlled character allowed.");
+
+	m_PlayerCharacter = &character;
+	m_PlayerCharacterID = character.m_CharacterID;
+
+	m_Player = new Player(character.m_CharacterID);
+}
+
+void CharacterManager::addNewCharacter(Character& character)
+{
+	m_Characters.push_back(character);
+}
+
+void CharacterManager::createUnlandedCharacters(size_t amount)
+{
+	for (size_t i = 0; i < amount; ++i)
+	{
+		bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
+		Gender gender = male ? Gender::Male : Gender::Female;
+		char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
+		std::vector<unsigned int> regions = std::vector<unsigned int>();
+
+		createCharacterWithRandomBirthday(name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::White, false, 1, 72);
+	}
+}
+
 CharacterID CharacterManager::createCharacterWithRandomBirthday(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge)
 {
-	ASSERT(minAge <= maxAge, "Minimum age can't be less than maximum age");
+	return m_CharacterCreator.createCharacterWithRandomBirthday(m_CharacterPool, characterName, title, gender, ownedRegions, realmName, army, gold, color, playerControlled, minAge, maxAge);
+}
 
-	Character& character = m_CharacterPool.Rent();
+CharacterID CharacterManager::createCharacter(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday)
+{
+	return m_CharacterCreator.createCharacter(m_CharacterPool, characterName, title, gender, ownedRegions, realmName, army, gold, color, playerControlled, birthday);
+}
 
-	character.m_Birthday = Time::m_GameDate.getRandomDate(false, minAge, maxAge);
-
-	return internalCreateCharacter(character, characterName, title, gender, ownedRegions, realmName, army, gold, color, playerControlled);
+CharacterID CharacterManager::createNewChild(CharacterID motherID)
+{
+	return m_CharacterCreator.createNewChild(m_CharacterPool, motherID);
 }
 
 void CharacterManager::loadTraits(const char* path)
@@ -76,72 +114,6 @@ void CharacterManager::loadTraits(const char* path)
 	}
 
 	m_TraitMtx.unlock();
-}
-
-CharacterID CharacterManager::createNewChild(CharacterID motherID)
-{
-	bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
-	Gender gender = male ? Gender::Male : Gender::Female;
-	char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
-	std::vector<unsigned int> regions = std::vector<unsigned int>();
-	CharacterID childID = createCharacter(name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::Black, false, Time::m_GameDate.m_Date);
-	Character& child = getCharacter(childID);
-	Character& mother = getCharacter(motherID);
-	Character& father = getCharacter(mother.m_LastChildFather);
-	child.m_Mother = motherID;
-	child.m_Father = father.m_CharacterID;
-	mother.m_Children.push_back(childID);
-	father.m_Children.push_back(childID);
-
-	for (Trait& trait : mother.m_Traits)
-	{
-		if (trait.m_Inheritable)
-		{
-			bool inherited = chancePerPercent(m_InheritTraitChance);
-
-			if (inherited && !hasTrait(childID, trait))
-			{
-				addTrait(childID, trait);
-			}
-		}
-	}
-
-	for (Trait& trait : father.m_Traits)
-	{
-		if (trait.m_Inheritable)
-		{
-			bool inherited = chancePerPercent(m_InheritTraitChance);
-
-			if (inherited && !hasTrait(childID, trait))
-			{
-				addTrait(childID, trait);
-			}
-		}
-	}
-
-	return childID;
-}
-
-void CharacterManager::createUnlandedCharacters(size_t amount)
-{
-	for (size_t i = 0; i < amount; ++i)
-	{
-		bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
-		Gender gender = male ? Gender::Male : Gender::Female;
-		char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
-		std::vector<unsigned int> regions = std::vector<unsigned int>();
-
-		createCharacterWithRandomBirthday(name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::White, false, 1, 72);
-	}
-}
-
-CharacterID CharacterManager::createCharacter(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday)
-{
-	Character& character = m_CharacterPool.Rent();
-
-	character.m_Birthday = birthday;
-
-	return internalCreateCharacter(character, characterName, title, gender, ownedRegions, realmName, army, gold, color, playerControlled);
 }
 
 void CharacterManager::addTrait(CharacterID ID, Trait trait)
@@ -216,26 +188,26 @@ int CharacterManager::getCharacterOpinion(CharacterID characterID, CharacterID o
 
 	if (character.m_Spouse == otherID)
 	{
-		opinion += m_SpouseOpinion;
+		opinion += CharacterConstants::m_SpouseOpinion;
 	}
 
 	if (character.m_Father == otherID || character.m_Mother == otherID)
 	{
-		opinion += m_ParentOpinion;
+		opinion += CharacterConstants::m_ParentOpinion;
 	}
 
 	for (auto& child : character.m_Children)
 	{
 		if (getCharacter(child).m_CharacterID == otherID)
 		{
-			opinion += m_ChildOpinion;
+			opinion += CharacterConstants::m_ChildOpinion;
 			break;
 		}
 	}
 
 	if (character.m_Father == otherID || character.m_Mother == otherID)
 	{
-		opinion += m_ParentOpinion;
+		opinion += CharacterConstants::m_ParentOpinion;
 	}
 
 	return opinion;
@@ -308,12 +280,6 @@ void CharacterManager::callAllies(CharacterID character, int war)
 	}
 }
 
-//void CharacterManager::onAllianceCreated(CharacterID character, CharacterID other)
-//{
-//	getCharacter(character).m_Allies.push_back(other);
-//	getCharacter(other).m_Allies.push_back(character);
-//}
-
 void CharacterManager::sendAllianceOffer(CharacterID sender, CharacterID reciever)
 {
 	if (getCharacter(sender).m_Dead || getCharacter(reciever).m_Dead)
@@ -329,7 +295,6 @@ void CharacterManager::sendAllianceOffer(CharacterID sender, CharacterID recieve
 	{
 		if (AIManager::get().handleAllianceRequest(sender, reciever))
 		{
-			//onAllianceCreated(sender, reciever);
 			WarManager::get().createAlliance(sender, reciever);
 			if (getCharacter(sender).m_IsPlayerControlled)
 			{
@@ -404,7 +369,7 @@ void CharacterManager::start()
 		}
 	}
 
-	createUnlandedCharacters(m_UnlandedCharactersAtStart);
+	createUnlandedCharacters(CharacterConstants::m_UnlandedCharactersAtStart);
 }
 
 void CharacterManager::update()
@@ -471,7 +436,7 @@ void CharacterManager::tryForPregnancy(Character& character)
 	}
 
 	unsigned int spouseAge = Time::m_GameDate.getAge(spouse.m_Birthday);
-	float spouseFertility = (((spouseAge - m_FertilityBarrenAge) * (m_FertilityBarrenAge - spouseAge) * (spouseAge - m_FertilityBarrenSmoother)) * m_OneOverFertilityCurveSteep) * spouse.m_Fertility;
+	float spouseFertility = (((spouseAge - CharacterConstants::m_FertilityBarrenAge) * (CharacterConstants::m_FertilityBarrenAge - spouseAge) * (spouseAge - CharacterConstants::m_FertilityBarrenSmoother)) * CharacterConstants::m_OneOverFertilityCurveSteep) * spouse.m_Fertility;
 
 	float traitFertility = 0.0f;
 
@@ -513,14 +478,14 @@ void CharacterManager::progressPregnancy(Character& character)
 
 	unsigned int pregnancyDays = Time::m_GameDate.getDaysBetweenDates(character.m_PregnancyDay, Time::m_GameDate.m_Date);
 
-	if (pregnancyDays < m_PregnancyDays - m_MaxPrematureBirth)
+	if (pregnancyDays < CharacterConstants::m_PregnancyDays - CharacterConstants::m_MaxPrematureBirth)
 	{
 		return;
 	}
 
-	bool chance = chancePerPercent(m_BirthChance);
+	bool chance = chancePerPercent(CharacterConstants::m_BirthChance);
 
-	if (chance || pregnancyDays > m_PregnancyDays + m_MaxLateBirth) // Todo: Make this more random
+	if (chance || pregnancyDays > CharacterConstants::m_PregnancyDays + CharacterConstants::m_MaxLateBirth) // Todo: Make this more random
 	{
 		createNewChild(character.m_CharacterID);
 		removeTrait(character.m_CharacterID, getTrait("Pregnant"));
@@ -537,7 +502,7 @@ void CharacterManager::render()
 }
 
 CharacterManager::CharacterManager()
-	: m_CharacterPool(CharacterPool(m_PoolInitSize, m_PoolGrowSize))
+	: m_CharacterPool(CharacterPool(CharacterConstants::m_PoolInitSize, CharacterConstants::m_PoolGrowSize))
 {
 	loadTraits("Assets\\Data\\Traits.json");
 }
@@ -1000,7 +965,7 @@ void CharacterManager::marry(CharacterID character, CharacterID spouse)
 	if (getCharacter(spouse).m_Dead || getCharacter(character).m_Dead
 	 || getCharacter(spouse).m_Spouse != INVALID_CHARACTER_ID || getCharacter(character).m_Spouse != INVALID_CHARACTER_ID
 	 || getCharacter(character).m_Gender == getCharacter(spouse).m_Gender
-	 || Time::m_GameDate.getAge(getCharacter(character).m_Birthday) < m_AgeOfConsent || Time::m_GameDate.getAge(getCharacter(spouse).m_Birthday) < m_AgeOfConsent)
+	 || Time::m_GameDate.getAge(getCharacter(character).m_Birthday) < CharacterConstants::m_AgeOfConsent || Time::m_GameDate.getAge(getCharacter(spouse).m_Birthday) < CharacterConstants::m_AgeOfConsent)
 	{
 		if (getCharacter(character).m_IsPlayerControlled)
 		{
@@ -1029,80 +994,4 @@ void CharacterManager::marry(CharacterID character, CharacterID spouse)
 	{
 		UIManager::get().createUIEventElement(character, spouse, UIType::MarriageRequest);
 	}
-}
-
-CharacterID CharacterManager::internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled)
-{
-	CharacterID id = m_CharacterIDs++;
-
-	character.m_CharacterID = id;
-	character.m_CharacterTitle = title;
-
-	character.m_OwnedRegionIDs = ownedRegions;
-	character.m_KingdomName = realmName;
-
-	//character.m_MaxArmySize = army;
-	character.m_CurrentMaxArmySize = army;
-
-	character.m_Fertility = (rand() % (m_UpperBaseFertility - m_LowerBaseFertility) + m_LowerBaseFertility) * m_OneOverOneHundred;
-	character.m_Gender = gender;
-
-	character.m_CurrentGold = gold;
-
-	character.m_IsPlayerControlled = playerControlled;
-
-	character.m_RegionColor = color;
-
-	character.m_Name = characterName;
-	character.m_UnitEntity = UnitManager::get().addUnit(id, army);
-
-	for (auto& regionid : ownedRegions)
-	{
-		MapRegion& region = Map::get().getRegionById(regionid);
-		character.m_MaxArmySize += region.m_ManPower;
-
-		for (auto& buildingSlot : region.m_BuildingSlots)
-		{
-			if (buildingSlot.m_BuildingId == INVALID_BUILDING_ID)
-			{
-				continue;
-			}
-
-			character.m_MaxArmySize += GameData::m_Buildings[buildingSlot.m_BuildingId].m_ArmyModifier;
-		}
-	}
-
-	m_Characters.push_back(character);
-
-	for (Trait trait : m_Traits)
-	{
-		if (!trait.m_CanSpawnWith)
-		{
-			continue;
-		}
-
-		bool chance = chancePerPercent(m_NewTraitChance);
-
-		if (chance && !hasTrait(id, trait))
-		{
-			addTrait(id, trait);
-		}
-	}
-
-	if (playerControlled)
-	{
-		ASSERT(m_PlayerCharacter == nullptr, "No multiplayer game yet, only one player controlled character allowed.");
-
-		m_PlayerCharacter = &getCharacter(id);
-		m_PlayerCharacterID = id;
-
-		m_Player = new Player(id);
-	}
-
-	else
-	{
-		AIManager::get().initAI(id);
-	}
-
-	return id;
 }

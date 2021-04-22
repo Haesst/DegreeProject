@@ -4,6 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "Game/Systems/Characters/CharacterPool.h"
+#include "Game/Systems/Characters/CharacterCreator.h"
 #include "Game/Data/Character.h"
 #include "Game/Data/Types.h"
 
@@ -38,6 +39,10 @@ public:
 	void marry(CharacterID character, CharacterID spouse);
 
 	static CharacterManager& get();
+
+	CharacterID getNewCharacterID();
+	void setPlayerCharacter(Character& character);
+	void addNewCharacter(Character& character);
 	
 	CharacterID createCharacterWithRandomBirthday(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge);
 	CharacterID createCharacter(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday);
@@ -47,6 +52,7 @@ public:
 	bool hasTrait(CharacterID ID, Trait trait);
 	int getCharacterOpinion(CharacterID character, CharacterID other);
 	Trait getTrait(const char* traitName);
+	std::vector<Trait> getAllTraits() { return m_Traits; }
 
 	bool isAlliedWith(CharacterID character, CharacterID other);
 	void callAllies(CharacterID character, int war);
@@ -61,7 +67,7 @@ public:
 	bool ownsRegion(CharacterID ID, int regionIndex);
 
 private:
-	CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
+	//CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
 
 	void loadTraits(const char* path);
 
@@ -78,33 +84,11 @@ private:
 
 	mutable std::mutex m_TraitMtx;
 	std::vector<Trait> m_Traits;
-	const size_t m_PoolInitSize = 20000;
-	const size_t m_PoolGrowSize = 10000;
-	const size_t m_UnlandedCharactersAtStart = 200;
-
-	const unsigned int m_LowerBaseFertility = 15;
-	const unsigned int m_UpperBaseFertility = 40;
-	const float m_OneOverOneHundred = 1.0f / 100.0f;
-	const unsigned int m_AgeOfConsent = 16;
-	const unsigned int m_FertilityBarrenAge = 60;
-	const unsigned int m_FertilityBarrenSmoother = 59;
-	const unsigned int m_FertilityCurveSteepness = 75000;
-	const unsigned int m_PregnancyDays = 280;
-	const unsigned int m_MaxPrematureBirth = 14;
-	const unsigned int m_MaxLateBirth = 14;
-	const float m_BirthChance = 0.13f;
-	const float m_OneOverFertilityCurveSteep = 1.0f / m_FertilityCurveSteepness;
-
-	const int m_SpouseOpinion = 50;
-	const int m_ParentOpinion = 80;
-	const int m_ChildOpinion = 80;
-
-	const float m_InheritTraitChance = 0.4f;
-	const float m_NewTraitChance = 0.05f;
 
 	Player* m_Player = nullptr;
 	CharacterID m_PlayerCharacterID = INVALID_CHARACTER_ID;
 	Character* m_PlayerCharacter = nullptr;
+	CharacterCreator m_CharacterCreator;
 
 	std::vector<Character> m_Characters;
 	CharacterPool m_CharacterPool;
