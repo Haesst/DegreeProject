@@ -61,6 +61,7 @@ public:
 	void onWarEnded(CharacterID sender, CharacterID reciever);
 	void sendPeaceOffer(CharacterID sender, CharacterID reciever, PeaceType type);
 	void killCharacter(CharacterID characterID);
+	std::vector<CharacterID> getAliveChildren(CharacterID characterID);
 
 	bool chancePerPercent(float weight);
 

@@ -640,6 +640,20 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	}
 }
 
+std::vector<CharacterID> CharacterManager::getAliveChildren(CharacterID characterID)
+{
+	std::vector<CharacterID> returnVector;
+	for (const CharacterID& child : getCharacter(characterID).m_Children)
+	{
+		if (!getCharacter(child).m_Dead)
+		{
+			returnVector.push_back(child);
+		}
+	}
+
+	return returnVector;
+}
+
 void CharacterManager::updateTitleAndUIText(Character& character)
 {
 	bool createNewUI = character.m_CharacterTitle >= Title::Unlanded;
@@ -691,15 +705,16 @@ void CharacterManager::updateTitleAndUIText(Character& character)
 
 void CharacterManager::handleInheritance(Character& character)
 {
-	if (character.m_Children.size() <= 0)
+	std::vector<CharacterID> aliveChildren = getAliveChildren(character.m_CharacterID);
+
+	if (aliveChildren.size() <= 0)
 	{
 		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
 		{
 			Character& newCharacter = getCharacter(m_CharacterCreator.createRandomUnlandedCharacter(m_CharacterPool, CharacterConstants::m_MinAgeNewUnlandedChar, CharacterConstants::m_MaxAgeNewUnlandedChar));
-			addRegion(newCharacter.m_CharacterID, ownedRegionID);
 			newCharacter.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
+			addRegion(newCharacter.m_CharacterID, ownedRegionID);
 			updateTitleAndUIText(newCharacter);
-			Map::get().setRegionColor(ownedRegionID, newCharacter.m_RegionColor);
 			UIManager::get().AdjustOwnership(newCharacter.m_CharacterID, character.m_CharacterID, ownedRegionID);
 		}
 		return;
@@ -708,13 +723,13 @@ void CharacterManager::handleInheritance(Character& character)
 	if (character.m_OwnedRegionIDs.size() > 0)
 	{
 		// Todo: Get alive children instead of children
-		size_t regionsByChild = character.m_OwnedRegionIDs.size() / character.m_Children.size();
-		size_t giveOneMoreToChildren = character.m_OwnedRegionIDs.size() % character.m_Children.size();
-		float goldByChild = character.m_CurrentGold / character.m_Children.size();
+		size_t regionsByChild = character.m_OwnedRegionIDs.size() / aliveChildren.size();
+		size_t giveOneMoreToChildren = character.m_OwnedRegionIDs.size() % aliveChildren.size();
+		float goldByChild = character.m_CurrentGold / aliveChildren.size();
 
 		size_t currentChild = 0;
 		size_t currentChildInheritedRegions = 0;
-		Character* currentChildCharacter = &getCharacter(character.m_Children[currentChild]);
+		Character* currentChildCharacter = &getCharacter(aliveChildren[currentChild]);
 		currentChildCharacter->m_CurrentGold += goldByChild;
 		bool childGotOneMore = false;
 
@@ -738,30 +753,27 @@ void CharacterManager::handleInheritance(Character& character)
 
 		for (size_t i = 0; i < character.m_OwnedRegionIDs.size(); ++i)
 		{
-			currentChildCharacter->m_OwnedRegionIDs.push_back(character.m_OwnedRegionIDs[i]);
+			addRegion(currentChildCharacter->m_CharacterID, character.m_OwnedRegionIDs[i]);
+			ASSERT(Map::get().getRegionById(character.m_OwnedRegionIDs[i]).m_OwnerID == currentChildCharacter->m_CharacterID, "Region owner not updated");
 			currentChildInheritedRegions++;
-
-			if (currentChildCharacter->m_RegionColor == sf::Color::Black)
-			{
-				currentChildCharacter->m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
-			} // Todo: Create character color on birth
-
-			MapRegion& region = Map::get().getRegionById(character.m_OwnedRegionIDs[i]);
-			region.m_OwnerID = currentChildCharacter->m_CharacterID;
-			Map::get().setRegionColor(region.m_RegionId, currentChildCharacter->m_RegionColor);
 
 			if (currentChildInheritedRegions >= regionsByChild && i < character.m_OwnedRegionIDs.size() - 1)
 			{
 				if (giveOneMoreToChildren <= currentChild || childGotOneMore)
 				{
 					updateTitleAndUIText(*currentChildCharacter);
-
 					UIManager::get().AdjustOwnerships(currentChildCharacter->m_CharacterID, character.m_CharacterID, currentChildCharacter->m_OwnedRegionIDs);
 
 					++currentChild;
-					currentChildCharacter = &getCharacter(character.m_Children[currentChild]);
+					currentChildCharacter = &getCharacter(aliveChildren[currentChild]);
 					currentChildInheritedRegions = 0;
 					currentChildCharacter->m_CurrentGold += goldByChild;
+					childGotOneMore = false;
+
+					if (currentChildCharacter->m_RegionColor == sf::Color::Black)
+					{
+						currentChildCharacter->m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
+					} // Todo: Create character color on birth
 				}
 				else
 				{
@@ -771,6 +783,7 @@ void CharacterManager::handleInheritance(Character& character)
 		}
 		
 		updateTitleAndUIText(*currentChildCharacter);
+		UIManager::get().AdjustOwnerships(currentChildCharacter->m_CharacterID, character.m_CharacterID, currentChildCharacter->m_OwnedRegionIDs);
 	}
 
 	character.m_IsPlayerControlled = false;
@@ -838,8 +851,10 @@ void CharacterManager::addRegion(const CharacterID characterId, const unsigned i
 	Character& character = getCharacter(characterId);
 	character.m_OwnedRegionIDs.push_back(regionId);
 
-	MapRegion region = Map::get().getRegionById(regionId);
+	MapRegion& region = Map::get().getRegionById(regionId);
+	Map::get().setRegionColor(regionId, character.m_RegionColor);
 	character.m_MaxArmySize += region.m_ManPower;
+	region.m_OwnerID = characterId;
 
 	for (auto& buildingSlot : region.m_BuildingSlots)
 	{
