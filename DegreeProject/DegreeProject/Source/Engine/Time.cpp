@@ -1,6 +1,8 @@
 #include "Time.h"
 #include "Game/GameDate.h"
 #include "Engine/Window.h"
+#include "Game/UI/UIManager.h"
+#include "Game/UI/PauseWindow.h"
 
 float Time::m_DeltaTime = 0.0f;
 float Time::m_CurrentSpeedMultiplier = 1.0f;
@@ -27,12 +29,14 @@ void Time::updateTime()
 void Time::pauseGame()
 {
 	m_GamePaused = true;
+	UIManager::get().m_PauseWindow->activate();
 }
 
 void Time::unpauseGame()
 {
 	m_DeltaClock.restart().asSeconds();
 	m_GamePaused = false;
+	UIManager::get().m_PauseWindow->deactivate();
 }
 
 void Time::decreaseGameSpeed()

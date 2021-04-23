@@ -8,6 +8,7 @@
 #include "Game/UI/EventWindow.h"
 #include "Game/UI/WarWindow.h"
 #include "Game/UI/WarIcon.h"
+#include "Game/UI/PauseWindow.h"
 #include "Game/Game.h"
 
 UIManager* UIManager::m_Instance = nullptr;
@@ -126,6 +127,11 @@ UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D posit
 			m_MainMenu = new MainMenu(id, font, position, size);
 			break;
 		}
+		case UIType::PauseWindow:
+		{
+			m_PauseWindow = new PauseWindow(id, font, position, size);
+			break;
+		}
 		case UIType::CharacterWindow:
 		{
 			m_CharacterWindow = new CharacterWindow(id, font, position, size);
@@ -163,6 +169,7 @@ UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D posit
 void UIManager::start()
 {
 	ASSERT(m_MainMenu != nullptr, "Main Menu does not exist");
+	ASSERT(m_PauseWindow != nullptr, "Pause Window does not exist");
 	ASSERT(m_CharacterWindow != nullptr, "Character Window does not exist");
 	ASSERT(m_RegionWindow != nullptr, "Region Window does not exist");
 	ASSERT(m_WarWindow != nullptr, "War Window does not exist");
@@ -264,6 +271,7 @@ void UIManager::render()
 	{
 		eventWindowPair.second->render();
 	}
+	m_PauseWindow->render();
 	m_MainMenu->render();
 }
 

@@ -16,6 +16,7 @@ class EventWindow;
 class WarWindow;
 class WarIcon;
 class MainMenu;
+class PauseWindow;
 
 class UIManager
 {
@@ -38,6 +39,7 @@ public:
 	UIText& getUIText(UIID ID);
 	CharacterWindow* m_CharacterWindow = nullptr;
 	RegionWindow* m_RegionWindow = nullptr;
+	PauseWindow* m_PauseWindow = nullptr;
 	WarWindow* m_WarWindow = nullptr;
 	MainMenu* m_MainMenu = nullptr;
 	StatBar* m_StatBar = nullptr;

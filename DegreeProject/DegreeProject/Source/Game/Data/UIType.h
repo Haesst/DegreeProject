@@ -3,6 +3,7 @@
 enum class UIType
 {
 	MainMenu,
+	PauseWindow,
 	CharacterWindow,
 	RegionWindow,
 	WarWindow,
