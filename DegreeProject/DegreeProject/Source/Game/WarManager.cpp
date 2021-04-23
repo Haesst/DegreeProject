@@ -441,31 +441,29 @@ bool WarManager::isAllyOf(int warHandle, CharacterID potentialAlly, CharacterID 
 
 	if (isAttacker(war->getHandle(), allyOf))
 	{
-		unsigned int index = 0;
-
 		for (auto& attacker : war->m_Attackers)
 		{
-			if (attacker == potentialAlly)
+			for (auto& attackerAlly : getAlliances(allyOf))
 			{
-				return true;
+				if (attackerAlly == potentialAlly)
+				{
+					return true;
+				}
 			}
-
-			index++;
 		}
 	}
 
 	else if (isDefender(war->getHandle(), allyOf))
 	{
-		unsigned int index = 0;
-
 		for (auto& defender : war->m_Defenders)
 		{
-			if (defender == potentialAlly)
+			for (auto& defenderAlly : getAlliances(allyOf))
 			{
-				return true;
+				if (defenderAlly == potentialAlly)
+				{
+					return true;
+				}
 			}
-
-			index++;
 		}
 	}
 

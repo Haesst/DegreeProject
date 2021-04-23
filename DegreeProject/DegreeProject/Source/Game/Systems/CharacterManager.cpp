@@ -247,24 +247,31 @@ void CharacterManager::callAllies(CharacterID character, int war)
 			{
 				if (character == warManager.getAttacker(war))
 				{
+					for (auto& defender : warManager.getWar(war)->m_Defenders)
+					{
+						if (warManager.isAllyOf(war, ID, defender))
+						{
+							warManager.breakAlliance(ID, defender);
+						}
+					}
+
 					aiManager->getWarmindOfCharacter(ID).m_Active = true;
 					warManager.addAttacker(war, ID);
 				}
-	
+
 				else if (character == warManager.getDefender(war))
 				{
+					for (auto& attacker : warManager.getWar(war)->m_Attackers)
+					{
+						if (warManager.isAllyOf(war, ID, attacker))
+						{
+							warManager.breakAlliance(ID, attacker);
+						}
+					}
+
 					aiManager->getWarmindOfCharacter(ID).m_Active = true;
 					warManager.addDefender(war, ID);
 				}
-
-				if (character == m_PlayerCharacterID)
-				{
-					UIManager::get().createUIEventElement(ID, character, UIType::CallToArmsAccepted);
-				}
-			}
-			else if (character == m_PlayerCharacterID)
-			{
-				UIManager::get().createUIEventElement(ID, character, UIType::CallToArmsRejected);
 			}
 		}
 	
