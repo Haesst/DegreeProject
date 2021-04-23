@@ -29,10 +29,10 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
 	{
 		sf::RectangleShape buttonShape;
-		setShape(buttonShape, m_TransparentColor, m_DeclareWarColor, m_OutlineThickness, { m_SizeX * 0.2f, m_SizeY * 0.05f }, { m_SizeX * 0.775f, m_SizeY * (0.52f + 0.1f * index) });
+		setShape(buttonShape, m_TransparentColor, m_DeclareWarColor, m_OutlineThickness, { m_SizeX * 0.2f, m_SizeY * 0.05f }, { m_SizeX - m_SpriteSize * 5.0f, m_SpriteSize * 3.0f + m_SpriteSize * 3.0f * index });
 
 		sf::Text buttonText;
-		setText(buttonText, m_Font, m_CharacterSize, m_DeclareWarColor, { m_SizeX * 0.785f, m_SizeY * (0.528f + 0.1f * index) }, m_ButtonStrings[index]);
+		setText(buttonText, m_Font, m_CharacterSize, m_DeclareWarColor, { buttonShape.getPosition().x + m_SizeX * 0.01f, buttonShape.getPosition().y + m_SizeY * 0.008f }, m_ButtonStrings[index]);
 		if (index != 0 && index != m_NumberOfButtons - 1)
 		{
 			buttonShape.setOutlineColor(m_MakePeaceColor);
@@ -52,11 +52,11 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	for (unsigned int index = 0; index < m_NumberOfRelations; index++)
 	{
 		sf::Sprite relationSprite;
-		setSprite(relationSprite, m_DiplomacyTextures[index], { m_SizeX * 0.1f + (m_SizeX * 0.1f * index), m_SizeY * 0.5f });
+		setSprite(relationSprite, m_DiplomacyTextures[index], { m_SizeX * 0.1f + (m_SizeX * 0.1f * index), m_SpriteSize * 10 });
 		m_DiplomacySprites.push_back(relationSprite);
 
 		sf::Text relationText;
-		setText(relationText, m_Font, m_CharacterSize, m_OwnerColor, { relationSprite.getPosition().x, relationSprite.getPosition().y - m_SpriteSize }, m_DiplomacyStrings[index]);
+		setText(relationText, m_Font, m_CharacterSize, m_OwnerColor, { relationSprite.getPosition().x, relationSprite.getPosition().y + m_SpriteSize }, m_DiplomacyStrings[index]);
 		m_DiplomacyTexts.push_back(relationText);
 	}
 
@@ -71,7 +71,7 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	for (unsigned int index = 0; index < m_NumberOfTraits; index++)
 	{
 		sf::Sprite traitSprite;
-		m_TraitPositions.push_back({ m_SpriteSize * index + m_SizeX * 0.2f, m_SizeY * 0.42f });
+		m_TraitPositions.push_back({ m_SpriteSize * index + m_SizeX * 0.1f, m_SpriteSize * 8 });
 		setSprite(traitSprite, m_TraitTextures[index], m_TraitPositions[index]);
 		m_TraitSprites.push_back(traitSprite);
 
@@ -83,42 +83,42 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 		m_TraitsShowText.push_back(false);
 	}
 
-	setText(m_RealmNameText, m_Font, m_CharacterSize, m_OwnerColor, { m_SizeX * 0.1f, m_SizeY * 0.1f });
+	setText(m_RealmNameText, m_Font, m_CharacterSize, m_OwnerColor, { m_SizeX * 0.25f, m_SpriteSize * 2 });
 
 	m_MaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/MalePortrait.jpg");
 	m_FemaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/FemalePortrait.jpg");
-	setText(m_CharacterNameText, m_Font, m_CharacterSize, m_OwnerColor, { m_SizeX * 0.25f, m_SizeY * 0.025f });
+	setText(m_CharacterNameText, m_Font, m_CharacterSize * 1.5f, m_OwnerColor, { m_SizeX * 0.25f, m_SpriteSize * 0.75f });
 
 	m_MaleChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyMale.png");
 	m_FemaleChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyFemale.png");
 
 	m_GoldTexture = assetHandler.getTextureAtPath("Assets/Graphics/Coins.png");
-	m_GoldPosition = { m_SizeX * 0.1f, m_SizeY * 0.32f };
-	setText(m_GoldText, m_Font, m_CharacterSize, m_OwnerColor, { m_SizeX * 0.2f, m_SizeY * 0.3f });
+	m_GoldPosition = { m_SizeX * 0.1f, m_SpriteSize * 4 };
+	setText(m_GoldText, m_Font, m_CharacterSize, m_OwnerColor, { m_GoldPosition.x + m_SpriteSize * 1.5f, m_GoldPosition.y });
 	setSprite(m_GoldSprite, m_GoldTexture, m_GoldPosition);
 
 	m_ArmyTexture = assetHandler.getTextureAtPath("Assets/Graphics/soldier unit.png");
-	m_ArmyPosition = { m_SizeX * 0.1f, m_SizeY * 0.22f };
-	setText(m_ArmyText, m_Font, m_CharacterSize, m_OwnerColor, { m_SizeX * 0.2f, m_SizeY * 0.2f });
+	m_ArmyPosition = { m_SizeX * 0.1f, m_SpriteSize * 6 };
+	setText(m_ArmyText, m_Font, m_CharacterSize, m_OwnerColor, { m_ArmyPosition.x + m_SpriteSize * 1.5f, m_ArmyPosition.y });
 	setSprite(m_ArmySprite, m_ArmyTexture, m_ArmyPosition);
 
 	m_AgeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Age.png");
-	m_AgePosition = { m_SizeX * 0.1f, m_SizeY * 0.42f };
-	setText(m_CharacterAgeText, m_Font, m_CharacterSize, m_OwnerColor, { m_SizeX * 0.2f, m_SizeY * 0.4f });
+	m_AgePosition = { m_SizeX - m_SpriteSize * 3, m_SpriteSize };
+	setText(m_CharacterAgeText, m_Font, m_CharacterSize, m_OwnerColor, { m_AgePosition.x + m_SpriteSize * 1.5f, m_AgePosition.y });
 	setSprite(m_AgeSprite, m_AgeTexture, m_AgePosition);
 
 	m_DeadTexture = assetHandler.getTextureAtPath("Assets/Graphics/Dead.png");
-	m_DeadPosition = { m_SizeX * 0.025f, m_SizeY * 0.025f };
+	m_DeadPosition = { m_AgePosition.x - m_SpriteSize * 1.5f, m_AgePosition.y };
 	setSprite(m_DeadSprite, m_DeadTexture, m_DeadPosition);
 
 	m_FatherTexture = assetHandler.getTextureAtPath("Assets/Graphics/Father.png");
-	m_FatherPosition = { m_SizeX * 0.5f, m_SizeY * 0.55f };
+	m_FatherPosition = { m_SizeX * 0.5f, m_SpriteSize * 12 };
 	setShape(m_FatherShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, m_FatherPosition);
 	setText(m_FatherName, m_Font, m_CharacterSize, m_OwnerColor, { m_FatherPosition.x + m_SizeX * 0.1f, m_FatherPosition.y });
 	setSprite(m_FatherSprite, m_FatherTexture, m_FatherPosition);
 
 	m_MotherTexture = assetHandler.getTextureAtPath("Assets/Graphics/Mother.png");
-	m_MotherPosition = { m_SizeX * 0.5f, m_SizeY * 0.60f };
+	m_MotherPosition = { m_SizeX * 0.5f, m_SpriteSize * 13 + m_OutlineThickness * 1.5f };
 	setShape(m_MotherShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, m_MotherPosition);
 	setText(m_MotherName, m_Font, m_CharacterSize, m_OwnerColor, { m_MotherPosition.x + m_SizeX * 0.1f, m_MotherPosition.y });
 	setSprite(m_MotherSprite, m_MotherTexture, m_MotherPosition);
@@ -254,7 +254,7 @@ void CharacterWindow::render()
 
 		for (unsigned int index = 0; index < m_OwnedRegionShields.size(); index++)
 		{
-			HeraldicShieldManager::renderShield(m_OwnedRegionShields[index], { m_OwnedRegionsTexts[index].getPosition().x, m_OwnedRegionsTexts[index].getPosition().y - m_SpriteSize });
+			HeraldicShieldManager::renderShield(m_OwnedRegionShields[index], { m_OwnedRegionShapes[index].getPosition() });
 			if (m_OwnedRegionsShowInfo.size() > 0 && m_OwnedRegionsShowInfo[index])
 			{
 				m_Window->draw(m_OwnedRegionsTexts[index]);
@@ -434,7 +434,7 @@ void CharacterWindow::updateChildren()
 		Character& child = characterManager.getCharacter(m_CurrentCharacter->m_Children[index]);
 
 		sf::RectangleShape childShape;
-		setShape(childShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.2f, m_SizeY * 0.05f * index + m_SizeY * 0.55f });
+		setShape(childShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.2f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
 
 		sf::Text childNameText;
 		setText(childNameText, m_Font, m_CharacterSize, m_OwnerColor, { childShape.getPosition().x, childShape.getPosition().y + m_SpriteSize }, child.m_Name);
@@ -483,7 +483,7 @@ void CharacterWindow::updateAllies()
 		Character& ally = characterManager.getCharacter(m_AlliesIDs[index]);
 
 		sf::RectangleShape allyShape;
-		setShape(allyShape, m_TransparentColor, ally.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.3f, m_SizeY * 0.05f * index + m_SizeY * 0.55f });
+		setShape(allyShape, m_TransparentColor, ally.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.3f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
 
 		sf::Sprite allySprite;
 		if (ally.m_Gender == Gender::Male)
@@ -522,7 +522,7 @@ void CharacterWindow::updateWars()
 		Character& opponent = characterManager.getCharacter(opponentID);
 
 		sf::RectangleShape warShape;
-		setShape(warShape, m_TransparentColor, opponent.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.4f, m_SizeY * 0.05f * index + m_SizeY * 0.55f });
+		setShape(warShape, m_TransparentColor, opponent.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.4f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
 
 		sf::Sprite opponetSprite;
 		if (opponent.m_Gender == Gender::Male)
@@ -589,10 +589,14 @@ void CharacterWindow::updateInfo()
 		unsigned int ownedRegionSize = m_CurrentCharacter->m_OwnedRegionIDs.size();
 		for (unsigned int index = 0; index < ownedRegionSize; index++)
 		{
+			sf::RectangleShape regionShape;
+			setShape(regionShape, m_TransparentColor, m_TransparentColor, 0.0f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.1f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
+
 			MapRegion& mapRegion = map.getRegionById(m_CurrentCharacter->m_OwnedRegionIDs[index]);
 			sf::Text regionNameText;
-			setText(regionNameText, m_Font, m_CharacterSize, m_OwnerColor, { m_SizeX * 0.1f, m_SizeY * 0.05f * index + m_SizeY * 0.55f + m_SpriteSize }, mapRegion.m_RegionName.c_str());
+			setText(regionNameText, m_Font, m_CharacterSize, m_OwnerColor, { regionShape.getPosition().x, regionShape.getPosition().y + m_SpriteSize }, mapRegion.m_RegionName.c_str());
 
+			m_OwnedRegionShapes.push_back(regionShape);
 			m_OwnedRegionsTexts.push_back(regionNameText);
 			m_OwnedRegionShields.push_back(mapRegion.m_HeraldicShield);
 		}
@@ -608,7 +612,7 @@ void CharacterWindow::updateInfo()
 			{
 				stream << m_MaleTitles[(unsigned int)m_CurrentCharacter->m_CharacterTitle] << m_CurrentCharacter->m_Name;
 			}
-			setSprite(m_CharacterSprite, m_MaleCharacterTexture, { m_SizeX * 0.1f, m_SizeY * 0.025f }, m_SpriteSize * 2);
+			setSprite(m_CharacterSprite, m_MaleCharacterTexture, { m_SizeX * 0.1f, m_SpriteSize }, m_SpriteSize * 2);
 		}
 		else
 		{
@@ -620,7 +624,7 @@ void CharacterWindow::updateInfo()
 			{
 				stream << m_FemaleTitles[(unsigned int)m_CurrentCharacter->m_CharacterTitle] << m_CurrentCharacter->m_Name;
 			}
-			setSprite(m_CharacterSprite, m_FemaleCharacterTexture, { m_SizeX * 0.1f, m_SizeY * 0.025f }, m_SpriteSize * 2);
+			setSprite(m_CharacterSprite, m_FemaleCharacterTexture, { m_SizeX * 0.1f, m_SpriteSize }, m_SpriteSize * 2);
 		}
 		m_CharacterNameText.setString(stream.str());
 		m_CharacterNameText.setFillColor(m_OwnerColor);

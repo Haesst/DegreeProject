@@ -57,7 +57,7 @@ void RegionWindow::start()
 	setShape(m_RaiseArmyShape, m_FillColor, m_OwnerColor, m_OutlineThickness * 0.5f, { (float)m_SpriteSize, (float)m_SpriteSize }, { m_IconSlotPositionX, m_IconSlotPositionY - m_IconSlotPositionOffset });
 	setSprite(m_RaiseArmySprite, m_RaiseArmyTexture, m_RaiseArmyShape.getPosition());
 
-	setText(m_RegionNameText, m_Font, m_CharacterSize, m_OwnerColor, { positionX + m_SizeX * 0.1f, positionY });
+	setText(m_RegionNameText, m_Font, m_CharacterSize * 2, m_OwnerColor, { positionX + m_SizeX * 0.1f, positionY });
 	setText(m_KingdomNameText, m_Font, m_CharacterSize, m_OwnerColor, { positionX + m_SizeX * 0.1f, positionY + m_SizeY * 0.1f });
 
 	setText(m_RegionTaxText, m_Font, m_CharacterSize, m_OwnerColor, { positionX + m_SpriteSize * 1.5f, positionY + m_SizeY * 0.5f });
