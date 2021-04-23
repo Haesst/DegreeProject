@@ -87,7 +87,7 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 
 	m_MaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/MalePortrait.jpg");
 	m_FemaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/FemalePortrait.jpg");
-	setText(m_CharacterNameText, m_Font, m_CharacterSize * 1.5f, m_OwnerColor, { m_SizeX * 0.25f, m_SpriteSize * 0.75f });
+	setText(m_CharacterNameText, m_Font, (unsigned int)(m_CharacterSize * 1.5f), m_OwnerColor, { m_SizeX * 0.25f, m_SpriteSize * 0.75f });
 
 	m_MaleChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyMale.png");
 	m_FemaleChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyFemale.png");

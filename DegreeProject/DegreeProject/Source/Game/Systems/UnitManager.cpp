@@ -814,6 +814,8 @@ void UnitManager::updateSprite(Unit& unit)
 
 	sf::FloatRect localSize = unit.m_Sprite.getLocalBounds();
 
+	unit.m_Sprite.setTextureRect(unit.m_Direction.x > 0 ? sf::IntRect(localSize.width, 0, -localSize.width, localSize.width) : sf::IntRect(0, 0, localSize.width, localSize.width));
+
 	unit.m_Sprite.setScale(
 		32 / localSize.width, // Todo: Remove magic number
 		32 / localSize.height

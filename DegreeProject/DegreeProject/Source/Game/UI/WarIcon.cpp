@@ -53,11 +53,20 @@ void WarIcon::onDayChange()
 	}
 }
 
+void WarIcon::updatePosition(unsigned int index)
+{
+	m_Index = index;
+	sf::Vector2f warIconPosition = { m_Window->getSize().x - 600 - m_SpriteSize - m_OutlineThickness * 5 - (m_SpriteSize + m_OutlineThickness * 4) * m_Index, m_Window->getSize().y - m_SpriteSize - m_OutlineThickness * 2 };
+	m_WarIconShape.setPosition(warIconPosition);
+	m_WarIconSprite.setPosition(warIconPosition);
+	m_WarscoreText.setPosition({ warIconPosition.x, warIconPosition.y + m_SizeY * 0.5f });
+}
+
 void WarIcon::setWarscore(CharacterID& characterID, std::stringstream& stream)
 {
 	WarManager& warManager = WarManager::get();
 
-	int warscore = warManager.getWarscore(m_War->getHandle(), characterID);
+	int warscore = warManager.getWarscore(m_WarHandle, characterID);
 	if (warscore > 100)
 	{
 		warscore = 100;
@@ -80,8 +89,8 @@ void WarIcon::setWarscore(CharacterID& characterID, std::stringstream& stream)
 
 void WarIcon::updateInfo()
 {
-	m_War = WarManager::get().getWarAgainst(m_AttackerID, m_DefenderID);
-	if (m_War != nullptr)
+	m_WarHandle = WarManager::get().getWarHandleAgainst(m_AttackerID, m_DefenderID);
+	if (m_WarHandle != -1)
 	{
 		std::stringstream stream;
 		CharacterID playerCharacterID = CharacterManager::get().getPlayerCharacterID();
@@ -102,7 +111,7 @@ void WarIcon::updateInfo()
 		stream.str(std::string());
 		stream.clear();
 	}
-	else if(m_DaySubscriptionHandle > 0)
+	else if (m_DaySubscriptionHandle != -1)
 	{
 		deactivate();
 	}
