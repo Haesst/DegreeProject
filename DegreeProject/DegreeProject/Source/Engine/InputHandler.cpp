@@ -6,7 +6,7 @@
 
 static float mouseScrollDirection = 0.0f;
 static Vector2DInt viewMoveDirection = Vector2DInt();
-static const float MAX_ZOOM = 1500.0f;
+static const float MAX_ZOOM = 5000.0f;
 static const float MIN_ZOOM = 100.0f;
 static const float MOVE_SPEED = 25.0f;
 static const float ZOOM_SPEED = 0.1f;
