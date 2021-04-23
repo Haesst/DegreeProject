@@ -6,6 +6,7 @@
 #include "Game/Data/Unit.h"
 #include "Game/Map/Map.h"
 #include "Game/UI/UIManager.h"
+#include "Game/Systems/UnitManager.h"
 
 WarManager* WarManager::m_Instance = nullptr;
 
@@ -111,10 +112,10 @@ bool WarManager::atWarWith(CharacterID character, CharacterID enemy)
 	return false;
 }
 
-
-
 void WarManager::invalidateWarsForRegionOnWonWar(War& wonWar)
 {
+	UnitManager& unitManager = UnitManager::get();
+
 	for (auto& war : m_Wars)
 	{
 		if (war.second.m_WargoalRegion == wonWar.m_WargoalRegion)
@@ -122,6 +123,16 @@ void WarManager::invalidateWarsForRegionOnWonWar(War& wonWar)
 			if (war.second.getHandle() == wonWar.getHandle())
 			{
 				continue;
+			}
+
+			for (auto& attacker : war.second.m_Attackers)
+			{
+				unitManager.dismissUnit(unitManager.getUnitOfCharacter(attacker).m_UnitID);
+			}
+
+			for (auto& defender : war.second.m_Defenders)
+			{
+				unitManager.dismissUnit(unitManager.getUnitOfCharacter(defender).m_UnitID);
 			}
 
 			endWar(war.second.getHandle(), INVALID_CHARACTER_ID);

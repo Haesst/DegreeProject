@@ -345,6 +345,11 @@ void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& chara
 			warmind.m_PrioritizedWarHandle = -1;
 		}
 
+		if (unitManager.getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
+		{
+			unitManager.dismissUnit(unitManager.getUnitOfCharacter(warmind.m_OwnerID).m_UnitID);
+		}
+
 		return;
 	}
 
@@ -354,6 +359,12 @@ void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& chara
 
 		if (warmind.m_PrioritizedWarHandle == -1)
 		{
+			if (unitManager.getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
+			{
+				unitManager.dismissUnit(unitManager.getUnitOfCharacter(warmind.m_OwnerID).m_UnitID);
+				warmind.m_Active = false;
+			}
+
 			return;
 		}
 	}
@@ -387,6 +398,12 @@ void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& chara
 				if (warmind.m_PrioritizedWarHandle != -1 && warManager.isValidWar(warmind.m_PrioritizedWarHandle))
 				{
 					considerOrders(warmind, m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID), warManager.getOpposingForce(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID));
+				}
+
+				else
+				{
+					warmind.m_Active = false;
+					unitManager.dismissUnit(unitManager.getUnitOfCharacter(warmind.m_OwnerID).m_Owner);
 				}
 			}
 		}
@@ -735,6 +752,12 @@ void AIManager::warAction(AIData& data)
 		return;
 	}
 
+	if (!isValidWarmind(getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
+	{
+		getWarmindOfCharacter(data.m_OwnerID).m_Opponent = INVALID_CHARACTER_ID;
+		return;
+	}
+
 	int warHandle = WarManager::get().createWar(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent, getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
 
 	characterManager.callAllies(data.m_OwnerID, warHandle);
@@ -748,6 +771,7 @@ void AIManager::warAction(AIData& data)
 		getWarmindOfCharacter(warmind.m_Opponent).m_Active = true;
 		getWarmindOfCharacter(warmind.m_Opponent).m_Opponent = warmind.m_OwnerID;
 	}
+
 	else
 	{
 		UIManager::get().createUIEventElement(warmind.m_OwnerID, characterManager.getPlayerCharacterID(), UIType::WarDeclaration);
@@ -886,6 +910,24 @@ bool AIManager::weightedRandom(float weight)
 	float f = rand() * 1.0f / RAND_MAX;
 	float vv = weight / 10.0f;
 	return f < vv;
+}
+
+bool AIManager::isValidWarmind(CharacterID ID)
+{
+	if (CharacterManager::get().getCharacter(ID).m_Dead)
+	{
+		return false;
+	}
+
+	for (auto& warmind : m_Warminds)
+	{
+		if (warmind.m_OwnerID == ID)
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
 
 int AIManager::considerPrioritizedWar(WarmindComponent& warmind)

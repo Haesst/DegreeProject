@@ -72,7 +72,7 @@ private:
 	void handleHighestEvaluation(AIData& data);
 
 	bool weightedRandom(float weight);
-
+	bool isValidWarmind(CharacterID ID);
 
 
 private:
