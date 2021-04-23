@@ -739,23 +739,28 @@ void CharacterManager::handleInheritance(Character& character)
 		size_t giveOneMoreToChildren = character.m_OwnedRegionIDs.size() % aliveChildren.size();
 		float goldByChild = character.m_CurrentGold / aliveChildren.size();
 
+		if (aliveChildren.size() > character.m_OwnedRegionIDs.size())
+		{
+			regionsByChild = 1;
+			giveOneMoreToChildren = 0;
+		}
+
 		size_t currentChild = 0;
 		size_t currentChildInheritedRegions = 0;
 		Character* currentChildCharacter = &getCharacter(aliveChildren[currentChild]);
 		currentChildCharacter->m_CurrentGold += goldByChild;
 		bool childGotOneMore = false;
+		if (currentChildCharacter->m_RegionColor == sf::Color::Black)
+		{
+			currentChildCharacter->m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
+		} // Todo: Create character color on birth
 
 		if (!currentChildCharacter->m_IsPlayerControlled)
 		{
 			currentChildCharacter->m_IsPlayerControlled = character.m_IsPlayerControlled;
 		}
-		if (currentChildCharacter->m_IsPlayerControlled)
+		if (currentChildCharacter->m_IsPlayerControlled && m_PlayerCharacterID != currentChildCharacter->m_CharacterID)
 		{
-			if (currentChildCharacter->m_RegionColor == sf::Color::Black)
-			{
-				currentChildCharacter->m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
-			} // Todo: Create character color on birth
-
 			m_PlayerCharacterID = currentChildCharacter->m_CharacterID;
 			m_PlayerCharacter = currentChildCharacter;
 			AIManager::get().deactivateAI(currentChildCharacter->m_CharacterID);
@@ -766,7 +771,6 @@ void CharacterManager::handleInheritance(Character& character)
 		for (size_t i = 0; i < character.m_OwnedRegionIDs.size(); ++i)
 		{
 			addRegion(currentChildCharacter->m_CharacterID, character.m_OwnedRegionIDs[i]);
-			ASSERT(Map::get().getRegionById(character.m_OwnedRegionIDs[i]).m_OwnerID == currentChildCharacter->m_CharacterID, "Region owner not updated");
 			currentChildInheritedRegions++;
 
 			if (currentChildInheritedRegions >= regionsByChild && i < character.m_OwnedRegionIDs.size() - 1)
