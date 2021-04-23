@@ -111,6 +111,8 @@ bool WarManager::atWarWith(CharacterID character, CharacterID enemy)
 	return false;
 }
 
+
+
 void WarManager::invalidateWarsForRegionOnWonWar(War& wonWar)
 {
 	for (auto& war : m_Wars)
@@ -135,6 +137,19 @@ void WarManager::invalidateWarsForRegion(int regionID)
 		{
 			endWar(war.second.getHandle(), INVALID_CHARACTER_ID);
 		}
+	}
+}
+
+void WarManager::invalidateWar(int warHandle)
+{
+	endWar(warHandle, INVALID_CHARACTER_ID);
+}
+
+void WarManager::InvalidateWarsOfCharacter(CharacterID ID)
+{
+	for (auto& war : getWarHandlesOfCharacter(ID))
+	{
+		endWar(war, INVALID_CHARACTER_ID);
 	}
 }
 

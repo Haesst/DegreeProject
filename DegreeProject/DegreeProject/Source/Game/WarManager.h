@@ -38,6 +38,10 @@ public:
 
 	void invalidateWarsForRegionOnWonWar(War& wonWar);
 	void invalidateWarsForRegion(int regionID);
+
+	void invalidateWar(int warHandle);
+	void InvalidateWarsOfCharacter(CharacterID ID);
+
 	void update();
 	void addWarscore(int warHandle, CharacterID ID, int warScore);
 	void addAttacker(int warHandle, CharacterID character);

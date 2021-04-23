@@ -595,6 +595,11 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	{
 		War* currentWar = warManager.getWar(war);
 
+		if (warManager.isAttacker(war, characterID))
+		{
+			warManager.invalidateWar(war);
+		}
+
 		if (warManager.isAllyOf(war, characterID, warManager.getAttacker(war)))
 		{
 			warManager.removeAllyFromWar(characterID, currentWar->getHandle());
