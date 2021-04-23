@@ -122,6 +122,7 @@ struct Map
 	void startConstructionOfBuilding(int buildingId, int buildSlot, int regionId);
 
 	int getRegionPositionFromMapCharacter(const char& c);
+	std::vector<Vector2DInt> getWaterTiles();
 
 	// From mapinfo
 	MapRegion& getRegionById(unsigned int regionId);

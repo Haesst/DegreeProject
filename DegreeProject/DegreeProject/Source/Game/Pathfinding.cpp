@@ -64,7 +64,6 @@ std::vector<Vector2DInt> Pathfinding::findPath(Vector2DInt start, Vector2DInt en
 	auto t2 = std::chrono::high_resolution_clock::now();
 
 	std::chrono::duration<double, std::milli> ms_double = t2 - t1;
-
 	LOG_INFO("Pathfinder elapsed time: {0}", ms_double.count());
 
 	return path;
@@ -84,6 +83,8 @@ std::vector<Vector2DInt> Pathfinding::findDeterministicPath(Vector2DInt start, V
 
 	std::vector<Node> currentNodes = std::vector<Node>(mapSize);
 	std::vector<Node> parents = std::vector<Node>(mapSize);
+	std::vector<bool> walkable = std::vector<bool>(mapSize);
+	std::vector<bool> water = std::vector<bool>(mapSize);
 
 	std::priority_queue<Node, std::vector<Node>, decltype(cmp)> openList(cmp);
 
@@ -97,6 +98,16 @@ std::vector<Vector2DInt> Pathfinding::findDeterministicPath(Vector2DInt start, V
 	currentNodes[end.x + end.y * m_MapWidth].x = end.x;
 	currentNodes[end.x + end.y * m_MapWidth].y = end.y;
 	openList.push(currentNodes[end.x + end.y * m_MapWidth]);
+
+	for (auto& sd : Map::get().m_MapSquareData)
+	{
+		walkable[sd.m_Position.x + sd.m_Position.y * m_MapWidth] = true;
+	}
+	for (auto& waterTile : Map::get().getWaterTiles())
+	{
+		walkable[waterTile.x + waterTile.y * m_MapWidth] = true;
+		water[waterTile.x + waterTile.y * m_MapWidth] = true;
+	}
 
 	Node startNode;
 
@@ -148,6 +159,11 @@ std::vector<Vector2DInt> Pathfinding::findDeterministicPath(Vector2DInt start, V
 
 			float possibleLowerCost = current.m_FCost + calculateHCost({ current.x, current.y }, { neighbour.x, neighbour.y });
 
+			if (water[neighbourIndex])
+			{
+				neighbour.m_GCost += 10.0f;
+			}
+
 			if (possibleLowerCost < currentNodes[indexOf(neighbour)].m_FCost)
 			{
 				currentNodes[indexOf(neighbour)].m_FCost = possibleLowerCost;
@@ -185,6 +201,8 @@ std::vector<Vector2DInt> Pathfinding::findPerformantPath(Vector2DInt start, Vect
 	size_t mapSize = m_MapWidth * m_MapHeight;
 
 	std::vector<int> visited = std::vector<int>(mapSize);
+	std::vector<bool> walkable = std::vector<bool>(mapSize);
+	std::vector<bool> water = std::vector<bool>(mapSize);
 	std::vector<Node> parents = std::vector<Node>(mapSize);
 
 	std::priority_queue<Node, std::vector<Node>, decltype(cmp)> openList(cmp);
@@ -207,6 +225,16 @@ std::vector<Vector2DInt> Pathfinding::findPerformantPath(Vector2DInt start, Vect
 	const int dirx[] = { 0, 0, -1, 1, -1, 1, -1, 1 };
 	const int diry[] = { -1, 1, 0, 0, 1, -1, -1, 1 };
 
+	for (auto& sd : Map::get().m_MapSquareData)
+	{
+		walkable[sd.m_Position.x + sd.m_Position.y * m_MapWidth] = true;
+	}
+	for (auto& waterTile : Map::get().getWaterTiles())
+	{
+		walkable[waterTile.x + waterTile.y * m_MapWidth] = true;
+		water[waterTile.x + waterTile.y * m_MapWidth] = true;
+	}
+
 	while (!openList.empty())
 	{
 		if (openList.empty())
@@ -227,12 +255,9 @@ std::vector<Vector2DInt> Pathfinding::findPerformantPath(Vector2DInt start, Vect
 			const int x = current.x + dirx[i];
 			const int y = current.y + diry[i];
 
-			if (!Map::get().mapSquareDataContainsKey({ x,  y }))
+			if (!walkable[x + y * m_MapWidth])
 			{
-				if (!Map::get().isWater({ x, y }))
-				{
-					continue;
-				}
+				continue;
 			}
 
 			Node neighbour;
@@ -249,13 +274,14 @@ std::vector<Vector2DInt> Pathfinding::findPerformantPath(Vector2DInt start, Vect
 			neighbour.m_FCost = current.m_FCost + calculateHCost({ current.x, current.y }, { neighbour.x, neighbour.y });
 			neighbour.m_GCost = current.m_FCost + calculateHCost({ neighbour.x, neighbour.y }, { goalNode.x, goalNode.y });
 
-			if (Map::get().isWater({neighbour.x, neighbour.y}))
+			if (water[neighbourIndex])
 			{
 				neighbour.m_GCost += 10.0f;
 			}
 
 			visited[neighbourIndex] = 1;
 			parents[neighbourIndex] = current;
+
 			openList.push(neighbour);
 		}
 	}

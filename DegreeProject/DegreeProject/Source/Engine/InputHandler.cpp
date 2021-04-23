@@ -17,9 +17,9 @@ bool InputHandler::m_Inputs[Inputs::PlayerUnitSelected + 1];
 
 sf::View& InputHandler::m_UIView = sf::View();
 
-float InputHandler::maxCenterXPosition = 2610.0f;
+float InputHandler::maxCenterXPosition = 26010.0f;
 float InputHandler::minCenterXPosition = -140.0f;
-float InputHandler::maxCenterYPosition = 1015.0f;
+float InputHandler::maxCenterYPosition = 10015.0f;
 float InputHandler::minCenterYPosition = -85.0f;
 
 void InputHandler::handleInputEvents()

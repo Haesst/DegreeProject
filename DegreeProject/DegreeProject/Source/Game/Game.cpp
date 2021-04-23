@@ -118,11 +118,11 @@ void Game::initSound()
 void Game::addEntitys()
 {
 	Map::get().init();
-	Map::get().setLandTexture(m_AssetHandler->getTextureAtPath("Assets/Graphics/Checkerboard.png"));
+	Map::get().setLandTexture(m_AssetHandler->getTextureAtPath("Assets/Graphics/NewWorldMap.png"));
 	Map::get().setResolution({ (float)m_Resolution.x, (float)m_Resolution.y });
 
 	const char* castlePath = "Assets/Graphics/Castle.png";
-	for (unsigned int regionIndex = 0; regionIndex < NUMBER_OF_REGIONS; regionIndex++)
+	for (unsigned int regionIndex = 0; regionIndex < Map::get().m_Data.m_Regions.size(); regionIndex++)
 	{
 		Vector2D castlePosition = Map::convertToScreen(Map::get().m_Data.m_Regions[regionIndex].m_RegionCapital);
 		StaticSpriteManager::get().createStaticSprite(castlePath, 32, 32, castlePosition);
@@ -155,6 +155,8 @@ void Game::addEntitys()
 	std::vector<unsigned int> characterTenRegions{ 23 };
 	std::vector<unsigned int> characterElevenRegions{ 27 };
 	std::vector<unsigned int> characterTwelveRegions{ 28 };
+	std::vector<unsigned int> characterThirteenRegions{ 29 };
+	std::vector<unsigned int> characterFourteenRegions{ 30 };
 
 	CharacterID char4 = createCharacter(characterFourRegions, Title::Count, Gender::Male, "County of Krain", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(16, 181, 191));
 	UIManager::get().createUITextElement(m_UIFont, char4, CharacterManager::get().getCharacter(char4).m_KingdomName, characterFourRegions);
@@ -182,6 +184,12 @@ void Game::addEntitys()
 	
 	CharacterID char12 = createCharacter(characterTwelveRegions, Title::Baron, Gender::Female, "Barony of Sardinia", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(24, 125, 223));
 	UIManager::get().createUITextElement(m_UIFont, char12, CharacterManager::get().getCharacter(char12).m_KingdomName, characterTwelveRegions);
+
+	CharacterID char13 = createCharacter(characterThirteenRegions, Title::Baron, Gender::Female, "Barony of Molise", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(165, 189, 72));
+	UIManager::get().createUITextElement(m_UIFont, char13, CharacterManager::get().getCharacter(char13).m_KingdomName, characterThirteenRegions);
+
+	CharacterID char14 = createCharacter(characterFourteenRegions, Title::Baron, Gender::Female, "Barony of Valle d'Aosta", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(223, 125, 24));
+	UIManager::get().createUITextElement(m_UIFont, char14, CharacterManager::get().getCharacter(char14).m_KingdomName, characterFourteenRegions);
 
 	//UI
 	Vector2D mainMenuPosition = { 960.0f, 540.0f };

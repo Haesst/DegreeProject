@@ -39,8 +39,8 @@ void Map::setResolution(const Vector2D& resolution)
 
 void Map::setupHotReloading()
 {
-	HotReloader::get()->subscribeToFileChange("Assets\\Data\\Regions.json", std::bind(&Map::regionsChanged, this, std::placeholders::_1, std::placeholders::_2));
-	HotReloader::get()->subscribeToFileChange("Assets\\Map\\RegionMap.txt", std::bind(&Map::regionsChanged, this, std::placeholders::_1, std::placeholders::_2));
+	HotReloader::get()->subscribeToFileChange("Assets\\Data\\NewRegions.json", std::bind(&Map::regionsChanged, this, std::placeholders::_1, std::placeholders::_2));
+	HotReloader::get()->subscribeToFileChange("Assets\\Map\\NewMap.txt", std::bind(&Map::regionsChanged, this, std::placeholders::_1, std::placeholders::_2));
 
 	HotReloader::get()->subscribeToFileChange("Assets\\Shaders\\LandShader.frag", std::bind(&Map::shadersChanged, this, std::placeholders::_1, std::placeholders::_2));
 	HotReloader::get()->subscribeToFileChange("Assets\\Shaders\\LandShader.vert", std::bind(&Map::shadersChanged, this, std::placeholders::_1, std::placeholders::_2));
@@ -441,6 +441,11 @@ Vector2DInt Map::convertToMap(Vector2D position)
 Vector2D Map::convertToScreen(Vector2DInt position)
 {
 	return Vector2D((float)(position.x * m_TileSize) - m_HalfTileSize + m_XOffset, (float)(((position.y * m_TileSize) - m_HalfTileSize) * m_AspectRatio) + m_YOffset);
+}
+
+std::vector<Vector2DInt> Map::getWaterTiles()
+{
+	return m_WaterSquares;
 }
 
 Vector2DInt Map::getRegionCapitalLocation(unsigned int regionId)
