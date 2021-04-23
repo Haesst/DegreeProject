@@ -42,14 +42,15 @@ public:
 	MainMenu* m_MainMenu = nullptr;
 	StatBar* m_StatBar = nullptr;
 	DateBar* m_DateBar = nullptr;
-	bool m_ActiveWarIcons = false;
-	bool m_ActiveEventWindows = false;
 private:
 	static UIManager* m_Instance;
 	static UIID m_UIElementsIDs;
 	std::vector<UIElement> m_UIElements;
 	std::unordered_map<CharacterID, UIText*> m_UITexts;
-	std::vector<EventWindow*> m_EventWindows;
-	std::vector<WarIcon*> m_WarIcons;
+	std::map<UIID, EventWindow*> m_EventWindows;
+	std::map<UIID, WarIcon*> m_WarIcons;
 	std::vector<CharacterID> m_UITextsToRemove;
+	std::vector<UIID> m_EventWindowsToRemove;
+	std::vector<UIID> m_WarIconsToRemove;
+	bool m_MoveWarIcon = false;
 };

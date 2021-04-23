@@ -21,11 +21,13 @@ public:
 	void onDayChange();
 	void updateInfo();
 	void clickButton();
+	void updatePosition(unsigned int index);
 	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
 	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Vector2f position);
 	void setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position);
 	void setWarscore(CharacterID& characterID, std::stringstream& stream);
 	bool m_Active = false;
+	unsigned int m_Index = 0;
 
 private:
 	UIID m_OwnerUIElement;
@@ -37,7 +39,6 @@ private:
 	sf::Color m_NegativeColor = sf::Color::Red;
 	sf::Color m_PositiveColor = sf::Color::Green;
 	const static unsigned int m_SpriteSize = 64;
-	unsigned int m_Index = 0;
 	sf::Color m_WarIconOutlineColor = sf::Color(210, 32, 60);
 	int m_DaySubscriptionHandle = 0;
 	Date m_WarStartDate;
@@ -45,7 +46,7 @@ private:
 	const std::string m_PositiveSign = "+";
 	const std::string m_PercentSign = "%";
 
-	War* m_War = nullptr;
+	int m_WarHandle = -1;
 	sf::RenderWindow* m_Window = nullptr;
 
 	CharacterID m_AttackerID = INVALID_CHARACTER_ID;

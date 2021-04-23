@@ -60,7 +60,7 @@ UIID UIManager::createUIEventElement(CharacterID instigatorID, CharacterID subje
 	UIID ID = m_UIElementsIDs++;
 	UIElement uiElement;
 	uiElement.m_Type = type;
-	m_EventWindows.push_back(new EventWindow(ID, Game::m_UIFont, instigatorID, subjectID, type, giftAmount));
+	m_EventWindows.insert(std::pair(ID, new EventWindow(ID, Game::m_UIFont, instigatorID, subjectID, type, giftAmount)));
 	m_UIElements.push_back(uiElement);
 	return ID;
 }
@@ -71,7 +71,7 @@ UIID UIManager::createWarIcon(CharacterID attackerID, CharacterID defenderID)
 	UIElement uiElement;
 	uiElement.m_Type = UIType::WarIcon;
 	int index = m_WarIcons.size();
-	m_WarIcons.push_back(new WarIcon(ID, Game::m_UIFont, index, attackerID, defenderID));
+	m_WarIcons.insert(std::pair(ID, new WarIcon(ID, Game::m_UIFont, index, attackerID, defenderID)));
 	m_UIElements.push_back(uiElement);
 	return ID;
 }
@@ -182,23 +182,23 @@ void UIManager::start()
 void UIManager::update()
 {
 	m_MainMenu->update();
-	m_ActiveEventWindows = false;
-	for (std::vector<EventWindow*>::reverse_iterator eventWindowIterator = m_EventWindows.rbegin(); eventWindowIterator != m_EventWindows.rend(); ++eventWindowIterator)
+	for (std::map<UIID, EventWindow*>::reverse_iterator eventWindowIterator = m_EventWindows.rbegin(); eventWindowIterator != m_EventWindows.rend(); ++eventWindowIterator)
 	{
-		if (!(*eventWindowIterator)->m_Dismissed)
+		if (!(*eventWindowIterator).second->m_Dismissed)
 		{
-			m_ActiveEventWindows = true;
-			(*eventWindowIterator)->update();
+			(*eventWindowIterator).second->update();
+		}
+		else
+		{
+			m_EventWindowsToRemove.push_back((*eventWindowIterator).first);
 		}
 	}
-	if (!m_ActiveEventWindows)
+	for (UIID uiID : m_EventWindowsToRemove)
 	{
-		for (unsigned int i = 0; i < m_EventWindows.size(); i++)
-		{
-			delete m_EventWindows[i];
-		}
-		m_EventWindows.clear();
+		delete m_EventWindows[uiID];
+		m_EventWindows.erase(uiID);
 	}
+	m_EventWindowsToRemove.clear();
 	for (std::pair<CharacterID, UIText*> uiTextPair : m_UITexts)
 	{
 		if(!uiTextPair.second->m_Conquered)
@@ -218,23 +218,29 @@ void UIManager::update()
 	m_UITextsToRemove.clear();
 	m_DateBar->update();
 	m_WarWindow->update();
-	m_ActiveWarIcons = false;
-	for (unsigned int i = 0; i < m_WarIcons.size(); i++)
+	for (std::pair<UIID, WarIcon*> warIconPair : m_WarIcons)
 	{
-		if (m_WarIcons[i]->m_Active)
+		if (warIconPair.second->m_Active)
 		{
-			m_ActiveWarIcons = true;
-			m_WarIcons[i]->update();
+			if (m_MoveWarIcon)
+			{
+				warIconPair.second->updatePosition(warIconPair.second->m_Index - 1);
+			}
+			warIconPair.second->update();
+		}
+		else
+		{
+			m_WarIconsToRemove.push_back(warIconPair.first);
+			m_MoveWarIcon = true;
 		}
 	}
-	if (!m_ActiveWarIcons)
+	m_MoveWarIcon = false;
+	for (UIID uiID : m_WarIconsToRemove)
 	{
-		for (unsigned int i = 0; i < m_WarIcons.size(); i++)
-		{
-			delete m_WarIcons[i];
-		}
-		m_WarIcons.clear();
+		delete m_WarIcons[uiID];
+		m_WarIcons.erase(uiID);
 	}
+	m_WarIconsToRemove.clear();
 	m_CharacterWindow->update();
 	m_RegionWindow->update();
 }
@@ -245,24 +251,18 @@ void UIManager::render()
 	{
 		uiTextPair.second->render();
 	}
-	for (unsigned int i = 0; i < m_WarIcons.size(); i++)
+	for (std::pair<UIID, WarIcon*> warIconPair : m_WarIcons)
 	{
-		if (m_WarIcons[i]->m_Active)
-		{
-			m_WarIcons[i]->render();
-		}
+		warIconPair.second->render();
 	}
 	m_CharacterWindow->render();
 	m_RegionWindow->render();
 	m_WarWindow->render();
 	m_StatBar->render();
 	m_DateBar->render();
-	for (unsigned int i = 0; i < m_EventWindows.size(); i++)
+	for (std::pair<UIID, EventWindow*> eventWindowPair : m_EventWindows)
 	{
-		if (!m_EventWindows[i]->m_Dismissed)
-		{
-			m_EventWindows[i]->render();
-		}
+		eventWindowPair.second->render();
 	}
 	m_MainMenu->render();
 }
