@@ -36,7 +36,10 @@ void AIWarManager::update(AIData& data)
 
 			if (warEval > warConstants::m_warAcceptance)
 			{
-				declareWar(data);
+				if (!WarManager::get().hasTruce(data.m_OwnerID, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
+				{
+					declareWar(data);
+				}
 			}
 		}
 	}

@@ -39,6 +39,8 @@ void WarManager::endWar(int warHandle, CharacterID winner)
 	{
 		return;
 	}
+	
+	makeTruce(getAttacker(warHandle), getDefender(warHandle));
 
 	if (winner != INVALID_CHARACTER_ID)
 	{
@@ -73,6 +75,11 @@ void WarManager::endWar(int warHandle, CharacterID winner)
 
 		index++;
 	}
+}
+
+void WarManager::start()
+{
+	Time::m_GameDate.subscribeToMonthChange(std::bind(&WarManager::onMonthChange, this, std::placeholders::_1));
 }
 
 War* WarManager::getWar(int handle)
@@ -536,6 +543,19 @@ bool WarManager::isDefender(int warHandle, CharacterID ent)
 	return false;
 }
 
+bool WarManager::hasTruce(CharacterID char1, CharacterID char2)
+{
+	for (auto& truce : m_ActiveTruces)
+	{
+		if (truce.m_Char1 == char1 && truce.m_Char2 == char2 || truce.m_Char1 == char2 && truce.m_Char2 == char1)
+		{
+			return true;
+		}
+	}
+
+	return false;
+}
+
 CharacterID WarManager::getOpposingForce(int warHandle, CharacterID ID)
 {
 	if (isAttacker(warHandle, ID))
@@ -734,6 +754,28 @@ std::vector<CharacterID> WarManager::getAlliances(const CharacterID& character)
 	return m_Alliances[character];
 }
 
+void WarManager::makeTruce(CharacterID char1, CharacterID char2)
+{
+	Truce truce(Time::m_GameDate.m_Date, char1, char2, m_TruceHandle += 1);
+	m_ActiveTruces.push_back(truce);
+}
+
+void WarManager::endTruce(int truceHandle)
+{
+	unsigned int index = 0;
+	for (auto& truce : m_ActiveTruces)
+	{
+		if (truce.m_Handle == truceHandle)
+		{
+			break;
+		}
+
+		index++;
+	}
+
+	m_ActiveTruces.erase(m_ActiveTruces.begin() + index);
+}
+
 void WarManager::eraseWar(int handle)
 {
 	int index = 0;
@@ -749,6 +791,17 @@ void WarManager::eraseWar(int handle)
 	}
 
 	m_Wars.erase(m_Wars.begin() + index);
+}
+
+void WarManager::onMonthChange(Date currentDate)
+{
+	for (auto& truce : m_ActiveTruces)
+	{
+		if (currentDate.m_Month - truce.m_StartDate.m_Month >= 2) 
+		{
+			endTruce(truce.m_Handle);
+		}
+	}
 }
 
 void WarManager::removeAlly(CharacterID character, CharacterID ally)

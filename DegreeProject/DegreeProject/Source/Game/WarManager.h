@@ -12,6 +12,22 @@ enum class PeaceType
 	Surrender
 };
 
+struct Truce
+{
+	Truce(Date startDate, CharacterID char1, CharacterID char2, int handle)
+	{
+		m_StartDate = startDate;
+		m_Char1 = char1;
+		m_Char2 = char2;
+		m_Handle = handle;
+	}
+
+	int m_Handle = -1;
+	Date m_StartDate;
+	CharacterID m_Char1;
+	CharacterID m_Char2;
+};
+
 class WarManager
 {
 public:
@@ -20,7 +36,7 @@ public:
 	//Returns handle to war
 	int createWar(CharacterID attacker, CharacterID defender, int warGoalRegion);
 	void endWar(int warHandle, CharacterID winner);
-	
+	void start();
 	War* getWar(int handle);
 	War* getWarAgainst(CharacterID character, CharacterID enemy);
 
@@ -35,6 +51,7 @@ public:
 	bool isAllyOf(int warHandle, CharacterID potentialAlly, CharacterID allyOf);
 	bool isAttacker(int warHandle, CharacterID ent);
 	bool isDefender(int warHandle, CharacterID ent);
+	bool hasTruce(CharacterID char1, CharacterID char2);
 
 	void invalidateWarsForRegionOnWonWar(War& wonWar);
 	void invalidateWarsForRegion(int regionID);
@@ -74,8 +91,14 @@ public:
 	}
 
 private:
+	void makeTruce(CharacterID char1, CharacterID char2);
+	void endTruce(int truceHandle);
 	void eraseWar(int handle);
+	void onMonthChange(Date currentDate);
 
+private:
+
+	int m_TruceHandle = 0;
 	int m_Warhandle = 0;
 	
 	std::vector<std::pair<int, War>> m_Wars = std::vector<std::pair<int, War>>();
@@ -86,4 +109,5 @@ private:
 
 	// Alliances
 	std::map<CharacterID, std::vector<CharacterID>> m_Alliances;
+	std::vector<Truce> m_ActiveTruces;
 };

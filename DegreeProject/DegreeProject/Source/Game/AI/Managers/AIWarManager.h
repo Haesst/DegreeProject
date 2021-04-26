@@ -6,8 +6,8 @@ class WarManager;
 
 namespace warConstants
 {
-	const float m_warAcceptance = .5f;
-	const float m_expansionAcceptance = .5f;
+	const float m_warAcceptance = .4f;
+	const float m_expansionAcceptance = .4;
 };
 
 class AIWarManager

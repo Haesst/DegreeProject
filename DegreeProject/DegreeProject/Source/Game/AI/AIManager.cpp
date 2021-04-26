@@ -32,6 +32,7 @@ AIManager::~AIManager()
 	delete m_AIWarManager;
 	delete m_RelationshipManager;
 	delete m_SettlementManager;
+	delete m_UnitManager;
 }
 
 AIManager& AIManager::get()
@@ -428,8 +429,6 @@ void AIManager::UpdateAIData(CharacterManager& characterManager, AIData& data, W
 	m_AIWarManager->update(data);
 	m_SettlementManager->update(data);
 	m_RelationshipManager->update(data);
-
-	
 
 	UpdateWarmind(getWarmindOfCharacter(data.m_OwnerID), characterManager, UnitManager::get(), warManager);
 }

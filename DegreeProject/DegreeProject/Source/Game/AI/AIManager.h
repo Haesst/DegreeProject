@@ -65,18 +65,14 @@ private:
 	AISettlementManager* m_SettlementManager = nullptr;
 	AIRelationshipManager* m_RelationshipManager = nullptr;
 	AIWarManager* m_AIWarManager = nullptr;
+	WarManager* m_WarManager = nullptr;
+	UnitManager* m_UnitManager = nullptr;
 
 	WarOrders m_Orders;
 	std::vector<WarmindComponent> m_Warminds;
 	std::vector<AIData> m_AIDatas;
 	std::vector<Personality> m_Personalities;
 	mutable std::mutex m_PersonalityMtx;
-	WarManager* m_WarManager = nullptr;
-	UnitManager* m_UnitManager = nullptr;
-
-	std::vector<AIData> m_tickPrio1; //Every 5:th tick
-	std::vector<AIData> m_tickPrio2; //Every 11:th tick
-	std::vector<AIData> m_tickPrio3; //Every 17:th tick.
 
 	int m_tickRate1 = 547;
 	int m_tickRate2 = 811;

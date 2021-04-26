@@ -46,6 +46,7 @@ void Game::run()
 	StaticSpriteManager::get().start();
 	UnitManager::get().start();
 	UIManager::get().start();
+	WarManager::get().start();
 
 	while (internalWindow->isOpen())
 	{
