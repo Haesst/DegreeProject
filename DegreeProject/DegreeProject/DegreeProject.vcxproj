@@ -106,6 +106,9 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Engine\Vector2D.h" />
     <ClInclude Include="Source\Engine\Window.h" />
     <ClInclude Include="Source\Game\AI\AIManager.h" />
+    <ClInclude Include="Source\Game\AI\Managers\AIRelationshipManager.h" />
+    <ClInclude Include="Source\Game\AI\Managers\AISettlementManager.h" />
+    <ClInclude Include="Source\Game\AI\Managers\AIWarManager.h" />
     <ClInclude Include="Source\Game\AI\WarOrders.h" />
     <ClInclude Include="Source\Game\Callback.h" />
     <ClInclude Include="Source\Game\Components\Warmind.h" />
@@ -162,6 +165,9 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\Engine\Time.cpp" />
     <ClCompile Include="Source\Engine\Window.cpp" />
     <ClCompile Include="Source\Game\AI\AIManager.cpp" />
+    <ClCompile Include="Source\Game\AI\Managers\AIRelationshipManager.cpp" />
+    <ClCompile Include="Source\Game\AI\Managers\AISettlementManager.cpp" />
+    <ClCompile Include="Source\Game\AI\Managers\AIWarManager.cpp" />
     <ClCompile Include="Source\Game\AI\WarOrders.cpp" />
     <ClCompile Include="Source\Game\Callback.cpp" />
     <ClCompile Include="Source\Game\Game.cpp" />
@@ -198,4 +204,4 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
-</Project> 
+</Project>

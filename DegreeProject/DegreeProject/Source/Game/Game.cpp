@@ -45,7 +45,6 @@ void Game::run()
 	CharacterManager::get().start();
 	StaticSpriteManager::get().start();
 	UnitManager::get().start();
-	AIManager::get().start();
 	UIManager::get().start();
 
 	while (internalWindow->isOpen())

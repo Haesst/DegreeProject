@@ -198,6 +198,9 @@
     <ClInclude Include="Source\Game\WarManager.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\AI\Managers\AISettlementManager.h" />
+    <ClInclude Include="Source\Game\AI\Managers\AIRelationshipManager.h" />
+    <ClInclude Include="Source\Game\AI\Managers\AIWarManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
@@ -315,5 +318,8 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
+    <ClCompile Include="Source\Game\AI\Managers\AISettlementManager.cpp" />
+    <ClCompile Include="Source\Game\AI\Managers\AIRelationshipManager.cpp" />
+    <ClCompile Include="Source\Game\AI\Managers\AIWarManager.cpp" />
   </ItemGroup>
 </Project>

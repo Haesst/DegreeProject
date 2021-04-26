@@ -5,6 +5,9 @@
 #include "Game/Data/Unit.h"
 #include "Game\Pathfinding.h"
 #include <Game\Data\AIData.h>
+#include "Managers/AIRelationshipManager.h"
+#include "Managers/AIWarManager.h"
+#include "Managers/AISettlementManager.h"
 #include "Game/UI/UIManager.h"
 
 AIManager* AIManager::m_Instance = nullptr;
@@ -14,12 +17,21 @@ AIManager::AIManager()
 	loadPersonalities("Assets\\Data\\AI\\AIPersonalities.json");
 	HotReloader::get()->subscribeToFileChange("Assets\\Data\\AI\\AIPersonalities.json", std::bind(&AIManager::onFileChange, this, std::placeholders::_1, std::placeholders::_2));
 	m_UnitManager = &UnitManager::get();
+
+	m_SettlementManager = new AISettlementManager();
+	m_RelationshipManager = new AIRelationshipManager();
+	m_AIWarManager = new AIWarManager();
 	m_Orders = WarOrders();
 }
 
 AIManager::~AIManager()
 {
+	m_AIWarManager->~AIWarManager();
+
 	delete m_Instance;
+	delete m_AIWarManager;
+	delete m_RelationshipManager;
+	delete m_SettlementManager;
 }
 
 AIManager& AIManager::get()
@@ -30,11 +42,6 @@ AIManager& AIManager::get()
 	}
 
 	return *m_Instance;
-}
-
-void AIManager::start()
-{
-
 }
 
 void AIManager::loadPersonalities(const char* path)
@@ -418,275 +425,15 @@ void AIManager::UpdateAIData(CharacterManager& characterManager, AIData& data, W
 		return;
 	}
 
-	if (data.m_CurrentAction == Action::War || data.m_LastAction == Action::War)
-	{
-		return;
-	}
+	m_AIWarManager->update(data);
+	m_SettlementManager->update(data);
+	m_RelationshipManager->update(data);
 
-	if (data.m_CurrentAction != Action::War && warManager.getWarHandlesOfCharacter(data.m_OwnerID).size() == 0)
-	{
-		if (expansionDecision(data.m_OwnerID) > .3f)
-		{
-			float warEval = warDecision(data.m_OwnerID);
+	
 
-			if (data.m_LastAction == Action::War)
-			{
-				warEval -= .3f;
-			}
-
-			data.m_Evaluations.push_back(std::make_pair(warEval, Action::War));
-		}
-	}
-
-	if (warManager.getAlliances(data.m_OwnerID).empty())
-	{
-		float eval = allianceDecision(data.m_OwnerID, getPotentialAlly(data));
-
-		if (eval > .5f)
-		{
-			data.m_Evaluations.push_back(std::make_pair(eval, Action::Seek_Alliance));
-		}
-	}
-
-	int regionID = INVALID_REGION_ID;
-	float settlementEval = upgradeDecision(data.m_OwnerID, regionID);
-	data.m_SettlementToUpgrade = regionID;
-	data.m_Evaluations.push_back(std::make_pair(settlementEval, Action::War));
-
-	if (characterManager.getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
-	{
-		CharacterID potentialSpouse = getPotentialSpouse(data);
-
-		if (potentialSpouse != INVALID_CHARACTER_ID)
-		{
-			float marriageEval = marriageDecision(data.m_OwnerID, potentialSpouse);
-			data.m_PotentialSpouseID = potentialSpouse;
-			data.m_Evaluations.push_back(std::make_pair(marriageEval, Action::Marriage));
-		}
-	}
-
-	for (auto& war : WarManager::get().getWarHandlesOfCharacter(data.m_OwnerID))
-	{
-		if (!warManager.isValidWar(war))
-		{
-			continue;
-		}
-
-		if (Time::m_GameDate.m_Date.m_Month - warManager.getWar(war)->getStartDate().m_Month >= 4)
-		{
-			bool sendOffer = (rand() % 100) < 20;
-
-			if (sendOffer)
-			{
-				characterManager.sendPeaceOffer(data.m_OwnerID, warManager.getOpposingForce(war, data.m_OwnerID), PeaceType::White_Peace);
-			}
-		}
-	}
-
-	handleHighestEvaluation(data);
 	UpdateWarmind(getWarmindOfCharacter(data.m_OwnerID), characterManager, UnitManager::get(), warManager);
 }
 
-CharacterID AIManager::getPotentialSpouse(AIData& data)
-{
-	std::vector<std::pair<float, int>> evalToSpouse;
-
-	for (auto& region : Map::get().getRegionIDs())
-	{
-		if (Map::get().getRegionById(region).m_OwnerID != data.m_OwnerID)
-		{
-			if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Gender != CharacterManager::get().getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
-			{
-				if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
-				{
-					continue;
-				}
-
-				float eval = marriageDecision(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID);
-
-				if (eval > .4f)
-				{
-					evalToSpouse.push_back(std::make_pair(eval, Map::get().getRegionById(region).m_OwnerID));
-				}
-			}
-		}
-	}
-
-	float highestEval = -1.f;
-	CharacterID bestSpouse = INVALID_CHARACTER_ID;
-
-	for (auto& pair : evalToSpouse)
-	{
-		if (pair.first > highestEval)
-		{
-			highestEval = pair.first;
-			bestSpouse = pair.second;
-		}
-	}
-
-	return bestSpouse;
-}
-
-CharacterID AIManager::getPotentialAlly(AIData& data)
-{
-	std::vector<std::pair<float, int>> evalToAlly;
-
-	for (auto& region : Map::get().getRegionIDs())
-	{
-		if (Map::get().getRegionById(region).m_OwnerID != data.m_OwnerID)
-		{
-			if (CharacterManager::get().getCharacter(Map::get().getRegionById(region).m_OwnerID).m_CharacterTitle == Title::Unlanded)
-			{
-				continue;
-			}
-
-			if (WarManager::get().atWarWith(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID))
-			{
-				continue;
-			}
-
-			float eval = allianceDecision(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID);
-
-			if (eval > .4f)
-			{
-				evalToAlly.push_back(std::make_pair(eval, Map::get().getRegionById(region).m_OwnerID));
-			}
-		}
-	}
-
-	float highestEval = -1.f;
-	CharacterID bestAlly = INVALID_CHARACTER_ID;
-
-	for (auto& pair : evalToAlly)
-	{
-		if (pair.first > highestEval)
-		{
-			highestEval = pair.first;
-			bestAlly = pair.second;
-			data.m_PotentialAllyID = bestAlly;
-		}
-	}
-
-	return bestAlly;
-}
-
-float AIManager::upgradeDecision(CharacterID ID, int& outRegion)
-{
-	UpgradeSettlementConsideration consideration;
-	consideration.setContext(ID);
-	return consideration.evaluate(ID, outRegion);
-}
-
-float AIManager::warDecision(CharacterID ID)
-{
-	GoldConsideration goldConsideration;
-	ArmySizeConsideration armySizeConsideration;
-
-	//Personality personality = m_Personalities[CharacterManager::get().getCharacter(ID).m_PersonalityIndex];
-	goldConsideration.setContext(ID);
-	armySizeConsideration.setContext(ID);
-
-	float goldEvaluation = goldConsideration.evaluate(ID, getWarmindOfCharacter(ID).m_Opponent);
-	float enemyArmyEvaluation = armySizeConsideration.evaluate(ID, getWarmindOfCharacter(ID).m_Opponent);
-	float allyDebuff = 0.0f;
-
-	if (CharacterManager::get().isAlliedWith(ID, getWarmindOfCharacter(ID).m_Opponent))
-	{
-		return 0.0f;
-	}
-
-	float actionScore = (goldEvaluation * enemyArmyEvaluation) - allyDebuff;
-
-	for (auto& war : WarManager::get().getWarsForRegion(getWarmindOfCharacter(ID).m_WargoalRegionId))
-	{
-		actionScore -= .1f;
-	}
-
-	if (actionScore <= .3f)
-	{
-		return 0.0f;
-	}
-
-	return std::clamp(actionScore, 0.0f, 1.0f);
-}
-
-float AIManager::expansionDecision(CharacterID ID)
-{
-	std::vector<std::pair<float, int>> actionScorePerRegion;
-
-	ExpansionConsideration expansionConsideration;
-
-	expansionConsideration.setContext(ID);
-
-	//Get characters in certain range,
-	std::vector<int> regionIndexes = Map::get().getRegionIDs();
-
-	Character& character = CharacterManager::get().getCharacter(ID);
-
-	for (size_t i = 0; i < regionIndexes.size(); i++)
-	{
-		if (std::find(character.m_OwnedRegionIDs.begin(), character.m_OwnedRegionIDs.end(),
-			(size_t)regionIndexes[i]) != character.m_OwnedRegionIDs.end())
-		{
-			continue;
-		}
-
-		float eval = expansionConsideration.evaluate(ID, regionIndexes[i]);
-
-		if (eval > .5f)
-		{
-			auto pair = std::make_pair(eval, regionIndexes[i]);
-			actionScorePerRegion.push_back(pair);
-		}
-	}
-
-	if (actionScorePerRegion.empty())
-	{
-		return 0.0f;
-	}
-
-	std::sort(actionScorePerRegion.begin(), actionScorePerRegion.end());
-	std::pair<float, int> region;
-
-	if (actionScorePerRegion.size() > 2)
-	{
-		region = actionScorePerRegion[rand() % 2];
-	}
-
-	else
-	{
-		region = actionScorePerRegion[0];
-	}
-
-
-	getWarmindOfCharacter(ID).m_WargoalRegionId = region.second;
-	getWarmindOfCharacter(ID).m_Opponent = Map::get().getRegionById(region.second).m_OwnerID;
-
-	return region.first;
-}
-
-float AIManager::marriageDecision(CharacterID ID, CharacterID spouse)
-{
-	MarriageConsideration marriage;
-	return marriage.evaluate(ID, spouse);
-}
-
-float AIManager::allianceDecision(CharacterID ID, CharacterID potentialAlly)
-{
-	GoldConsideration goldConsideration;
-	ArmySizeConsideration armyConsideration;
-
-	float goldEval = goldConsideration.evaluate(ID, potentialAlly);
-	float armyEval = armyConsideration.evaluate(ID, potentialAlly);
-	float actionScore = armyEval * goldEval;
-
-	if (actionScore > .5f)
-	{
-		return actionScore;
-	}
-
-	return 0.0f;
-}
 
 void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit)
 {
@@ -735,174 +482,6 @@ void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*targ
 	}
 
 	m_Orders.orderDefendWargoal(warmind, unit, enemyUnit);
-}
-
-void AIManager::warAction(AIData& data)
-{
-	CharacterManager& characterManager = CharacterManager::get();
-	unsigned int opponent = getWarmindOfCharacter(data.m_OwnerID).m_Opponent;
-
-	if (opponent == INT_MAX || opponent == characterManager.getCharacter(data.m_OwnerID).m_Spouse)
-	{
-		return;
-	}
-
-	if (characterManager.isAlliedWith(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
-	{
-		return;
-	}
-
-	if (!isValidWarmind(getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
-	{
-		getWarmindOfCharacter(data.m_OwnerID).m_Opponent = INVALID_CHARACTER_ID;
-		return;
-	}
-
-	int warHandle = WarManager::get().createWar(data.m_OwnerID, getWarmindOfCharacter(data.m_OwnerID).m_Opponent, getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
-
-	characterManager.callAllies(data.m_OwnerID, warHandle);
-
-	getWarmindOfCharacter(data.m_OwnerID).m_Active = true;
-
-	WarmindComponent& warmind = getWarmindOfCharacter(data.m_OwnerID);
-
-	if (!characterManager.getCharacter(warmind.m_Opponent).m_IsPlayerControlled)
-	{
-		getWarmindOfCharacter(warmind.m_Opponent).m_Active = true;
-		getWarmindOfCharacter(warmind.m_Opponent).m_Opponent = warmind.m_OwnerID;
-	}
-
-	else
-	{
-		UIManager::get().createUIEventElement(warmind.m_OwnerID, characterManager.getPlayerCharacterID(), UIType::WarDeclaration);
-		UIManager::get().createWarIcon(warmind.m_OwnerID, characterManager.getPlayerCharacterID());
-		characterManager.callAllies(characterManager.getPlayerCharacterID(), warHandle);
-	}
-
-	LOG_INFO("{0} Declared war against {1}", characterManager.getCharacter(data.m_OwnerID).m_Name, characterManager.getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Name);
-	data.m_LastAction = Action::War;
-	data.m_CurrentAction = Action::War;
-
-	if (!characterManager.getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_IsPlayerControlled)
-	{
-		getAIDataofCharacter(characterManager.getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_CurrentAction = Action::War;
-		getAIDataofCharacter(characterManager.getCharacter(getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_CharacterID).m_LastAction = Action::War;
-	}
-}
-
-void AIManager::upgradeAction(AIData& data)
-{
-	if (data.m_SettlementToUpgrade == INVALID_REGION_ID)
-	{
-		return;
-	}
-
-	int buildingIndex = rand() % GameData::m_Buildings.size();
-
-	int buildingId = INVALID_BUILDING_ID;
-
-	int index = 0;
-	for (auto& pair : GameData::m_Buildings)
-	{
-		if (index == buildingIndex)
-		{
-			buildingId = pair.second.m_Id;
-			break;
-		}
-
-		++index;
-	}
-
-	for (int i = 0; i < 4; i++)
-	{
-		if (Map::get().getRegionById(data.m_SettlementToUpgrade).m_BuildingSlots[i].m_BuildingId == INVALID_BUILDING_ID)
-		{
-			CharacterManager::get().constructBuilding(data.m_OwnerID, buildingId, data.m_SettlementToUpgrade, i);
-			data.m_LastAction = Action::Upgrade_Settlement;
-			break;
-		}
-	}
-}
-
-void AIManager::marriageAction(AIData& data)
-{
-	if (data.m_PotentialSpouseID == INVALID_CHARACTER_ID)
-	{
-		return;
-	}
-
-	CharacterManager::get().marry(data.m_OwnerID, data.m_PotentialSpouseID);
-}
-
-void AIManager::allianceAction(AIData& data)
-{
-	if (data.m_PotentialAllyID == INVALID_CHARACTER_ID)
-	{
-		return;
-	}
-
-	CharacterManager::get().sendAllianceOffer(data.m_OwnerID, data.m_PotentialAllyID);
-}
-
-void AIManager::handleHighestEvaluation(AIData& data)
-{
-	float highest = -1.0f;
-	Action bestAction = Action::NONE;
-
-	for (auto& eval : data.m_Evaluations)
-	{
-		if (eval.first > highest)
-		{
-			highest = eval.first;
-			bestAction = eval.second;
-		}
-	}
-
-	if (highest < .3f)
-	{
-		data.m_CurrentAction = Action::NONE;
-		return;
-	}
-
-	switch (bestAction)
-	{
-	case Action::War:
-		if (data.m_LastAction != Action::War)
-		{
-			warAction(data);
-			data.m_LastAction = Action::War;
-			data.m_CurrentAction = Action::War;
-		}
-		break;
-	case Action::Upgrade_Settlement:
-		upgradeAction(data);
-		data.m_LastAction = Action::Upgrade_Settlement;
-		data.m_CurrentAction = Action::Upgrade_Settlement;
-
-		break;
-	case Action::Marriage:
-		marriageAction(data);
-		data.m_LastAction = Action::Marriage;
-		data.m_CurrentAction = Action::Marriage;
-
-		break;
-
-	case Action::Seek_Alliance:
-		allianceAction(data);
-		data.m_LastAction = Action::Seek_Alliance;
-		data.m_CurrentAction = Action::Seek_Alliance;
-		break;
-
-	case Action::NONE:
-		data.m_PotentialSpouseID = INVALID_CHARACTER_ID;
-		data.m_SettlementToUpgrade = INVALID_REGION_ID;
-		break;
-
-	default:
-		break;
-	}
-
-	data.m_Evaluations.clear();
 }
 
 bool AIManager::weightedRandom(float weight)
