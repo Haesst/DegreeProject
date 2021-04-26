@@ -191,4 +191,7 @@ public:
 	sf::Sprite m_BirthSprite;
 	sf::Text m_DeathDate;
 	sf::Text m_Birthday;
+
+	sf::Sprite m_FamilyTreeSprite;
+	sf::Texture m_FamilyTreeTexture;
 };

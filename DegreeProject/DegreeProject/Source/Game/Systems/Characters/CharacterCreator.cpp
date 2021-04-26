@@ -55,6 +55,23 @@ CharacterID CharacterCreator::createNewChild(CharacterPool& characterPool, Chara
 	child.m_Father = father.m_CharacterID;
 	mother.m_Children.push_back(childID);
 	father.m_Children.push_back(childID);
+	//Family tree data
+	if (father.m_Children.size() == 1)
+	{
+		father.m_OldestChild = childID;
+	}
+	else
+	{
+		characterManager.getCharacter(father.m_Children[father.m_Children.size() - 2]).m_NextSibling = childID;
+	}
+	if (mother.m_Children.size() == 1)
+	{
+		mother.m_OldestChild = childID;
+	}
+	else
+	{
+		characterManager.getCharacter(mother.m_Children[mother.m_Children.size() - 2]).m_NextSibling = childID;
+	}
 
 	for (Trait& trait : mother.m_Traits)
 	{

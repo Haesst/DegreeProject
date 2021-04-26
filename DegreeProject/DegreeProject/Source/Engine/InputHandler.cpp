@@ -413,6 +413,11 @@ bool InputHandler::getEscapePressed()
 	return m_Inputs[EscapePressed];
 }
 
+bool InputHandler::getFamilyTreeWindowOpen()
+{
+	return m_Inputs[FamilyTreeWindowOpen];
+}
+
 void InputHandler::setPlayerUnitSelected(bool selected)
 {
 	m_Inputs[PlayerUnitSelected] = selected;
@@ -456,4 +461,9 @@ void InputHandler::setLeftMouseReleased(bool released)
 void InputHandler::setRightMouseReleased(bool released)
 {
 	m_Inputs[RightMouseReleased] = released;
+}
+
+void InputHandler::setFamilyTreeWindowOpen(bool open) 
+{
+	m_Inputs[FamilyTreeWindowOpen] = open;
 }

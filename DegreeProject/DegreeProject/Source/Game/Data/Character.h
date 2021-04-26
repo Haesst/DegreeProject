@@ -23,6 +23,7 @@ struct Character
 
 	const char* m_Name = "";
 	Title m_CharacterTitle = Title::Baron;
+	Title m_TitleAtDeath = Title::Baron;
 	Date m_Birthday;
 	Date m_PregnancyDay;
 	CharacterID m_LastChildFather = INVALID_CHARACTER_ID;
@@ -35,9 +36,11 @@ struct Character
 	CharacterID m_Spouse = INVALID_CHARACTER_ID;
 	CharacterID m_Mother = INVALID_CHARACTER_ID;
 	CharacterID m_Father = INVALID_CHARACTER_ID;
-
+	std::vector<CharacterID> m_TotalSpouses = std::vector<CharacterID>();
 	//std::vector<CharacterID> m_Allies = std::vector<CharacterID>();
 	std::vector<CharacterID> m_Children = std::vector<CharacterID>();
+	CharacterID m_OldestChild = INVALID_CHARACTER_ID;
+	CharacterID m_NextSibling = INVALID_CHARACTER_ID;
 
 	Gender m_Gender = Gender::Male;
 	float m_Fertility = -1.f;
@@ -53,6 +56,7 @@ struct Character
 	int m_PersonalityIndex = 0; // Change to personality id, move away from indices
 
 	sf::Color m_RegionColor = sf::Color::Black;
+	sf::Color m_ColorAtDeath = sf::Color::Black;
 	sf::Sprite m_CharacterPortrait;
 
 	unsigned int m_DeadlyAge = 50;

@@ -626,6 +626,8 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	character.m_Dead = true;
 	character.m_DeathDate = Time::m_GameDate.m_Date;
 	character.m_DeathDate.m_Month += 1;
+	character.m_TitleAtDeath = character.m_CharacterTitle;
+	character.m_ColorAtDeath = character.m_RegionColor;
 
 	if (character.m_CharacterTitle != Title::Unlanded && character.m_OwnedRegionIDs.size() > 0)
 	{
@@ -914,7 +916,9 @@ void CharacterManager::removeRegion(const CharacterID characterId, const unsigne
 void CharacterManager::onMarriage(CharacterID sender, CharacterID reciever)
 {
 	getCharacter(sender).m_Spouse = reciever;
+	getCharacter(sender).m_TotalSpouses.push_back(reciever);
 	getCharacter(reciever).m_Spouse = sender;
+	getCharacter(reciever).m_TotalSpouses.push_back(sender);
 }
 
 void CharacterManager::marry(CharacterID character, CharacterID spouse)

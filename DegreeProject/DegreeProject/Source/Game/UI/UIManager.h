@@ -17,6 +17,7 @@ class WarWindow;
 class WarIcon;
 class MainMenu;
 class PauseWindow;
+class FamilyTreeWindow;
 
 class UIManager
 {
@@ -37,6 +38,7 @@ public:
 	void SetRealmNameOnText(CharacterID characterID, std::string realmName);
 	UIElement& getUIElement(UIID ID);
 	UIText& getUIText(UIID ID);
+	FamilyTreeWindow* m_FamilyTreeWindow = nullptr;
 	CharacterWindow* m_CharacterWindow = nullptr;
 	RegionWindow* m_RegionWindow = nullptr;
 	PauseWindow* m_PauseWindow = nullptr;

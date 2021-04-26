@@ -10,6 +10,9 @@
     <Filter Include="Game\AI">
       <UniqueIdentifier>{B87D5747-245D-D6E2-2D75-61B999D33C44}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Game\AI\Managers">
+      <UniqueIdentifier>{952ED02E-8127-EF80-AA59-D40596B1CE8C}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Game\Components">
       <UniqueIdentifier>{3441F2CD-A0CC-5F92-A9DD-E28615E8BB92}</UniqueIdentifier>
     </Filter>
@@ -56,6 +59,15 @@
     </ClInclude>
     <ClInclude Include="Source\Game\AI\AIManager.h">
       <Filter>Game\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\AI\Managers\AIRelationshipManager.h">
+      <Filter>Game\AI\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\AI\Managers\AISettlementManager.h">
+      <Filter>Game\AI\Managers</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\AI\Managers\AIWarManager.h">
+      <Filter>Game\AI\Managers</Filter>
     </ClInclude>
     <ClInclude Include="Source\Game\AI\WarOrders.h">
       <Filter>Game\AI</Filter>
@@ -168,6 +180,9 @@
     <ClInclude Include="Source\Game\UI\EventWindow.h">
       <Filter>Game\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\UI\FamilyTreeWindow.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\UI\MainMenu.h">
       <Filter>Game\UI</Filter>
     </ClInclude>
@@ -198,9 +213,6 @@
     <ClInclude Include="Source\Game\WarManager.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\AI\Managers\AISettlementManager.h" />
-    <ClInclude Include="Source\Game\AI\Managers\AIRelationshipManager.h" />
-    <ClInclude Include="Source\Game\AI\Managers\AIWarManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
@@ -223,6 +235,15 @@
     </ClCompile>
     <ClCompile Include="Source\Game\AI\AIManager.cpp">
       <Filter>Game\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\AI\Managers\AIRelationshipManager.cpp">
+      <Filter>Game\AI\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\AI\Managers\AISettlementManager.cpp">
+      <Filter>Game\AI\Managers</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\AI\Managers\AIWarManager.cpp">
+      <Filter>Game\AI\Managers</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\AI\WarOrders.cpp">
       <Filter>Game\AI</Filter>
@@ -287,6 +308,9 @@
     <ClCompile Include="Source\Game\UI\EventWindow.cpp">
       <Filter>Game\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\UI\FamilyTreeWindow.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Game\UI\MainMenu.cpp">
       <Filter>Game\UI</Filter>
     </ClCompile>
@@ -318,8 +342,5 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Game\AI\Managers\AISettlementManager.cpp" />
-    <ClCompile Include="Source\Game\AI\Managers\AIRelationshipManager.cpp" />
-    <ClCompile Include="Source\Game\AI\Managers\AIWarManager.cpp" />
   </ItemGroup>
 </Project>

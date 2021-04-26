@@ -36,7 +36,7 @@ void Game::run()
 	sf::RenderWindow* internalWindow = m_Window->getWindow();
 	//internalWindow->setFramerateLimit(60);
 	sf::Vector2f floatResolution = sf::Vector2f((float)m_Resolution.x, (float)m_Resolution.y);
-	sf::View view({floatResolution.x * 4.5f, floatResolution.y * 1.25f}, floatResolution * 2.0f);
+	sf::View view({ floatResolution.x * 4.5f, floatResolution.y * 1.25f }, floatResolution * 2.0f);
 	sf::View uiView(floatResolution * 0.5f, floatResolution);
 	internalWindow->setView(view);
 	InputHandler::setUIView(uiView);
@@ -207,6 +207,10 @@ void Game::addEntitys()
 	Vector2D regionWindowPosition = { 10.0f, Window::getWindow()->getSize().y - (600.0f + 10.0f) };
 	Vector2D regionWindowSize = { 600.0f, 600.0f };
 	UIManager::get().createUIWindowElement(m_UIFont, UIType::RegionWindow, regionWindowPosition, regionWindowSize);
+
+	Vector2D familyTreeWindowPosition = { 480.0f, 10.0f };
+	Vector2D familyTreeWindowSize = { 960.0f, 1060.0f };
+	UIManager::get().createUIWindowElement(m_UIFont, UIType::FamilyTreeWindow, familyTreeWindowPosition, familyTreeWindowSize);
 
 	Vector2D warWindowPosition = { 10.0f, Window::getWindow()->getSize().y - (300.0f + 10.0f) };
 	Vector2D warWindowSize = { 1900.0f, 300.0f };

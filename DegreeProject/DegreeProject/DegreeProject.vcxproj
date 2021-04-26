@@ -146,6 +146,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\UI\CharacterWindow.h" />
     <ClInclude Include="Source\Game\UI\DateBar.h" />
     <ClInclude Include="Source\Game\UI\EventWindow.h" />
+    <ClInclude Include="Source\Game\UI\FamilyTreeWindow.h" />
     <ClInclude Include="Source\Game\UI\MainMenu.h" />
     <ClInclude Include="Source\Game\UI\PauseWindow.h" />
     <ClInclude Include="Source\Game\UI\RegionWindow.h" />
@@ -189,6 +190,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\Game\UI\CharacterWindow.cpp" />
     <ClCompile Include="Source\Game\UI\DateBar.cpp" />
     <ClCompile Include="Source\Game\UI\EventWindow.cpp" />
+    <ClCompile Include="Source\Game\UI\FamilyTreeWindow.cpp" />
     <ClCompile Include="Source\Game\UI\MainMenu.cpp" />
     <ClCompile Include="Source\Game\UI\PauseWindow.cpp" />
     <ClCompile Include="Source\Game\UI\RegionWindow.cpp" />

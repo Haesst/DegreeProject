@@ -16,6 +16,7 @@
 #include "Game/UI/WarWindow.h"
 #include "Game/Systems/HeraldicShieldManager.h"
 #include "Game/UI/RegionWindow.h"
+#include "Game/UI/FamilyTreeWindow.h"
 
 CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 {
@@ -126,6 +127,9 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	setText(m_MotherName, m_Font, m_CharacterSize, m_OwnerColor, { m_MotherPosition.x + m_SizeX * 0.1f, m_MotherPosition.y });
 	setSprite(m_MotherSprite, m_MotherTexture, m_MotherPosition);
 
+	m_FamilyTreeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Bloodline3.png");
+	setSprite(m_FamilyTreeSprite, m_FamilyTreeTexture, { m_DiplomacySprites.back().getPosition().x + m_SpriteSize * 2, m_DiplomacySprites.back().getPosition().y });
+
 	clearInfo();
 }
 
@@ -169,7 +173,7 @@ void CharacterWindow::render()
 		m_Window->draw(m_ArmyText);
 		m_Window->draw(m_AgeSprite);
 		m_Window->draw(m_CharacterAgeText);
-
+		m_Window->draw(m_FamilyTreeSprite);
 		m_Window->draw(m_CharacterSprite);
 
 		if (m_Pregnant)
@@ -822,12 +826,14 @@ void CharacterWindow::clickButton()
 	if (InputHandler::getRightMouseReleased())
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
-		if (m_MarriedSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		UIManager& uiManager = UIManager::get();
+		if (m_FamilyTreeSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			InputHandler::setRightMouseReleased(false);
-			m_CurrentCharacterID = m_SpouseID;
-			checkIfPlayerCharacter();
-			updateInfo();
+			closeWindow();
+			FamilyTreeWindow& familyTreeWindow = *uiManager.m_FamilyTreeWindow;
+			familyTreeWindow.m_CurrentCharacterID = m_CurrentCharacterID;
+			familyTreeWindow.openWindow();
 		}
 		else if (m_FatherSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
@@ -879,7 +885,6 @@ void CharacterWindow::clickButton()
 				break;
 			}
 		}
-		UIManager& uiManager = UIManager::get();
 		for (unsigned int index = 0; index < m_OwnedRegionShapes.size(); index++)
 		{
 			if (m_OwnedRegionShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))

@@ -4,6 +4,7 @@ enum class UIType
 {
 	MainMenu,
 	PauseWindow,
+	FamilyTreeWindow,
 	CharacterWindow,
 	RegionWindow,
 	WarWindow,

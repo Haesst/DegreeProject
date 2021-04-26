@@ -15,6 +15,7 @@ enum Inputs
 	CharacterWindowOpen,
 	RegionWindowOpen,
 	WarWindowOpen,
+	FamilyTreeWindowOpen,
 	PlayerUnitSelected
 };
 
@@ -41,10 +42,12 @@ public:
 	static bool getCharacterWindowOpen();
 	static bool getRegionWindowOpen();
 	static bool getWarWindowOpen();
+	static bool getFamilyTreeWindowOpen();
 	static void setPlayerUnitSelected(bool selected);
 	static void setCharacterWindowOpen(bool open);
 	static void setWarWindowOpen(bool open);
 	static void setRegionWindowOpen(bool open);
+	static void setFamilyTreeWindowOpen(bool open);
 	static float getZoomSpeed();
 	static void setUIView(sf::View& uiView);
 

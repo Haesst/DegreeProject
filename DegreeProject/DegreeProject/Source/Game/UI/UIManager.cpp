@@ -9,6 +9,7 @@
 #include "Game/UI/WarWindow.h"
 #include "Game/UI/WarIcon.h"
 #include "Game/UI/PauseWindow.h"
+#include "Game/UI/FamilyTreeWindow.h"
 #include "Game/Game.h"
 
 UIManager* UIManager::m_Instance = nullptr;
@@ -27,6 +28,7 @@ UIManager::UIManager()
 {
 	m_MainMenu = nullptr;
 	m_CharacterWindow = nullptr;
+	m_FamilyTreeWindow = nullptr;
 	m_RegionWindow = nullptr;
 	m_StatBar = nullptr;
 	m_DateBar = nullptr;
@@ -41,6 +43,7 @@ UIManager::~UIManager()
 	delete m_StatBar;
 	delete m_DateBar;
 	delete m_WarWindow;
+	delete m_FamilyTreeWindow;
 	for (std::unordered_map<CharacterID, UIText*>::iterator itr = m_UITexts.begin(); itr != m_UITexts.end(); itr++)
 	{
 		delete itr->second;
@@ -137,6 +140,11 @@ UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D posit
 			m_CharacterWindow = new CharacterWindow(id, font, position, size);
 			break;
 		}
+		case UIType::FamilyTreeWindow:
+		{
+			m_FamilyTreeWindow = new FamilyTreeWindow(id, font, position, size);
+			break;
+		}
 		case UIType::RegionWindow:
 		{
 			m_RegionWindow = new RegionWindow(id, font, position, size);
@@ -171,6 +179,7 @@ void UIManager::start()
 	ASSERT(m_MainMenu != nullptr, "Main Menu does not exist");
 	ASSERT(m_PauseWindow != nullptr, "Pause Window does not exist");
 	ASSERT(m_CharacterWindow != nullptr, "Character Window does not exist");
+	ASSERT(m_FamilyTreeWindow != nullptr, "Family Tree Window does not exist");
 	ASSERT(m_RegionWindow != nullptr, "Region Window does not exist");
 	ASSERT(m_WarWindow != nullptr, "War Window does not exist");
 	ASSERT(m_StatBar != nullptr, "Stat Bar does not exist");
@@ -179,6 +188,7 @@ void UIManager::start()
 	{
 		uiTextPair.second->start();
 	}
+	m_FamilyTreeWindow->start();
 	m_CharacterWindow->start();
 	m_RegionWindow->start();
 	m_WarWindow->start();
@@ -248,6 +258,7 @@ void UIManager::update()
 		m_WarIcons.erase(uiID);
 	}
 	m_WarIconsToRemove.clear();
+	m_FamilyTreeWindow->update();
 	m_CharacterWindow->update();
 	m_RegionWindow->update();
 }
@@ -262,6 +273,7 @@ void UIManager::render()
 	{
 		warIconPair.second->render();
 	}
+	m_FamilyTreeWindow->render();
 	m_CharacterWindow->render();
 	m_RegionWindow->render();
 	m_WarWindow->render();
