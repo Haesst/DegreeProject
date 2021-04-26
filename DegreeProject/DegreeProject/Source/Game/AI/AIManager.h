@@ -33,10 +33,11 @@ class AIManager
 public:
 	AIManager();
 	~AIManager();
+
 	static AIManager& get();
 	void onFileChange(std::string path, FileStatus status);
 	void loadPersonalities(const char* path);
-	WarmindComponent& getWarmindOfCharacter(int handle);
+	WarmindComponent& getWarmindOfCharacter(CharacterID handle);
 	AIData& getAIDataofCharacter(int handle);
 	void initAI(CharacterID ID);
 	void deactivateAI(CharacterID ID);

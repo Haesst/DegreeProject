@@ -86,23 +86,19 @@ CharacterID AIRelationshipManager::getPotentialSpouse(AIData& data)
 
 	for (auto& region : Map::get().getRegionIDs())
 	{
-		if (Map::get().getRegionById(region).m_OwnerID != data.m_OwnerID)
-		{
-			if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Gender != CharacterManager::get().getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
-			{
-				if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
-				{
-					continue;
-				}
+		if (Map::get().getRegionById(region).m_OwnerID == data.m_OwnerID)
+			continue;
 
-				float eval = marriageDecision(data, Map::get().getRegionById(region).m_OwnerID);
+		if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Gender == CharacterManager::get().getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
+			continue;
 
-				if (eval > .4f)
-				{
-					evalToSpouse.push_back(std::make_pair(eval, Map::get().getRegionById(region).m_OwnerID));
-				}
-			}
-		}
+		if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
+			continue;
+
+		float eval = marriageDecision(data, Map::get().getRegionById(region).m_OwnerID);
+
+		if (eval > relationshipConstants::marriageAcceptance)
+			evalToSpouse.push_back(std::make_pair(eval, Map::get().getRegionById(region).m_OwnerID));
 	}
 
 	float highestEval = -1.f;

@@ -65,7 +65,7 @@ void AIManager::loadPersonalities(const char* path)
 
 #pragma warning(push)
 #pragma warning(disable: 4239 4172)
-WarmindComponent& AIManager::getWarmindOfCharacter(int handle)
+WarmindComponent& AIManager::getWarmindOfCharacter(CharacterID handle)
 {
 	size_t convertedHandle = (size_t)handle;
 	for (auto& warmind : m_Warminds)
