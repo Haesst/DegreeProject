@@ -624,6 +624,8 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	UnitManager::get().dismissUnit(character.m_UnitEntity);
 
 	character.m_Dead = true;
+	character.m_DeathDate = Time::m_GameDate.m_Date;
+	character.m_DeathDate.m_Month += 1;
 
 	if (character.m_CharacterTitle != Title::Unlanded && character.m_OwnedRegionIDs.size() > 0)
 	{

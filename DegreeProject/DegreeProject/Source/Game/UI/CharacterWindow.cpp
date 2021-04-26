@@ -109,7 +109,10 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 
 	m_DeadTexture = assetHandler.getTextureAtPath("Assets/Graphics/Dead.png");
 	m_DeadPosition = { m_AgePosition.x - m_SpriteSize * 1.5f, m_AgePosition.y };
+	m_BirthPosition = { m_DeadPosition.x, m_DeadPosition.y + m_SpriteSize * 2};
 	setSprite(m_DeadSprite, m_DeadTexture, m_DeadPosition);
+	setText(m_DeathDate, m_Font, m_CharacterSize, m_OwnerColor, { m_DeadPosition.x, m_DeadPosition.y + m_SpriteSize });
+	setText(m_Birthday, m_Font, m_CharacterSize, m_OwnerColor, { m_BirthPosition.x, m_BirthPosition.y + m_SpriteSize });
 
 	m_FatherTexture = assetHandler.getTextureAtPath("Assets/Graphics/Father.png");
 	m_FatherPosition = { m_SizeX * 0.5f, m_SpriteSize * 12 };
@@ -153,7 +156,10 @@ void CharacterWindow::render()
 
 		if (m_Dead)
 		{
+			m_Window->draw(m_BirthSprite);
+			m_Window->draw(m_Birthday);
 			m_Window->draw(m_DeadSprite);
+			m_Window->draw(m_DeathDate);
 		}
 
 		m_Window->draw(m_GoldSprite);
@@ -254,7 +260,7 @@ void CharacterWindow::render()
 
 		for (unsigned int index = 0; index < m_OwnedRegionShields.size(); index++)
 		{
-			HeraldicShieldManager::renderShield(m_OwnedRegionShields[index], { m_OwnedRegionShapes[index].getPosition() });
+			HeraldicShieldManager::renderShield(*m_OwnedRegionShields[index], { m_OwnedRegionShapes[index].getPosition() });
 			if (m_OwnedRegionsShowInfo.size() > 0 && m_OwnedRegionsShowInfo[index])
 			{
 				m_Window->draw(m_OwnedRegionsTexts[index]);
@@ -598,7 +604,7 @@ void CharacterWindow::updateInfo()
 
 			m_OwnedRegionShapes.push_back(regionShape);
 			m_OwnedRegionsTexts.push_back(regionNameText);
-			m_OwnedRegionShields.push_back(mapRegion.m_HeraldicShield);
+			m_OwnedRegionShields.push_back(&mapRegion.m_HeraldicShield);
 		}
 
 		std::stringstream stream;
@@ -648,6 +654,30 @@ void CharacterWindow::updateInfo()
 		m_CharacterAgeText.setFillColor(m_OwnerColor);
 		stream.str(std::string());
 		stream.clear();
+
+		if (m_CurrentCharacter->m_Dead)
+		{
+			if (m_Gender == Gender::Male)
+			{
+				setSprite(m_BirthSprite, m_MaleChildTexture, m_BirthPosition);
+			}
+			else
+			{
+				setSprite(m_BirthSprite, m_FemaleChildTexture, m_BirthPosition);
+			}
+
+			stream << Time::m_GameDate.getDateString(m_CurrentCharacter->m_Birthday);
+			m_Birthday.setString(stream.str());
+			m_Birthday.setFillColor(m_OwnerColor);
+			stream.str(std::string());
+			stream.clear();
+
+			stream << Time::m_GameDate.getDateString(m_CurrentCharacter->m_DeathDate);
+			m_DeathDate.setString(stream.str());
+			m_DeathDate.setFillColor(m_OwnerColor);
+			stream.str(std::string());
+			stream.clear();
+		}
 	}
 }
 

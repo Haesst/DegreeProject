@@ -57,7 +57,7 @@ public:
 
 	std::vector<sf::Text> m_OwnedRegionsTexts = std::vector<sf::Text>();
 	std::vector<sf::RectangleShape> m_OwnedRegionShapes = std::vector<sf::RectangleShape>();
-	std::vector<HeraldicShield> m_OwnedRegionShields = std::vector<HeraldicShield>();
+	std::vector<HeraldicShield*> m_OwnedRegionShields = std::vector<HeraldicShield*>();
 	std::vector<bool> m_OwnedRegionsShowInfo = std::vector<bool>();
 
 	const unsigned int m_NumberOfButtons = 5;
@@ -185,6 +185,10 @@ public:
 
 	sf::Texture m_DeadTexture;
 	sf::Sprite m_DeadSprite;
+	sf::Vector2f m_BirthPosition;
 	sf::Vector2f m_DeadPosition;
 	bool m_Dead = false;
+	sf::Sprite m_BirthSprite;
+	sf::Text m_DeathDate;
+	sf::Text m_Birthday;
 };

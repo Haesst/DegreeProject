@@ -59,7 +59,15 @@ struct GameDate
 	const int m_MonthsInYear = 12;
 	size_t m_DaysInMonth[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 	int m_DaysInAYear = 0;
-	char* m_MonthName[12] = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+	const char* m_MonthName[12] = { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+	const char* m_AD = " AD";
+	const char* m_Hyphen = "-";
+	const char* m_Of = " of ";
+	const char* m_Dot = ". ";
+	const char* m_St = "st";
+	const char* m_Nd = "nd";
+	const char* m_Rd = "rd";
+	const char* m_Th = "th";
 	const Date m_StartDate = { 1, 0, 1100 };
 	Date m_Date = { 1, 0, 1100 };
 
@@ -77,9 +85,11 @@ struct GameDate
 
 	Date getRandomDate(bool futureDate, size_t minYearDifference, size_t maxYearDifference);
 
-	char* getDaySuffix();
+	const char* getDaySuffix();
 
 	std::string getDateString();
+
+	std::string getDateString(Date date);
 
 	unsigned int getAge(const Date& birthday);
 

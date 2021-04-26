@@ -59,23 +59,32 @@ Date GameDate::getRandomDate(bool futureDate, size_t minYearDifference, size_t m
 	return Date(day, month, year);
 }
 
-char* GameDate::getDaySuffix()
+const char* GameDate::getDaySuffix()
 {
 	int lastDayDigit = m_Date.m_Day % 10;
 
 	switch (lastDayDigit)
 	{
-	case 1: return "st";
-	case 2: return "nd";
-	case 3: return "rd";
+	case 1: return m_St;
+	case 2: return m_Nd;
+	case 3: return m_Rd;
 	default:
-		return "th";
+		return m_Th;
 	}
 }
 
 std::string GameDate::getDateString()
 {
-	return std::to_string(m_Date.m_Day) + getDaySuffix() + " of " + m_MonthName[m_Date.m_Month] + ". " + std::to_string(m_Date.m_Year) + " AD";
+	std::stringstream stream;
+	stream << m_Date.m_Day << getDaySuffix() << m_Of << m_MonthName[m_Date.m_Month] << m_Dot << m_Date.m_Year << m_AD;
+	return stream.str();
+}
+
+std::string GameDate::getDateString(Date date)
+{
+	std::stringstream stream;
+	stream << date.m_Day << m_Hyphen << date.m_Month << m_Hyphen << date.m_Year;
+	return stream.str();
 }
 
 unsigned int GameDate::getAge(const Date& birthday)
