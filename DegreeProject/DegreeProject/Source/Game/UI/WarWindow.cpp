@@ -9,7 +9,7 @@
 #include "Game/UI/UIManager.h"
 #include "Game/UI/CharacterWindow.h"
 #include <sstream>
-#include "Game/WarManager.h"
+#include "Game/DiplomacyManager.h"
 #include "Game/Map/Map.h"
 #include "Game/Game.h"
 
@@ -180,7 +180,7 @@ void WarWindow::onDayChange()
 
 void WarWindow::setWarscore(CharacterID& characterID, std::stringstream& stream, int& warscore)
 {
-	WarManager& warManager = WarManager::get();
+	DiplomacyManager& warManager = DiplomacyManager::get();
 
 	warscore = warManager.getWarscore(m_War->getHandle(), characterID);
 	if (warscore > 100)
@@ -205,7 +205,7 @@ void WarWindow::setWarscore(CharacterID& characterID, std::stringstream& stream,
 
 void WarWindow::updateInfo()
 {
-	m_War = WarManager::get().getWarAgainst(m_AttackerCharacterIDs.front(), m_DefenderCharacterIDs.front());
+	m_War = DiplomacyManager::get().getWarAgainst(m_AttackerCharacterIDs.front(), m_DefenderCharacterIDs.front());
 	if (m_War != nullptr)
 	{
 		Character& attackerMain = CharacterManager::get().getCharacter(m_AttackerCharacterIDs.front());
@@ -396,7 +396,7 @@ void WarWindow::openWindow(CharacterID mainAttackerID, CharacterID mainDefenderI
 {
 	if (!m_Visible)
 	{
-		m_War = WarManager::get().getWarAgainst(mainAttackerID, mainDefenderID);
+		m_War = DiplomacyManager::get().getWarAgainst(mainAttackerID, mainDefenderID);
 		if (m_War != nullptr)
 		{
 			m_Visible = true;
@@ -478,11 +478,11 @@ void WarWindow::sendPeaceOffer(PeaceType type)
 	{
 		enemy = m_AttackerCharacterIDs.front();
 	}
-	if (!WarManager::get().getWarHandlesOfCharacter(playerCharacter.m_CharacterID).empty())
+	if (!DiplomacyManager::get().getWarHandlesOfCharacter(playerCharacter.m_CharacterID).empty())
 	{
 		CharacterManager::get().sendPeaceOffer(playerCharacter.m_CharacterID, enemy, type);
 
-		if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && WarManager::get().getWarHandlesOfCharacter(playerCharacter.m_CharacterID).empty())
+		if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && DiplomacyManager::get().getWarHandlesOfCharacter(playerCharacter.m_CharacterID).empty())
 		{
 			Game::m_BattleSound.stop();
 			Game::m_Sound.play();

@@ -1,5 +1,5 @@
 #include "GameDate.h"
-
+#include <sstream>
 GameDate::GameDate()
 {
 	for (auto& days : m_DaysInMonth)

@@ -9,7 +9,7 @@ using json = nlohmann::json;
 
 #include <Game\Systems\AI\AIConsideration.h>
 #include <Game\Components\Warmind.h>
-#include "Game/WarManager.h"
+#include "Game/DiplomacyManager.h"
 #include "Game/AI/AIManager.h"
 
 //class CharacterSystem;

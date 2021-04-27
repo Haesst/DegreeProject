@@ -1,14 +1,14 @@
 #include "AIWarManager.h"
 #include "Game/Systems/CharacterManager.h"
 #include "Game/Systems/AI/AIConsideration.h"
-#include "Game/WarManager.h"
+#include "Game/DiplomacyManager.h"
 #include "Game/UI/UIManager.h"
 #include "Game/Data/AIData.h"
 #include "../AIManager.h"
 
 AIWarManager::AIWarManager()
 {
-	m_Warmanager = &WarManager::get();
+	m_Warmanager = &DiplomacyManager::get();
 }
 
 AIWarManager::~AIWarManager()
@@ -36,7 +36,7 @@ void AIWarManager::update(AIData& data)
 
 			if (warEval > warConstants::m_warAcceptance)
 			{
-				if (!WarManager::get().hasTruce(data.m_OwnerID, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
+				if (!DiplomacyManager::get().hasTruce(data.m_OwnerID, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
 				{
 					declareWar(data);
 				}
@@ -44,7 +44,7 @@ void AIWarManager::update(AIData& data)
 		}
 	}
 
-	for (auto& war : WarManager::get().getWarHandlesOfCharacter(data.m_OwnerID))
+	for (auto& war : DiplomacyManager::get().getWarHandlesOfCharacter(data.m_OwnerID))
 	{
 		if (!m_Warmanager->isValidWar(war))
 		{
@@ -82,7 +82,7 @@ float AIWarManager::warDecision(CharacterID ID)
 
 	float actionScore = (goldEvaluation * enemyArmyEvaluation) - allyDebuff;
 
-	for (auto& war : WarManager::get().getWarsForRegion(AIManager::get().getWarmindOfCharacter(ID).m_WargoalRegionId))
+	for (auto& war : DiplomacyManager::get().getWarsForRegion(AIManager::get().getWarmindOfCharacter(ID).m_WargoalRegionId))
 	{
 		actionScore -= .1f;
 	}
@@ -171,7 +171,7 @@ void AIWarManager::declareWar(AIData& data)
 		return;
 	}
 
-	int warHandle = WarManager::get().createWar(data.m_OwnerID, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
+	int warHandle = DiplomacyManager::get().createWar(data.m_OwnerID, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
 
 	characterManager.callAllies(data.m_OwnerID, warHandle);
 

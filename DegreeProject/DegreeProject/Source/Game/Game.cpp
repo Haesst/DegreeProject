@@ -8,7 +8,7 @@
 #include "Game/AI/AIManager.h"
 #include "Game/UI/UIManager.h"
 #include "Game/StaticSpriteManager.h"
-#include "Game/WarManager.h"
+#include "Game/DiplomacyManager.h"
 #include "Game/Systems/HeraldicShieldManager.h"
 #include "Game/Systems/Characters/CharacterNamePool.h"
 
@@ -46,7 +46,7 @@ void Game::run()
 	StaticSpriteManager::get().start();
 	UnitManager::get().start();
 	UIManager::get().start();
-	WarManager::get().start();
+	DiplomacyManager::get().start();
 
 	while (internalWindow->isOpen())
 	{
@@ -61,7 +61,7 @@ void Game::run()
 		UnitManager::get().update();
 		CharacterManager::get().update();
 		AIManager::get().update();
-		WarManager::get().update();
+		DiplomacyManager::get().update();
 		UIManager::get().update();
 
 		// Render

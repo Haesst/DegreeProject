@@ -3,7 +3,7 @@
 #include "Engine/Window.h"
 #include "Engine/InputHandler.h"
 #include "Game/Systems/CharacterManager.h"
-#include "Game/WarManager.h"
+#include "Game/DiplomacyManager.h"
 #include "Engine/AssetHandler.h"
 #include <sstream>
 #include <iomanip>
@@ -331,7 +331,7 @@ void EventWindow::dismissRequest()
 	{
 		case UIType::CallToArmsRequest:
 		{
-			WarManager::get().breakAlliance(m_InstigatorID, m_SubjectID);
+			DiplomacyManager::get().breakAlliance(m_InstigatorID, m_SubjectID);
 			break;
 		}
 		default:
@@ -358,15 +358,15 @@ void EventWindow::acceptRequest()
 		}
 		case UIType::AllianceRequest:
 		{
-			if (!instigator.m_Dead && !subject.m_Dead && WarManager::get().getWarHandleAgainst(m_InstigatorID, m_SubjectID) == -1)
+			if (!instigator.m_Dead && !subject.m_Dead && DiplomacyManager::get().getWarHandleAgainst(m_InstigatorID, m_SubjectID) == -1)
 			{
-				WarManager::get().createAlliance(m_InstigatorID, m_SubjectID);
+				DiplomacyManager::get().createAlliance(m_InstigatorID, m_SubjectID);
 			}
 			break;
 		}
 		case UIType::PeaceRequest:
 		{
-			if (WarManager::get().getWarHandleAgainst(m_InstigatorID, m_SubjectID) != -1)
+			if (DiplomacyManager::get().getWarHandleAgainst(m_InstigatorID, m_SubjectID) != -1)
 			{
 				CharacterManager::get().onWarEnded(m_InstigatorID, m_SubjectID);
 			}
@@ -375,9 +375,9 @@ void EventWindow::acceptRequest()
 		case UIType::CallToArmsRequest:
 		{
 			Character& playerCharacter = CharacterManager::get().getPlayerCharacter();
-			WarManager& warManager = WarManager::get();
+			DiplomacyManager& warManager = DiplomacyManager::get();
 
-			for (int handle : WarManager::get().getWarHandlesOfCharacter(m_InstigatorID))
+			for (int handle : DiplomacyManager::get().getWarHandlesOfCharacter(m_InstigatorID))
 			{
 				if (warManager.isAttacker(handle, m_InstigatorID))
 				{

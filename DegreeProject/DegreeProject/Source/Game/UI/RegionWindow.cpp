@@ -8,6 +8,7 @@
 #include "Game/Data/Character.h"
 #include "Game/UI/CharacterWindow.h"
 #include "Game/UI/UIManager.h"
+#include <sstream>
 
 RegionWindow::RegionWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 {

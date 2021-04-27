@@ -210,7 +210,7 @@
     <ClInclude Include="Source\Game\War.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\WarManager.h">
+    <ClInclude Include="Source\Game\DiplomacyManager.h">
       <Filter>Game</Filter>
     </ClInclude>
   </ItemGroup>
@@ -338,9 +338,9 @@
     <ClCompile Include="Source\Game\War.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Source\Game\WarManager.cpp">
+    <ClCompile Include="Source\StrategyGame.cpp" />
+    <ClCompile Include="Source\Game\DiplomacyManager.cpp">
       <Filter>Game</Filter>
     </ClCompile>
-    <ClCompile Include="Source\StrategyGame.cpp" />
   </ItemGroup>
 </Project>

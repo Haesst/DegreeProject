@@ -156,7 +156,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\UI\WarIcon.h" />
     <ClInclude Include="Source\Game\UI\WarWindow.h" />
     <ClInclude Include="Source\Game\War.h" />
-    <ClInclude Include="Source\Game\WarManager.h" />
+    <ClInclude Include="Source\Game\DiplomacyManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Engine\AssetHandler.cpp" />
@@ -200,7 +200,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\Game\UI\WarIcon.cpp" />
     <ClCompile Include="Source\Game\UI\WarWindow.cpp" />
     <ClCompile Include="Source\Game\War.cpp" />
-    <ClCompile Include="Source\Game\WarManager.cpp" />
+    <ClCompile Include="Source\Game\DiplomacyManager.cpp" />
     <ClCompile Include="Source\StrategyGame.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

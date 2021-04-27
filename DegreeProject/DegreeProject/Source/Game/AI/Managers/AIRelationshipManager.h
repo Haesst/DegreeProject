@@ -1,7 +1,7 @@
 #pragma once
 #include "Game/Data/Types.h"
 
-class WarManager;
+class DiplomacyManager;
 struct AIData;
 
 namespace relationshipConstants
@@ -20,7 +20,7 @@ private:
 	void marry(AIData& data);
 	void makeAlliance(AIData& data);
 
-	WarManager* m_WarManager;
+	DiplomacyManager* m_WarManager;
 	float marriageDecision(AIData& data, CharacterID potentialSpouse);
 	float allianceDecision(AIData& data, CharacterID ally);
 	CharacterID getPotentialSpouse(AIData& data);

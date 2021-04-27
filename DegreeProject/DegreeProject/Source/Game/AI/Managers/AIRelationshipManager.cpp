@@ -2,11 +2,11 @@
 #include "Game/Data/AIData.h"
 #include "Game/Systems/AI/AIConsideration.h"
 #include "Game/Map/Map.h"
-#include "Game/WarManager.h"
+#include "Game/DiplomacyManager.h"
 
 AIRelationshipManager::AIRelationshipManager()
 {
-	m_WarManager = &WarManager::get();
+	m_WarManager = &DiplomacyManager::get();
 }
 
 void AIRelationshipManager::update(AIData& data)
@@ -129,7 +129,7 @@ CharacterID AIRelationshipManager::getPotentialAlly(AIData& data)
 				continue;
 			}
 
-			if (WarManager::get().atWarWith(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID))
+			if (DiplomacyManager::get().atWarWith(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID))
 			{
 				continue;
 			}

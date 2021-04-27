@@ -5,7 +5,7 @@
 #include "Engine/AssetHandler.h"
 #include "Engine/Log.h"
 #include "Engine/Time.h"
-#include "Game/WarManager.h"
+#include "Game/DiplomacyManager.h"
 #include "Game/UI/UIManager.h"
 #include "Game/AI/AIManager.h"
 
@@ -412,7 +412,7 @@ void UnitManager::unitCombat(Unit& unit)
 		return;
 	}
 
-	if (WarManager::get().atWarWith(unit.m_Owner, getUnitWithId(id).m_Owner) || WarManager::get().isEnemyOfEnemy(unit, getUnitWithId(id)))
+	if (DiplomacyManager::get().atWarWith(unit.m_Owner, getUnitWithId(id).m_Owner) || DiplomacyManager::get().isEnemyOfEnemy(unit, getUnitWithId(id)))
 	{
 		unit.m_FightingArmyID = id;
 		getUnitWithId(id).m_FightingArmyID = unit.m_UnitID;
@@ -466,7 +466,7 @@ std::vector<UnitID> UnitManager::getAlliesAtSquare(const Character& character, V
 		{
 			for (const auto& ID : squareData.m_EntitiesInSquare)
 			{
-				for (const CharacterID& ally : WarManager::get().getAlliances(character.m_CharacterID))
+				for (const CharacterID& ally : DiplomacyManager::get().getAlliances(character.m_CharacterID))
 				{
 					if (ally == getUnitWithId(ID).m_Owner)
 					{
@@ -488,7 +488,7 @@ bool UnitManager::neutralUnitAtSquare(Character& character, Vector2DInt square)
 	{
 		if (squareData.m_Position == square)
 		{
-			WarManager* warManager = &WarManager::get();
+			DiplomacyManager* warManager = &DiplomacyManager::get();
 
 			for (auto& ID : squareData.m_EntitiesInSquare)
 			{
@@ -529,7 +529,7 @@ bool UnitManager::neutralUnitAtSquare(Character& character, Vector2DInt square)
 
 void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 {
-	WarManager* warManager = &WarManager::get();
+	DiplomacyManager* warManager = &DiplomacyManager::get();
 	War* war = warManager->getWarAgainst(getUnitWithId(unitID).m_Owner, getUnitWithId(enemyID).m_Owner);
 
 	float armyWeight;
@@ -611,7 +611,7 @@ void UnitManager::unitSiege(Unit& unit)
 		unit.m_DaysSeizing++;
 		unit.m_LastSeizeDate = Time::m_GameDate.m_Date;
 
-		War* war = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OwnerID);
+		War* war = DiplomacyManager::get().getWarAgainst(unit.m_Owner, region.m_OwnerID);
 
 		bool skipWarCheck = region.m_OccupiedBy != INVALID_CHARACTER_ID && region.m_OwnerID == unit.m_Owner;
 
@@ -641,8 +641,8 @@ void UnitManager::unitSiege(Unit& unit)
 			CharacterManager& characterManager = CharacterManager::get();
 			Character& attacker = characterManager.getCharacter(unit.m_Owner);
 			Character& defender = characterManager.getCharacter(region.m_OwnerID);
-			int currentWar = WarManager::get().getWarHandleAgainst(attacker.m_CharacterID, defender.m_CharacterID);
-			WarManager& warManager = WarManager::get();
+			int currentWar = DiplomacyManager::get().getWarHandleAgainst(attacker.m_CharacterID, defender.m_CharacterID);
+			DiplomacyManager& warManager = DiplomacyManager::get();
 
 			if (currentWar == -1 && !skipWarCheck)
 			{
@@ -651,7 +651,7 @@ void UnitManager::unitSiege(Unit& unit)
 
 			if (unit.m_Owner == region.m_OwnerID)
 			{
-				War* siegedWar = WarManager::get().getWarAgainst(unit.m_Owner, region.m_OccupiedBy);
+				War* siegedWar = DiplomacyManager::get().getWarAgainst(unit.m_Owner, region.m_OccupiedBy);
 
 				if (siegedWar != nullptr)
 				{
@@ -680,7 +680,7 @@ void UnitManager::unitSiege(Unit& unit)
 					warManager.addWarscore(war->getHandle(), defender.m_CharacterID, -50);
 				}
 
-				if (!WarManager::get().isValidWar(currentWar))
+				if (!DiplomacyManager::get().isValidWar(currentWar))
 				{
 					return;
 				}
@@ -787,7 +787,7 @@ void UnitManager::startConquerRegion(Unit& unit)
 
 			bool skipWarCheck = region.m_OccupiedBy != INVALID_CHARACTER_ID;
 
-			War* war = WarManager::get().getWarAgainst(unit.m_Owner, ownerID);
+			War* war = DiplomacyManager::get().getWarAgainst(unit.m_Owner, ownerID);
 
 			if (war == nullptr && !skipWarCheck)
 			{

@@ -5,7 +5,7 @@
 #include "Game/UI/UIManager.h"
 #include "Game/Systems/CharacterManager.h"
 #include "Game/UI/WarWindow.h"
-#include "Game/WarManager.h"
+#include "Game/DiplomacyManager.h"
 #include "Time.h"
 #include <sstream>
 
@@ -64,7 +64,7 @@ void WarIcon::updatePosition(unsigned int index)
 
 void WarIcon::setWarscore(CharacterID& characterID, std::stringstream& stream)
 {
-	WarManager& warManager = WarManager::get();
+	DiplomacyManager& warManager = DiplomacyManager::get();
 
 	int warscore = warManager.getWarscore(m_WarHandle, characterID);
 	if (warscore > 100)
@@ -89,7 +89,7 @@ void WarIcon::setWarscore(CharacterID& characterID, std::stringstream& stream)
 
 void WarIcon::updateInfo()
 {
-	m_WarHandle = WarManager::get().getWarHandleAgainst(m_AttackerID, m_DefenderID);
+	m_WarHandle = DiplomacyManager::get().getWarHandleAgainst(m_AttackerID, m_DefenderID);
 	if (m_WarHandle != -1)
 	{
 		std::stringstream stream;

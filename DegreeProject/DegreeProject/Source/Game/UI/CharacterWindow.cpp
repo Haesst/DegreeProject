@@ -10,7 +10,7 @@
 #include <iomanip>
 #include <sstream>
 #include "Game/AI/AIManager.h"
-#include "Game/WarManager.h"
+#include "Game/DiplomacyManager.h"
 #include "Game/Data/AIData.h"
 #include "Game/UI/UIManager.h"
 #include "Game/UI/WarWindow.h"
@@ -486,7 +486,7 @@ void CharacterWindow::updateChildren()
 void CharacterWindow::updateAllies()
 {
 	CharacterManager& characterManager = CharacterManager::get();
-	m_AlliesIDs = WarManager::get().getAlliances(m_CurrentCharacterID);
+	m_AlliesIDs = DiplomacyManager::get().getAlliances(m_CurrentCharacterID);
 	unsigned int sizeAlliances = m_AlliesIDs.size();
 	for (unsigned int index = 0; index < sizeAlliances; index++)
 	{
@@ -513,7 +513,7 @@ void CharacterWindow::updateAllies()
 void CharacterWindow::updateWars()
 {
 	CharacterManager& characterManager = CharacterManager::get();
-	WarManager& warManager = WarManager::get();
+	DiplomacyManager& warManager = DiplomacyManager::get();
 	unsigned int sizeWars = warManager.getWarHandlesOfCharacter(m_CurrentCharacterID).size();
 	for (unsigned int index = 0; index < sizeWars; index++)
 	{
@@ -872,7 +872,7 @@ void CharacterWindow::clickButton()
 				break;
 			}
 		}
-		WarManager& warManager = WarManager::get();
+		DiplomacyManager& warManager = DiplomacyManager::get();
 		for (unsigned int index = 0; index < m_WarShapes.size(); index++)
 		{
 			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
@@ -959,7 +959,7 @@ void CharacterWindow::clickButton()
 void CharacterWindow::declareWar()
 {
 	UIManager& uiManager = UIManager::get();
-	for (CharacterID& allyID : WarManager::get().getAlliances(m_PlayerCharacter->m_CharacterID))
+	for (CharacterID& allyID : DiplomacyManager::get().getAlliances(m_PlayerCharacter->m_CharacterID))
 	{
 		if (allyID == m_CurrentCharacterID)
 		{
@@ -967,11 +967,11 @@ void CharacterWindow::declareWar()
 			return;
 		}
 	}
-	WarManager& warManager = WarManager::get();
+	DiplomacyManager& warManager = DiplomacyManager::get();
 	War* war = warManager.getWarAgainst(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 	if (war == nullptr)
 	{
-		int warHandle = WarManager::get().createWar(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, m_CurrentRegionID);
+		int warHandle = DiplomacyManager::get().createWar(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, m_CurrentRegionID);
 
 		AIManager& aiManager = AIManager::get();
 		aiManager.getWarmindOfCharacter(m_CurrentCharacterID).m_Active = true;
@@ -994,7 +994,7 @@ void CharacterWindow::declareWar()
 
 void CharacterWindow::offerPeace()
 {
-	WarManager& warManager = WarManager::get();
+	DiplomacyManager& warManager = DiplomacyManager::get();
 	War* war = warManager.getWarAgainst(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 	if (war != nullptr)
 	{

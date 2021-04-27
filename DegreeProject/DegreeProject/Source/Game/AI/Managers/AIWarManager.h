@@ -2,7 +2,7 @@
 
 #include "Game/Data/Types.h"
 struct AIData;
-class WarManager;
+class DiplomacyManager;
 
 namespace warConstants
 {
@@ -24,5 +24,5 @@ private:
 	void declareWar(AIData& data);
 
 private:
-	WarManager* m_Warmanager = nullptr;
+	DiplomacyManager* m_Warmanager = nullptr;
 };

@@ -28,10 +28,10 @@ struct Truce
 	CharacterID m_Char2;
 };
 
-class WarManager
+class DiplomacyManager
 {
 public:
-	WarManager() {};
+	DiplomacyManager() {};
 
 	//Returns handle to war
 	int createWar(CharacterID attacker, CharacterID defender, int warGoalRegion);
@@ -80,11 +80,11 @@ public:
 	void breakAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID);
 	std::vector<CharacterID> getAlliances(const CharacterID& character);
 
-	inline static WarManager& get()
+	inline static DiplomacyManager& get()
 	{
 		if (m_Instance == nullptr)
 		{
-			m_Instance = new WarManager();
+			m_Instance = new DiplomacyManager();
 		}
 
 		return *m_Instance;
@@ -103,7 +103,7 @@ private:
 	
 	std::vector<std::pair<int, War>> m_Wars = std::vector<std::pair<int, War>>();
 	
-	static WarManager* m_Instance;
+	static DiplomacyManager* m_Instance;
 	
 	void removeAlly(CharacterID character, CharacterID ally);
 

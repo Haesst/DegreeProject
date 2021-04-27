@@ -1,12 +1,12 @@
 #include "WarOrders.h"
-#include "Game/WarManager.h"
+#include "Game/DiplomacyManager.h"
 #include "Game/Data/Unit.h"
 #include "Game/Systems/UnitManager.h"
 #include "Game/Pathfinding.h"
 
 void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 {
-	WarManager& warManager = WarManager::get();
+	DiplomacyManager& warManager = DiplomacyManager::get();
 
 	if (warmind.m_PrioritizedWarHandle == -1)
 	{
@@ -24,7 +24,7 @@ void WarOrders::orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit)
 
 	else if(!enemyUnit.m_Raised)
 	{
-		War* war = WarManager::get().getWar(warmind.m_PrioritizedWarHandle);
+		War* war = DiplomacyManager::get().getWar(warmind.m_PrioritizedWarHandle);
 		
 		if(Map::get().getRegionById(war->m_WargoalRegion).m_OccupiedBy == INVALID_CHARACTER_ID)
 		{
@@ -56,7 +56,7 @@ void WarOrders::orderSiegeCapital(WarmindComponent& warmind, Unit& unit)
 	Vector2DInt startingPosition = Map::convertToMap(unitPosition);
 
 	Vector2DInt capitalPosition;
-	WarManager& warManager = WarManager::get();
+	DiplomacyManager& warManager = DiplomacyManager::get();
 
 	War* currentWar = warManager.getWar(warmind.m_PrioritizedWarHandle);
 
@@ -86,7 +86,7 @@ void WarOrders::orderDefendWargoal(WarmindComponent& warmind, Unit& unit, Unit& 
 	Vector2D unitPosition = unit.m_Position;
 	Vector2D enemyUnitPosition = enemyUnit.m_Position;
 
-	int regionID = WarManager::get().getWar(warmind.m_PrioritizedWarHandle)->m_WargoalRegion;
+	int regionID = DiplomacyManager::get().getWar(warmind.m_PrioritizedWarHandle)->m_WargoalRegion;
 	Vector2DInt regionPosition = Map::get().getRegionById(regionID).m_RegionCapital;
 
 	//Order unit to move

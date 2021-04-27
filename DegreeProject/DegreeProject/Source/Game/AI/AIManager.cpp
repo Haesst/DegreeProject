@@ -1,5 +1,5 @@
 #include "AIManager.h"
-#include "Game/WarManager.h"
+#include "Game/DiplomacyManager.h"
 #include <Game\Systems\AI\WarmindConsiderations.h>
 #include "Game/Systems/UnitManager.h"
 #include "Game/Data/Unit.h"
@@ -172,7 +172,7 @@ bool AIManager::handleRecieveMarriageRequest(CharacterID reciever, CharacterID s
 
 bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, PeaceType type)
 {
-	WarManager& warManager = WarManager::get();
+	DiplomacyManager& warManager = DiplomacyManager::get();
 	int war = warManager.getWarHandleAgainst(sender, reciever);
 
 	if (type == PeaceType::Surrender)
@@ -261,13 +261,13 @@ bool AIManager::handleAllianceRequest(CharacterID sender, CharacterID reciever)
 
 bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, int war)
 {
-	WarManager& warManager = WarManager::get();
+	DiplomacyManager& warManager = DiplomacyManager::get();
 	int currentWar = warManager.getWar(war)->getHandle();
 	CharacterManager& characterManager = CharacterManager::get();
 
 	if (warManager.getAttacker(currentWar) == characterManager.getCharacter(sender).m_CharacterID)
 	{
-		for (auto ally : WarManager::get().getAlliances(sender))
+		for (auto ally : DiplomacyManager::get().getAlliances(sender))
 		{
 			if (ally == warManager.getDefender(currentWar))
 			{
@@ -278,7 +278,7 @@ bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, i
 
 	else if (warManager.getDefender(currentWar) == characterManager.getCharacter(sender).m_CharacterID)
 	{
-		for (auto ally : WarManager::get().getAlliances(reciever))
+		for (auto ally : DiplomacyManager::get().getAlliances(reciever))
 		{
 			if (ally == warManager.getAttacker(currentWar))
 			{
@@ -287,7 +287,7 @@ bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, i
 		}
 	}
 
-	for (auto& handle : WarManager::get().getWarHandlesOfCharacter(reciever))
+	for (auto& handle : DiplomacyManager::get().getWarHandlesOfCharacter(reciever))
 	{
 		if (handle == currentWar)
 		{
@@ -302,7 +302,7 @@ bool AIManager::handleWarCallRequest(CharacterID sender, CharacterID reciever, i
 void AIManager::update()
 {
 	CharacterManager& characterManager = CharacterManager::get();
-	WarManager& warManager = WarManager::get();
+	DiplomacyManager& warManager = DiplomacyManager::get();
 
 	if (Time::gamePaused())
 	{
@@ -339,7 +339,7 @@ void AIManager::update()
 	}
 }
 
-void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& characterManager, UnitManager& unitManager, WarManager& warManager)
+void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& characterManager, UnitManager& unitManager, DiplomacyManager& warManager)
 {
 	if (!warmind.m_Active)
 	{
@@ -419,7 +419,7 @@ void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& chara
 }
 
 
-void AIManager::UpdateAIData(CharacterManager& characterManager, AIData& data, WarManager& warManager)
+void AIManager::UpdateAIData(CharacterManager& characterManager, AIData& data, DiplomacyManager& warManager)
 {
 	if (characterManager.getCharacter(data.m_OwnerID).m_CharacterTitle == Title::Unlanded)
 	{
@@ -510,7 +510,7 @@ bool AIManager::isValidWarmind(CharacterID ID)
 
 int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 {
-	WarManager* warManager = &WarManager::get();
+	DiplomacyManager* warManager = &DiplomacyManager::get();
 	Character& character = CharacterManager::get().getCharacter(warmind.m_OwnerID);
 
 	if (!warManager->getWarHandlesOfCharacter(character.m_CharacterID).empty())
@@ -529,7 +529,7 @@ int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 
 void AIManager::considerOrders(WarmindComponent& warmind, Unit& unit, CharacterID target)
 {
-	WarManager* warManager = &WarManager::get();
+	DiplomacyManager* warManager = &DiplomacyManager::get();
 
 	if (warmind.m_PrioritizedWarHandle == -1)
 	{

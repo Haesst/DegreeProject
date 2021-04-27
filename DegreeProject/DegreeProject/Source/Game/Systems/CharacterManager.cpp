@@ -18,10 +18,11 @@
 #include <math.h>
 
 #include <fstream>
+#include <sstream>
 #include <json.hpp>
 using json = nlohmann::json;
 #include <mutex>
-#include "Game/WarManager.h"
+#include "Game/DiplomacyManager.h"
 
 CharacterManager* CharacterManager::m_Instance = nullptr;
 CharacterID CharacterManager::m_CharacterIDs = 1;
@@ -223,7 +224,7 @@ Trait CharacterManager::getTrait(const char* traitName)
 
 bool CharacterManager::isAlliedWith(CharacterID character, CharacterID other)
 {
-	for (auto ID : WarManager::get().getAlliances(character))
+	for (auto ID : DiplomacyManager::get().getAlliances(character))
 	{
 		if (ID == other)
 		{
@@ -236,10 +237,10 @@ bool CharacterManager::isAlliedWith(CharacterID character, CharacterID other)
 
 void CharacterManager::callAllies(CharacterID character, int war)
 {
-	WarManager& warManager = WarManager::get();
+	DiplomacyManager& warManager = DiplomacyManager::get();
 	AIManager* aiManager = &AIManager::get();
 
-	for (auto ID : WarManager::get().getAlliances(character))
+	for (auto ID : DiplomacyManager::get().getAlliances(character))
 	{
 		if (!getCharacter(ID).m_IsPlayerControlled)
 		{
@@ -297,7 +298,7 @@ void CharacterManager::sendAllianceOffer(CharacterID sender, CharacterID recieve
 	{
 		if (AIManager::get().handleAllianceRequest(sender, reciever))
 		{
-			WarManager::get().createAlliance(sender, reciever);
+			DiplomacyManager::get().createAlliance(sender, reciever);
 			if (getCharacter(sender).m_IsPlayerControlled)
 			{
 				UIManager::get().createUIEventElement(reciever, sender, UIType::AllianceAccepted);
@@ -316,7 +317,7 @@ void CharacterManager::sendAllianceOffer(CharacterID sender, CharacterID recieve
 
 void CharacterManager::onWarEnded(CharacterID sender, CharacterID reciever)
 {
-	WarManager::get().endWar(WarManager::get().getWarAgainst(sender, reciever)->getHandle(), sender);
+	DiplomacyManager::get().endWar(DiplomacyManager::get().getWarAgainst(sender, reciever)->getHandle(), sender);
 }
 
 void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever, PeaceType type)
@@ -332,7 +333,7 @@ void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever, 
 				break;
 
 			case PeaceType::White_Peace:
-				WarManager::get().endWar(WarManager::get().getWarAgainst(sender, reciever)->getHandle(), INVALID_CHARACTER_ID);
+				DiplomacyManager::get().endWar(DiplomacyManager::get().getWarAgainst(sender, reciever)->getHandle(), INVALID_CHARACTER_ID);
 				break;
 
 			case PeaceType::Surrender:
@@ -584,11 +585,11 @@ void CharacterManager::onMonthChange(Date)
 void CharacterManager::killCharacter(CharacterID characterID)
 {
 	Character& character = getCharacter(characterID);
-	WarManager& warManager = WarManager::get();
+	DiplomacyManager& warManager = DiplomacyManager::get();
 
 	for (auto& region : getCharacter(characterID).m_OwnedRegionIDs)
 	{
-		WarManager::get().invalidateWarsForRegion(region);
+		DiplomacyManager::get().invalidateWarsForRegion(region);
 	}
 
 	for (auto& war : warManager.getWarHandlesOfCharacter(characterID))
@@ -643,10 +644,10 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	character.m_OwnedRegionIDs.clear();
 	character.m_CharacterTitle = Title::Unlanded;
 
-	for (const CharacterID& ally : WarManager::get().getAlliances(characterID))
+	for (const CharacterID& ally : DiplomacyManager::get().getAlliances(characterID))
 	{
 		//breakAlliance(characterID, ally);
-		WarManager::get().breakAlliance(characterID, ally);
+		DiplomacyManager::get().breakAlliance(characterID, ally);
 	}
 
 	if (character.m_Spouse != INVALID_CHARACTER_ID)
@@ -940,7 +941,7 @@ void CharacterManager::marry(CharacterID character, CharacterID spouse)
 		if (AIManager::get().handleRecieveMarriageRequest(spouse, character))
 		{
 			onMarriage(character, spouse);
-			WarManager::get().createAlliance(character, spouse);
+			DiplomacyManager::get().createAlliance(character, spouse);
 			if (getCharacter(character).m_IsPlayerControlled)
 			{
 				UIManager::get().createUIEventElement(spouse, character, UIType::MarriageAccepted);

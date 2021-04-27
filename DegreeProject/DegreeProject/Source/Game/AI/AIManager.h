@@ -12,7 +12,7 @@ using json = nlohmann::json;
 #include "WarOrders.h"
 
 class UnitManager;
-class WarManager;
+class DiplomacyManager;
 class AISettlementManager;
 class AIRelationshipManager;
 class AIWarManager;
@@ -47,8 +47,8 @@ public:
 	bool handleWarCallRequest(CharacterID sender, CharacterID reciever, int war);
 	void update();
 
-	void UpdateWarmind(WarmindComponent& warmind, CharacterManager& characterManager, UnitManager& unitManager, WarManager& warManager);
-	void UpdateAIData(CharacterManager& characterManager, AIData& data, WarManager& warManager);
+	void UpdateWarmind(WarmindComponent& warmind, CharacterManager& characterManager, UnitManager& unitManager, DiplomacyManager& warManager);
+	void UpdateAIData(CharacterManager& characterManager, AIData& data, DiplomacyManager& warManager);
 	bool isValidWarmind(CharacterID ID);
 
 private:
@@ -65,7 +65,7 @@ private:
 	AISettlementManager* m_SettlementManager = nullptr;
 	AIRelationshipManager* m_RelationshipManager = nullptr;
 	AIWarManager* m_AIWarManager = nullptr;
-	WarManager* m_WarManager = nullptr;
+	DiplomacyManager* m_WarManager = nullptr;
 	UnitManager* m_UnitManager = nullptr;
 
 	WarOrders m_Orders;

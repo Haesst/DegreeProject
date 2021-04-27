@@ -1,4 +1,4 @@
-#include "WarManager.h"
+#include "DiplomacyManager.h"
 #include "Game/Systems/CharacterManager.h"
 #include "Game/AI/AIManager.h"
 #include "Game/Data/AIData.h"
@@ -8,9 +8,9 @@
 #include "Game/UI/UIManager.h"
 #include "Game/Systems/UnitManager.h"
 
-WarManager* WarManager::m_Instance = nullptr;
+DiplomacyManager* DiplomacyManager::m_Instance = nullptr;
 
-int WarManager::createWar(CharacterID attacker, CharacterID defender, int warGoalRegion)
+int DiplomacyManager::createWar(CharacterID attacker, CharacterID defender, int warGoalRegion)
 {
 	int handle = m_Warhandle++;
 	m_Wars.push_back(std::make_pair(handle, War(attacker, defender, warGoalRegion, handle)));
@@ -31,7 +31,7 @@ int WarManager::createWar(CharacterID attacker, CharacterID defender, int warGoa
 	return handle;
 }
 
-void WarManager::endWar(int warHandle, CharacterID winner)
+void DiplomacyManager::endWar(int warHandle, CharacterID winner)
 {
 	unsigned int index = 0;
 
@@ -77,12 +77,12 @@ void WarManager::endWar(int warHandle, CharacterID winner)
 	}
 }
 
-void WarManager::start()
+void DiplomacyManager::start()
 {
-	Time::m_GameDate.subscribeToMonthChange(std::bind(&WarManager::onMonthChange, this, std::placeholders::_1));
+	Time::m_GameDate.subscribeToMonthChange(std::bind(&DiplomacyManager::onMonthChange, this, std::placeholders::_1));
 }
 
-War* WarManager::getWar(int handle)
+War* DiplomacyManager::getWar(int handle)
 {
 	for (auto& pair : m_Wars)
 	{
@@ -95,7 +95,7 @@ War* WarManager::getWar(int handle)
 	return nullptr;
 }
 
-bool WarManager::atWarWith(CharacterID character, CharacterID enemy)
+bool DiplomacyManager::atWarWith(CharacterID character, CharacterID enemy)
 {
 	for (auto& war : m_Wars)
 	{
@@ -119,7 +119,7 @@ bool WarManager::atWarWith(CharacterID character, CharacterID enemy)
 	return false;
 }
 
-void WarManager::invalidateWarsForRegionOnWonWar(War& wonWar)
+void DiplomacyManager::invalidateWarsForRegionOnWonWar(War& wonWar)
 {
 	UnitManager& unitManager = UnitManager::get();
 
@@ -147,7 +147,7 @@ void WarManager::invalidateWarsForRegionOnWonWar(War& wonWar)
 	}
 }
 
-void WarManager::invalidateWarsForRegion(int regionID)
+void DiplomacyManager::invalidateWarsForRegion(int regionID)
 {
 	for (auto& war : m_Wars)
 	{
@@ -158,12 +158,12 @@ void WarManager::invalidateWarsForRegion(int regionID)
 	}
 }
 
-void WarManager::invalidateWar(int warHandle)
+void DiplomacyManager::invalidateWar(int warHandle)
 {
 	endWar(warHandle, INVALID_CHARACTER_ID);
 }
 
-void WarManager::InvalidateWarsOfCharacter(CharacterID ID)
+void DiplomacyManager::InvalidateWarsOfCharacter(CharacterID ID)
 {
 	for (auto& war : getWarHandlesOfCharacter(ID))
 	{
@@ -171,7 +171,7 @@ void WarManager::InvalidateWarsOfCharacter(CharacterID ID)
 	}
 }
 
-bool WarManager::isEnemyOfEnemy(Unit& unit, Unit& enemyUnit)
+bool DiplomacyManager::isEnemyOfEnemy(Unit& unit, Unit& enemyUnit)
 {
 	std::vector<CharacterID> enemies = getOpposingSide(unit.m_Owner);
 	std::vector<CharacterID> enemyEnemies = getOpposingSide(enemyUnit.m_Owner);
@@ -190,7 +190,7 @@ bool WarManager::isEnemyOfEnemy(Unit& unit, Unit& enemyUnit)
 	return false;
 }
 
-bool WarManager::isValidWar(int warHandle)
+bool DiplomacyManager::isValidWar(int warHandle)
 {
 	for (auto ID : m_Wars)
 	{
@@ -208,7 +208,7 @@ bool WarManager::isValidWar(int warHandle)
 	return false;
 }
 
-void WarManager::update()
+void DiplomacyManager::update()
 {
 	std::vector<int> invalidHandles;
 
@@ -277,7 +277,7 @@ void WarManager::update()
 	}
 }
 
-bool WarManager::isWinning(int warHandle, CharacterID ID, CharacterID enemyID)
+bool DiplomacyManager::isWinning(int warHandle, CharacterID ID, CharacterID enemyID)
 {
 	War* war = getWar(warHandle);
 
@@ -289,7 +289,7 @@ bool WarManager::isWinning(int warHandle, CharacterID ID, CharacterID enemyID)
 	return false;
 }
 
-int WarManager::getWarscore(int warHandle, CharacterID ID)
+int DiplomacyManager::getWarscore(int warHandle, CharacterID ID)
 {
 	War* war = getWar(warHandle);
 
@@ -314,7 +314,7 @@ int WarManager::getWarscore(int warHandle, CharacterID ID)
 	return -1;
 }
 
-void WarManager::addWarscore(int warHandle, CharacterID ID, int warScore)
+void DiplomacyManager::addWarscore(int warHandle, CharacterID ID, int warScore)
 {
 	War* war = getWar(warHandle);
 
@@ -354,7 +354,7 @@ void WarManager::addWarscore(int warHandle, CharacterID ID, int warScore)
 	}
 }
 
-void WarManager::addAttacker(int warHandle, CharacterID character)
+void DiplomacyManager::addAttacker(int warHandle, CharacterID character)
 {
 	War* war = getWar(warHandle);
 
@@ -374,7 +374,7 @@ void WarManager::addAttacker(int warHandle, CharacterID character)
 	war->m_Attackers.push_back(character);
 }
 
-void WarManager::addDefender(int warHandle, CharacterID character)
+void DiplomacyManager::addDefender(int warHandle, CharacterID character)
 {
 	War* war = getWar(warHandle);
 
@@ -394,7 +394,7 @@ void WarManager::addDefender(int warHandle, CharacterID character)
 	war->m_Defenders.push_back(character);
 }
 
-void WarManager::handleOccupiedRegions(int warHandle, CharacterID winningCharacter)
+void DiplomacyManager::handleOccupiedRegions(int warHandle, CharacterID winningCharacter)
 {
 	War* war = getWar(warHandle);
 
@@ -435,7 +435,7 @@ void WarManager::handleOccupiedRegions(int warHandle, CharacterID winningCharact
 	}
 }
 
-bool WarManager::alliesInWar(int warHandle, CharacterID ID)
+bool DiplomacyManager::alliesInWar(int warHandle, CharacterID ID)
 {
 	War* war = getWar(warHandle);
 
@@ -446,7 +446,7 @@ bool WarManager::alliesInWar(int warHandle, CharacterID ID)
 
 	if (ID == getAttacker(war->getHandle()))
 	{
-		if (WarManager::get().getAlliances(ID).size() + 1 == war->m_Attackers.size())
+		if (DiplomacyManager::get().getAlliances(ID).size() + 1 == war->m_Attackers.size())
 		{
 			return true;
 		}
@@ -454,7 +454,7 @@ bool WarManager::alliesInWar(int warHandle, CharacterID ID)
 
 	if (ID == getAttacker(war->getHandle()))
 	{
-		if (WarManager::get().getAlliances(ID).size() + 1 == war->m_Defenders.size())
+		if (DiplomacyManager::get().getAlliances(ID).size() + 1 == war->m_Defenders.size())
 		{
 			return true;
 		}
@@ -463,7 +463,7 @@ bool WarManager::alliesInWar(int warHandle, CharacterID ID)
 	return false;
 }
 
-bool WarManager::isAllyOf(int warHandle, CharacterID potentialAlly, CharacterID allyOf)
+bool DiplomacyManager::isAllyOf(int warHandle, CharacterID potentialAlly, CharacterID allyOf)
 {
 	War* war = getWar(warHandle);
 
@@ -503,7 +503,7 @@ bool WarManager::isAllyOf(int warHandle, CharacterID potentialAlly, CharacterID 
 	return false;
 }
 
-bool WarManager::isAttacker(int warHandle, CharacterID ent)
+bool DiplomacyManager::isAttacker(int warHandle, CharacterID ent)
 {
 	War* war = getWar(warHandle);
 
@@ -523,7 +523,7 @@ bool WarManager::isAttacker(int warHandle, CharacterID ent)
 	return false;
 }
 
-bool WarManager::isDefender(int warHandle, CharacterID ent)
+bool DiplomacyManager::isDefender(int warHandle, CharacterID ent)
 {
 	War* war = getWar(warHandle);
 
@@ -543,7 +543,7 @@ bool WarManager::isDefender(int warHandle, CharacterID ent)
 	return false;
 }
 
-bool WarManager::hasTruce(CharacterID char1, CharacterID char2)
+bool DiplomacyManager::hasTruce(CharacterID char1, CharacterID char2)
 {
 	for (auto& truce : m_ActiveTruces)
 	{
@@ -556,7 +556,7 @@ bool WarManager::hasTruce(CharacterID char1, CharacterID char2)
 	return false;
 }
 
-CharacterID WarManager::getOpposingForce(int warHandle, CharacterID ID)
+CharacterID DiplomacyManager::getOpposingForce(int warHandle, CharacterID ID)
 {
 	if (isAttacker(warHandle, ID))
 	{
@@ -571,7 +571,7 @@ CharacterID WarManager::getOpposingForce(int warHandle, CharacterID ID)
  	return INVALID_CHARACTER_ID;
 }
 
-CharacterID WarManager::getAttacker(int warHandle)
+CharacterID DiplomacyManager::getAttacker(int warHandle)
 {
 	War* war = getWar(warHandle);
 
@@ -583,7 +583,7 @@ CharacterID WarManager::getAttacker(int warHandle)
 	return war->m_Attackers[0];
 }
 
-CharacterID WarManager::getDefender(int warHandle)
+CharacterID DiplomacyManager::getDefender(int warHandle)
 {
 	War* war = getWar(warHandle);
 
@@ -595,7 +595,7 @@ CharacterID WarManager::getDefender(int warHandle)
 	return war->m_Defenders[0];
 }
 
-std::vector<int> WarManager::getWarsForRegion(int regionID)
+std::vector<int> DiplomacyManager::getWarsForRegion(int regionID)
 {
 	std::vector<int> wars;
 
@@ -610,7 +610,7 @@ std::vector<int> WarManager::getWarsForRegion(int regionID)
 	return wars;
 }
 
-std::vector<int> WarManager::getWarHandlesOfCharacter(CharacterID ID)
+std::vector<int> DiplomacyManager::getWarHandlesOfCharacter(CharacterID ID)
 {
 	std::vector<int> wars;
 
@@ -625,7 +625,7 @@ std::vector<int> WarManager::getWarHandlesOfCharacter(CharacterID ID)
 	return wars;
 }
 
-std::vector<CharacterID> WarManager::getOpposingSide(CharacterID ID)
+std::vector<CharacterID> DiplomacyManager::getOpposingSide(CharacterID ID)
 {
 	std::vector<CharacterID> enemies;
 	std::vector<int> wars = getWarHandlesOfCharacter(ID);
@@ -652,7 +652,7 @@ std::vector<CharacterID> WarManager::getOpposingSide(CharacterID ID)
 	return enemies;
 }
 
-void WarManager::removeAllyFromWar(CharacterID ally, int warHandle)
+void DiplomacyManager::removeAllyFromWar(CharacterID ally, int warHandle)
 {
 	War* war = getWar(warHandle);
 
@@ -689,7 +689,7 @@ void WarManager::removeAllyFromWar(CharacterID ally, int warHandle)
 	}
 }
 
-War* WarManager::getWarAgainst(CharacterID character, CharacterID enemy)
+War* DiplomacyManager::getWarAgainst(CharacterID character, CharacterID enemy)
 {
 	for (auto& pair : m_Wars)
 	{
@@ -707,7 +707,7 @@ War* WarManager::getWarAgainst(CharacterID character, CharacterID enemy)
 	return nullptr;
 }
 
-int WarManager::getWarHandleAgainst(CharacterID character, CharacterID enemy)
+int DiplomacyManager::getWarHandleAgainst(CharacterID character, CharacterID enemy)
 {
 	for (auto& pair : m_Wars)
 	{
@@ -725,7 +725,7 @@ int WarManager::getWarHandleAgainst(CharacterID character, CharacterID enemy)
 	return -1;
 }
 
-void WarManager::createAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID)
+void DiplomacyManager::createAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID)
 {
 	unsigned int size = m_Alliances[characterOneID].size();
 	for (unsigned int index = 0; index < size; index++)
@@ -743,24 +743,24 @@ void WarManager::createAlliance(const CharacterID& characterOneID, const Charact
 	m_Alliances[characterTwoID].push_back(characterOneID);
 }
 
-void WarManager::breakAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID)
+void DiplomacyManager::breakAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID)
 {
 	removeAlly(characterOneID, characterTwoID);
 	removeAlly(characterTwoID, characterOneID);
 }
 
-std::vector<CharacterID> WarManager::getAlliances(const CharacterID& character)
+std::vector<CharacterID> DiplomacyManager::getAlliances(const CharacterID& character)
 {
 	return m_Alliances[character];
 }
 
-void WarManager::makeTruce(CharacterID char1, CharacterID char2)
+void DiplomacyManager::makeTruce(CharacterID char1, CharacterID char2)
 {
 	Truce truce(Time::m_GameDate.m_Date, char1, char2, m_TruceHandle += 1);
 	m_ActiveTruces.push_back(truce);
 }
 
-void WarManager::endTruce(int truceHandle)
+void DiplomacyManager::endTruce(int truceHandle)
 {
 	unsigned int index = 0;
 	for (auto& truce : m_ActiveTruces)
@@ -776,7 +776,7 @@ void WarManager::endTruce(int truceHandle)
 	m_ActiveTruces.erase(m_ActiveTruces.begin() + index);
 }
 
-void WarManager::eraseWar(int handle)
+void DiplomacyManager::eraseWar(int handle)
 {
 	int index = 0;
 
@@ -793,7 +793,7 @@ void WarManager::eraseWar(int handle)
 	m_Wars.erase(m_Wars.begin() + index);
 }
 
-void WarManager::onMonthChange(Date currentDate)
+void DiplomacyManager::onMonthChange(Date currentDate)
 {
 	for (auto& truce : m_ActiveTruces)
 	{
@@ -804,7 +804,7 @@ void WarManager::onMonthChange(Date currentDate)
 	}
 }
 
-void WarManager::removeAlly(CharacterID character, CharacterID ally)
+void DiplomacyManager::removeAlly(CharacterID character, CharacterID ally)
 {
 	int index = 0;
 	bool foundAlly = false;
