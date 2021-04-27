@@ -559,6 +559,8 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	LOG_INFO("ARMY WEIGHT: {0}", armyWeight);
 	bool win = weightedRandomCombat(armyWeight);
 
+	unitTotalForce > enemyTotalForce ? win = true : win = false;
+
 	if (win)
 	{
 		dismissUnit(enemyID);
@@ -715,9 +717,10 @@ void UnitManager::unitSiege(Unit& unit)
 					}
 				}
 
-				if (allRegionsSiezed && war->m_AttackerWarscore < 100)
+				if (allRegionsSiezed)
 				{
 					warManager.addWarscore(war->getHandle(), warManager.getAttacker(war->getHandle()), 100);
+					warManager.addWarscore(war->getHandle(), warManager.getDefender(war->getHandle()), -100);
 				}
 			}
 
@@ -734,6 +737,22 @@ void UnitManager::unitSiege(Unit& unit)
 				defender.m_CurrentGold += region.m_RegionTax;
 
 				attacker.m_MaxArmySize -= region.m_ManPower;
+
+				bool allRegionsSiezed = true;
+
+				for (auto ID : CharacterManager::get().getCharacter(warManager.getDefender(war->getHandle())).m_OwnedRegionIDs)
+				{
+					if (Map::get().getRegionById(ID).m_OccupiedBy == INVALID_CHARACTER_ID)
+					{
+						allRegionsSiezed = false;
+					}
+				}
+
+				if (allRegionsSiezed)
+				{
+					warManager.addWarscore(war->getHandle(), warManager.getDefender(war->getHandle()), 100);
+					warManager.addWarscore(war->getHandle(), warManager.getAttacker(war->getHandle()), -100);
+				}
 			}
 
 			unit.m_DaysSeizing = 0;
