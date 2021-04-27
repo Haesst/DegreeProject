@@ -251,6 +251,7 @@ void UnitManager::dismissUnit(UnitID unitID)
 	unit.m_InCombat = false;
 	unit.m_SeizingRegionID = INVALID_REGION_ID;
 	unit.m_Raised = false;
+	unit.m_DaysSeizing = 0;
 }
 
 void UnitManager::giveUnitPath(UnitID unitID, std::vector<Vector2DInt> path)
