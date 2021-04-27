@@ -53,7 +53,7 @@ void AIWarManager::update(AIData& data)
 
 		if (Time::m_GameDate.m_Date.m_Month - m_Warmanager->getWar(war)->getStartDate().m_Month >= 4)
 		{
-			bool sendOffer = (rand() % 100) < 20;
+			bool sendOffer = (rand() % 100) < 10;
 
 			if (sendOffer)
 			{
