@@ -122,6 +122,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Data\UIElement.h" />
     <ClInclude Include="Source\Game\Data\UIType.h" />
     <ClInclude Include="Source\Game\Data\Unit.h" />
+    <ClInclude Include="Source\Game\DiplomacyManager.h" />
     <ClInclude Include="Source\Game\Game.h" />
     <ClInclude Include="Source\Game\GameData.h" />
     <ClInclude Include="Source\Game\GameDate.h" />
@@ -156,7 +157,6 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\UI\WarIcon.h" />
     <ClInclude Include="Source\Game\UI\WarWindow.h" />
     <ClInclude Include="Source\Game\War.h" />
-    <ClInclude Include="Source\Game\DiplomacyManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Engine\AssetHandler.cpp" />
@@ -171,6 +171,7 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\Game\AI\Managers\AIWarManager.cpp" />
     <ClCompile Include="Source\Game\AI\WarOrders.cpp" />
     <ClCompile Include="Source\Game\Callback.cpp" />
+    <ClCompile Include="Source\Game\DiplomacyManager.cpp" />
     <ClCompile Include="Source\Game\Game.cpp" />
     <ClCompile Include="Source\Game\GameData.cpp" />
     <ClCompile Include="Source\Game\GameDate.cpp" />
@@ -200,7 +201,6 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClCompile Include="Source\Game\UI\WarIcon.cpp" />
     <ClCompile Include="Source\Game\UI\WarWindow.cpp" />
     <ClCompile Include="Source\Game\War.cpp" />
-    <ClCompile Include="Source\Game\DiplomacyManager.cpp" />
     <ClCompile Include="Source\StrategyGame.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

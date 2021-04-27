@@ -25,11 +25,14 @@ enum class UIType
 	PeaceAccepted,
 	PeaceDeclined,
 	WarDeclaration,
+	TriedToDeclareWarOnAlly,
+	TruceMessage,
+	BuildingMessage,
+	CannotAffordMessage,
 	Gift,
 	Pregnant,
 	ChildBirth,
 	AssassinationSuccess,
 	AssassinationFailure,
-	Death,
-	TriedToDeclareWarOnAlly
+	Death
 };

@@ -30,7 +30,7 @@ public:
 	void render();
 	UIID createUIWindowElement(sf::Font font, UIType type, Vector2D position, Vector2D size);
 	UIID createUITextElement(sf::Font font, CharacterID characterID, std::string countryName, std::vector<unsigned int> ownedRegions);
-	UIID createUIEventElement(CharacterID instigatorID, CharacterID subjectID, UIType type, float giftAmount = 0.0f);
+	UIID createUIEventElement(CharacterID instigatorID, CharacterID subjectID, UIType type, float giftAmount = 0.0f, std::string buildingName = "", std::string regionName = "");
 	UIID createWarIcon(CharacterID attackerID, CharacterID defenderID);
 	void AdjustOwnership(CharacterID conquerorID, CharacterID loserID, unsigned int regionID);
 	void AdjustOwnerships(CharacterID conquerorID, CharacterID loserID, std::vector<unsigned int>& regionIDs);

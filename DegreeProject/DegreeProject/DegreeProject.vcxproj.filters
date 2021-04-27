@@ -108,6 +108,9 @@
     <ClInclude Include="Source\Game\Data\Unit.h">
       <Filter>Game\Data</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\DiplomacyManager.h">
+      <Filter>Game</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\Game.h">
       <Filter>Game</Filter>
     </ClInclude>
@@ -210,9 +213,6 @@
     <ClInclude Include="Source\Game\War.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\DiplomacyManager.h">
-      <Filter>Game</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
@@ -249,6 +249,9 @@
       <Filter>Game\AI</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\Callback.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\DiplomacyManager.cpp">
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\Game\Game.cpp">
@@ -339,8 +342,5 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Game\DiplomacyManager.cpp">
-      <Filter>Game</Filter>
-    </ClCompile>
   </ItemGroup>
 </Project>

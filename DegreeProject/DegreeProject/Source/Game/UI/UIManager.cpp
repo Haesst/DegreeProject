@@ -59,12 +59,12 @@ UIManager::~UIManager()
 	delete m_Instance;
 }
 
-UIID UIManager::createUIEventElement(CharacterID instigatorID, CharacterID subjectID, UIType type, float giftAmount)
+UIID UIManager::createUIEventElement(CharacterID instigatorID, CharacterID subjectID, UIType type, float giftAmount, std::string buildingName, std::string regionName)
 {
 	UIID ID = m_UIElementsIDs++;
 	UIElement uiElement;
 	uiElement.m_Type = type;
-	m_EventWindows.insert(std::pair(ID, new EventWindow(ID, Game::m_UIFont, instigatorID, subjectID, type, giftAmount)));
+	m_EventWindows.insert(std::pair(ID, new EventWindow(ID, Game::m_UIFont, instigatorID, subjectID, type, giftAmount, buildingName, regionName)));
 	m_UIElements.push_back(uiElement);
 	return ID;
 }

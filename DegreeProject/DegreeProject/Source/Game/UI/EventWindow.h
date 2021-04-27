@@ -12,7 +12,7 @@ class EventWindow
 {
 public:
 
-	EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, CharacterID subjectID, UIType type, float giftAmount = 0.0f);
+	EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, CharacterID subjectID, UIType type, float goldAmount = 0.0f, std::string buildingName = "", std::string regionName = "");
 
 	void update();
 	void render();

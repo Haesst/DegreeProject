@@ -8,6 +8,7 @@
 #include "Game/Data/CharacterConstants.h"
 #include <sstream>
 #include "Game/UI/UIManager.h"
+#include "Game/UI/CharacterWindow.h"
 
 FamilyTreeWindow::FamilyTreeWindow(UIID id, sf::Font font, Vector2D position, Vector2D size)
 {
@@ -28,6 +29,8 @@ FamilyTreeWindow::FamilyTreeWindow(UIID id, sf::Font font, Vector2D position, Ve
 	m_MaleChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyMale.png");
 	m_FemaleChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyFemale.png");
 
+	m_DeadTexture = assetHandler.getTextureAtPath("Assets/Graphics/Dead.png");
+
 	clearInfo();
 }
 
@@ -38,12 +41,11 @@ void FamilyTreeWindow::start()
 
 void FamilyTreeWindow::update()
 {
-	handleWindow();
-
 	if (m_Visible)
 	{
 		clickButton();
 	}
+	handleWindow();
 }
 
 void FamilyTreeWindow::render()
@@ -52,15 +54,11 @@ void FamilyTreeWindow::render()
 	{
 		m_Window->draw(m_WindowShape);
 
-		if (m_Dead)
-		{
-
-		}
-
 		for (unsigned int index = 0; index < m_CharacterShapes.size(); index++)
 		{
 			m_Window->draw(m_CharacterShapes[index]);
 			m_Window->draw(m_CharacterSprites[index]);
+			m_Window->draw(m_CharacterDeadSprites[index]);
 			m_Window->draw(m_CharacterInfo[index]);
 		}
 	}
@@ -82,10 +80,11 @@ void FamilyTreeWindow::clearInfo()
 	m_CharacterIDs.clear();
 	m_CharacterInfo.clear();
 	m_ShowCharacterInfo.clear();
+	m_CharacterDeadSprites.clear();
 	m_FamilySize = 0;
 }
 
-void FamilyTreeWindow::displayFamily(CharacterID& familyHeadID, unsigned int depth, unsigned int width)
+void FamilyTreeWindow::displayFamily(CharacterID& familyHeadID, unsigned int depth, float width)
 {
 	if (familyHeadID == INVALID_CHARACTER_ID)
 	{
@@ -98,7 +97,7 @@ void FamilyTreeWindow::displayFamily(CharacterID& familyHeadID, unsigned int dep
 	{
 		setFamilyMember(character.m_TotalSpouses[index], depth, ++width);
 	}
-	displayFamily(character.m_OldestChild, depth + 1, 0);
+	displayFamily(character.m_OldestChild, depth + 1, character.m_Children.size() * 0.5f - character.m_Children.size() + 1);
 	displayFamily(character.m_NextSibling, depth, width + 1);
 }
 
@@ -128,7 +127,7 @@ void FamilyTreeWindow::updateInfo()
 		}
 		m_WindowShape.setOutlineColor(m_OwnerColor);
 
-		displayFamily(findFamilyHead(m_CurrentCharacterID), 0, 0);
+		displayFamily(findFamilyHead(m_CurrentCharacterID), 0, 0.0f);
 	}
 }
 
@@ -151,7 +150,7 @@ void FamilyTreeWindow::handleWindow()
 			closeWindow();
 		}
 	}
-	else if (m_Visible && (InputHandler::getEscapePressed() || InputHandler::getCharacterWindowOpen() || InputHandler::getRegionWindowOpen() || InputHandler::getWarWindowOpen()))
+	else if (m_Visible && (InputHandler::getEscapePressed() || InputHandler::getRegionWindowOpen() || InputHandler::getWarWindowOpen()))
 	{
 		closeWindow();
 	}
@@ -190,7 +189,11 @@ void FamilyTreeWindow::clickButton()
 			if (m_CharacterShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				InputHandler::setRightMouseReleased(false);
-				m_CurrentCharacterID = m_CharacterIDs[index];
+				CharacterWindow& characterWindow = *UIManager::get().m_CharacterWindow;
+				characterWindow.m_CurrentCharacterID = m_CharacterIDs[index];
+				characterWindow.checkIfPlayerCharacter();
+				characterWindow.updateInfo();
+				characterWindow.openWindow();
 				break;
 			}
 		}
@@ -202,27 +205,39 @@ void FamilyTreeWindow::clickButton()
 	}
 }
 
-void FamilyTreeWindow::setFamilyMember(CharacterID& characterID, unsigned int depth, unsigned int width)
+void FamilyTreeWindow::setFamilyMember(CharacterID& characterID, unsigned int depth, float width)
 {
+	for (CharacterID familyID : m_CharacterIDs)
+	{
+		if (familyID == characterID)
+		{
+			return;
+		}
+	}
 	m_CharacterIDs.push_back(characterID);
 	m_ShowCharacterInfo.push_back(false);
 	Character& character = CharacterManager::get().getCharacter(characterID);
 	sf::Color characterColor;
 	unsigned int characterTitle;
+	sf::Vector2f characterPosition = { m_PositionX + m_SizeX * 0.5f - m_SpriteSize * 3.5f + m_OutlineThickness + m_SpriteSize * 7 * width, m_PositionY + m_OutlineThickness + m_SpriteSize * 2 + m_SpriteSize * 3 * depth };
 	Date deathDate;
 	if (!character.m_Dead)
 	{
 		characterColor = character.m_RegionColor;
 		characterTitle = (unsigned int)character.m_CharacterTitle;
+		m_CharacterDeadSprites.push_back(sf::Sprite());
 	}
 	else
 	{
 		characterColor = character.m_ColorAtDeath;
 		characterTitle = (unsigned int)character.m_TitleAtDeath;
 		deathDate = character.m_DeathDate;
+		sf::Sprite deadSprite;
+		setSprite(deadSprite, m_DeadTexture, { characterPosition.x + m_OutlineThickness + m_SpriteSize, characterPosition.y });
+		m_CharacterDeadSprites.push_back(deadSprite);
 	}
 	sf::RectangleShape characterShape;
-	setShape(characterShape, m_TransparentColor, characterColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_PositionX + m_SizeX * 0.5f + m_SpriteSize * 6 * width, m_PositionY + m_SpriteSize * 3 * depth } );
+	setShape(characterShape, m_TransparentColor, characterColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, characterPosition);
 	m_CharacterShapes.push_back(characterShape);
 	sf::Sprite characterSprite;
 	if (character.m_Gender == Gender::Male)
@@ -250,7 +265,7 @@ void FamilyTreeWindow::setFamilyMember(CharacterID& characterID, unsigned int de
 	}
 	m_CharacterSprites.push_back(characterSprite);
 	std::stringstream stream;
-	stream << m_CharacterTitles[characterTitle] << character.m_Name << "\n" << character.m_Birthday.m_Day << "-" << character.m_Birthday.m_Month << "-" << character.m_Birthday.m_Year;
+	stream << /*m_CharacterTitles[characterTitle] <<*/ character.m_Name << "\n" << character.m_Birthday.m_Day << "-" << character.m_Birthday.m_Month << "-" << character.m_Birthday.m_Year;
 	if (character.m_Dead)
 	{
 		stream << " to " << character.m_DeathDate.m_Day << "-" << character.m_DeathDate.m_Month << "-" << character.m_DeathDate.m_Year;

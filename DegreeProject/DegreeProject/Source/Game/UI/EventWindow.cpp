@@ -11,7 +11,7 @@
 #include "Game/UI/UIManager.h"
 #include "Game/UI/CharacterWindow.h"
 
-EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, CharacterID subjectID, UIType type, float giftAmount)
+EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, CharacterID subjectID, UIType type, float goldAmount, std::string buildingName, std::string regionName)
 {
 	m_OwnedUIWindow = ID;
 	m_Font = font;
@@ -145,6 +145,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			}
 			break;
 		}
+		case UIType::TruceMessage:
 		case UIType::TriedToDeclareWarOnAlly:
 		case UIType::WarDeclaration:
 		{
@@ -167,18 +168,49 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 					stream << "\ndeclared war on you!";
 				}
 			}
-			else
+			else if (m_MessageType == UIType::TriedToDeclareWarOnAlly)
 			{
 				stream.str(std::string());
 				stream.clear();
 				stream << "You can't declare war on an ally!";
 			}
+			else
+			{
+				stream.str(std::string());
+				stream.clear();
+				stream << "You can't declare war on\n";
+				if (subject.m_Gender == Gender::Male)
+				{
+					stream << m_MaleTitles[(unsigned int)subject.m_CharacterTitle] << subject.m_Name << "\nYou have a truce!";
+				}
+				else
+				{
+					stream << m_FemaleTitles[(unsigned int)subject.m_CharacterTitle] << subject.m_Name << "\nYou have a truce!";
+				}
+			}
 			break;
 		}
+		case UIType::BuildingMessage:
+		case UIType::CannotAffordMessage:
 		case UIType::Gift:
 		{
 			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Coins.png");
-			stream << "\nsent you a gift of " << std::fixed << std::setprecision(1) << giftAmount << " gold!";
+			if (m_MessageType == UIType::CannotAffordMessage)
+			{
+				stream.str(std::string());
+				stream.clear();
+				stream << "You can't afford the cost\nof " << std::fixed << std::setprecision(1) << goldAmount << " gold to do this.";
+			}
+			else if(m_MessageType == UIType::Gift)
+			{
+				stream << "\nsent you a gift of " << std::fixed << std::setprecision(1) << goldAmount << " gold!";
+			}
+			else
+			{
+				stream.str(std::string());
+				stream.clear();
+				stream << "Started construction of a " << buildingName << "\nin " << regionName << " for a cost of\n" << std::fixed << std::setprecision(1) << goldAmount << " gold.";
+			}
 			break;
 		}
 		case UIType::Pregnant:
@@ -350,9 +382,11 @@ void EventWindow::acceptRequest()
 		case UIType::MarriageRequest:
 		{
 			if (!instigator.m_Dead && instigator.m_Spouse == INVALID_CHARACTER_ID
-				&& !subject.m_Dead && subject.m_Spouse == INVALID_CHARACTER_ID)
+				&& !subject.m_Dead && subject.m_Spouse == INVALID_CHARACTER_ID
+				&& DiplomacyManager::get().getWarHandleAgainst(m_InstigatorID, m_SubjectID) == -1)
 			{
 				CharacterManager::get().onMarriage(m_InstigatorID, m_SubjectID);
+				DiplomacyManager::get().createAlliance(m_InstigatorID, m_SubjectID);
 			}
 			break;
 		}

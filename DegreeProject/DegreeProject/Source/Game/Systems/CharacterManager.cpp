@@ -848,11 +848,6 @@ void CharacterManager::constructBuilding(const CharacterID characterId, const in
 	Building building = GameData::m_Buildings[buildingId];
 	MapRegion& region = Map::get().getRegionById(regionId);
 
-	if (building.m_Cost > character.m_CurrentGold)
-	{
-		return;
-	}
-
 	if (region.m_OwnerID != characterId)
 	{
 		return;
@@ -861,6 +856,20 @@ void CharacterManager::constructBuilding(const CharacterID characterId, const in
 	if (region.m_BuildingSlots[buildingSlot].m_BuildingId != INVALID_BUILDING_ID)
 	{
 		return;
+	}
+
+	if (building.m_Cost > character.m_CurrentGold)
+	{
+		if (character.m_IsPlayerControlled)
+		{
+			UIManager::get().createUIEventElement(m_PlayerCharacterID, m_PlayerCharacterID, UIType::CannotAffordMessage, building.m_Cost);
+		}
+		return;
+	}
+
+	if (character.m_IsPlayerControlled)
+	{
+		UIManager::get().createUIEventElement(m_PlayerCharacterID, m_PlayerCharacterID, UIType::BuildingMessage, building.m_Cost, building.m_Name, region.m_RegionName);
 	}
 
 	Map::get().startConstructionOfBuilding(buildingId, buildingSlot, regionId);

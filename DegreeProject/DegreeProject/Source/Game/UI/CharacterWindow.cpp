@@ -27,14 +27,15 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 
 	setShape(m_WindowShape, m_FillColor, m_OwnerColor, m_OutlineThickness, {  }, { m_OutlineThickness, m_OutlineThickness });
 
-	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
+	unsigned int numberOfButtons = m_ButtonStrings.size();
+	for (unsigned int index = 0; index < numberOfButtons; index++)
 	{
 		sf::RectangleShape buttonShape;
 		setShape(buttonShape, m_TransparentColor, m_DeclareWarColor, m_OutlineThickness, { m_SizeX * 0.2f, m_SizeY * 0.05f }, { m_SizeX - m_SpriteSize * 5.0f, m_SpriteSize * 3.0f + m_SpriteSize * 3.0f * index });
 
 		sf::Text buttonText;
 		setText(buttonText, m_Font, m_CharacterSize, m_DeclareWarColor, { buttonShape.getPosition().x + m_SizeX * 0.01f, buttonShape.getPosition().y + m_SizeY * 0.008f }, m_ButtonStrings[index]);
-		if (index != 0 && index != m_NumberOfButtons - 1)
+		if (index != 0 && index != numberOfButtons - 2 && index != numberOfButtons - 1)
 		{
 			buttonShape.setOutlineColor(m_MakePeaceColor);
 			buttonText.setFillColor(m_MakePeaceColor);
@@ -50,7 +51,8 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	m_DiplomacyTextures.push_back(assetHandler.getTextureAtPath("Assets/Graphics/Alliance.png"));
 	m_DiplomacyTextures.push_back(assetHandler.getTextureAtPath("Assets/Graphics/War.png"));
 	m_DiplomacyTextures.push_back(assetHandler.getTextureAtPath("Assets/Graphics/Father.png"));
-	for (unsigned int index = 0; index < m_NumberOfRelations; index++)
+	unsigned int numberOfRelations = m_DiplomacyStrings.size();
+	for (unsigned int index = 0; index < numberOfRelations; index++)
 	{
 		sf::Sprite relationSprite;
 		setSprite(relationSprite, m_DiplomacyTextures[index], { m_SizeX * 0.1f + (m_SizeX * 0.1f * index), m_SpriteSize * 10 });
@@ -210,7 +212,8 @@ void CharacterWindow::render()
 			}
 		}
 
-		for (unsigned int index = 0; index < m_NumberOfRelations; index++)
+		unsigned int numberOfRelations = m_DiplomacyStrings.size();
+		for (unsigned int index = 0; index < numberOfRelations; index++)
 		{
 			m_Window->draw(m_DiplomacySprites[index]);
 			if (m_DiplomacyShowInfo.size() > 0 && m_DiplomacyShowInfo[index])
@@ -255,7 +258,8 @@ void CharacterWindow::render()
 
 		if (!m_IsPlayerCharacter && m_CurrentCharacter->m_CharacterTitle != Title::Unlanded)
 		{
-			for (unsigned int index = 0; index < m_NumberOfButtons; index++)
+			unsigned int numberOfButtons = m_ButtonStrings.size();
+			for (unsigned int index = 0; index < numberOfButtons; index++)
 			{
 				m_Window->draw(m_ButtonShapes[index]);
 				m_Window->draw(m_ButtonTexts[index]);
@@ -830,7 +834,6 @@ void CharacterWindow::clickButton()
 		if (m_FamilyTreeSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			InputHandler::setRightMouseReleased(false);
-			closeWindow();
 			FamilyTreeWindow& familyTreeWindow = *uiManager.m_FamilyTreeWindow;
 			familyTreeWindow.m_CurrentCharacterID = m_CurrentCharacterID;
 			familyTreeWindow.openWindow();
@@ -899,10 +902,11 @@ void CharacterWindow::clickButton()
 			}
 		}
 	}
-	if (InputHandler::getLeftMouseReleased() && !m_IsPlayerCharacter)
+	if (InputHandler::getLeftMouseReleased() && !m_IsPlayerCharacter && m_CurrentCharacter->m_CharacterTitle != Title::Unlanded)
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
-		for (unsigned int index = 0; index < m_NumberOfButtons; index++)
+		unsigned int numberOfButtons = m_ButtonStrings.size();
+		for (unsigned int index = 0; index < numberOfButtons; index++)
 		{
 			if (m_ButtonShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
@@ -930,6 +934,11 @@ void CharacterWindow::clickButton()
 					break;
 				}
 				case 4:
+				{
+					breakAlliance();
+					break;
+				}
+				case 5:
 				{
 					assassinate();
 					break;
@@ -973,6 +982,7 @@ void CharacterWindow::declareWar()
 	{
 		if (warManager.hasTruce(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID))
 		{
+			uiManager.createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::TruceMessage);
 			return;
 		}
 
@@ -1023,6 +1033,19 @@ void CharacterWindow::proposeAlliance()
 	CharacterManager::get().sendAllianceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 }
 
+void CharacterWindow::breakAlliance()
+{
+	std::vector<unsigned int> alliances = DiplomacyManager::get().getAlliances(m_PlayerCharacter->m_CharacterID);
+	for (unsigned int allyID : alliances)
+	{
+		if (allyID == m_CurrentCharacterID)
+		{
+			DiplomacyManager::get().breakAlliance(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
+			UIManager::get().createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AllianceBroken);
+		}
+	}
+}
+
 void CharacterWindow::assassinate()
 {
 	CharacterManager& characterManager = CharacterManager::get();
@@ -1030,14 +1053,22 @@ void CharacterWindow::assassinate()
 	{
 		return;
 	}
-	if (characterManager.chancePerPercent(0.5f))
+	if (m_PlayerCharacter->m_CurrentGold >= m_AssassinationCost)
 	{
-		UIManager::get().createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationSuccess);
-		characterManager.killCharacter(m_CurrentCharacterID);
+		m_PlayerCharacter->m_CurrentGold -= m_AssassinationCost;
+		if (characterManager.chancePerPercent(0.5f))
+		{
+			UIManager::get().createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationSuccess);
+			characterManager.killCharacter(m_CurrentCharacterID);
+		}
+		else
+		{
+			UIManager::get().createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationFailure);
+		}
 	}
 	else
 	{
-		UIManager::get().createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationFailure);
+		UIManager::get().createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::CannotAffordMessage, m_AssassinationCost);
 	}
 }
 

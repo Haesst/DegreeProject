@@ -23,8 +23,8 @@ public:
 	void openWindow();
 	void closeWindow();
 	void clickButton();
-	void setFamilyMember(CharacterID& characterID, unsigned int depth, unsigned int width);
-	void displayFamily(CharacterID& characterID, unsigned int depth, unsigned int width);
+	void setFamilyMember(CharacterID& characterID, unsigned int depth, float width);
+	void displayFamily(CharacterID& characterID, unsigned int depth, float width);
 	CharacterID& findFamilyHead(CharacterID& characterID);
 	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
 	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string = "");
@@ -61,7 +61,9 @@ public:
 	std::vector<CharacterID> m_CharacterIDs = std::vector<CharacterID>();
 	std::vector<sf::Text> m_CharacterInfo = std::vector<sf::Text>();
 	std::vector<bool> m_ShowCharacterInfo = std::vector<bool>();
-	
+	std::vector<sf::Sprite> m_CharacterDeadSprites = std::vector<sf::Sprite>();
+
+	sf::Texture m_DeadTexture;
 	sf::Texture m_MaleChildTexture;
 	sf::Texture m_FemaleChildTexture;
 	sf::Texture m_MaleCharacterTexture;

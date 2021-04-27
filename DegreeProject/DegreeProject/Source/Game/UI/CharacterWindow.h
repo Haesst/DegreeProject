@@ -47,6 +47,7 @@ public:
 	void offerPeace();
 	void proposeMarriage();
 	void proposeAlliance();
+	void breakAlliance();
 	void assassinate();
 	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
 	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string = "");
@@ -60,16 +61,14 @@ public:
 	std::vector<HeraldicShield*> m_OwnedRegionShields = std::vector<HeraldicShield*>();
 	std::vector<bool> m_OwnedRegionsShowInfo = std::vector<bool>();
 
-	const unsigned int m_NumberOfButtons = 5;
 	std::vector<sf::RectangleShape> m_ButtonShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Text> m_ButtonTexts = std::vector<sf::Text>();
-	std::vector<const char*> m_ButtonStrings = { "Declare War", "Make Peace", "Marriage", "Alliance", "Assassinate" };
+	const std::vector<const char*> m_ButtonStrings = { "Declare War", "Make Peace", "Marriage", "Alliance", "Break Alliance", "Assassinate" };
 	
-	const unsigned int m_NumberOfRelations = 5;
 	std::vector<sf::Text> m_DiplomacyTexts = std::vector<sf::Text>();
 	std::vector<sf::Texture> m_DiplomacyTextures = std::vector<sf::Texture>();
 	std::vector<sf::Sprite> m_DiplomacySprites = std::vector<sf::Sprite>();
-	std::vector<const char*> m_DiplomacyStrings = { "Regions", "Children", "Alliances", "Conflicts", "Parents" };
+	const std::vector<const char*> m_DiplomacyStrings = { "Regions", "Children", "Alliances", "Conflicts", "Parents" };
 	std::vector<bool> m_DiplomacyShowInfo = std::vector<bool>();
 
 	std::vector<sf::RectangleShape> m_ChildrenShapes = std::vector<sf::RectangleShape>();
@@ -123,7 +122,7 @@ public:
 	int m_CharacterSize = 25;
 	int m_DaySubscriptionHandle = -1;
 	bool m_Open = false;
-
+	float m_AssassinationCost = 50.0f;
 	sf::RenderWindow* m_Window = nullptr;
 	Character* m_PlayerCharacter = nullptr;
 	Character* m_CurrentCharacter = nullptr;

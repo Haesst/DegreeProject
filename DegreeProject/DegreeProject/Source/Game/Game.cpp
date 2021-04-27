@@ -208,8 +208,8 @@ void Game::addEntitys()
 	Vector2D regionWindowSize = { 600.0f, 600.0f };
 	UIManager::get().createUIWindowElement(m_UIFont, UIType::RegionWindow, regionWindowPosition, regionWindowSize);
 
-	Vector2D familyTreeWindowPosition = { 480.0f, 10.0f };
-	Vector2D familyTreeWindowSize = { 960.0f, 1060.0f };
+	Vector2D familyTreeWindowPosition = { characterWindowPosition.x * 2 + characterWindowSize.x, 10.0f };
+	Vector2D familyTreeWindowSize = { Window::getWindow()->getSize().x - familyTreeWindowPosition.x - 10.0f, 1060.0f };
 	UIManager::get().createUIWindowElement(m_UIFont, UIType::FamilyTreeWindow, familyTreeWindowPosition, familyTreeWindowSize);
 
 	Vector2D warWindowPosition = { 10.0f, Window::getWindow()->getSize().y - (300.0f + 10.0f) };
