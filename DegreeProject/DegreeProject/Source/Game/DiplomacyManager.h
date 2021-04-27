@@ -93,6 +93,7 @@ public:
 private:
 	void makeTruce(CharacterID char1, CharacterID char2);
 	void endTruce(int truceHandle);
+	void endTruces(std::vector<Truce> trucesToEnd);
 	void eraseWar(int handle);
 	void onMonthChange(Date currentDate);
 

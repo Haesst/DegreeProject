@@ -776,6 +776,14 @@ void DiplomacyManager::endTruce(int truceHandle)
 	m_ActiveTruces.erase(m_ActiveTruces.begin() + index);
 }
 
+void DiplomacyManager::endTruces(std::vector<Truce> trucesToEnd)
+{
+	for (auto& truce : trucesToEnd)
+	{
+		endTruce(truce.m_Handle);
+	}
+}
+
 void DiplomacyManager::eraseWar(int handle)
 {
 	int index = 0;
@@ -795,12 +803,19 @@ void DiplomacyManager::eraseWar(int handle)
 
 void DiplomacyManager::onMonthChange(Date currentDate)
 {
+	std::vector<Truce> trucesToEnd;
+
 	for (auto& truce : m_ActiveTruces)
 	{
 		if (currentDate.m_Month - truce.m_StartDate.m_Month >= 2) 
 		{
-			endTruce(truce.m_Handle);
+			trucesToEnd.push_back(truce);
 		}
+	}
+
+	if (!trucesToEnd.empty())
+	{
+		endTruces(trucesToEnd);
 	}
 }
 
