@@ -84,15 +84,17 @@ CharacterID AIRelationshipManager::getPotentialSpouse(AIData& data)
 {
 	std::vector<std::pair<float, int>> evalToSpouse;
 
+	if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Spouse != INVALID_CHARACTER_ID)
+	{
+		return INVALID_CHARACTER_ID;
+	}
+
 	for (auto& region : Map::get().getRegionIDs())
 	{
 		if (Map::get().getRegionById(region).m_OwnerID == data.m_OwnerID)
 			continue;
 
 		if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Gender == CharacterManager::get().getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
-			continue;
-
-		if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
 			continue;
 
 		float eval = marriageDecision(data, Map::get().getRegionById(region).m_OwnerID);

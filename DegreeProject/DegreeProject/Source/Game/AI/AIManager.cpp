@@ -377,7 +377,7 @@ void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& chara
 		}
 	}
 
-	if (warManager.getWarHandlesOfCharacter(warmind.m_OwnerID).empty() && m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_Raised)
+	if (warManager.getWarHandlesOfCharacter(warmind.m_OwnerID).empty())
 	{
 		unitManager.dismissUnit(unitManager.getUnitOfCharacter(warmind.m_OwnerID).m_UnitID);
 		warmind.m_Active = false;
