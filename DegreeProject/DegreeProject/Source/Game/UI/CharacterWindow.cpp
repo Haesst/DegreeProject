@@ -971,6 +971,11 @@ void CharacterWindow::declareWar()
 	War* war = warManager.getWarAgainst(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 	if (war == nullptr)
 	{
+		if (warManager.hasTruce(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID))
+		{
+			return;
+		}
+
 		int warHandle = DiplomacyManager::get().createWar(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, m_CurrentRegionID);
 
 		AIManager& aiManager = AIManager::get();
