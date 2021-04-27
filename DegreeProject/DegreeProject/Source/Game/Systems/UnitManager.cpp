@@ -54,11 +54,6 @@ void UnitManager::update()
 		// Engage enemy
 		unitCombat(unit);
 		// Siege
-		
-		//if (unit.m_Owner == CharacterManager::get().getPlayerCharacter().m_CharacterID)
-		//{
-		//	unitSiege(unit);
-		//}
 
 		startConquerRegion(unit);
 
@@ -534,9 +529,25 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 
 	float armyWeight;
 
+	std::vector<UnitID> unitAllies = getAlliesAtSquare(CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner), Map::get().convertToMap(getUnitWithId(unitID).m_Position));
+	std::vector<UnitID> enemyAllies = getAlliesAtSquare(CharacterManager::get().getCharacter(getUnitWithId(enemyID).m_Owner), Map::get().convertToMap(getUnitWithId(enemyID).m_Position));
+
+	int unitTotalForce = getUnitWithId(unitID).m_RepresentedForce;
+	int enemyTotalForce = getUnitWithId(enemyID).m_RepresentedForce;
+
+	for (auto& unit : unitAllies)
+	{
+		unitTotalForce += getUnitWithId(unit).m_RepresentedForce;
+	}
+
+	for (auto& unit : enemyAllies)
+	{
+		enemyTotalForce += getUnitWithId(unit).m_RepresentedForce;
+	}
+
 	if (getUnitWithId(unitID).m_RepresentedForce > 0 && getUnitWithId(enemyID).m_RepresentedForce > 0)
 	{
-		armyWeight = (float)getUnitWithId(unitID).m_RepresentedForce / getUnitWithId(enemyID).m_RepresentedForce;
+		armyWeight = (float)unitTotalForce / enemyTotalForce;
 	}
 
 	else
