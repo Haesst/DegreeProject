@@ -2,6 +2,12 @@
 #include <algorithm>
 #include "Game/Map/Map.h"
 
+namespace ConsiderationConstants
+{
+	const float maxBuildingCost = 20.0f;
+	const float positiveGoldDiffWeight = 0.2f;
+};
+
 struct Consideration
 {
 	CharacterID m_Context;
@@ -128,7 +134,7 @@ struct UpgradeSettlementConsideration : public Consideration
 
 		Building building = GameData::m_Buildings[buildingId];
 
-		if ((characterManager.getCharacter(context).m_CurrentGold - building.m_Cost) > 20)
+		if ((characterManager.getCharacter(context).m_CurrentGold - building.m_Cost) > ConsiderationConstants::maxBuildingCost)
 		{
 			goldSurplusWeight += .5f;
 		}
@@ -136,8 +142,6 @@ struct UpgradeSettlementConsideration : public Consideration
 		return std::clamp(goldSurplusWeight + (lowestTax * 0.1f), 0.0f, 1.0f);
 	}
 };
-
-
 
 struct GoldConsideration : public Consideration
 {
@@ -152,11 +156,8 @@ struct GoldConsideration : public Consideration
 		m_Context = context;
 	}
 
-
 	float evaluate(CharacterID context, CharacterID target = INVALID_CHARACTER_ID) override
 	{
-		float positiveGoldDiffWeight = 0.2f;
-
 		if (target == INVALID_CHARACTER_ID)
 		{
 			return 0.0f;
@@ -174,7 +175,7 @@ struct GoldConsideration : public Consideration
 		if (goldDiff > 0)
 		{
 			//y = x^2
-			return std::clamp(std::pow(percentDiff, 2.0f), 0.0f, 1.0f) + positiveGoldDiffWeight;
+			return std::clamp(std::pow(percentDiff, 2.0f), 0.0f, 1.0f) + ConsiderationConstants::positiveGoldDiffWeight;
 		}
 
 		else
