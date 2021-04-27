@@ -135,7 +135,7 @@ void GameDate::unsubscribeToDayChange(unsigned int id)
 	int index = 0;
 	bool found = false;
 
-	for (; index < m_MonthsInYear; ++index)
+	for (; index < m_DayChangeSubscribers.size(); ++index)
 	{
 		if (m_DayChangeSubscribers[index].id == id)
 		{
