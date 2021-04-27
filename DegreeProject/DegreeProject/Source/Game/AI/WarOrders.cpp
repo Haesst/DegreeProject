@@ -120,6 +120,11 @@ void WarOrders::orderAttackEnemyRegion(Unit& unit, Unit& enemyUnit)
 	Vector2DInt bestRegion;
 	float shortestDistance = FLT_MAX;
 
+	if(enemyCharacter.m_Dead)
+	{
+		return;
+	}
+
 	for (auto region : enemyCharacter.m_OwnedRegionIDs)
 	{
 		Vector2DInt regionPos = Map::get().getRegionById(region).m_RegionCapital;
