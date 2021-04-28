@@ -164,7 +164,7 @@ int CharacterManager::getCharacterOpinion(CharacterID characterID, CharacterID o
 
 	if (isAlliedWith(character.m_CharacterID, other.m_CharacterID))
 	{
-		opinion += 40;
+		opinion += CharacterConstants::m_AllyOpinion;
 	}
 
 	for (auto& trait : other.m_Traits)
