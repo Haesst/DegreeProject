@@ -198,4 +198,6 @@ public:
 
 	sf::Sprite m_FamilyTreeSprite;
 	sf::Texture m_FamilyTreeTexture;
+	sf::Text m_FamilyTreeText;
+	bool m_ShowFamilyInfo = false;
 };

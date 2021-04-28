@@ -20,6 +20,7 @@ FamilyTreeWindow::FamilyTreeWindow(UIID id, sf::Font font, Vector2D position, Ve
 	m_PositionY = position.y;
 
 	setShape(m_WindowShape, m_FillColor, m_OwnerColor, m_OutlineThickness, {  }, { m_PositionX, m_PositionY });
+	setText(m_WindowTitle, m_Font, m_CharacterSize, m_OwnerColor, { m_PositionX + m_SizeX * 0.5f - m_SpriteSize, m_PositionY }, "Family Tree");
 
 	AssetHandler& assetHandler = AssetHandler::get();
 
@@ -53,6 +54,7 @@ void FamilyTreeWindow::render()
 	if (m_Visible)
 	{
 		m_Window->draw(m_WindowShape);
+		m_Window->draw(m_WindowTitle);
 
 		for (unsigned int index = 0; index < m_CharacterShapes.size(); index++)
 		{
@@ -126,6 +128,7 @@ void FamilyTreeWindow::updateInfo()
 			m_OwnerColor = m_CurrentCharacter->m_ColorAtDeath;
 		}
 		m_WindowShape.setOutlineColor(m_OwnerColor);
+		m_WindowTitle.setFillColor(m_OwnerColor);
 
 		displayFamily(findFamilyHead(m_CurrentCharacterID), 0, 0.0f);
 	}

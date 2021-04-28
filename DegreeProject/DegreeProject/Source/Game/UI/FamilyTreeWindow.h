@@ -68,4 +68,6 @@ public:
 	sf::Texture m_FemaleChildTexture;
 	sf::Texture m_MaleCharacterTexture;
 	sf::Texture m_FemaleCharacterTexture;
+
+	sf::Text m_WindowTitle;
 };

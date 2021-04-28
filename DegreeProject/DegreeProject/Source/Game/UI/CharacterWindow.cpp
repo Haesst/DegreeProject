@@ -134,8 +134,7 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 
 	m_FamilyTreeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Bloodline3.png");
 	setSprite(m_FamilyTreeSprite, m_FamilyTreeTexture, { m_DiplomacySprites.back().getPosition().x + m_SpriteSize * 2, m_DiplomacySprites.back().getPosition().y });
-
-	clearInfo();
+	setText(m_FamilyTreeText, m_Font, m_CharacterSize, m_OwnerColor, { m_FamilyTreeSprite.getPosition().x, m_FamilyTreeSprite.getPosition().y + m_SpriteSize }, "Family Tree");
 }
 
 void CharacterWindow::start()
@@ -179,6 +178,10 @@ void CharacterWindow::render()
 		m_Window->draw(m_AgeSprite);
 		m_Window->draw(m_CharacterAgeText);
 		m_Window->draw(m_FamilyTreeSprite);
+		if (m_ShowFamilyInfo)
+		{
+			m_Window->draw(m_FamilyTreeText);
+		}
 		m_Window->draw(m_CharacterSprite);
 
 		if (m_Pregnant)
@@ -638,6 +641,7 @@ void CharacterWindow::updateInfo()
 		}
 
 		m_WindowShape.setOutlineColor(m_OwnerColor);
+		m_FamilyTreeText.setFillColor(m_OwnerColor);
 
 		for (sf::Text& text : m_DiplomacyTexts)
 		{
@@ -830,6 +834,15 @@ void CharacterWindow::clickButton()
 		else
 		{
 			m_ShowMotherName = false;
+		}
+		if (m_FamilyTreeSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		{
+			InputHandler::setLeftMouseReleased(false);
+			m_ShowFamilyInfo = true;
+		}
+		else
+		{
+			m_ShowFamilyInfo = false;
 		}
 		for (unsigned int index = 0; index < m_OwnedRegionShapes.size(); index++)
 		{
