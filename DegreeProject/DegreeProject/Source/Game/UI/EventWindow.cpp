@@ -338,12 +338,28 @@ void EventWindow::handleWindow()
 	if (InputHandler::m_Inputs[EnterPressed])
 	{
 		InputHandler::m_Inputs[EnterPressed] = false;
+		m_AgreeShape.setFillColor(m_AgreeShape.getOutlineColor());
+		m_AgreeText.setFillColor(m_FillColor);
+	}
+	else if (InputHandler::m_Inputs[EnterReleased])
+	{
+		InputHandler::m_Inputs[EnterReleased] = false;
+		m_AgreeShape.setFillColor(m_TransparentColor);
+		m_AgreeText.setFillColor(m_AgreeShape.getOutlineColor());
 		acceptRequest();
 		closeWindow();
 	}
 	else if(InputHandler::m_Inputs[BackSpacePressed])
 	{
 		InputHandler::m_Inputs[BackSpacePressed] = false;
+		m_DismissShape.setFillColor(m_DismissShape.getOutlineColor());
+		m_DismissText.setFillColor(m_FillColor);
+	}
+	else if (InputHandler::m_Inputs[BackSpaceReleased])
+	{
+		m_DismissShape.setFillColor(m_TransparentColor);
+		m_DismissText.setFillColor(m_DismissShape.getOutlineColor());
+		InputHandler::m_Inputs[BackSpaceReleased] = false;
 		dismissRequest();
 		closeWindow();
 	}
@@ -456,7 +472,19 @@ void EventWindow::clickButton()
 	if (InputHandler::getLeftMouseClicked())
 	{
 		m_MousePosition = InputHandler::getUIMousePosition();
-		if (m_WindowShape.getGlobalBounds().contains(m_MousePosition.x, m_MousePosition.y))
+		if (m_DismissShape.getGlobalBounds().contains(m_MousePosition.x, m_MousePosition.y))
+		{
+			InputHandler::setLeftMouseReleased(false);
+			m_DismissShape.setFillColor(m_DismissShape.getOutlineColor());
+			m_DismissText.setFillColor(m_FillColor);
+		}
+		else if (m_AgreeShape.getGlobalBounds().contains(m_MousePosition.x, m_MousePosition.y))
+		{
+			InputHandler::setLeftMouseReleased(false);
+			m_AgreeShape.setFillColor(m_AgreeShape.getOutlineColor());
+			m_AgreeText.setFillColor(m_FillColor);
+		}
+		else if (m_WindowShape.getGlobalBounds().contains(m_MousePosition.x, m_MousePosition.y))
 		{
 			InputHandler::setLeftMouseClicked(false);
 			m_MovingWindow = true;
@@ -465,6 +493,10 @@ void EventWindow::clickButton()
 	if (InputHandler::getLeftMouseReleased())
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
+		m_DismissShape.setFillColor(m_TransparentColor);
+		m_DismissText.setFillColor(m_DismissShape.getOutlineColor());
+		m_AgreeShape.setFillColor(m_TransparentColor);
+		m_AgreeText.setFillColor(m_AgreeShape.getOutlineColor());
 		if (m_DismissShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			InputHandler::setLeftMouseReleased(false);

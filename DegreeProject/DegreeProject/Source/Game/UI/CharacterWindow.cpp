@@ -805,6 +805,20 @@ void CharacterWindow::closeWindow()
 
 void CharacterWindow::clickButton()
 {
+	if (InputHandler::getLeftMouseClicked())
+	{
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
+		unsigned int numberOfButtons = m_ButtonStrings.size();
+		for (unsigned int index = 0; index < numberOfButtons; index++)
+		{
+			if (m_ButtonShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				InputHandler::setLeftMouseReleased(false);
+				m_ButtonShapes[index].setFillColor(m_ButtonShapes[index].getOutlineColor());
+				m_ButtonTexts[index].setFillColor(m_FillColor);
+			}
+		}
+	}
 	if (InputHandler::getLeftMouseReleased())
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
@@ -1001,6 +1015,8 @@ void CharacterWindow::clickButton()
 		unsigned int numberOfButtons = m_ButtonStrings.size();
 		for (unsigned int index = 0; index < numberOfButtons; index++)
 		{
+			m_ButtonShapes[index].setFillColor(m_TransparentColor);
+			m_ButtonTexts[index].setFillColor(m_ButtonShapes[index].getOutlineColor());
 			if (m_ButtonShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				InputHandler::setLeftMouseReleased(false);

@@ -159,6 +159,29 @@ void InputHandler::handleInputEvents()
 			}
 			break;
 		}
+		case sf::Event::KeyReleased:
+		{
+			switch (event.key.code)
+			{
+				case sf::Keyboard::C:
+				case sf::Keyboard::Enter:
+				{
+					m_Inputs[EnterReleased] = true;
+					break;
+				}
+				case sf::Keyboard::Z:
+				case sf::Keyboard::BackSpace:
+				{
+					m_Inputs[BackSpaceReleased] = true;
+					break;
+				}
+				default:
+				{
+					break;
+				}
+			}
+			break;
+		}
 		case sf::Event::Resized:
 		{
 			break;
