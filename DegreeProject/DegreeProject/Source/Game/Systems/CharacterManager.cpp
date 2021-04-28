@@ -640,6 +640,7 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	{
 		UIManager::get().createUIEventElement(characterID, characterID, UIType::Death);
 		handleInheritance(character);
+		UIManager::get().SetRealmTextAsConquered(character.m_CharacterID);
 	}
 
 	character.m_RegionColor = sf::Color::Black;
@@ -648,6 +649,7 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	character.m_MaxArmySize = 0;
 	character.m_OwnedRegionIDs.clear();
 	character.m_CharacterTitle = Title::Unlanded;
+	character.m_IsPlayerControlled = false;
 
 	for (const CharacterID& ally : DiplomacyManager::get().getAlliances(characterID))
 	{
@@ -811,9 +813,6 @@ void CharacterManager::handleInheritance(Character& character)
 		updateTitleAndUIText(*currentChildCharacter);
 		UIManager::get().AdjustOwnerships(currentChildCharacter->m_CharacterID, character.m_CharacterID, currentChildCharacter->m_OwnedRegionIDs);
 	}
-
-	character.m_IsPlayerControlled = false;
-	UIManager::get().SetRealmTextAsConquered(character.m_CharacterID);
 
 	if (character.m_UnitEntity != INVALID_UNIT_ID)
 	{
