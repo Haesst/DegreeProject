@@ -213,8 +213,18 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, Pea
 		acceptance -= .4f;
 	}
 
-	int senderArmySize = CharacterManager::get().getCharacter(sender).m_RaisedArmySize;
-	int recieverArmySize = CharacterManager::get().getCharacter(reciever).m_RaisedArmySize;
+	int senderArmySize = UnitManager::get().getUnitOfCharacter(sender).m_RepresentedForce;
+	int recieverArmySize = UnitManager::get().getUnitOfCharacter(reciever).m_RepresentedForce;
+
+	if (!UnitManager::get().getUnitOfCharacter(sender).m_Raised)
+	{
+		senderArmySize = 0;
+	}
+
+	if (!UnitManager::get().getUnitOfCharacter(reciever).m_Raised)
+	{
+		recieverArmySize = 0;
+	}
 
 	if (senderArmySize > recieverArmySize)
 	{

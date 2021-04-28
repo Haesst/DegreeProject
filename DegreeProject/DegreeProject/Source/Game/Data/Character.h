@@ -48,7 +48,7 @@ struct Character
 	std::vector<Trait> m_Traits;
 
 	unsigned int m_MaxArmySize = 0;
-	unsigned int m_RaisedArmySize = 0;
+	//unsigned int m_RaisedArmySize = 0;
 	unsigned int m_CurrentMaxArmySize = 0;
 
 	//std::vector<int> m_CurrentWars = std::vector<int>();

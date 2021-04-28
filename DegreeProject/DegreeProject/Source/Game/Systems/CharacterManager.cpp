@@ -645,7 +645,6 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	character.m_KingdomName = "";
 	character.m_CurrentGold = 0;
 	character.m_MaxArmySize = 0;
-	character.m_RaisedArmySize = 0;
 	character.m_OwnedRegionIDs.clear();
 	character.m_CharacterTitle = Title::Unlanded;
 

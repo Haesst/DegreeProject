@@ -227,7 +227,7 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 
 	startConquerRegion(unit);
 
-	CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner).m_RaisedArmySize = unit.m_RepresentedForce;
+	//CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner).m_RaisedArmySize = unit.m_RepresentedForce;
 }
 
 void UnitManager::dismissUnit(UnitID unitID)

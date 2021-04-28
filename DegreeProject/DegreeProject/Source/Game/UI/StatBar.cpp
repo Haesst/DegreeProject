@@ -3,7 +3,9 @@
 #include "Engine/Window.h"
 #include "Engine/AssetHandler.h"
 #include "Game/Systems/CharacterManager.h"
+#include "Game/Systems/UnitManager.h"
 #include "Game/Data/Character.h"
+#include "Game/Data/Unit.h"
 #include <sstream>
 #include <iomanip>
 
@@ -89,7 +91,14 @@ void StatBar::updateStats()
 	stream.str(std::string());
 	stream.clear();
 
-	stream << character.m_RaisedArmySize;
+	int raisedArmySize = UnitManager::get().getUnitOfCharacter(character.m_CharacterID).m_RepresentedForce;
+
+	if (!UnitManager::get().getUnitOfCharacter(character.m_CharacterID).m_Raised)
+	{
+		raisedArmySize = 0;
+	}
+
+	stream << raisedArmySize;
 	m_CurrentMaxArmyText.setString(stream.str());
 	stream.str(std::string());
 	stream.clear();

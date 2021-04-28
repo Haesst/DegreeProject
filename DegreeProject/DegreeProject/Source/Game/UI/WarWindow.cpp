@@ -5,7 +5,9 @@
 #include "Engine/AssetHandler.h"
 #include "Engine/InputHandler.h"
 #include "Game/Systems/CharacterManager.h"
+#include "Game/Systems/UnitManager.h"
 #include "Game/Data/Character.h"
+#include "Game/Data/Unit.h"
 #include "Game/UI/UIManager.h"
 #include "Game/UI/CharacterWindow.h"
 #include <sstream>
@@ -292,7 +294,11 @@ void WarWindow::updateInfo()
 		{
 			Character& attacker = CharacterManager::get().getCharacter(attackerID);
 			totalArmy += attacker.m_MaxArmySize;
-			totalRaisedArmy += attacker.m_RaisedArmySize;
+
+			if (UnitManager::get().getUnitOfCharacter(attackerID).m_Raised)
+			{
+				totalRaisedArmy += UnitManager::get().getUnitOfCharacter(attackerID).m_RepresentedForce;
+			}
 		}
 		stream << totalRaisedArmy << m_DashSign << totalArmy;
 		m_AttackerArmyStrengthText.setString(stream.str());
@@ -305,7 +311,11 @@ void WarWindow::updateInfo()
 		{
 			Character& defender = CharacterManager::get().getCharacter(defenderID);
 			totalArmy += defender.m_MaxArmySize;
-			totalRaisedArmy += defender.m_RaisedArmySize;
+
+			if (UnitManager::get().getUnitOfCharacter(defenderID).m_Raised)
+			{
+				totalRaisedArmy += UnitManager::get().getUnitOfCharacter(defenderID).m_RepresentedForce;
+			}
 		}
 		stream << totalRaisedArmy << m_DashSign << totalArmy;
 		m_DefenderArmyStrengthText.setString(stream.str());
