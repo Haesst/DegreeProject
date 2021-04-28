@@ -14,18 +14,16 @@ enum class PeaceType
 
 struct Truce
 {
-	Truce(Date startDate, CharacterID char1, CharacterID char2, int handle)
+	Truce(Date startDate, CharacterID truceOwner, CharacterID truceOpponent)
 	{
 		m_StartDate = startDate;
-		m_Char1 = char1;
-		m_Char2 = char2;
-		m_Handle = handle;
+		m_TruceOwner = truceOwner;
+		m_TruceOpponent = truceOpponent;
 	}
 
-	int m_Handle = -1;
 	Date m_StartDate;
-	CharacterID m_Char1;
-	CharacterID m_Char2;
+	CharacterID m_TruceOwner;
+	CharacterID m_TruceOpponent;
 };
 
 class DiplomacyManager
@@ -79,6 +77,7 @@ public:
 	void createAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID);
 	void breakAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID);
 	std::vector<CharacterID> getAlliances(const CharacterID& character);
+	std::vector<Truce> getTruces(const CharacterID& character);
 
 	inline static DiplomacyManager& get()
 	{
@@ -91,11 +90,11 @@ public:
 	}
 
 private:
-	void makeTruce(CharacterID char1, CharacterID char2);
-	void endTruce(int truceHandle);
+	void makeTruce(const CharacterID& characterOneID, const CharacterID& characterTwoID);
+	void endTruce(const CharacterID& characterOneID, const CharacterID& characterTwoID);
 	void endTruces(std::vector<Truce> trucesToEnd);
 	void eraseWar(int handle);
-	void onMonthChange(Date currentDate);
+	void onMonthChange();
 
 private:
 
@@ -110,5 +109,5 @@ private:
 
 	// Alliances
 	std::map<CharacterID, std::vector<CharacterID>> m_Alliances;
-	std::vector<Truce> m_ActiveTruces;
+	std::map<CharacterID, std::vector<Truce>> m_ActiveTruces;
 };

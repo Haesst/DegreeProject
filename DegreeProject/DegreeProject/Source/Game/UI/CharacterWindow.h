@@ -87,6 +87,8 @@ public:
 
 	std::vector<sf::RectangleShape> m_TruceShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_TruceSprites = std::vector<sf::Sprite>();
+	std::vector<sf::Text> m_TruceTexts = std::vector<sf::Text>();
+	std::vector<CharacterID> m_TruceIDs = std::vector<CharacterID>();
 
 	const unsigned int m_NumberOfTraits = 8;
 	std::vector<sf::Texture> m_TraitTextures = std::vector<sf::Texture>();

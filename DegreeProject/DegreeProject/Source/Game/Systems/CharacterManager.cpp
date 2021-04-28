@@ -634,6 +634,7 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	character.m_DeathDate.m_Month += 1;
 	character.m_TitleAtDeath = character.m_CharacterTitle;
 	character.m_ColorAtDeath = character.m_RegionColor;
+	character.m_AgeAtDeath = Time::m_GameDate.getAge(character.m_Birthday);
 
 	if (character.m_CharacterTitle != Title::Unlanded && character.m_OwnedRegionIDs.size() > 0)
 	{
@@ -866,14 +867,14 @@ void CharacterManager::constructBuilding(const CharacterID characterId, const in
 	{
 		if (character.m_IsPlayerControlled)
 		{
-			UIManager::get().createUIEventElement(m_PlayerCharacterID, m_PlayerCharacterID, UIType::CannotAffordMessage, building.m_Cost);
+			UIManager::get().createUIEventElement(m_PlayerCharacterID, m_PlayerCharacterID, UIType::CannotAffordMessage, (float)building.m_Cost);
 		}
 		return;
 	}
 
 	if (character.m_IsPlayerControlled)
 	{
-		UIManager::get().createUIEventElement(m_PlayerCharacterID, m_PlayerCharacterID, UIType::BuildingMessage, building.m_Cost, building.m_Name, region.m_RegionName);
+		UIManager::get().createUIEventElement(m_PlayerCharacterID, m_PlayerCharacterID, UIType::BuildingMessage, (float)building.m_Cost, building.m_Name, region.m_RegionName);
 	}
 
 	Map::get().startConstructionOfBuilding(buildingId, buildingSlot, regionId);

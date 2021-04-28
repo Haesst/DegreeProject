@@ -247,6 +247,13 @@ void CharacterWindow::render()
 			m_Window->draw(m_WarSprites[index]);
 		}
 
+		for (unsigned int index = 0; index < m_TruceShapes.size(); index++)
+		{
+			m_Window->draw(m_TruceShapes[index]);
+			m_Window->draw(m_TruceSprites[index]);
+			m_Window->draw(m_TruceTexts[index]);
+		}
+
 		for (unsigned int index = 0; index < m_TraitSprites.size(); index++)
 		{
 			if (m_TraitsEnabled[index])
@@ -357,6 +364,8 @@ void CharacterWindow::clearInfo()
 
 	m_TruceShapes.clear();
 	m_TruceSprites.clear();
+	m_TruceIDs.clear();
+	m_TruceTexts.clear();
 }
 
 void CharacterWindow::updateParents()
@@ -523,15 +532,15 @@ void CharacterWindow::updateAllies()
 void CharacterWindow::updateWars()
 {
 	CharacterManager& characterManager = CharacterManager::get();
-	DiplomacyManager& warManager = DiplomacyManager::get();
-	unsigned int sizeWars = warManager.getWarHandlesOfCharacter(m_CurrentCharacterID).size();
+	DiplomacyManager& diplomacyManager = DiplomacyManager::get();
+	unsigned int sizeWars = diplomacyManager.getWarHandlesOfCharacter(m_CurrentCharacterID).size();
 	for (unsigned int index = 0; index < sizeWars; index++)
 	{
-		int warHandle = warManager.getWarHandlesOfCharacter(m_CurrentCharacter->m_CharacterID)[index];
-		CharacterID defenderID = warManager.getDefender(warHandle);
-		CharacterID attackerID = warManager.getAttacker(warHandle);
+		int warHandle = diplomacyManager.getWarHandlesOfCharacter(m_CurrentCharacter->m_CharacterID)[index];
+		CharacterID defenderID = diplomacyManager.getDefender(warHandle);
+		CharacterID attackerID = diplomacyManager.getAttacker(warHandle);
 		CharacterID opponentID;
-		if (warManager.isAttacker(warHandle, m_CurrentCharacterID))
+		if (diplomacyManager.isAttacker(warHandle, m_CurrentCharacterID))
 		{
 			opponentID = defenderID;
 		}
@@ -564,41 +573,37 @@ void CharacterWindow::updateWars()
 void CharacterWindow::updateTruces()
 {
 	CharacterManager& characterManager = CharacterManager::get();
-	DiplomacyManager& warManager = DiplomacyManager::get();
-	unsigned int sizeWars = warManager.getWarHandlesOfCharacter(m_CurrentCharacterID).size();
-	for (unsigned int index = 0; index < sizeWars; index++)
+	DiplomacyManager& diplomacyManager = DiplomacyManager::get();
+	std::vector<Truce> truces = diplomacyManager.getTruces(m_CurrentCharacterID);
+	unsigned int numberOfTruces = truces.size();
+	for (unsigned int index = 0; index < numberOfTruces; index++)
 	{
-		int warHandle = warManager.getWarHandlesOfCharacter(m_CurrentCharacter->m_CharacterID)[index];
-		CharacterID defenderID = warManager.getDefender(warHandle);
-		CharacterID attackerID = warManager.getAttacker(warHandle);
-		CharacterID opponentID;
-		if (warManager.isAttacker(warHandle, m_CurrentCharacterID))
-		{
-			opponentID = defenderID;
-		}
-		else
-		{
-			opponentID = attackerID;
-		}
-		Character& opponent = characterManager.getCharacter(opponentID);
+		Truce truce = truces[index];
+		Character& opponent = characterManager.getCharacter(truce.m_TruceOpponent);
 
-		sf::RectangleShape warShape;
-		setShape(warShape, m_TransparentColor, opponent.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.4f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
+		sf::RectangleShape truceShape;
+		setShape(truceShape, m_TransparentColor, opponent.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.6f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
 
 		sf::Sprite opponetSprite;
 		if (opponent.m_Gender == Gender::Male)
 		{
-			setSprite(opponetSprite, m_MaleCharacterTexture, warShape.getPosition());
+			setSprite(opponetSprite, m_MaleCharacterTexture, truceShape.getPosition());
 		}
 		else
 		{
-			setSprite(opponetSprite, m_FemaleCharacterTexture, warShape.getPosition());
+			setSprite(opponetSprite, m_FemaleCharacterTexture, truceShape.getPosition());
 		}
-
-		m_WarShapes.push_back(warShape);
-		m_WarSprites.push_back(opponetSprite);
-		m_WarDefenders.push_back(defenderID);
-		m_WarAttackers.push_back(attackerID);
+		sf::Text truceText;
+		std::stringstream stream;
+		stream << truce.m_StartDate.m_Day << m_Dash << truce.m_StartDate.m_Month + 1 << m_Dash << truce.m_StartDate.m_Year + 1;
+		setText(truceText, m_Font, m_CharacterSize, opponent.m_RegionColor, { truceShape.getPosition().x + m_SpriteSize + m_OutlineThickness, truceShape.getPosition().y }, stream.str().c_str());
+		stream.str(std::string());
+		stream.clear();
+		
+		m_TruceTexts.push_back(truceText);
+		m_TruceShapes.push_back(truceShape);
+		m_TruceSprites.push_back(opponetSprite);
+		m_TruceIDs.push_back(truce.m_TruceOpponent);
 	}
 }
 
@@ -645,6 +650,7 @@ void CharacterWindow::updateInfo()
 		updateChildren();
 		updateAllies();
 		updateWars();
+		updateTruces();
 
 		Map& map = Map::get();
 		unsigned int ownedRegionSize = m_CurrentCharacter->m_OwnedRegionIDs.size();
@@ -713,7 +719,14 @@ void CharacterWindow::updateInfo()
 		stream.str(std::string());
 		stream.clear();
 
-		stream << Time::m_GameDate.getAge(m_CurrentCharacter->m_Birthday);
+		if (!m_Dead)
+		{
+			stream << Time::m_GameDate.getAge(m_CurrentCharacter->m_Birthday);
+		}
+		else
+		{
+			stream << m_CurrentCharacter->m_AgeAtDeath;
+		}
 		m_CharacterAgeText.setString(stream.str());
 		m_CharacterAgeText.setFillColor(m_OwnerColor);
 		stream.str(std::string());
@@ -931,14 +944,25 @@ void CharacterWindow::clickButton()
 				break;
 			}
 		}
-		DiplomacyManager& warManager = DiplomacyManager::get();
+		DiplomacyManager& diplomacyManager = DiplomacyManager::get();
 		for (unsigned int index = 0; index < m_WarShapes.size(); index++)
 		{
 			if (m_WarShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
 				InputHandler::setRightMouseReleased(false);
-				std::vector<int> wars = warManager.getWarHandlesOfCharacter(m_CurrentCharacter->m_CharacterID);
-				m_CurrentCharacterID = warManager.getOpposingForce(wars[index], m_CurrentCharacterID);
+				std::vector<int> wars = diplomacyManager.getWarHandlesOfCharacter(m_CurrentCharacter->m_CharacterID);
+				m_CurrentCharacterID = diplomacyManager.getOpposingForce(wars[index], m_CurrentCharacterID);
+				checkIfPlayerCharacter();
+				updateInfo();
+				break;
+			}
+		}
+		for (unsigned int index = 0; index < m_TruceShapes.size(); index++)
+		{
+			if (m_TruceShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			{
+				InputHandler::setRightMouseReleased(false);
+				m_CurrentCharacterID = m_TruceIDs[index];
 				checkIfPlayerCharacter();
 				updateInfo();
 				break;
@@ -1027,11 +1051,11 @@ void CharacterWindow::declareWar()
 			return;
 		}
 	}
-	DiplomacyManager& warManager = DiplomacyManager::get();
-	War* war = warManager.getWarAgainst(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
+	DiplomacyManager& diplomacyManager = DiplomacyManager::get();
+	War* war = diplomacyManager.getWarAgainst(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 	if (war == nullptr)
 	{
-		if (warManager.hasTruce(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID))
+		if (diplomacyManager.hasTruce(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID))
 		{
 			uiManager.createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::TruceMessage);
 			return;

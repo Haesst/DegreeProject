@@ -7,6 +7,8 @@
 #include "Game/Map/Map.h"
 #include "Game/UI/UIManager.h"
 #include "Game/Systems/UnitManager.h"
+#include "Engine/Time.h"
+#include "Game/GameDate.h"
 
 DiplomacyManager* DiplomacyManager::m_Instance = nullptr;
 
@@ -79,7 +81,7 @@ void DiplomacyManager::endWar(int warHandle, CharacterID winner)
 
 void DiplomacyManager::start()
 {
-	Time::m_GameDate.subscribeToMonthChange(std::bind(&DiplomacyManager::onMonthChange, this, std::placeholders::_1));
+	Time::m_GameDate.subscribeToMonthChange(std::bind(&DiplomacyManager::onMonthChange, this));
 }
 
 War* DiplomacyManager::getWar(int handle)
@@ -543,11 +545,11 @@ bool DiplomacyManager::isDefender(int warHandle, CharacterID ent)
 	return false;
 }
 
-bool DiplomacyManager::hasTruce(CharacterID char1, CharacterID char2)
+bool DiplomacyManager::hasTruce(CharacterID characterOneID, CharacterID characterTwoID)
 {
-	for (auto& truce : m_ActiveTruces)
+	for (auto& truce : m_ActiveTruces[characterOneID])
 	{
-		if (truce.m_Char1 == char1 && truce.m_Char2 == char2 || truce.m_Char1 == char2 && truce.m_Char2 == char1)
+		if (truce.m_TruceOpponent == characterTwoID)
 		{
 			return true;
 		}
@@ -754,33 +756,43 @@ std::vector<CharacterID> DiplomacyManager::getAlliances(const CharacterID& chara
 	return m_Alliances[character];
 }
 
-void DiplomacyManager::makeTruce(CharacterID char1, CharacterID char2)
+std::vector<Truce> DiplomacyManager::getTruces(const CharacterID& character)
 {
-	Truce truce(Time::m_GameDate.m_Date, char1, char2, m_TruceHandle += 1);
-	m_ActiveTruces.push_back(truce);
+	return m_ActiveTruces[character];
+}
+void DiplomacyManager::makeTruce(const CharacterID& characterOneID, const CharacterID& characterTwoID)
+{
+	Truce truceOne(Time::m_GameDate.m_Date, characterOneID, characterTwoID);
+	Truce truceTwo(Time::m_GameDate.m_Date, characterTwoID, characterOneID);
+	m_ActiveTruces[characterOneID].push_back(truceOne);
+	m_ActiveTruces[characterTwoID].push_back(truceTwo);
 }
 
-void DiplomacyManager::endTruce(int truceHandle)
+void DiplomacyManager::endTruce(const CharacterID& characterOneID, const CharacterID& characterTwoID)
 {
 	unsigned int index = 0;
-	for (auto& truce : m_ActiveTruces)
+	bool foundTruce = false;
+	for (Truce& truce : m_ActiveTruces[characterOneID])
 	{
-		if (truce.m_Handle == truceHandle)
+		if (truce.m_TruceOpponent == characterTwoID)
 		{
+			foundTruce = true;
 			break;
 		}
 
 		index++;
 	}
 
-	m_ActiveTruces.erase(m_ActiveTruces.begin() + index);
+	ASSERT(foundTruce, "Given truce doesn't exist");
+
+	m_ActiveTruces[characterOneID].erase(m_ActiveTruces[characterOneID].begin() + index);
 }
 
 void DiplomacyManager::endTruces(std::vector<Truce> trucesToEnd)
 {
-	for (auto& truce : trucesToEnd)
+	for (Truce& truce : trucesToEnd)
 	{
-		endTruce(truce.m_Handle);
+		endTruce(truce.m_TruceOwner, truce.m_TruceOpponent);
 	}
 }
 
@@ -801,15 +813,18 @@ void DiplomacyManager::eraseWar(int handle)
 	m_Wars.erase(m_Wars.begin() + index);
 }
 
-void DiplomacyManager::onMonthChange(Date currentDate)
+void DiplomacyManager::onMonthChange()
 {
 	std::vector<Truce> trucesToEnd;
 
-	for (auto& truce : m_ActiveTruces)
+	for (std::map<CharacterID, std::vector<Truce>>::iterator it = m_ActiveTruces.begin(); it != m_ActiveTruces.end(); ++it)
 	{
-		if (currentDate.m_Month - truce.m_StartDate.m_Month >= 2) 
+		for (Truce& truce : m_ActiveTruces[it->first])
 		{
-			trucesToEnd.push_back(truce);
+			if (Time::m_GameDate.getAge(truce.m_StartDate) >= 1)
+			{
+				trucesToEnd.push_back(truce);
+			}
 		}
 	}
 

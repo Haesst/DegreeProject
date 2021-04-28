@@ -44,7 +44,7 @@ UIManager::~UIManager()
 	delete m_DateBar;
 	delete m_WarWindow;
 	delete m_FamilyTreeWindow;
-	for (std::unordered_map<CharacterID, UIText*>::iterator itr = m_UITexts.begin(); itr != m_UITexts.end(); itr++)
+	for (std::unordered_map<CharacterID, UIText*>::iterator itr = m_UITexts.begin(); itr != m_UITexts.end(); ++itr)
 	{
 		delete itr->second;
 	}
