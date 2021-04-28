@@ -135,22 +135,6 @@ void DiplomacyManager::invalidateWarsForRegionOnWonWar(War& wonWar)
 				continue;
 			}
 
-			for (auto& attacker : war.second.m_Attackers)
-			{
-				if (!characterManager->getCharacter(attacker).m_IsPlayerControlled)
-				{
-					unitManager.dismissUnit(unitManager.getUnitOfCharacter(attacker).m_UnitID);
-				}
-			}
-
-			for (auto& defender : war.second.m_Defenders)
-			{
-				if (!characterManager->getCharacter(defender).m_IsPlayerControlled)
-				{
-					unitManager.dismissUnit(unitManager.getUnitOfCharacter(defender).m_UnitID);
-				}
-			}
-
 			endWar(war.second.getHandle(), INVALID_CHARACTER_ID);
 		}
 	}
