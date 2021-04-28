@@ -112,6 +112,7 @@ void AIManager::initAI(CharacterID ID)
 	data.m_OwnerID = ID;
 	data.m_LastAction = Action::NONE;
 	data.m_CurrentAction = Action::NONE;
+	data.m_LastMarriageOfferDate = Time::m_GameDate.m_Date;
 
 	int randomTickRate = (rand() % 3) + 1;
 	data.m_TickPrio = randomTickRate;

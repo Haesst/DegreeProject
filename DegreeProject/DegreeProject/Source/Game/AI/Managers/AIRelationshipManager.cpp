@@ -13,7 +13,7 @@ void AIRelationshipManager::update(AIData& data)
 {
 	CharacterID potentialSpouse = getPotentialSpouse(data);
 
-	if (potentialSpouse != INVALID_CHARACTER_ID)
+	if (potentialSpouse != INVALID_CHARACTER_ID && Time::m_GameDate.m_Date.m_Month - data.m_LastMarriageOfferDate.m_Month >= relationshipConstants::marriageOfferCooldown)
 	{
 		float marriageEval = marriageDecision(data, potentialSpouse);
 
@@ -43,7 +43,7 @@ void AIRelationshipManager::marry(AIData& data)
 	{
 		return;
 	}
-
+	data.m_LastMarriageOfferDate = Time::m_GameDate.m_Date;
 	CharacterManager::get().marry(data.m_OwnerID, data.m_PotentialSpouseID);
 }
 

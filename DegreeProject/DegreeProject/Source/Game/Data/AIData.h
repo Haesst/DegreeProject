@@ -15,6 +15,7 @@ struct AIData
 	Action m_CurrentAction = Action::NONE;
 	CharacterID m_OwnerID = INVALID_CHARACTER_ID;
 	Action m_LastAction = Action::NONE;
+	Date m_LastMarriageOfferDate;
 
 	std::vector<std::pair<float, Action>> m_Evaluations;
 
