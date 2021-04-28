@@ -296,6 +296,25 @@ bool Map::mapSquareDataContainsKey(const Vector2DInt& key)
 	return false;
 }
 
+void Map::drawMiniMap()
+{
+	renderSquares(m_MountainVertexArray, m_MountainBaseColor, m_MountainAlternateColor, m_Data.m_LandTexture, false);
+	renderSquares(m_UnreachableVertexArray, m_UnreachableLandColor, m_UnreachableLandColor, m_Data.m_LandTexture, false);
+
+	for (auto& region : m_Data.m_Regions)
+	{
+		sf::Color occupiedColor = region.m_HighlightColor;
+
+		if (region.m_OccupiedBy != INVALID_CHARACTER_ID)
+		{
+			occupiedColor = CharacterManager::get().getCharacter(region.m_OccupiedBy).m_RegionColor;
+		}
+
+		renderSquares(region.m_VertexArray, region.m_HighlightColor, occupiedColor, m_Data.m_LandTexture, region.m_Highlighted);
+	}
+	renderSquares(m_WaterVertexArray, m_WaterBaseColor, m_WaterBaseColor, m_Data.m_LandTexture, false);
+}
+
 bool Map::isWater(const Vector2DInt& tile)
 {
 	for (auto& pos : m_WaterSquares)

@@ -18,6 +18,7 @@ class WarIcon;
 class MainMenu;
 class PauseWindow;
 class FamilyTreeWindow;
+class MiniMap;
 
 class UIManager
 {
@@ -46,6 +47,7 @@ public:
 	MainMenu* m_MainMenu = nullptr;
 	StatBar* m_StatBar = nullptr;
 	DateBar* m_DateBar = nullptr;
+	MiniMap* m_MiniMap = nullptr;
 private:
 	static UIManager* m_Instance;
 	static UIID m_UIElementsIDs;
