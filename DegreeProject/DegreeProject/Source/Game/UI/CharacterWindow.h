@@ -44,7 +44,6 @@ public:
 	void closeWindow();
 	void clickButton();
 	void declareWar();
-	void offerPeace();
 	void proposeMarriage();
 	void proposeAlliance();
 	void breakAlliance();
@@ -63,7 +62,7 @@ public:
 
 	std::vector<sf::RectangleShape> m_ButtonShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Text> m_ButtonTexts = std::vector<sf::Text>();
-	const std::vector<const char*> m_ButtonStrings = { "Declare War", "Make Peace", "Marriage", "Alliance", "Break Alliance", "Assassinate" };
+	const std::vector<const char*> m_ButtonStrings = { "Declare War", "Marriage", "Alliance", "Break Alliance", "Assassinate" };
 	
 	std::vector<sf::Text> m_DiplomacyTexts = std::vector<sf::Text>();
 	std::vector<sf::Texture> m_DiplomacyTextures = std::vector<sf::Texture>();
