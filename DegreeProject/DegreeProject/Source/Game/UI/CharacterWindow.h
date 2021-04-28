@@ -39,6 +39,7 @@ public:
 	void updateChildren();
 	void updateAllies();
 	void updateWars();
+	void updateTruces();
 	void handleWindow();
 	void openWindow();
 	void closeWindow();
@@ -67,7 +68,7 @@ public:
 	std::vector<sf::Text> m_DiplomacyTexts = std::vector<sf::Text>();
 	std::vector<sf::Texture> m_DiplomacyTextures = std::vector<sf::Texture>();
 	std::vector<sf::Sprite> m_DiplomacySprites = std::vector<sf::Sprite>();
-	const std::vector<const char*> m_DiplomacyStrings = { "Regions", "Children", "Alliances", "Conflicts", "Parents" };
+	const std::vector<const char*> m_DiplomacyStrings = { "Regions", "Children", "Alliances", "Conflicts", "Parents", "Truces" };
 	std::vector<bool> m_DiplomacyShowInfo = std::vector<bool>();
 
 	std::vector<sf::RectangleShape> m_ChildrenShapes = std::vector<sf::RectangleShape>();
@@ -83,6 +84,9 @@ public:
 	std::vector<Vector2DInt> m_WarPositions = std::vector<Vector2DInt>();
 	std::vector<CharacterID> m_WarDefenders = std::vector<CharacterID>();
 	std::vector<CharacterID> m_WarAttackers = std::vector<CharacterID>();
+
+	std::vector<sf::RectangleShape> m_TruceShapes = std::vector<sf::RectangleShape>();
+	std::vector<sf::Sprite> m_TruceSprites = std::vector<sf::Sprite>();
 
 	const unsigned int m_NumberOfTraits = 8;
 	std::vector<sf::Texture> m_TraitTextures = std::vector<sf::Texture>();

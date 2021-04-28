@@ -17,6 +17,8 @@
 #include "Game/Systems/HeraldicShieldManager.h"
 #include "Game/UI/RegionWindow.h"
 #include "Game/UI/FamilyTreeWindow.h"
+#include "Game/Systems/UnitManager.h"
+#include "Game/Data/Unit.h"
 
 CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 {
@@ -31,10 +33,10 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	for (unsigned int index = 0; index < numberOfButtons; index++)
 	{
 		sf::RectangleShape buttonShape;
-		setShape(buttonShape, m_TransparentColor, m_DeclareWarColor, m_OutlineThickness, { m_SizeX * 0.2f, m_SizeY * 0.05f }, { m_SizeX - m_SpriteSize * 5.0f, m_SpriteSize * 3.0f + m_SpriteSize * 3.0f * index });
+		setShape(buttonShape, m_TransparentColor, m_DeclareWarColor, m_OutlineThickness, { m_SpriteSize * 4.5f, m_SpriteSize * 1.5f }, { m_SizeX - m_SpriteSize * 5.0f, m_SpriteSize * 19.0f + m_SpriteSize * 3.0f * index });
 
 		sf::Text buttonText;
-		setText(buttonText, m_Font, m_CharacterSize, m_DeclareWarColor, { buttonShape.getPosition().x + m_SizeX * 0.01f, buttonShape.getPosition().y + m_SizeY * 0.008f }, m_ButtonStrings[index]);
+		setText(buttonText, m_Font, m_CharacterSize, m_DeclareWarColor, { buttonShape.getPosition().x + m_SpriteSize * 0.2f, buttonShape.getPosition().y + m_SpriteSize * 0.25f }, m_ButtonStrings[index]);
 		if (index != 0 && index != numberOfButtons - 2 && index != numberOfButtons - 1)
 		{
 			buttonShape.setOutlineColor(m_MakePeaceColor);
@@ -51,6 +53,7 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	m_DiplomacyTextures.push_back(assetHandler.getTextureAtPath("Assets/Graphics/Alliance.png"));
 	m_DiplomacyTextures.push_back(assetHandler.getTextureAtPath("Assets/Graphics/War.png"));
 	m_DiplomacyTextures.push_back(assetHandler.getTextureAtPath("Assets/Graphics/Father.png"));
+	m_DiplomacyTextures.push_back(assetHandler.getTextureAtPath("Assets/Graphics/Peace.png"));
 	unsigned int numberOfRelations = m_DiplomacyStrings.size();
 	for (unsigned int index = 0; index < numberOfRelations; index++)
 	{
@@ -351,6 +354,9 @@ void CharacterWindow::clearInfo()
 	m_WarPositions.clear();
 	m_WarDefenders.clear();
 	m_WarAttackers.clear();
+
+	m_TruceShapes.clear();
+	m_TruceSprites.clear();
 }
 
 void CharacterWindow::updateParents()
@@ -555,6 +561,47 @@ void CharacterWindow::updateWars()
 	}
 }
 
+void CharacterWindow::updateTruces()
+{
+	CharacterManager& characterManager = CharacterManager::get();
+	DiplomacyManager& warManager = DiplomacyManager::get();
+	unsigned int sizeWars = warManager.getWarHandlesOfCharacter(m_CurrentCharacterID).size();
+	for (unsigned int index = 0; index < sizeWars; index++)
+	{
+		int warHandle = warManager.getWarHandlesOfCharacter(m_CurrentCharacter->m_CharacterID)[index];
+		CharacterID defenderID = warManager.getDefender(warHandle);
+		CharacterID attackerID = warManager.getAttacker(warHandle);
+		CharacterID opponentID;
+		if (warManager.isAttacker(warHandle, m_CurrentCharacterID))
+		{
+			opponentID = defenderID;
+		}
+		else
+		{
+			opponentID = attackerID;
+		}
+		Character& opponent = characterManager.getCharacter(opponentID);
+
+		sf::RectangleShape warShape;
+		setShape(warShape, m_TransparentColor, opponent.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.4f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
+
+		sf::Sprite opponetSprite;
+		if (opponent.m_Gender == Gender::Male)
+		{
+			setSprite(opponetSprite, m_MaleCharacterTexture, warShape.getPosition());
+		}
+		else
+		{
+			setSprite(opponetSprite, m_FemaleCharacterTexture, warShape.getPosition());
+		}
+
+		m_WarShapes.push_back(warShape);
+		m_WarSprites.push_back(opponetSprite);
+		m_WarDefenders.push_back(defenderID);
+		m_WarAttackers.push_back(attackerID);
+	}
+}
+
 void CharacterWindow::updateInfo()
 {
 	if (m_CurrentCharacterID != INVALID_CHARACTER_ID)
@@ -645,8 +692,17 @@ void CharacterWindow::updateInfo()
 		stream.str(std::string());
 		stream.clear();
 
-		stream << m_CurrentCharacter->m_RaisedArmySize << m_Dash << m_CurrentCharacter->m_MaxArmySize;
-		m_ArmyText.setString(stream.str());
+		Unit& unit = UnitManager::get().getUnitOfCharacter(m_CurrentCharacterID);
+		if (unit.m_Raised)
+		{
+			stream << unit.m_RepresentedForce << m_Dash << m_CurrentCharacter->m_MaxArmySize;
+			m_ArmyText.setString(stream.str());
+		}
+		else
+		{
+			stream << 0 << m_Dash << m_CurrentCharacter->m_MaxArmySize;
+			m_ArmyText.setString(stream.str());
+		}
 		m_ArmyText.setFillColor(m_OwnerColor);
 		stream.str(std::string());
 		stream.clear();
