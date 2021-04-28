@@ -920,25 +920,20 @@ void CharacterWindow::clickButton()
 				}
 				case 1:
 				{
-					offerPeace();
+					proposeMarriage();
 					break;
 				}
 				case 2:
 				{
-					proposeMarriage();
+					proposeAlliance();
 					break;
 				}
 				case 3:
 				{
-					proposeAlliance();
-					break;
-				}
-				case 4:
-				{
 					breakAlliance();
 					break;
 				}
-				case 5:
+				case 4:
 				{
 					assassinate();
 					break;
@@ -1003,22 +998,6 @@ void CharacterWindow::declareWar()
 		if (Game::m_BattleSound.getStatus() != sf::SoundSource::Playing)
 		{
 			Game::m_BattleSound.play();
-		}
-	}
-}
-
-void CharacterWindow::offerPeace()
-{
-	DiplomacyManager& warManager = DiplomacyManager::get();
-	War* war = warManager.getWarAgainst(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
-	if (war != nullptr)
-	{
-		CharacterManager::get().sendPeaceOffer(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, PeaceType::Enforce_Demands);
-
-		if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && warManager.getWarHandlesOfCharacter(m_PlayerCharacter->m_CharacterID).size() == 0)
-		{
-			Game::m_BattleSound.stop();
-			Game::m_Sound.play();
 		}
 	}
 }
