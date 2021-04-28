@@ -197,6 +197,11 @@ Unit& UnitManager::getUnitWithId(UnitID id)
 
 void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 {
+	if (getUnitWithId(unitID).m_Raised)
+	{
+		return;
+	}
+
 	if (!Map::get().mapSquareDataContainsKey(location))
 	{		
 		return;
@@ -226,8 +231,6 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 	}
 
 	startConquerRegion(unit);
-
-	//CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner).m_RaisedArmySize = unit.m_RepresentedForce;
 }
 
 void UnitManager::dismissUnit(UnitID unitID)
@@ -245,7 +248,8 @@ void UnitManager::dismissUnit(UnitID unitID)
 		squareData.remove(unitID);
 		break;
 	}
-
+	unit.m_Position = unit.m_Position.zero();
+	unit.m_Position = unit.m_LastPosition.zero();
 	unit.m_Moving = false;
 	unit.m_CurrentPath.clear();
 	unit.m_InCombat = false;
