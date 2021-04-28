@@ -81,6 +81,18 @@ void WarOrders::orderSiegeCapital(WarmindComponent& warmind, Unit& unit)
 	UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(startingPosition, capitalPosition));
 }
 
+void WarOrders::orderFollowMainAlly(WarmindComponent& warmind, Unit& unit, CharacterID mainAttacker)
+{
+	Unit& mainAttackerUnit = UnitManager::get().getUnitOfCharacter(mainAttacker);
+
+	if (mainAttackerUnit.m_Raised)
+	{
+		Vector2DInt mapPos = Map::get().convertToMap(unit.m_Position);
+		Vector2DInt endPos = Map::get().convertToMap(mainAttackerUnit.m_Position);
+		UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(mapPos, endPos));
+	}
+}
+
 void WarOrders::orderDefendWargoal(WarmindComponent& warmind, Unit& unit, Unit& enemyUnit)
 {
 	Vector2D unitPosition = unit.m_Position;
@@ -108,7 +120,6 @@ void WarOrders::orderAttackArmy(Unit& unit, Unit& enemyUnit)
 	}
 
 	UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(Map::get().convertToMap(unit.m_Position), enemyPosition));
-
 }
 
 void WarOrders::orderAttackEnemyRegion(Unit& unit, Unit& enemyUnit)

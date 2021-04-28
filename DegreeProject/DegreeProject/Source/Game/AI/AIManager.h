@@ -56,6 +56,7 @@ private:
 	void considerOrders(WarmindComponent& warmind, Unit& unit, CharacterID target);
 	void giveAttackerOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit);
 	void giveDefenderOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit);
+	void giveAllyOrders(WarmindComponent& warmind, Unit& unit, CharacterID mainAlly);
 
 	bool weightedRandom(float weight);
 

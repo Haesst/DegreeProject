@@ -447,6 +447,14 @@ void AIManager::UpdateAIData(CharacterManager& characterManager, AIData& data, D
 
 void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target, Unit& unit, Unit& enemyUnit)
 {
+	DiplomacyManager* diplomacyManager = &DiplomacyManager::get();
+
+	if (diplomacyManager->isAllyOf(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID, diplomacyManager->getWar(warmind.m_PrioritizedWarHandle)->m_Attackers[0]))
+	{
+		m_Orders.orderFollowMainAlly(warmind, unit, diplomacyManager->getWar(warmind.m_PrioritizedWarHandle)->m_Attackers[0]);
+		return;
+	}
+
 	FightEnemyArmyConsideration fightConsideration;
 	float fightEval = fightConsideration.evaluate(warmind.m_OwnerID, target);
 
@@ -476,6 +484,14 @@ void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target
 
 void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*target*/, Unit& unit, Unit& enemyUnit)
 {
+	DiplomacyManager* diplomacyManager = &DiplomacyManager::get();
+
+	if (diplomacyManager->isAllyOf(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID, diplomacyManager->getWar(warmind.m_PrioritizedWarHandle)->m_Defenders[0]))
+	{
+		m_Orders.orderFollowMainAlly(warmind, unit, diplomacyManager->getWar(warmind.m_PrioritizedWarHandle)->m_Defenders[0]);
+		return;
+	}
+
 	if (CharacterManager::get().ownsRegion(unit.m_Owner, enemyUnit.m_SeizingRegionID))
 	{
 		m_Orders.orderAttackArmy(unit, enemyUnit);
@@ -492,6 +508,17 @@ void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*targ
 	}
 
 	m_Orders.orderDefendWargoal(warmind, unit, enemyUnit);
+}
+
+void AIManager::giveAllyOrders(WarmindComponent& warmind, Unit& unit, CharacterID mainAlly)
+{
+	DiplomacyManager* diplomacyManager = &DiplomacyManager::get();
+
+	if (diplomacyManager->isAllyOf(warmind.m_PrioritizedWarHandle, warmind.m_OwnerID, mainAlly))
+	{
+		m_Orders.orderFollowMainAlly(warmind, unit, mainAlly);
+		return;
+	}
 }
 
 bool AIManager::weightedRandom(float weight)

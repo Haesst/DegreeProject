@@ -5,6 +5,9 @@ struct Unit;
 
 struct WarOrders
 {
+	//Ally orders
+	void orderFollowMainAlly(WarmindComponent& warmind, Unit& unit, CharacterID mainAttacker);
+
 	//Offensive orders
 	void orderFightEnemyArmy(WarmindComponent& warmind, Unit& unit);
 	void orderSiegeCapital(WarmindComponent& warmind, Unit& unit);
