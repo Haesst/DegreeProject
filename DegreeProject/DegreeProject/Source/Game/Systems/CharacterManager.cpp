@@ -575,8 +575,13 @@ void CharacterManager::onMonthChange(Date)
 
 			incomingGold += region.m_RegionTax;
 		}
+		Unit& characterUnit = UnitManager::get().getUnitOfCharacter(character.m_CharacterID);
+		
+		if (characterUnit.m_Raised)
+		{
+			incomingGold -= (characterUnit.m_RepresentedForce * 0.1f); // Todo: Declare army cost somewhere
+		}
 
-		incomingGold -= (character.m_RaisedArmySize * 0.1f); // Todo: Declare army cost somewhere
 		character.m_Income = incomingGold; // Todo: Change to prediction for upcoming month instead of showing last month.
 		character.m_CurrentGold += incomingGold;
 	}

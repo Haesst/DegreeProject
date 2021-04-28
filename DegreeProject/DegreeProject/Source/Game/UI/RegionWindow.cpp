@@ -233,7 +233,7 @@ void RegionWindow::updateInfo()
 		stream.clear();
 
 		m_RaiseArmyShape.setOutlineColor(m_OwnerColor);
-		if (character.m_RaisedArmySize > 0)
+		if (UnitManager::get().getUnitOfCharacter(character.m_CharacterID).m_Raised)
 		{
 			m_RaiseArmyShape.setFillColor(m_OwnerColor);
 			m_RaiseArmySprite.setColor(m_OwnerColor);
