@@ -10,6 +10,7 @@
 #include "Game/UI/WarIcon.h"
 #include "Game/UI/PauseWindow.h"
 #include "Game/UI/FamilyTreeWindow.h"
+#include "Game/UI/MiniMap.h"
 #include "Game/Game.h"
 
 UIManager* UIManager::m_Instance = nullptr;
@@ -33,6 +34,7 @@ UIManager::UIManager()
 	m_StatBar = nullptr;
 	m_DateBar = nullptr;
 	m_WarWindow = nullptr;
+	m_MiniMap = new MiniMap();
 }
 
 UIManager::~UIManager()
@@ -56,6 +58,7 @@ UIManager::~UIManager()
 	{
 		delete m_WarIcons[i];
 	}
+	delete m_MiniMap;
 	delete m_Instance;
 }
 
@@ -194,6 +197,7 @@ void UIManager::start()
 	m_WarWindow->start();
 	m_StatBar->start();
 	m_DateBar->start();
+	m_MiniMap->start();
 }
 
 void UIManager::update()
@@ -261,6 +265,7 @@ void UIManager::update()
 	m_FamilyTreeWindow->update();
 	m_CharacterWindow->update();
 	m_RegionWindow->update();
+	m_MiniMap->update();
 }
 
 void UIManager::render()
@@ -285,6 +290,7 @@ void UIManager::render()
 	}
 	m_PauseWindow->render();
 	m_MainMenu->render();
+	m_MiniMap->render();
 }
 
 #pragma warning(push)

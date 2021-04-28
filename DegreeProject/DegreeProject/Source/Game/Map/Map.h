@@ -109,6 +109,7 @@ struct Map
 	void updateRegions();
 
 	void render();
+	void drawMiniMap();
 
 	void setRegionColor(int regionId, sf::Color color);
 	void clearRegions();
