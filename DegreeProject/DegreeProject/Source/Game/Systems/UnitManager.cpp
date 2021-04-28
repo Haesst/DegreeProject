@@ -391,47 +391,33 @@ void UnitManager::moveUnit(Unit& unit)
 
 void UnitManager::unitCombat(Unit& unit)
 {
-	std::vector<CharacterID> ids = unitAtSquare(Map::get().convertToMap(unit.m_Position), unit.m_UnitID);
-	
-	if (ids.empty())
-		return;
+	int id = unitAtSquare(Map::get().convertToMap(unit.m_Position), unit.m_UnitID);
 
-	CharacterID fightingID = INVALID_CHARACTER_ID;
-
-	DiplomacyManager* diplomacyManager = &DiplomacyManager::get();
-
-	if (getAlliesAtSquare(CharacterManager::get().getCharacter(unit.m_Owner), Map::get().convertToMap(unit.m_Position)).empty())
-	{
-		unsigned int index = 0;
-		for (auto id : ids)
-		{
-			if (diplomacyManager->getWarAgainst(unit.m_Owner, id) != nullptr || diplomacyManager->isEnemyOfEnemy(unit, getUnitWithId(id)))
-			{
-				fightingID = id;
-			}
-		}
-	}
-
-	if (unit.m_FightingArmyID == fightingID)
+	if (DiplomacyManager::get().isAllied(unit.m_Owner, id))
 	{
 		return;
 	}
 
-	if (fightingID == INVALID_UNIT_ID)
+	if (unit.m_FightingArmyID == id)
 	{
 		return;
 	}
 
-	if (getUnitWithId(fightingID).m_OnWater || unit.m_OnWater)
+	if (id == INVALID_UNIT_ID)
 	{
 		return;
 	}
 
-	if (DiplomacyManager::get().atWarWith(unit.m_Owner, getUnitWithId(fightingID).m_Owner) || DiplomacyManager::get().isEnemyOfEnemy(unit, getUnitWithId(fightingID)))
+	if (getUnitWithId(id).m_OnWater || unit.m_OnWater)
 	{
-		unit.m_FightingArmyID = fightingID;
-		getUnitWithId(fightingID).m_FightingArmyID = unit.m_UnitID;
-		startCombatTimer(unit.m_UnitID, fightingID);
+		return;
+	}
+
+	if (DiplomacyManager::get().atWarWith(unit.m_Owner, getUnitWithId(id).m_Owner) || DiplomacyManager::get().isEnemyOfEnemy(unit, getUnitWithId(id)))
+	{
+		unit.m_FightingArmyID = id;
+		getUnitWithId(id).m_FightingArmyID = unit.m_UnitID;
+		startCombatTimer(unit.m_UnitID, id);
 		return;
 	}
 }
@@ -450,10 +436,8 @@ void UnitManager::startCombatTimer(UnitID unitID, UnitID enemyUnitID)
 	}
 }
 
-std::vector<UnitID> UnitManager::unitAtSquare(Vector2DInt square, UnitID unitID)
+UnitID UnitManager::unitAtSquare(Vector2DInt square, UnitID unitID)
 {
-	std::vector<UnitID> units;
-
 	for (auto& squareData : Map::get().m_MapSquareData)
 	{
 		if (squareData.m_Position == square)
@@ -462,7 +446,7 @@ std::vector<UnitID> UnitManager::unitAtSquare(Vector2DInt square, UnitID unitID)
 			{
 				if (unitID != ID)
 				{
-					units.push_back(unitID);
+					return ID;
 				}
 			}
 
@@ -470,7 +454,7 @@ std::vector<UnitID> UnitManager::unitAtSquare(Vector2DInt square, UnitID unitID)
 		}
 	}
 
-	return std::vector<UnitID>();
+	return INVALID_UNIT_ID;
 }
 
 std::vector<UnitID> UnitManager::getAlliesAtSquare(const Character& character, Vector2DInt square)

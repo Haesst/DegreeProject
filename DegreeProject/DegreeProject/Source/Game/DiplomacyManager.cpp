@@ -558,6 +558,18 @@ bool DiplomacyManager::hasTruce(CharacterID characterOneID, CharacterID characte
 	return false;
 }
 
+bool DiplomacyManager::isAllied(CharacterID ID, CharacterID other)
+{
+	for (auto& ally : getAlliances(ID))
+	{
+		if (ally == other)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
 CharacterID DiplomacyManager::getOpposingForce(int warHandle, CharacterID ID)
 {
 	if (isAttacker(warHandle, ID))

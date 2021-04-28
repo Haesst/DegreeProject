@@ -412,7 +412,13 @@ void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& chara
 			Character& character = characterManager.getCharacter(warmind.m_OwnerID);
 			if (m_UnitManager->getUnitOfCharacter(warmind.m_OwnerID).m_RepresentedForce >= character.m_MaxArmySize * 0.5f && character.m_MaxArmySize > 0)
 			{
-				unitManager.raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(character.m_OwnedRegionIDs[0]));
+				for (auto& region : character.m_OwnedRegionIDs)
+				{
+					if (Map::get().getRegionById(region).m_OccupiedBy == INVALID_CHARACTER_ID)
+					{
+						unitManager.raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(region));
+					}
+				}
 
 				if (warmind.m_PrioritizedWarHandle != -1 && warManager.isValidWar(warmind.m_PrioritizedWarHandle))
 				{

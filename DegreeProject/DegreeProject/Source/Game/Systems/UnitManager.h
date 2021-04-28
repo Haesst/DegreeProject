@@ -34,7 +34,7 @@ private:
 	void unitSiege(Unit& unit);
 	void showPath(Unit& unit);
 	void startCombatTimer(UnitID unit, UnitID enemyUnit);
-	std::vector<UnitID> unitAtSquare(Vector2DInt square, UnitID unitID);
+	UnitID unitAtSquare(Vector2DInt square, UnitID unitID);
 	std::vector<UnitID> getAlliesAtSquare(const Character& character, Vector2DInt square);
 	void determineCombat(UnitID unitID, UnitID enemyID);
 	bool neutralUnitAtSquare(Character& character, Vector2DInt square);
