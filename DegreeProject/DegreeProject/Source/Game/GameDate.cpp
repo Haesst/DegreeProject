@@ -132,7 +132,7 @@ int GameDate::subscribeToDayChange(CallbackMember* callback, void* data)
 
 void GameDate::unsubscribeToDayChange(unsigned int id)
 {
-	int index = 0;
+	unsigned int index = 0;
 	bool found = false;
 
 	for (; index < m_DayChangeSubscribers.size(); ++index)

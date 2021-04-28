@@ -12,6 +12,8 @@ enum Inputs
 	MouseMoved,
 	MouseScrolled,
 	EscapePressed,
+	EnterPressed,
+	BackSpacePressed,
 	CharacterWindowOpen,
 	RegionWindowOpen,
 	WarWindowOpen,

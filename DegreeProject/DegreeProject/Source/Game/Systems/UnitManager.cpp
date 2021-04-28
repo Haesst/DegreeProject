@@ -395,7 +395,7 @@ void UnitManager::moveUnit(Unit& unit)
 
 void UnitManager::unitCombat(Unit& unit)
 {
-	int id = unitAtSquare(Map::get().convertToMap(unit.m_Position), unit.m_UnitID);
+	unsigned int id = unitAtSquare(Map::get().convertToMap(unit.m_Position), unit.m_UnitID);
 
 	if (DiplomacyManager::get().isAllied(unit.m_Owner, id))
 	{
@@ -573,7 +573,7 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	if (win)
 	{
 		dismissUnit(enemyID);
-		getUnitWithId(enemyID).m_RepresentedForce = getUnitWithId(enemyID).m_RepresentedForce * 0.5f;
+		getUnitWithId(enemyID).m_RepresentedForce = (int)(getUnitWithId(enemyID).m_RepresentedForce * 0.5f);
 
 		if (war != nullptr)
 		{
@@ -595,7 +595,7 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	{
 		LOG_INFO("{0} won the battle against {1}", CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get().getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
 		dismissUnit(unitID);
-		getUnitWithId(unitID).m_RepresentedForce = getUnitWithId(unitID).m_RepresentedForce * 0.5f;
+		getUnitWithId(unitID).m_RepresentedForce = (int)(getUnitWithId(unitID).m_RepresentedForce * 0.5f);
 		
 		if (war != nullptr)
 		{
@@ -664,10 +664,10 @@ void UnitManager::unitSiege(Unit& unit)
 			CharacterManager& characterManager = CharacterManager::get();
 			Character& attacker = characterManager.getCharacter(unit.m_Owner);
 			Character& defender = characterManager.getCharacter(region.m_OwnerID);
-			int currentWar = DiplomacyManager::get().getWarHandleAgainst(attacker.m_CharacterID, defender.m_CharacterID);
+			int currentWarHandle = DiplomacyManager::get().getWarHandleAgainst(attacker.m_CharacterID, defender.m_CharacterID);
 			DiplomacyManager& warManager = DiplomacyManager::get();
 
-			if (currentWar == -1 && !skipWarCheck)
+			if (currentWarHandle == -1 && !skipWarCheck)
 			{
 				return;
 			}
@@ -693,7 +693,7 @@ void UnitManager::unitSiege(Unit& unit)
 
 			if (defender.m_CharacterID == region.m_OwnerID)
 			{
-				War* war = warManager.getWar(currentWar);
+				war = warManager.getWar(currentWarHandle);
 
 				war->m_AttackerOccupiedRegions.push_back(region.m_RegionId);
 
@@ -703,7 +703,7 @@ void UnitManager::unitSiege(Unit& unit)
 					warManager.addWarscore(war->getHandle(), defender.m_CharacterID, -50);
 				}
 
-				if (!DiplomacyManager::get().isValidWar(currentWar))
+				if (!DiplomacyManager::get().isValidWar(currentWarHandle))
 				{
 					return;
 				}
@@ -735,10 +735,10 @@ void UnitManager::unitSiege(Unit& unit)
 
 			else if (attacker.m_CharacterID == region.m_OwnerID)
 			{
-				War* war = warManager.getWar(currentWar);
+				war = warManager.getWar(currentWarHandle);
 
 				war->m_DefenderOccupiedRegions.push_back(region.m_RegionId);
-				warManager.addWarscore(currentWar, warManager.getDefender(currentWar), 50);
+				warManager.addWarscore(currentWarHandle, warManager.getDefender(currentWarHandle), 50);
 				region.m_OccupiedBy = defender.m_CharacterID;
 
 				//Loot
@@ -854,7 +854,7 @@ void UnitManager::updateSprite(Unit& unit)
 
 	sf::FloatRect localSize = unit.m_Sprite.getLocalBounds();
 
-	unit.m_Sprite.setTextureRect(unit.m_Direction.x > 0 ? sf::IntRect(localSize.width, 0, -localSize.width, localSize.width) : sf::IntRect(0, 0, localSize.width, localSize.width));
+	unit.m_Sprite.setTextureRect(unit.m_Direction.x > 0 ? sf::IntRect((int)localSize.width, 0, -(int)localSize.width, (int)localSize.width) : sf::IntRect(0, 0, (int)localSize.width, (int)localSize.width));
 
 	unit.m_Sprite.setScale(
 		32 / localSize.width, // Todo: Remove magic number

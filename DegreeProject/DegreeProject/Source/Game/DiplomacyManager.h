@@ -14,16 +14,18 @@ enum class PeaceType
 
 struct Truce
 {
-	Truce(Date startDate, CharacterID truceOwner, CharacterID truceOpponent)
+	Truce(Date startDate, CharacterID truceOwner, CharacterID truceOpponent, unsigned int truceTime = 1)
 	{
 		m_StartDate = startDate;
 		m_TruceOwner = truceOwner;
 		m_TruceOpponent = truceOpponent;
+		m_TruceTime = truceTime;
 	}
 
 	Date m_StartDate;
 	CharacterID m_TruceOwner;
 	CharacterID m_TruceOpponent;
+	unsigned int m_TruceTime = 1;
 };
 
 class DiplomacyManager

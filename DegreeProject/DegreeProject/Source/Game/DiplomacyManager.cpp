@@ -123,9 +123,6 @@ bool DiplomacyManager::atWarWith(CharacterID character, CharacterID enemy)
 
 void DiplomacyManager::invalidateWarsForRegionOnWonWar(War& wonWar)
 {
-	UnitManager& unitManager = UnitManager::get();
-	CharacterManager* characterManager = &CharacterManager::get();
-
 	for (auto& war : m_Wars)
 	{
 		if (war.second.m_WargoalRegion == wonWar.m_WargoalRegion)
@@ -824,7 +821,7 @@ void DiplomacyManager::onMonthChange()
 	{
 		for (Truce& truce : m_ActiveTruces[it->first])
 		{
-			if (Time::m_GameDate.getAge(truce.m_StartDate) >= 1)
+			if (Time::m_GameDate.getAge(truce.m_StartDate) >= truce.m_TruceTime)
 			{
 				trucesToEnd.push_back(truce);
 			}

@@ -100,6 +100,18 @@ void InputHandler::handleInputEvents()
 				Time::gamePaused() ? Time::unpauseGame() : Time::pauseGame();
 				break;
 			}
+			case sf::Keyboard::C:
+			case sf::Keyboard::Enter:
+			{
+				m_Inputs[EnterPressed] = true;
+				break;
+			}
+			case sf::Keyboard::Z:
+			case sf::Keyboard::BackSpace:
+			{
+				m_Inputs[BackSpacePressed] = true;
+				break;
+			}
 			case sf::Keyboard::Delete:
 			{
 				window.close();

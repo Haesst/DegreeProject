@@ -16,6 +16,7 @@ public:
 
 	void update();
 	void render();
+	void handleWindow();
 	void moveWindow();
 	void closeWindow();
 	void dismissRequest();

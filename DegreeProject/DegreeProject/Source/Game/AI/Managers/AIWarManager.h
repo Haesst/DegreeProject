@@ -7,7 +7,7 @@ class DiplomacyManager;
 namespace warConstants
 {
 	const float m_warAcceptance = .4f;
-	const float m_expansionAcceptance = .4;
+	const float m_expansionAcceptance = .4f;
 };
 
 class AIWarManager

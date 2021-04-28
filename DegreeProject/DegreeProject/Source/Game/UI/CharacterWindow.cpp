@@ -598,7 +598,7 @@ void CharacterWindow::updateTruces()
 		}
 		sf::Text truceText;
 		std::stringstream stream;
-		stream << truce.m_StartDate.m_Day << m_Dash << truce.m_StartDate.m_Month + 1 << m_Dash << truce.m_StartDate.m_Year + 1;
+		stream << truce.m_StartDate.m_Day << m_Dash << truce.m_StartDate.m_Month + 1 << m_Dash << truce.m_StartDate.m_Year + truce.m_TruceTime;
 		setText(truceText, m_Font, m_CharacterSize, opponent.m_RegionColor, { truceShape.getPosition().x + m_SpriteSize + m_OutlineThickness, truceShape.getPosition().y }, stream.str().c_str());
 		stream.str(std::string());
 		stream.clear();

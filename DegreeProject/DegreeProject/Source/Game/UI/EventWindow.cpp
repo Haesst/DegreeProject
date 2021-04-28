@@ -311,6 +311,7 @@ void EventWindow::update()
 	{
 		moveWindow();
 	}
+	handleWindow();
 }
 
 void EventWindow::render()
@@ -330,6 +331,22 @@ void EventWindow::render()
 	}
 	m_Window->draw(m_DismissShape);
 	m_Window->draw(m_DismissText);
+}
+
+void EventWindow::handleWindow()
+{
+	if (InputHandler::m_Inputs[EnterPressed])
+	{
+		InputHandler::m_Inputs[EnterPressed] = false;
+		acceptRequest();
+		closeWindow();
+	}
+	else if(InputHandler::m_Inputs[BackSpacePressed])
+	{
+		InputHandler::m_Inputs[BackSpacePressed] = false;
+		dismissRequest();
+		closeWindow();
+	}
 }
 
 void EventWindow::moveWindow()
