@@ -19,6 +19,7 @@ void AIRelationshipManager::update(AIData& data)
 
 		if (marriageEval > relationshipConstants::marriageAcceptance)
 		{
+			data.m_LastAction = Action::Marriage;
 			data.m_PotentialSpouseID = potentialSpouse;
 			marry(data);
 		}
@@ -31,6 +32,7 @@ void AIRelationshipManager::update(AIData& data)
 
 		if (eval > relationshipConstants::allianceAcceptance)
 		{
+			data.m_LastAction = Action::Seek_Alliance;
 			data.m_PotentialAllyID = potentialAlly;
 			makeAlliance(data);
 		}

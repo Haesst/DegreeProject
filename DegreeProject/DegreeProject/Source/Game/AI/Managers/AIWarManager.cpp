@@ -18,7 +18,7 @@ AIWarManager::~AIWarManager()
 
 void AIWarManager::update(AIData& data)
 {
-	if (data.m_CurrentAction == Action::War || data.m_LastAction == Action::War)
+	if (data.m_CurrentAction == Action::War)
 	{
 		return;
 	}
@@ -31,13 +31,14 @@ void AIWarManager::update(AIData& data)
 
 			if (data.m_LastAction == Action::War)
 			{
-				warEval -= .3f;
+				warEval -= .2f;
 			}
 
 			if (warEval > warConstants::m_warAcceptance)
 			{
 				if (!DiplomacyManager::get().hasTruce(data.m_OwnerID, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
 				{
+					data.m_CurrentAction = Action::War;
 					declareWar(data);
 				}
 			}
@@ -103,7 +104,6 @@ float AIWarManager::expansionDecision(CharacterID ID)
 
 	expansionConsideration.setContext(ID);
 
-	//Get characters in certain range,
 	std::vector<int> regionIndexes = Map::get().getRegionIDs();
 
 	Character& character = CharacterManager::get().getCharacter(ID);
