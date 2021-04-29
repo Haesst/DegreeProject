@@ -109,6 +109,9 @@ CharacterID AIRelationshipManager::getPotentialSpouse(AIData& data)
 		if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Gender == CharacterManager::get().getCharacter(Map::get().getRegionById(region).m_OwnerID).m_Gender)
 			continue;
 
+		if(DiplomacyManager::get().getWarAgainst(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID) != nullptr)
+			continue;
+
 		float eval = marriageDecision(data, Map::get().getRegionById(region).m_OwnerID);
 
 		if (eval > relationshipConstants::marriageAcceptance)
