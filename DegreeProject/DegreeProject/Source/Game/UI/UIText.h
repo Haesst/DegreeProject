@@ -33,4 +33,6 @@ public:
 	bool m_Conquered = false;
 	sf::RenderWindow* m_Window;
 	UIID m_OwnedUIElement = INVALID_UI_ID;
+	bool m_Hidden = false;
+	float m_HiddenDistance = 0.5f;
 };

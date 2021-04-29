@@ -3,6 +3,7 @@
 #include "Game/Map/Map.h"
 #define _USE_MATH_DEFINES
 #include <math.h>
+#include "Engine/InputHandler.h"
 
 UIText::UIText(UIID id, sf::Font font, std::string countryName, std::vector<unsigned int> ownedRegions)
 {
@@ -24,12 +25,24 @@ void UIText::update()
 {
 	if (!m_Conquered)
 	{
-		m_CountryNameText.setPosition(sf::Vector2f(m_Window->mapCoordsToPixel({ m_PositionX, m_PositionY })));
+		if (InputHandler::getMouseScrolled())
+		{
+			if (InputHandler::m_TotalZoom <= m_HiddenDistance)
+			{
+				m_Hidden = true;
+			}
+			else
+			{
+				m_Hidden = false;
+			}
+			m_CountryNameText.setScale(InputHandler::m_InverseZoom, InputHandler::m_InverseZoom);
+		}
+		m_CountryNameText.setPosition(sf::Vector2f(m_Window->mapCoordsToPixel({ m_PositionX, m_PositionY })));	
 	}
 }
 void UIText::render()
 {
-	if (!m_Conquered)
+	if (!m_Conquered && !m_Hidden)
 	{
 		m_Window->draw(m_CountryNameText);
 	}
