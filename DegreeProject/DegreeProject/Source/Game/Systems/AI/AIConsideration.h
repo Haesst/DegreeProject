@@ -65,7 +65,7 @@ struct ArmySizeConsideration : public Consideration
 		else
 		{
 			//y = 0.1^x
-			return std::clamp(std::pow(0.1f, percentDiff - 1.0f), 0.0f, 1.0f);
+			return std::clamp(std::pow(0.1f, percentDiff), 0.0f, 1.0f);
 		}
 
 		return 0.0f;
@@ -181,7 +181,7 @@ struct GoldConsideration : public Consideration
 		else
 		{
 			//y = 0.1^x
-			return std::clamp(std::pow(0.1f, percentDiff - 1.0f), 0.0f, 1.0f);
+			return std::clamp(std::pow(0.1f, percentDiff), 0.0f, 1.0f);
 		}
 
 
@@ -216,9 +216,9 @@ struct ExpansionConsideration : public Consideration
 
 			float dist = (regionPos - wantedRegionPos).getLength();
 
-			if (dist > 3)
+			if (dist > 10)
 			{
-				distanceWeight = -0.6f;
+				distanceWeight = -0.2f;
 			}
 
 			else
@@ -262,7 +262,8 @@ struct MarriageConsideration : public Consideration
 
 		float armyEval = armyConsideration.evaluate(potentialSpouse, context);
 		float goldEval = goldConsideration.evaluate(potentialSpouse, context);
+		float fertilityWeight = CharacterManager::get().getCharacter(potentialSpouse).m_Fertility;
 
-		return std::clamp(armyEval * goldEval, 0.0f, 1.0f);
+		return std::clamp((armyEval * goldEval) + fertilityWeight, 0.0f, 1.0f);
 	}
 };

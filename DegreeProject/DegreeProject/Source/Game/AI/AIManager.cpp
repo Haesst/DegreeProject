@@ -163,7 +163,7 @@ bool AIManager::handleRecieveMarriageRequest(CharacterID reciever, CharacterID s
 	MarriageConsideration consideration;
 	float eval = consideration.evaluate(reciever, sender);
 
-	if (eval > .5)
+	if (eval > .3f)
 	{
 		return true;
 	}
