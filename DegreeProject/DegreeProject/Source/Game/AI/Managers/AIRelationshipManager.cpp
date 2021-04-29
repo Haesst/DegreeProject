@@ -22,6 +22,16 @@ void AIRelationshipManager::update(AIData& data)
 			data.m_LastAction = Action::Marriage;
 			data.m_PotentialSpouseID = potentialSpouse;
 			marry(data);
+		} 
+
+		if (Time::m_GameDate.getAge(CharacterManager::get().getCharacter(data.m_OwnerID).m_Birthday) > 30)
+		{
+			if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
+			{
+				CharacterID potentialSpouse = getUnlandedPotentialSpouse(data);
+				data.m_PotentialSpouseID = potentialSpouse;
+				marry(data);
+			}
 		}
 	}
 
@@ -118,6 +128,21 @@ CharacterID AIRelationshipManager::getPotentialSpouse(AIData& data)
 	}
 
 	return bestSpouse;
+}
+
+CharacterID AIRelationshipManager::getUnlandedPotentialSpouse(AIData& data)
+{
+	CharacterManager* characterManager = &CharacterManager::get();
+
+	if (characterManager->getCharacter(data.m_OwnerID).m_Gender == Gender::Male)
+	{
+		return CharacterManager::get().getUnlandedCharacterOfGender(Gender::Female);
+	}
+
+	if (characterManager->getCharacter(data.m_OwnerID).m_Gender == Gender::Female)
+	{
+		return CharacterManager::get().getUnlandedCharacterOfGender(Gender::Male);
+	}
 }
 
 CharacterID AIRelationshipManager::getPotentialAlly(AIData& data)

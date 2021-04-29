@@ -25,5 +25,6 @@ private:
 	float marriageDecision(AIData& data, CharacterID potentialSpouse);
 	float allianceDecision(AIData& data, CharacterID ally);
 	CharacterID getPotentialSpouse(AIData& data);
+	CharacterID getUnlandedPotentialSpouse(AIData& data);
 	CharacterID getPotentialAlly(AIData& data);
 };

@@ -63,6 +63,8 @@ public:
 	void killCharacter(CharacterID characterID);
 	std::vector<CharacterID> getAliveChildren(CharacterID characterID);
 
+	CharacterID getUnlandedCharacterOfGender(Gender gender);
+
 	bool chancePerPercent(float weight);
 
 	bool ownsRegion(CharacterID ID, int regionIndex);
@@ -79,6 +81,7 @@ private:
 
 	void handleInheritance(Character& character);
 	void updateTitleAndUIText(Character& character);
+
 private:
 	static CharacterManager* m_Instance;
 	static CharacterID m_CharacterIDs;

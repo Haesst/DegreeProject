@@ -678,6 +678,19 @@ std::vector<CharacterID> CharacterManager::getAliveChildren(CharacterID characte
 	return returnVector;
 }
 
+CharacterID CharacterManager::getUnlandedCharacterOfGender(Gender gender)
+{
+	for (auto& character : m_Characters)
+	{
+		if (character.m_Gender == gender && character.m_CharacterTitle == Title::Unlanded)
+		{
+			return character.m_CharacterID;
+		}
+	}
+	
+	return INVALID_CHARACTER_ID;
+}
+
 void CharacterManager::updateTitleAndUIText(Character& character)
 {
 	bool createNewUI = character.m_CharacterTitle >= Title::Unlanded;
@@ -965,6 +978,12 @@ void CharacterManager::marry(CharacterID character, CharacterID spouse)
 
 	if (!getCharacter(spouse).m_IsPlayerControlled)
 	{
+		if (getCharacter(spouse).m_CharacterTitle == Title::Unlanded)
+		{
+			onMarriage(character, spouse);
+			return;
+		}
+
 		if (AIManager::get().handleRecieveMarriageRequest(spouse, character))
 		{
 			onMarriage(character, spouse);
