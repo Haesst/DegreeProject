@@ -79,16 +79,18 @@ void UIText::adjustText()
 		if ((unsigned int)(diagonal.x * 0.1f) >= m_MinCharacterSize && (unsigned int)(diagonal.x * 0.1f) <= m_MaxCharacterSize)
 		{
 			m_CharacterSize = (unsigned int)(diagonal.x * 0.1f);
+			m_OutlineThickness = diagonal.x * 0.001f;
 		}
 		else if ((unsigned int)(diagonal.x * 0.1f) < m_MinCharacterSize)
 		{
 			m_CharacterSize = m_MinCharacterSize;
+			m_OutlineThickness = m_MinOutlineThickness;
 		}
 		else
 		{
 			m_CharacterSize = m_MaxCharacterSize;
+			m_OutlineThickness = m_MaxOutlineThickness;
 		}
-		m_OutlineThickness = diagonal.x * 0.001f;
 		m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
 		if (m_Rotation < 0.0f)
 		{
@@ -110,8 +112,9 @@ void UIText::adjustText()
 		m_CountryNameText.setOutlineColor(m_OutlineColor);
 		m_CountryNameText.setCharacterSize(m_CharacterSize);
 		m_CountryNameText.setOutlineThickness(m_OutlineThickness);
-		m_CountryNameText.setPosition(m_PositionX, m_PositionY);
+		m_CountryNameText.setPosition(sf::Vector2f(m_Window->mapCoordsToPixel({ m_PositionX, m_PositionY })));
 		m_CountryNameText.setRotation(m_Rotation);
+		m_CountryNameText.setScale(InputHandler::m_InverseZoom, InputHandler::m_InverseZoom);
 	}
 	else
 	{

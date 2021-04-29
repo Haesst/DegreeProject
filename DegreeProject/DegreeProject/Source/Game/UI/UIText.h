@@ -28,6 +28,8 @@ public:
 	unsigned int m_CharacterSize = 20;
 	unsigned int m_MinCharacterSize = 30;
 	unsigned int m_MaxCharacterSize = 100;
+	const float m_MinOutlineThickness = 0.1f;
+	const float m_MaxOutlineThickness = 1.0f;
 	float m_Rotation = 0.0f;
 	std::vector<unsigned int> m_OwnedRegionIDs;
 	bool m_Conquered = false;
