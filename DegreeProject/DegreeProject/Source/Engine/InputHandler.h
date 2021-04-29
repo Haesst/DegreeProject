@@ -56,7 +56,8 @@ public:
 	static void setUIView(sf::View& uiView);
 
 	static bool m_Inputs[Inputs::PlayerUnitSelected + 1];
-
+	static float m_TotalZoom;
+	static float m_InverseZoom;
 private:
 	static void moveView(sf::RenderWindow& window, sf::View& view);
 	static void setMousePosition(int xPosition, int yPosition, const sf::RenderWindow& window);
