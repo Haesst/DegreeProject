@@ -298,21 +298,24 @@ bool Map::mapSquareDataContainsKey(const Vector2DInt& key)
 
 void Map::drawMiniMap()
 {
-	renderSquares(m_MountainVertexArray, m_MountainBaseColor, m_MountainAlternateColor, m_Data.m_LandTexture, false);
-	renderSquares(m_UnreachableVertexArray, m_UnreachableLandColor, m_UnreachableLandColor, m_Data.m_LandTexture, false);
+	m_Data.m_Shader.setUniform("u_Color", sf::Glsl::Vec4(sf::Color::Green));
+	m_Data.m_Shader.setUniform("u_OccupiedColor", sf::Glsl::Vec4(sf::Color::Green));
+	m_Data.m_Shader.setUniform("u_Texture", m_Data.m_LandTexture);
+	m_Data.m_Shader.setUniform("u_Highlighted", false);
 
-	for (auto& region : m_Data.m_Regions)
-	{
-		sf::Color occupiedColor = region.m_HighlightColor;
+	sf::Sprite sp;
+	sp.setTexture(m_Data.m_LandTexture, true);
+	sp.setPosition({ m_XOffset, m_YOffset });
 
-		if (region.m_OccupiedBy != INVALID_CHARACTER_ID)
-		{
-			occupiedColor = CharacterManager::get().getCharacter(region.m_OccupiedBy).m_RegionColor;
-		}
+	Window::getWindow()->draw(sp, &m_Data.m_Shader);
 
-		renderSquares(region.m_VertexArray, region.m_HighlightColor, occupiedColor, m_Data.m_LandTexture, region.m_Highlighted);
-	}
-	renderSquares(m_WaterVertexArray, m_WaterBaseColor, m_WaterBaseColor, m_Data.m_LandTexture, false);
+	m_Data.m_WaterShader.setUniform("u_Time", m_WaveTime);
+	m_Data.m_WaterShader.setUniform("u_Resolution", sf::Glsl::Vec2(m_Resolution.x, m_Resolution.y));
+	m_Data.m_WaterShader.setUniform("u_Wave_Speed", m_WaveSpeed);
+	m_Data.m_WaterShader.setUniform("u_Zoom_Level", m_WaveZoomLevel);
+	m_Data.m_WaterShader.setUniform("u_Color", sf::Glsl::Vec4(m_WaterBaseColor));
+
+	Window::getWindow()->draw(m_WaterVertexArray, m_Data.m_WaterRenderStates);
 }
 
 bool Map::isWater(const Vector2DInt& tile)

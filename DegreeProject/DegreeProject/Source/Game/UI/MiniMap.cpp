@@ -7,31 +7,35 @@
 
 void MiniMap::start()
 {
-	float actualAspectRatio = 1920.0f / 1080.0f;
-	float desiredAspectRatio = 1920.0f / 1920.0f;
+	float ar = m_SpriteSize.y / m_SpriteSize.x;
 
-	float height = m_Width * desiredAspectRatio;
-	sf::Vector2u screenSize = Window::getWindow()->getSize();
-	sf::Vector2f miniMapPosition = { (float)screenSize.x - m_Width - m_RightOffset - m_BorderSize, (float)screenSize.y - height - m_BottomOffset - m_BorderSize };
-	m_MiniMapBorder.setPosition({ (float)screenSize.x - m_Width - m_RightOffset - m_BorderSize, (float)screenSize.y - height - m_BottomOffset - m_BorderSize + m_BorderHeightOffset });
+	float desiredAspectRatio = m_Height / m_Width;
+	float arDifference = desiredAspectRatio / ar;
 
-	sf::Vector2f floatResolution = sf::Vector2f((float)1920, (float)1080);
+	sf::RenderWindow* window = Window::getWindow();
 
-	float viewWidth = m_Width / floatResolution.x;
-	float viewBorderWidth = m_BorderSize / floatResolution.x;
-	float viewRightOffset = m_RightOffset / floatResolution.x;
+	float borderLeftPos = window->getSize().x - m_Width - m_BorderSize - m_RightOffset;
+	float borderRightPos = borderLeftPos + m_Width;
 
-	float viewHeight = height / floatResolution.y;
-	float viewBottomOffset = m_BottomOffset / floatResolution.y;
+	float borderTopPos = window->getSize().y - m_Height - m_BorderSize - m_BottomOffset;
+	float borderBottomPos = borderTopPos + m_Height;
 
-	m_MiniMapView.setViewport(sf::FloatRect(1.0f - viewWidth - viewBorderWidth - viewRightOffset, 1.0f - viewBorderWidth - viewBottomOffset - viewHeight, viewWidth, viewHeight));
-	m_MiniMapView.setCenter({ floatResolution.x * 4.5f, floatResolution.y * 1.25f });
-	m_MiniMapView.zoom(8.0f);
+	float viewLeftPos = (borderLeftPos + m_BorderSize + m_ViewLeftOffset) / window->getSize().x;
+	float viewRightPos = (borderRightPos - m_BorderSize + m_WidthOffset) / window->getSize().x;
+	float viewTopPos = (borderTopPos + m_BorderSize + -(m_Height * arDifference) + m_ViewTopOffset) / window->getSize().y;
+	float viewBottomPos = (borderBottomPos - m_BorderSize + (m_Height * arDifference) + m_ViewHeightOffset) / window->getSize().y;
+	
+	float viewWidth = viewRightPos - viewLeftPos;
+	float viewHeight = viewBottomPos - viewTopPos;
 
-	m_MiniMapBorder.setFillColor(m_Fillcolor);
+	m_MiniMapBorder.setPosition(borderLeftPos, borderTopPos);
+	m_MiniMapBorder.setSize({ m_Width, m_Height });
 	m_MiniMapBorder.setOutlineColor(m_BorderColor);
-	m_MiniMapBorder.setSize({ m_Width, height + m_ViewHeightOffset });
 	m_MiniMapBorder.setOutlineThickness(m_BorderSize);
+
+	m_MiniMapView.setViewport(sf::FloatRect(viewLeftPos, viewTopPos, viewWidth, viewHeight));
+	m_MiniMapView.setCenter({ m_StartPosition.x, m_StartPosition.y });
+	m_MiniMapView.zoom(m_ZoomLevel);
 }
 
 void MiniMap::update()
@@ -47,4 +51,9 @@ void MiniMap::render()
 	window->setView(m_MiniMapView);
 	Map::get().drawMiniMap();
 	window->setView(m_ViewHolder);
+}
+
+void MiniMap::setUIView(sf::View uiView)
+{
+	m_UIView = uiView;
 }
