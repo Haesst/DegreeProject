@@ -568,6 +568,7 @@ int AIManager::considerPrioritizedWar(WarmindComponent& warmind)
 		}
 	}
 
+	getAIDataofCharacter(warmind.m_OwnerID).m_CurrentAction = Action::NONE;
 	return -1;
 }
 
