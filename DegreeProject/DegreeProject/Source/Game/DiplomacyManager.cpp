@@ -62,7 +62,7 @@ void DiplomacyManager::endWar(int warHandle, CharacterID winner)
 
 	if (getAttacker(warHandle) == winner)
 	{
-		invalidateWarsForRegionOnWonWar(*getWar(warHandle));
+		invalidateWarsForRegionOnWonWar(warHandle);
 	}
 
 	handleOccupiedRegions(warHandle, winner);
@@ -121,13 +121,15 @@ bool DiplomacyManager::atWarWith(CharacterID character, CharacterID enemy)
 	return false;
 }
 
-void DiplomacyManager::invalidateWarsForRegionOnWonWar(War& wonWar)
+void DiplomacyManager::invalidateWarsForRegionOnWonWar(int wonWarHandle)
 {
+	War* wonWar = getWar(wonWarHandle);
+
 	for (auto& war : m_Wars)
 	{
-		if (war.second.m_WargoalRegion == wonWar.m_WargoalRegion)
+		if (war.second.m_WargoalRegion == wonWar->m_WargoalRegion)
 		{
-			if (war.second.getHandle() == wonWar.getHandle())
+			if (war.second.getHandle() == wonWar->getHandle())
 			{
 				continue;
 			}

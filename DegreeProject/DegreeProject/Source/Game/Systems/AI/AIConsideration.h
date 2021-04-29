@@ -51,7 +51,16 @@ struct ArmySizeConsideration : public Consideration
 		auto contextCharComp = CharacterManager::get().getCharacter(context);
 		auto targetCharComp = CharacterManager::get().getCharacter(target);
 
-		float armySizeDiff = (float)contextCharComp.m_MaxArmySize - targetCharComp.m_MaxArmySize;
+		float friendlyArmy = 0.0f;
+
+		for (auto& ally : DiplomacyManager::get().getAlliances(context))
+		{
+			friendlyArmy += CharacterManager::get().getCharacter(ally).m_CurrentMaxArmySize;
+		}
+
+		friendlyArmy += contextCharComp.m_CurrentMaxArmySize;
+
+		float armySizeDiff = friendlyArmy - targetCharComp.m_MaxArmySize;
 
 		float percentDiff = (float)targetCharComp.m_MaxArmySize / contextCharComp.m_MaxArmySize;
 

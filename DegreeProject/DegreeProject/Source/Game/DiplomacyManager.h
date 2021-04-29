@@ -54,7 +54,7 @@ public:
 	bool hasTruce(CharacterID char1, CharacterID char2);
 	bool isAllied(CharacterID ID, CharacterID other);
 
-	void invalidateWarsForRegionOnWonWar(War& wonWar);
+	void invalidateWarsForRegionOnWonWar(int wonWarHandle);
 	void invalidateWarsForRegion(int regionID);
 	void endTruce(const CharacterID& characterOneID, const CharacterID& characterTwoID);
 	void endTruces(std::vector<Truce> trucesToEnd);
