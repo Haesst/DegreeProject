@@ -1,6 +1,7 @@
 #pragma once
 #include <algorithm>
 #include "Game/Map/Map.h"
+#include "Game/DiplomacyManager.h"
 
 namespace ConsiderationConstants
 {
