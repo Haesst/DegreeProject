@@ -56,6 +56,8 @@ public:
 
 	void invalidateWarsForRegionOnWonWar(War& wonWar);
 	void invalidateWarsForRegion(int regionID);
+	void endTruce(const CharacterID& characterOneID, const CharacterID& characterTwoID);
+	void endTruces(std::vector<Truce> trucesToEnd);
 
 	void invalidateWar(int warHandle);
 	void InvalidateWarsOfCharacter(CharacterID ID);
@@ -79,6 +81,7 @@ public:
 	// Alliances
 	void createAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID);
 	void breakAlliance(const CharacterID& characterOneID, const CharacterID& characterTwoID);
+
 	std::vector<CharacterID> getAlliances(const CharacterID& character);
 	std::vector<Truce> getTruces(const CharacterID& character);
 
@@ -93,9 +96,8 @@ public:
 	}
 
 private:
+
 	void makeTruce(const CharacterID& characterOneID, const CharacterID& characterTwoID);
-	void endTruce(const CharacterID& characterOneID, const CharacterID& characterTwoID);
-	void endTruces(std::vector<Truce> trucesToEnd);
 	void eraseWar(int handle);
 	void onMonthChange();
 

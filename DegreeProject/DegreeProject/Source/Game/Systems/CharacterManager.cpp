@@ -908,10 +908,11 @@ void CharacterManager::removeRegion(const CharacterID characterId, const unsigne
 	for (size_t i = 0; i < character.m_OwnedRegionIDs.size(); ++i)
 	{
 		if (character.m_OwnedRegionIDs[i] == regionId)
-		{
+		{	
 			character.m_OwnedRegionIDs.erase(character.m_OwnedRegionIDs.begin() + i);
 			MapRegion region = Map::get().getRegionById(regionId);
 			character.m_MaxArmySize -= region.m_ManPower;
+			updateTitleAndUIText(character);
 
 			for (auto& buildingSlot : region.m_BuildingSlots)
 			{
@@ -923,6 +924,19 @@ void CharacterManager::removeRegion(const CharacterID characterId, const unsigne
 				character.m_MaxArmySize -= GameData::m_Buildings[buildingSlot.m_BuildingId].m_ArmyModifier;
 			}
 			break;
+		}
+	}
+
+
+	if (character.m_OwnedRegionIDs.empty())
+	{
+		DiplomacyManager* diplomacyManager = &DiplomacyManager::get();
+		auto& truces = diplomacyManager->getTruces(character.m_CharacterID);
+		diplomacyManager->endTruces(truces);
+
+		for (auto& ally : diplomacyManager->getAlliances(character.m_CharacterID))
+		{
+			diplomacyManager->breakAlliance(character.m_CharacterID, ally);
 		}
 	}
 }

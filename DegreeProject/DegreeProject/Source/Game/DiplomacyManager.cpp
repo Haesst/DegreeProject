@@ -788,6 +788,7 @@ void DiplomacyManager::endTruce(const CharacterID& characterOneID, const Charact
 	m_ActiveTruces[characterOneID].erase(m_ActiveTruces[characterOneID].begin() + index);
 }
 
+
 void DiplomacyManager::endTruces(std::vector<Truce> trucesToEnd)
 {
 	for (Truce& truce : trucesToEnd)
