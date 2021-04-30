@@ -2,6 +2,7 @@
 
 #include "Engine/Window.h"
 #include "Engine/Log.h"
+#include "Engine/InputHandler.h"
 
 #include "Game/Map/Map.h"
 
@@ -36,10 +37,26 @@ void MiniMap::start()
 	m_MiniMapView.setViewport(sf::FloatRect(viewLeftPos, viewTopPos, viewWidth, viewHeight));
 	m_MiniMapView.setCenter({ m_StartPosition.x, m_StartPosition.y });
 	m_MiniMapView.zoom(m_ZoomLevel);
+
+	InputHandler::setMiniMapView(m_MiniMapView);
 }
 
 void MiniMap::update()
 {
+	if (InputHandler::getLeftMouseReleased())
+	{
+		Vector2D mousePos = InputHandler::getMiniMapMousePosition();
+
+		bool mouseInsideMiniMap = mousePos.x > 0.0f && mousePos.x < m_SpriteSize.x && mousePos.y > 0.0f && mousePos.y < m_SpriteSize.y;
+		
+		if (mouseInsideMiniMap)
+		{
+			ASSERT(m_GameView != nullptr, "Gameview not set");
+			m_GameView->setCenter({mousePos.x, mousePos.y});
+			Window::getWindow()->setView(*m_GameView);
+			InputHandler::setLeftMouseReleased(false);
+		}
+	}
 }
 
 void MiniMap::render()
@@ -53,7 +70,16 @@ void MiniMap::render()
 	window->setView(m_ViewHolder);
 }
 
-void MiniMap::setUIView(sf::View uiView)
+void MiniMap::setUIView(sf::View& uiView)
 {
 	m_UIView = uiView;
 }
+
+void MiniMap::setGameView(sf::View* gameView)
+{
+	m_GameView = gameView;
+}
+
+MiniMap::MiniMap()
+	: m_ViewHolder(sf::View()), m_UIView(sf::View()), m_GameView(nullptr)
+{}

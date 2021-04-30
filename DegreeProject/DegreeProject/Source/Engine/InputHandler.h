@@ -37,6 +37,7 @@ public:
 	static void setRightMouseReleased(bool released);
 	static Vector2D getMousePosition();
 	static Vector2D getUIMousePosition();
+	static Vector2D getMiniMapMousePosition();
 	static Vector2DInt getMouseMapPosition();
 	static float getMouseScrollDirection();
 	static bool getMouseScrolled();
@@ -54,6 +55,7 @@ public:
 	static void setFamilyTreeWindowOpen(bool open);
 	static float getZoomSpeed();
 	static void setUIView(sf::View& uiView);
+	static void setMiniMapView(sf::View& minimapView);
 
 	static bool m_Inputs[Inputs::PlayerUnitSelected + 1];
 	static float m_TotalZoom;
@@ -66,6 +68,7 @@ private:
 
 private:
 	static sf::View& m_UIView;
+	static sf::View& m_MiniMapView;
 
 	static float maxCenterXPosition;
 	static float minCenterXPosition;

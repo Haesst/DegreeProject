@@ -237,6 +237,7 @@ void UIManager::update()
 		m_UITexts.erase(characterID);
 	}
 	m_UITextsToRemove.clear();
+	m_MiniMap->update();
 	m_DateBar->update();
 	m_WarWindow->update();
 	for (std::pair<UIID, WarIcon*> warIconPair : m_WarIcons)
@@ -265,7 +266,6 @@ void UIManager::update()
 	m_FamilyTreeWindow->update();
 	m_CharacterWindow->update();
 	m_RegionWindow->update();
-	m_MiniMap->update();
 }
 
 void UIManager::render()

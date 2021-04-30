@@ -7,6 +7,7 @@
 #include "Game/GameData.h"
 #include "Game/AI/AIManager.h"
 #include "Game/UI/UIManager.h"
+#include "Game/UI/MiniMap.h"
 #include "Game/StaticSpriteManager.h"
 #include "Game/DiplomacyManager.h"
 #include "Game/Systems/HeraldicShieldManager.h"
@@ -47,6 +48,8 @@ void Game::run()
 	UnitManager::get().start();
 	UIManager::get().start();
 	DiplomacyManager::get().start();
+
+	UIManager::get().m_MiniMap->setGameView(&view);
 
 	while (internalWindow->isOpen())
 	{

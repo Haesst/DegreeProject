@@ -9,7 +9,10 @@ public:
 	void start();
 	void update();
 	void render();
-	void setUIView(sf::View uiView);
+	void setUIView(sf::View& uiView);
+	void setGameView(sf::View* gameView);
+
+	MiniMap();
 
 private:
 	const float m_ZoomLevel = 17.5f;
@@ -31,6 +34,7 @@ private:
 	sf::Color m_Fillcolor = sf::Color::White;
 	sf::Color m_BorderColor = sf::Color::Green;
 	sf::View m_MiniMapView;
-	sf::View m_ViewHolder;
-	sf::View m_UIView;
+	sf::View& m_ViewHolder;
+	sf::View& m_UIView;
+	sf::View* m_GameView;
 };
