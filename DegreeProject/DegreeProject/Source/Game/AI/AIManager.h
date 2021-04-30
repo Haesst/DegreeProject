@@ -17,16 +17,11 @@ class AISettlementManager;
 class AIRelationshipManager;
 class AIWarManager;
 
+struct Personality;
 struct AIData;
 enum class PeaceType;
 
-struct Personality
-{
-	std::string m_PersonalityName;
-	float m_DeclareWarModifier = 0.0f;
 
-	Personality(std::string personalityName, float declareWarModifier) : m_PersonalityName(personalityName), m_DeclareWarModifier(declareWarModifier){}
-};
 
 class AIManager
 {
@@ -40,6 +35,7 @@ public:
 	WarmindComponent& getWarmindOfCharacter(CharacterID handle);
 	AIData& getAIDataofCharacter(int handle);
 	void initAI(CharacterID ID);
+	Personality* getPersonality(const char* personalityName);
 	void deactivateAI(CharacterID ID);
 	bool handleRecieveMarriageRequest(CharacterID reciever, CharacterID sender);
 	bool handlePeaceRequest(CharacterID sender, CharacterID reciever, PeaceType type);

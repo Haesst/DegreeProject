@@ -97,7 +97,9 @@ AIData& AIManager::getAIDataofCharacter(int handle)
 	}
 
 	ASSERT(false, "No data belonging to that handle");
-	return AIData();
+
+	AIData data;
+	return data;
 }
 #pragma warning(pop)
 
@@ -109,6 +111,8 @@ void AIManager::initAI(CharacterID ID)
 	m_Warminds.push_back(warmind);
 
 	AIData data;
+	
+	data.m_Personality = *getPersonality("Warmonger");
 	data.m_OwnerID = ID;
 	data.m_LastAction = Action::NONE;
 	data.m_CurrentAction = Action::NONE;
@@ -119,6 +123,19 @@ void AIManager::initAI(CharacterID ID)
 
 	m_AIDatas.push_back(data);
 	m_TickPrio[randomTickRate].push_back(data);
+}
+
+Personality* AIManager::getPersonality(const char* personalityName)
+{
+	for (auto& personality : m_Personalities)
+	{
+		if (personality.m_PersonalityName == personalityName)
+		{
+			return &personality;
+		}
+	}
+
+	return nullptr;
 }
 
 void AIManager::deactivateAI(CharacterID ID)

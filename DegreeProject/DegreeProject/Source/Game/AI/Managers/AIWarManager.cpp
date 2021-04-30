@@ -74,14 +74,14 @@ float AIWarManager::warDecision(CharacterID ID)
 
 	float goldEvaluation = goldConsideration.evaluate(ID, AIManager::get().getWarmindOfCharacter(ID).m_Opponent);
 	float enemyArmyEvaluation = armySizeConsideration.evaluate(ID, AIManager::get().getWarmindOfCharacter(ID).m_Opponent);
-	float allyDebuff = 0.0f;
+	float warMongerWeight = AIManager::get().getAIDataofCharacter(ID).m_Personality.m_DeclareWarModifier;
 
 	if (CharacterManager::get().isAlliedWith(ID, AIManager::get().getWarmindOfCharacter(ID).m_Opponent))
 	{
 		return 0.0f;
 	}
 
-	float actionScore = (goldEvaluation * enemyArmyEvaluation) - allyDebuff;
+	float actionScore = (goldEvaluation * enemyArmyEvaluation) + warMongerWeight;
 
 	for (auto& war : DiplomacyManager::get().getWarsForRegion(AIManager::get().getWarmindOfCharacter(ID).m_WargoalRegionId))
 	{

@@ -952,7 +952,6 @@ void CharacterManager::removeRegion(const CharacterID characterId, const unsigne
 		}
 	}
 
-
 	if (character.m_OwnedRegionIDs.empty())
 	{
 		DiplomacyManager* diplomacyManager = &DiplomacyManager::get();

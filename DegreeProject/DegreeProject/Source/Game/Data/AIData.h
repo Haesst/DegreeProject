@@ -10,12 +10,24 @@ enum class Action
 	NONE
 };
 
+struct Personality
+{
+	Personality() {};
+	std::string m_PersonalityName;
+	float m_DeclareWarModifier = 0.0f;
+
+	Personality(std::string personalityName, float declareWarModifier) : m_PersonalityName(personalityName), m_DeclareWarModifier(declareWarModifier) {}
+};
+
 struct AIData
 {
+	AIData() {};
+
 	Action m_CurrentAction = Action::NONE;
 	CharacterID m_OwnerID = INVALID_CHARACTER_ID;
 	Action m_LastAction = Action::NONE;
 	Date m_LastMarriageOfferDate;
+	Personality m_Personality;
 
 	std::vector<std::pair<float, Action>> m_Evaluations;
 

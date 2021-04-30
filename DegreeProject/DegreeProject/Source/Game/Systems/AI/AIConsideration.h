@@ -2,6 +2,8 @@
 #include <algorithm>
 #include "Game/Map/Map.h"
 #include "Game/DiplomacyManager.h"
+#include "Game/AI/AIManager.h"
+#include "Game/Data/AIData.h"
 
 namespace ConsiderationConstants
 {
@@ -249,7 +251,8 @@ struct ExpansionConsideration : public Consideration
 		float avgTax = std::accumulate(regionTax.begin(), regionTax.end(), 0LL) / (float)regionTax.size();
 		float percentDiff = (float)wantedRegionTax / avgTax;
 
-		return std::clamp(std::pow(percentDiff, 2.0f) + distanceWeight, 0.0f, 1.0f);
+		float warMongerWeight = AIManager::get().getAIDataofCharacter(context).m_Personality.m_DeclareWarModifier;
+		return std::clamp(std::pow(percentDiff, 2.0f) + distanceWeight + warMongerWeight, 0.0f, 1.0f);
 	}
 };
 
