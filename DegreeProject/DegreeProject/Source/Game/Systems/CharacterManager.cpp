@@ -10,6 +10,7 @@
 #include "Game/UI/UIManager.h"
 #include "Game/UI/DateBar.h"
 #include "Game/UI/StatBar.h"
+#include "Game/UI/MiniMap.h"
 #include "Game/Game.h"
 #include "Game/Player.h"
 #include "Game/Data/Trait.h"
@@ -52,6 +53,7 @@ void CharacterManager::setPlayerCharacter(Character& character)
 	m_Player = new Player(character.m_CharacterID);
 	m_Player = &Player::get();
 	m_Player->m_OwnedCharacter = character.m_CharacterID;
+	UIManager::get().m_MiniMap->setPlayerColor(character.m_RegionColor);
 }
 
 void CharacterManager::addNewCharacter(Character& character)
@@ -798,6 +800,7 @@ void CharacterManager::handleInheritance(Character& character)
 			AIManager::get().deactivateAI(currentChildCharacter->m_CharacterID);
 			UIManager::get().m_DateBar->updateOwnerColor(currentChildCharacter->m_RegionColor);
 			UIManager::get().m_StatBar->updateOwnerColor(currentChildCharacter->m_RegionColor);
+			UIManager::get().m_MiniMap->setPlayerColor(currentChildCharacter->m_RegionColor);
 		}
 
 		for (size_t i = 0; i < character.m_OwnedRegionIDs.size(); ++i)

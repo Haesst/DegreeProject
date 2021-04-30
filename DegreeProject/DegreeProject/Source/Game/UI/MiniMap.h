@@ -11,6 +11,8 @@ public:
 	void render();
 	void setUIView(sf::View& uiView);
 	void setGameView(sf::View* gameView);
+	void updateGameViewRectangle();
+	void setPlayerColor(sf::Color& color);
 
 	MiniMap();
 
@@ -31,10 +33,12 @@ private:
 	float m_ViewHeightOffset = 10.0f;
 
 	sf::RectangleShape m_MiniMapBorder;
+	sf::RectangleShape m_GameViewRectangle;
 	sf::Color m_Fillcolor = sf::Color::White;
 	sf::Color m_BorderColor = sf::Color::Green;
 	sf::View m_MiniMapView;
 	sf::View& m_ViewHolder;
 	sf::View& m_UIView;
 	sf::View* m_GameView;
+	sf::Vector2f m_GameViewCenter = { 0.0f, 0.0f };
 };

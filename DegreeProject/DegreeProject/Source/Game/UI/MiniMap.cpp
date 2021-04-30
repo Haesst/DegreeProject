@@ -39,10 +39,20 @@ void MiniMap::start()
 	m_MiniMapView.zoom(m_ZoomLevel);
 
 	InputHandler::setMiniMapView(m_MiniMapView);
+
+	float rectX = window->getSize().x;
+	float rectY = window->getSize().y;
+
+	m_GameViewRectangle.setFillColor(sf::Color::Transparent);
+	m_GameViewRectangle.setOutlineColor(sf::Color::White);
+	m_GameViewRectangle.setOutlineThickness(40.0f);
+	m_GameViewRectangle.setSize({ rectX, rectY });
 }
 
 void MiniMap::update()
 {
+	updateGameViewRectangle();
+
 	if (InputHandler::getLeftMouseReleased())
 	{
 		Vector2D mousePos = InputHandler::getMiniMapMousePosition();
@@ -67,6 +77,7 @@ void MiniMap::render()
 	m_ViewHolder = window->getView();
 	window->setView(m_MiniMapView);
 	Map::get().drawMiniMap();
+	window->draw(m_GameViewRectangle);
 	window->setView(m_ViewHolder);
 }
 
@@ -78,6 +89,28 @@ void MiniMap::setUIView(sf::View& uiView)
 void MiniMap::setGameView(sf::View* gameView)
 {
 	m_GameView = gameView;
+}
+
+void MiniMap::updateGameViewRectangle()
+{
+	sf::RenderWindow* window = Window::getWindow();
+
+	m_GameViewCenter = window->getView().getCenter();
+	sf::Vector2u gameViewSize = window->getSize();
+	sf::Vector2f resolution = { 1920, 1080 };
+	resolution *= InputHandler::m_TotalZoom;
+
+	m_GameViewRectangle.setSize({(float)resolution.x, (float)resolution.y});
+	
+	float startX = m_GameViewCenter.x - (resolution.x / 2);
+	float startY = m_GameViewCenter.y - (resolution.y / 2);
+	m_GameViewRectangle.setPosition({ startX, startY });
+}
+
+void MiniMap::setPlayerColor(sf::Color& color)
+{
+	m_BorderColor = color;
+	m_MiniMapBorder.setOutlineColor(color);
 }
 
 MiniMap::MiniMap()
