@@ -137,13 +137,21 @@ void FamilyTreeWindow::updateInfo()
 void FamilyTreeWindow::handleWindow()
 {
 	InputHandler::setFamilyTreeWindowOpen(m_Visible);
-	if (m_Visible && (InputHandler::getLeftMouseReleased() || InputHandler::getRightMouseReleased()))
+	if (m_Visible && (InputHandler::getLeftMouseClicked() || InputHandler::getLeftMouseReleased() || InputHandler::getRightMouseClicked() || InputHandler::getRightMouseReleased()))
 	{
-		if (InputHandler::getLeftMouseReleased())
+		if (InputHandler::getLeftMouseClicked())
+		{
+			InputHandler::setLeftMouseClicked(false);
+		}
+		else if (InputHandler::getLeftMouseReleased())
 		{
 			InputHandler::setLeftMouseReleased(false);
 		}
-		if (InputHandler::getRightMouseReleased())
+		else if (InputHandler::getRightMouseClicked())
+		{
+			InputHandler::setRightMouseClicked(false);
+		}
+		else if (InputHandler::getRightMouseReleased())
 		{
 			InputHandler::setRightMouseReleased(false);
 		}
