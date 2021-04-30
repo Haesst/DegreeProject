@@ -306,6 +306,7 @@ void Map::drawMiniMap()
 	sf::Sprite sp;
 	sp.setTexture(m_Data.m_LandTexture, true);
 	sp.setPosition({ m_XOffset, m_YOffset });
+	sp.setScale({ 1.0f, m_AspectRatio });
 
 	Window::getWindow()->draw(sp, &m_Data.m_Shader);
 

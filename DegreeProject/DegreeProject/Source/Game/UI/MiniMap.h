@@ -27,10 +27,10 @@ private:
 	float m_Height = 200.0f;
 	float m_BorderSize = 5.0f;
 
-	float m_ViewLeftOffset = -5.0f;
-	float m_WidthOffset = 59.0f;
-	float m_ViewTopOffset = -53.0f;
-	float m_ViewHeightOffset = 10.0f;
+	float m_ViewLeftOffset = 0.0f;
+	float m_ViewWidthOffset = 55.0f;
+	float m_ViewTopOffset = -282.0f;
+	float m_ViewHeightOffset = 476.0f;
 
 	sf::RectangleShape m_MiniMapBorder;
 	sf::RectangleShape m_GameViewRectangle;

@@ -21,10 +21,14 @@ void MiniMap::start()
 	float borderTopPos = window->getSize().y - m_Height - m_BorderSize - m_BottomOffset;
 	float borderBottomPos = borderTopPos + m_Height;
 
-	float viewLeftPos = (borderLeftPos + m_BorderSize + m_ViewLeftOffset) / window->getSize().x;
-	float viewRightPos = (borderRightPos - m_BorderSize + m_WidthOffset) / window->getSize().x;
-	float viewTopPos = (borderTopPos + m_BorderSize + -(m_Height * arDifference) + m_ViewTopOffset) / window->getSize().y;
-	float viewBottomPos = (borderBottomPos - m_BorderSize + (m_Height * arDifference) + m_ViewHeightOffset) / window->getSize().y;
+	float windowX = window->getSize().x;
+	float windowY = window->getSize().y;
+
+	float viewLeftPos = (borderLeftPos + m_ViewLeftOffset) / windowX;
+	float viewRightPos = (borderRightPos + m_ViewLeftOffset + m_ViewWidthOffset) / windowX;
+
+	float viewTopPos = (borderTopPos + m_ViewTopOffset) / windowY;
+	float viewBottomPos = (borderBottomPos + m_ViewTopOffset + m_ViewHeightOffset) / windowY;
 	
 	float viewWidth = viewRightPos - viewLeftPos;
 	float viewHeight = viewBottomPos - viewTopPos;
@@ -57,7 +61,7 @@ void MiniMap::update()
 	{
 		Vector2D mousePos = InputHandler::getMiniMapMousePosition();
 
-		bool mouseInsideMiniMap = mousePos.x > 0.0f && mousePos.x < m_SpriteSize.x && mousePos.y > 0.0f && mousePos.y < m_SpriteSize.y;
+		bool mouseInsideMiniMap = mousePos.x > 0.0f && mousePos.x < m_SpriteSize.x && mousePos.y > 0.0f && mousePos.y < (m_SpriteSize.y * 1.4f);
 		
 		if (mouseInsideMiniMap)
 		{
