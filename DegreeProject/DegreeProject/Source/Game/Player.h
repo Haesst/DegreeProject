@@ -12,6 +12,12 @@
 #include "Engine/Window.h"
 #include "Game/Systems/UnitManager.h"
 
+enum class loseCause
+{
+	No_Heir,
+	Unlanded
+};
+
 class Player
 {
 public:
@@ -19,6 +25,9 @@ public:
 
 	void update();
 	void render();
+
+	void loseGame(loseCause cause);
+	void winGame();
 
 private:
 	void hoverOverRegion();

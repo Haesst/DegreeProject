@@ -744,6 +744,11 @@ void CharacterManager::handleInheritance(Character& character)
 {
 	std::vector<CharacterID> aliveChildren = getAliveChildren(character.m_CharacterID);
 
+	if (character.m_IsPlayerControlled && aliveChildren.size() == 0)
+	{
+		//Call lose game
+	}
+
 	if (aliveChildren.size() <= 0)
 	{
 		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
@@ -897,6 +902,11 @@ void CharacterManager::addRegion(const CharacterID characterId, const unsigned i
 {
 	Character& character = getCharacter(characterId);
 	character.m_OwnedRegionIDs.push_back(regionId);
+
+	if (character.m_IsPlayerControlled && character.m_OwnedRegionIDs.size() == Map::get().getRegionIDs().size())
+	{
+		//Win game
+	}
 
 	MapRegion& region = Map::get().getRegionById(regionId);
 	Map::get().setRegionColor(regionId, character.m_RegionColor);

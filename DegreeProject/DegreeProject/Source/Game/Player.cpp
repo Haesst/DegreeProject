@@ -22,6 +22,16 @@ void Player::render()
 	}
 }
 
+void Player::loseGame(loseCause cause)
+{
+	LOG_INFO("LOST GAME");
+}
+
+void Player::winGame()
+{
+	LOG_INFO("WIN GAME");
+}
+
 void Player::hoverOverRegion()
 {
 	Vector2DInt currentMousePosition = InputHandler::getMouseMapPosition();
