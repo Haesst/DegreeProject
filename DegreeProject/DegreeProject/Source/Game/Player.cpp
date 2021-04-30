@@ -1,8 +1,24 @@
 #include "Player.h"
 
+Player* Player::m_Instance = nullptr;
+
 Player::Player(CharacterID ownedCharacter)
 {
 	m_OwnedCharacter = ownedCharacter;
+}
+
+Player::Player()
+{
+}
+
+Player& Player::get()
+{
+	if (m_Instance == nullptr)
+	{
+		m_Instance = new Player();
+	}
+
+	return *m_Instance;
 }
 
 void Player::update()

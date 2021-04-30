@@ -22,12 +22,17 @@ class Player
 {
 public:
 	Player(CharacterID ownedCharacter);
+	Player();
 
+	static Player& get();
 	void update();
 	void render();
 
 	void loseGame(loseCause cause);
 	void winGame();
+
+public:
+	unsigned int m_OwnedCharacter = INVALID_CHARACTER_ID;
 
 private:
 	void hoverOverRegion();
@@ -38,6 +43,8 @@ private:
 	void deselectUnits();
 
 private:
+	static Player* m_Instance;
+
 	bool m_Draging = false;
 	sf::RectangleShape m_DragWindow;
 
@@ -47,5 +54,4 @@ private:
 
 	int m_HighlightedRegion = -1;
 	unsigned int m_SelectedUnitID = INVALID_UNIT_ID;
-	unsigned int m_OwnedCharacter = INVALID_CHARACTER_ID;
 };

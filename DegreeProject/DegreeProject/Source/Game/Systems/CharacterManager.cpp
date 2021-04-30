@@ -50,6 +50,8 @@ void CharacterManager::setPlayerCharacter(Character& character)
 	m_PlayerCharacterID = character.m_CharacterID;
 
 	m_Player = new Player(character.m_CharacterID);
+	m_Player = &Player::get();
+	m_Player->m_OwnedCharacter = character.m_CharacterID;
 }
 
 void CharacterManager::addNewCharacter(Character& character)
@@ -746,7 +748,7 @@ void CharacterManager::handleInheritance(Character& character)
 
 	if (character.m_IsPlayerControlled && aliveChildren.size() == 0)
 	{
-		//Call lose game
+		Player::get().loseGame(loseCause::No_Heir);
 	}
 
 	if (aliveChildren.size() <= 0)
@@ -905,7 +907,7 @@ void CharacterManager::addRegion(const CharacterID characterId, const unsigned i
 
 	if (character.m_IsPlayerControlled && character.m_OwnedRegionIDs.size() == Map::get().getRegionIDs().size())
 	{
-		//Win game
+		Player::get().winGame();
 	}
 
 	MapRegion& region = Map::get().getRegionById(regionId);
@@ -960,6 +962,11 @@ void CharacterManager::removeRegion(const CharacterID characterId, const unsigne
 		for (auto& ally : diplomacyManager->getAlliances(character.m_CharacterID))
 		{
 			diplomacyManager->breakAlliance(character.m_CharacterID, ally);
+		}
+
+		if (character.m_IsPlayerControlled)
+		{
+			Player::get().loseGame(loseCause::Unlanded);
 		}
 	}
 }
