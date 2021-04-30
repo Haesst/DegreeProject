@@ -12,7 +12,7 @@ const int   Map::m_XOffset = -300;
 const int   Map::m_YOffset = -100;
 const float Map::m_TileSize = 32;
 const float Map::m_HalfTileSize = m_TileSize * 0.5f;
-const float Map::m_AspectRatio = 1.0f;
+const float Map::m_AspectRatio = 1.4f;
 
 Map* Map::m_Instance = nullptr;
 
@@ -457,12 +457,16 @@ MapRegion& Map::getRegionById(unsigned int regionId)
 
 Vector2DInt Map::convertToMap(Vector2D position)
 {
-	return Vector2DInt((int)((position.x - m_XOffset + m_HalfTileSize) / m_TileSize), (int)(((position.y - m_YOffset + m_HalfTileSize) / m_AspectRatio) / m_TileSize));
+	int mapX = (int)((position.x - m_XOffset + m_HalfTileSize) / m_TileSize);
+	int mapY = (int)(((position.y - m_YOffset) + m_HalfTileSize * m_AspectRatio) / (m_TileSize * m_AspectRatio));
+	return Vector2DInt(mapX, mapY);
 }
 
 Vector2D Map::convertToScreen(Vector2DInt position)
 {
-	return Vector2D((float)(position.x * m_TileSize) - m_HalfTileSize + m_XOffset, (float)(((position.y * m_TileSize) - m_HalfTileSize) * m_AspectRatio) + m_YOffset);
+	float screenX = position.x * m_TileSize - m_HalfTileSize + m_XOffset;
+	float screenY = (position.y * m_TileSize * m_AspectRatio - m_HalfTileSize * m_AspectRatio) + m_YOffset;
+	return Vector2D(screenX, screenY);
 }
 
 std::vector<Vector2DInt> Map::getWaterTiles()
