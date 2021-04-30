@@ -8,11 +8,6 @@
 
 void MiniMap::start()
 {
-	float ar = m_SpriteSize.y / m_SpriteSize.x;
-
-	float desiredAspectRatio = m_Height / m_Width;
-	float arDifference = desiredAspectRatio / ar;
-
 	sf::RenderWindow* window = Window::getWindow();
 
 	float borderLeftPos = window->getSize().x - m_Width - m_BorderSize - m_RightOffset;
@@ -21,8 +16,8 @@ void MiniMap::start()
 	float borderTopPos = window->getSize().y - m_Height - m_BorderSize - m_BottomOffset;
 	float borderBottomPos = borderTopPos + m_Height;
 
-	float windowX = window->getSize().x;
-	float windowY = window->getSize().y;
+	float windowX = (float)window->getSize().x;
+	float windowY = (float)window->getSize().y;
 
 	float viewLeftPos = (borderLeftPos + m_ViewLeftOffset) / windowX;
 	float viewRightPos = (borderRightPos + m_ViewLeftOffset + m_ViewWidthOffset) / windowX;
@@ -44,13 +39,10 @@ void MiniMap::start()
 
 	InputHandler::setMiniMapView(m_MiniMapView);
 
-	float rectX = window->getSize().x;
-	float rectY = window->getSize().y;
-
 	m_GameViewRectangle.setFillColor(sf::Color::Transparent);
 	m_GameViewRectangle.setOutlineColor(sf::Color::White);
 	m_GameViewRectangle.setOutlineThickness(40.0f);
-	m_GameViewRectangle.setSize({ rectX, rectY });
+	m_GameViewRectangle.setSize({ windowX, windowY });
 }
 
 void MiniMap::update()
@@ -78,14 +70,14 @@ void MiniMap::render()
 	sf::RenderWindow* window = Window::getWindow();
 	window->draw(m_MiniMapBorder);
 
-	m_ViewHolder = window->getView();
 	window->setView(m_MiniMapView);
 	Map::get().drawMiniMap();
 	window->draw(m_GameViewRectangle);
-	window->setView(m_ViewHolder);
+
+	window->setView(*m_UIView);
 }
 
-void MiniMap::setUIView(sf::View& uiView)
+void MiniMap::setUIView(sf::View* uiView)
 {
 	m_UIView = uiView;
 }
@@ -118,5 +110,5 @@ void MiniMap::setPlayerColor(sf::Color& color)
 }
 
 MiniMap::MiniMap()
-	: m_ViewHolder(sf::View()), m_UIView(sf::View()), m_GameView(nullptr)
+	: m_UIView(nullptr), m_GameView(nullptr)
 {}

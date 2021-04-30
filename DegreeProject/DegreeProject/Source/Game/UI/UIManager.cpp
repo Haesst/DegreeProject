@@ -237,9 +237,9 @@ void UIManager::update()
 		m_UITexts.erase(characterID);
 	}
 	m_UITextsToRemove.clear();
-	m_MiniMap->update();
 	m_DateBar->update();
 	m_WarWindow->update();
+	m_MiniMap->update();
 	for (std::pair<UIID, WarIcon*> warIconPair : m_WarIcons)
 	{
 		if (warIconPair.second->m_Active)
@@ -278,6 +278,7 @@ void UIManager::render()
 	{
 		warIconPair.second->render();
 	}
+	m_MiniMap->render();
 	m_FamilyTreeWindow->render();
 	m_CharacterWindow->render();
 	m_RegionWindow->render();
@@ -290,7 +291,6 @@ void UIManager::render()
 	}
 	m_PauseWindow->render();
 	m_MainMenu->render();
-	m_MiniMap->render();
 }
 
 #pragma warning(push)

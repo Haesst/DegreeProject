@@ -50,6 +50,7 @@ void Game::run()
 	DiplomacyManager::get().start();
 
 	UIManager::get().m_MiniMap->setGameView(&view);
+	UIManager::get().m_MiniMap->setUIView(&uiView);
 
 	while (internalWindow->isOpen())
 	{
