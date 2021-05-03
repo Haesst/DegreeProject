@@ -112,7 +112,7 @@ void AIManager::initAI(CharacterID ID)
 
 	AIData data;
 	
-	data.m_Personality = *getPersonality("Warmonger");
+	data.m_Personality = m_Personalities[rand() % m_Personalities.size()];
 	data.m_OwnerID = ID;
 	data.m_LastAction = Action::NONE;
 	data.m_CurrentAction = Action::NONE;

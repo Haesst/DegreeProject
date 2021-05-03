@@ -18,11 +18,6 @@ AIWarManager::~AIWarManager()
 
 void AIWarManager::update(AIData& data)
 {
-	if (data.m_CurrentAction == Action::War)
-	{
-		return;
-	}
-
 	if (data.m_CurrentAction != Action::War && m_Warmanager->getWarHandlesOfCharacter(data.m_OwnerID).size() == 0)
 	{
 		if (expansionDecision(data.m_OwnerID) > warConstants::m_expansionAcceptance)
@@ -75,6 +70,13 @@ float AIWarManager::warDecision(CharacterID ID)
 	float goldEvaluation = goldConsideration.evaluate(ID, AIManager::get().getWarmindOfCharacter(ID).m_Opponent);
 	float enemyArmyEvaluation = armySizeConsideration.evaluate(ID, AIManager::get().getWarmindOfCharacter(ID).m_Opponent);
 	float warMongerWeight = AIManager::get().getAIDataofCharacter(ID).m_Personality.m_DeclareWarModifier;
+	float randomWeight = 0.0f;
+
+	bool useRandomWeight = (rand() % 100) < 40;
+	if (useRandomWeight)
+	{
+		randomWeight = warConstants::m_warAcceptance;
+	}
 
 	if (CharacterManager::get().isAlliedWith(ID, AIManager::get().getWarmindOfCharacter(ID).m_Opponent))
 	{
