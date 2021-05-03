@@ -24,11 +24,6 @@ void AIWarManager::update(AIData& data)
 		{
 			float warEval = warDecision(data.m_OwnerID);
 
-			if (data.m_LastAction == Action::War)
-			{
-				warEval -= .2f;
-			}
-
 			if (warEval > warConstants::m_warAcceptance)
 			{
 				if (!DiplomacyManager::get().hasTruce(data.m_OwnerID, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
