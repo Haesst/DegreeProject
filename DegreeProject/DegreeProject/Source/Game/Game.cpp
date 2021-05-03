@@ -261,7 +261,7 @@ void Game::addRandomEntityOwningRegion(std::vector<size_t> regions)
 	Gender gender = male ? Gender::Male : Gender::Female;
 	char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
 	sf::Color regionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
-	CharacterID character = createCharacter(regions, Title::Count, gender, "County of Region", name, 50, 5, false, regionColor);
+	CharacterID character = createCharacter(regions, Title::Baron, gender, "Barony of Region", name, 50, 5, false, regionColor);
 	UIManager::get().createUITextElement(m_UIFont, character, CharacterManager::get().getCharacter(character).m_KingdomName, regions);
 	CharacterManager::get().updateTitleAndUIText(CharacterManager::get().getCharacter(character));
 }

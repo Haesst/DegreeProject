@@ -721,7 +721,7 @@ void CharacterManager::updateTitleAndUIText(Character& character)
 		character.m_CharacterTitle = Title::Duke;
 		stream << "Duchy of ";
 	}
-	else if (character.m_OwnedRegionIDs.size() <= 6)
+	else if (character.m_OwnedRegionIDs.size() < 9)
 	{
 		character.m_CharacterTitle = Title::King;
 		stream << "Kingdom of ";
