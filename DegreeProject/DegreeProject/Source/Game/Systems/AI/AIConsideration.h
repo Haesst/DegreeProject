@@ -13,16 +13,7 @@ namespace ConsiderationConstants
 
 struct Consideration
 {
-	CharacterID m_Context;
-
-	Consideration() { m_Context = INVALID_CHARACTER_ID; };
-
-	Consideration(CharacterID context) { m_Context = context; }
-
-	virtual void setContext(CharacterID context)
-	{
-		m_Context = context;
-	}
+	Consideration() {};
 
 	//context = Who is making the decision, target is optional if we need to compare values with another character
 	virtual float evaluate(CharacterID, CharacterID)
@@ -37,11 +28,6 @@ struct ArmySizeConsideration : public Consideration
 	ArmySizeConsideration() : Consideration()
 	{
 
-	}
-
-	void setContext(CharacterID context) override
-	{
-		m_Context = context;
 	}
 
 	float evaluate(CharacterID context, CharacterID target = INVALID_CHARACTER_ID) override
@@ -89,13 +75,6 @@ struct UpgradeSettlementConsideration : public Consideration
 	UpgradeSettlementConsideration() : Consideration()
 	{
 
-	}
-
-	UpgradeSettlementConsideration(CharacterID context) { m_Context = context; }
-
-	void setContext(CharacterID context) override
-	{
-		m_Context = context;
 	}
 
 	float evaluate(CharacterID context, int& outRegion)
@@ -161,13 +140,6 @@ struct GoldConsideration : public Consideration
 	{
 	}
 
-	GoldConsideration(CharacterID context) { m_Context = context; }
-
-	void setContext(CharacterID context) override
-	{
-		m_Context = context;
-	}
-
 	float evaluate(CharacterID context, CharacterID target = INVALID_CHARACTER_ID) override
 	{
 		if (target == INVALID_CHARACTER_ID)
@@ -206,14 +178,6 @@ struct ExpansionConsideration : public Consideration
 	{
 
 	}
-
-	ExpansionConsideration(CharacterID context) { m_Context = context; }
-
-	void setContext(CharacterID context)
-	{
-		m_Context = context;
-	}
-
 
 	float evaluate(CharacterID context, int regionIndex)
 	{
@@ -260,11 +224,6 @@ struct MarriageConsideration : public Consideration
 {
 	MarriageConsideration() : Consideration()
 	{
-	}
-
-	void setContext(CharacterID context)
-	{
-		m_Context = context;
 	}
 
 	float evaluate(CharacterID context, CharacterID potentialSpouse)

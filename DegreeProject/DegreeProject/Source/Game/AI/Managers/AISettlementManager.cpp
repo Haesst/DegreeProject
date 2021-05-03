@@ -55,6 +55,5 @@ void AISettlementManager::upgradeSettlement(AIData& data)
 float AISettlementManager::upgradeDecision(CharacterID ID, int& outRegion)
 {
 	UpgradeSettlementConsideration consideration;
-	consideration.setContext(ID);
 	return consideration.evaluate(ID, outRegion);
 }

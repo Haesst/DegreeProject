@@ -11,13 +11,6 @@ struct SiegeCapitalConsideration : public Consideration
 	{
 	}
 
-	SiegeCapitalConsideration(CharacterID context) { m_Context = context; }
-
-	void setContext(CharacterID context) override
-	{
-		m_Context = context;
-	}
-
 	float evaluate(CharacterID context, CharacterID target)
 	{
 		//Judge distance to other army
@@ -37,13 +30,6 @@ struct FightEnemyArmyConsideration : public Consideration
 	{
 	}
 
-	FightEnemyArmyConsideration(CharacterID context) { m_Context = context; }
-
-	void setContext(CharacterID context) override
-	{
-		m_Context = context;
-	}
-
 	float evaluate(CharacterID context, CharacterID) override
 	{
 		Vector2D contextPosition = UnitManager::get().getUnitOfCharacter(context).m_Position;
@@ -51,7 +37,6 @@ struct FightEnemyArmyConsideration : public Consideration
 
 		float distance = (contextPosition - targetPosition).getLength();
 		distance = std::clamp(distance * 0.1f, 0.0f, 1.0f);
-
 		return std::clamp(std::pow(distance, distance), 0.0f, 1.0f);
 	}
 };

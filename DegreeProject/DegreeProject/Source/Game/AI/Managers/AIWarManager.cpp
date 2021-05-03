@@ -60,9 +60,6 @@ float AIWarManager::warDecision(CharacterID ID)
 	ArmySizeConsideration armySizeConsideration;
 	AIManager* aiManager = &AIManager::get();
 
-	goldConsideration.setContext(ID);
-	armySizeConsideration.setContext(ID);
-
 	float goldEvaluation = goldConsideration.evaluate(ID, AIManager::get().getWarmindOfCharacter(ID).m_Opponent);
 	float enemyArmyEvaluation = armySizeConsideration.evaluate(ID, AIManager::get().getWarmindOfCharacter(ID).m_Opponent);
 	float warMongerWeight = AIManager::get().getAIDataofCharacter(ID).m_Personality.m_DeclareWarModifier;
@@ -99,8 +96,6 @@ float AIWarManager::expansionDecision(CharacterID ID)
 	std::vector<std::pair<float, int>> actionScorePerRegion;
 
 	ExpansionConsideration expansionConsideration;
-
-	expansionConsideration.setContext(ID);
 
 	std::vector<int> regionIndexes = Map::get().getRegionIDs();
 
