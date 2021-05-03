@@ -68,6 +68,7 @@ public:
 	bool chancePerPercent(float weight);
 
 	bool ownsRegion(CharacterID ID, int regionIndex);
+	void updateTitleAndUIText(Character& character);
 
 private:
 	//CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
@@ -80,7 +81,6 @@ private:
 	void createUnlandedCharacters(size_t amount);
 
 	void handleInheritance(Character& character);
-	void updateTitleAndUIText(Character& character);
 
 private:
 	static CharacterManager* m_Instance;

@@ -67,6 +67,7 @@ struct Map
 	static const int m_YOffset;
 	static const float m_TileSize;
 	static const float m_HalfTileSize;
+	static const float m_AspectRatio;
 
 	int width;
 	int height;
@@ -140,8 +141,6 @@ private:
 	int getRegionPositionFromRegionId(const unsigned int id);
 	void renderSquares(const sf::VertexArray& vertexArray, const sf::Color& color, const sf::Color& highlightColor, const sf::Texture& texture, const bool& highlighted);
 	void createVertexArray(sf::VertexArray& vertexArray, const std::vector<Vector2DInt>& squares);
-
-	static const float m_AspectRatio;
 
 	// Mountains
 	std::vector<Vector2DInt> m_MountainSquares;

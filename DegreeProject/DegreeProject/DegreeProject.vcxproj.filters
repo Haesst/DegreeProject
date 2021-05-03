@@ -180,6 +180,9 @@
     <ClInclude Include="Source\Game\UI\DateBar.h">
       <Filter>Game\UI</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\UI\EndWindow.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
     <ClInclude Include="Source\Game\UI\EventWindow.h">
       <Filter>Game\UI</Filter>
     </ClInclude>
@@ -216,7 +219,6 @@
     <ClInclude Include="Source\Game\War.h">
       <Filter>Game</Filter>
     </ClInclude>
-    <ClInclude Include="Source\Game\UI\EndWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
@@ -312,6 +314,9 @@
     <ClCompile Include="Source\Game\UI\DateBar.cpp">
       <Filter>Game\UI</Filter>
     </ClCompile>
+    <ClCompile Include="Source\Game\UI\EndWindow.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
     <ClCompile Include="Source\Game\UI\EventWindow.cpp">
       <Filter>Game\UI</Filter>
     </ClCompile>
@@ -349,6 +354,5 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
-    <ClCompile Include="Source\Game\UI\EndWindow.cpp" />
   </ItemGroup>
 </Project>

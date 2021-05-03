@@ -86,12 +86,12 @@ UIID UIManager::createWarIcon(CharacterID attackerID, CharacterID defenderID)
 	return ID;
 }
 
-UIID UIManager::createUITextElement(sf::Font font, CharacterID characterID, std::string countryName, std::vector<unsigned int> ownedRegions)
+UIID UIManager::createUITextElement(sf::Font font, CharacterID characterID, std::string realmName, std::vector<unsigned int> ownedRegions)
 {
 	UIID id = m_UIElementsIDs++;
 	UIElement uiElement;
 	uiElement.m_UIElementID = id;
-	m_UITexts.insert(std::pair(characterID, new UIText(id, font, countryName, ownedRegions)));
+	m_UITexts.insert(std::pair(characterID, new UIText(id, font, realmName, ownedRegions)));
 	m_UIElements.push_back(uiElement);
 	return id;
 }

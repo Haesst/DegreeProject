@@ -88,7 +88,6 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
       <SubSystem>Console</SubSystem>
       <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;sfml-audio.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>..\ThirdParty\SFML-2.5.1\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <Profile>true</Profile>
     </Link>
     <PostBuildEvent>
       <Command>IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-graphics-2.dll\ (xcopy /Q /E /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-graphics-2.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul) ELSE (xcopy /Q /Y /I $(SolutionDir)ThirdParty\SFML-2.5.1\bin\sfml-graphics-2.dll $(SolutionDir)bin\Release-x86\$(ProjectName) &gt; nul)
@@ -147,9 +146,9 @@ IF EXIST $(SolutionDir)ThirdParty\SFML-2.5.1\bin\openal32.dll\ (xcopy /Q /E /Y /
     <ClInclude Include="Source\Game\Systems\UnitManager.h" />
     <ClInclude Include="Source\Game\UI\CharacterWindow.h" />
     <ClInclude Include="Source\Game\UI\DateBar.h" />
+    <ClInclude Include="Source\Game\UI\EndWindow.h" />
     <ClInclude Include="Source\Game\UI\EventWindow.h" />
     <ClInclude Include="Source\Game\UI\FamilyTreeWindow.h" />
-    <ClInclude Include="Source\Game\UI\EndWindow.h" />
     <ClInclude Include="Source\Game\UI\MainMenu.h" />
     <ClInclude Include="Source\Game\UI\MiniMap.h" />
     <ClInclude Include="Source\Game\UI\PauseWindow.h" />

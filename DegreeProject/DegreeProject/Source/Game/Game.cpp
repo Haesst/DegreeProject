@@ -263,11 +263,7 @@ void Game::addRandomEntityOwningRegion(std::vector<size_t> regions)
 	sf::Color regionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
 	CharacterID character = createCharacter(regions, Title::Count, gender, "County of Region", name, 50, 5, false, regionColor);
 	UIManager::get().createUITextElement(m_UIFont, character, CharacterManager::get().getCharacter(character).m_KingdomName, regions);
-
-	for (size_t i = 0; i < regions.size(); ++i)
-	{
-		CharacterManager::get().addRegion(character, regions[i]);
-	}
+	CharacterManager::get().updateTitleAndUIText(CharacterManager::get().getCharacter(character));
 }
 
 CharacterID Game::createCharacter(std::vector<unsigned int>& ownedRegions, Title title, Gender gender, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color)
