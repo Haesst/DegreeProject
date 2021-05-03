@@ -37,21 +37,21 @@ void UIText::update()
 			}
 			m_CountryNameText.setScale(InputHandler::m_InverseZoom, InputHandler::m_InverseZoom);
 
-			sf::Color color = m_FillColor;
-			color.a = (sf::Uint8)(color.a * InputHandler::m_TotalZoom * m_FadeSpeed);
-			if (color.a > m_MaxTextOpacity)
+			m_OpacityColor = m_FillColor;
+			m_OpacityColor.a = (sf::Uint8)(m_OpacityColor.a * InputHandler::m_TotalZoom * m_FadeSpeed);
+			if (m_OpacityColor.a > m_MaxTextOpacity)
 			{
-				color.a = m_MaxTextOpacity;
+				m_OpacityColor.a = m_MaxTextOpacity;
 			}
-			m_CountryNameText.setFillColor(color);
+			m_CountryNameText.setFillColor(m_OpacityColor);
 
-			color = m_OutlineColor;
-			color.a = (sf::Uint8)(color.a * InputHandler::m_TotalZoom * m_FadeSpeed);
-			if (color.a > m_MaxTextOpacity)
+			m_OpacityColor = m_OutlineColor;
+			m_OpacityColor.a = (sf::Uint8)(m_OpacityColor.a * InputHandler::m_TotalZoom * m_FadeSpeed);
+			if (m_OpacityColor.a > m_MaxTextOpacity)
 			{
-				color.a = m_MaxTextOpacity;
+				m_OpacityColor.a = m_MaxTextOpacity;
 			}
-			m_CountryNameText.setOutlineColor(color);
+			m_CountryNameText.setOutlineColor(m_OpacityColor);
 
 			if (m_Debug)
 			{

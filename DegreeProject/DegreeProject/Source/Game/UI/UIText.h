@@ -24,6 +24,7 @@ public:
 	sf::Uint8 m_MaxTextOpacity = 150;
 	sf::Color m_FillColor = sf::Color(255, 252, 240, 100);
 	sf::Color m_OutlineColor = sf::Color(0, 0, 0, 100);
+	sf::Color m_OpacityColor;
 	float m_OutlineThickness = 1.0f;
 	float m_PositionX = 960.0f;
 	float m_PositionY = 540.0f;

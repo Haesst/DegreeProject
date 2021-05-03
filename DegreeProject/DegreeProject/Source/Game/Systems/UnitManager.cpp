@@ -50,11 +50,14 @@ void UnitManager::update()
 
 		// Move unit
 		moveUnit(unit);
-		showPath(unit);
+		if (unit.m_Owner == CharacterManager::get().getPlayerCharacterID())
+		{
+			showPath(unit);
+		}
 		// Engage enemy
 		unitCombat(unit);
-		// Siege
 
+		// Siege
 		startConquerRegion(unit);
 
 		unitSiege(unit);
