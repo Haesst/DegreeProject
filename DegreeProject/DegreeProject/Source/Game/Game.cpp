@@ -200,6 +200,10 @@ void Game::addEntitys()
 	Vector2D mainMenuSize = { 300.0f, 500.0f };
 	UIManager::get().createUIWindowElement(m_UIFont, UIType::MainMenu, mainMenuPosition, mainMenuSize);
 
+	Vector2D endWindowPosition = { 960.0f, 540.0f };
+	Vector2D endWindowSize = { 300.0f, 500.0f };
+	UIManager::get().createUIWindowElement(m_UIFont, UIType::EndWindow, endWindowPosition, endWindowSize);
+
 	Vector2D pauseWindowPosition = { 960.0f, 270.0f };
 	Vector2D pauseWindowSize = { 150.0f, 50.0f };
 	UIManager::get().createUIWindowElement(m_UIFont, UIType::PauseWindow, pauseWindowPosition, pauseWindowSize);

@@ -19,6 +19,7 @@ class MainMenu;
 class PauseWindow;
 class FamilyTreeWindow;
 class MiniMap;
+class EndWindow;
 
 class UIManager
 {
@@ -48,6 +49,7 @@ public:
 	StatBar* m_StatBar = nullptr;
 	DateBar* m_DateBar = nullptr;
 	MiniMap* m_MiniMap = nullptr;
+	EndWindow* m_EndWindow = nullptr;
 private:
 	static UIManager* m_Instance;
 	static UIID m_UIElementsIDs;

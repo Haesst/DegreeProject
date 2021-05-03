@@ -3,6 +3,7 @@
 enum class UIType
 {
 	MainMenu,
+	EndWindow,
 	PauseWindow,
 	FamilyTreeWindow,
 	CharacterWindow,

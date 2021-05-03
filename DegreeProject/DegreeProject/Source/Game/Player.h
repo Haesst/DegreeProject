@@ -12,7 +12,7 @@
 #include "Engine/Window.h"
 #include "Game/Systems/UnitManager.h"
 
-enum class loseCause
+enum class LoseCause
 {
 	No_Heir,
 	Unlanded
@@ -28,7 +28,7 @@ public:
 	void update();
 	void render();
 
-	void loseGame(loseCause cause);
+	void loseGame(LoseCause cause);
 	void winGame();
 
 public:

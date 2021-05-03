@@ -1,4 +1,6 @@
 #include "Player.h"
+#include "Game/UI/UIManager.h"
+#include "Game/UI/EndWindow.h"
 
 Player* Player::m_Instance = nullptr;
 
@@ -38,14 +40,14 @@ void Player::render()
 	}
 }
 
-void Player::loseGame(loseCause cause)
+void Player::loseGame(LoseCause cause)
 {
-	LOG_INFO("LOST GAME");
+	UIManager::get().m_EndWindow->openWindow(unsigned int(cause));
 }
 
 void Player::winGame()
 {
-	LOG_INFO("WIN GAME");
+	UIManager::get().m_EndWindow->openWindow(unsigned int(LoseCause::Unlanded) + 1);
 }
 
 void Player::hoverOverRegion()

@@ -750,7 +750,7 @@ void CharacterManager::handleInheritance(Character& character)
 
 	if (character.m_IsPlayerControlled && aliveChildren.size() == 0)
 	{
-		Player::get().loseGame(loseCause::No_Heir);
+		Player::get().loseGame(LoseCause::No_Heir);
 	}
 
 	if (aliveChildren.size() <= 0)
@@ -968,7 +968,7 @@ void CharacterManager::removeRegion(const CharacterID characterId, const unsigne
 
 		if (character.m_IsPlayerControlled)
 		{
-			Player::get().loseGame(loseCause::Unlanded);
+			Player::get().loseGame(LoseCause::Unlanded);
 		}
 	}
 }

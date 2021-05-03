@@ -11,6 +11,7 @@
 #include "Game/UI/PauseWindow.h"
 #include "Game/UI/FamilyTreeWindow.h"
 #include "Game/UI/MiniMap.h"
+#include "Game/UI/EndWindow.h"
 #include "Game/Game.h"
 
 UIManager* UIManager::m_Instance = nullptr;
@@ -35,6 +36,7 @@ UIManager::UIManager()
 	m_DateBar = nullptr;
 	m_WarWindow = nullptr;
 	m_MiniMap = new MiniMap();
+	m_EndWindow = nullptr;
 }
 
 UIManager::~UIManager()
@@ -46,6 +48,7 @@ UIManager::~UIManager()
 	delete m_DateBar;
 	delete m_WarWindow;
 	delete m_FamilyTreeWindow;
+	delete m_EndWindow;
 	for (std::unordered_map<CharacterID, UIText*>::iterator itr = m_UITexts.begin(); itr != m_UITexts.end(); ++itr)
 	{
 		delete itr->second;
@@ -133,6 +136,11 @@ UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D posit
 			m_MainMenu = new MainMenu(id, font, position, size);
 			break;
 		}
+		case UIType::EndWindow:
+		{
+			m_EndWindow = new EndWindow(id, font, position, size);
+			break;
+		}
 		case UIType::PauseWindow:
 		{
 			m_PauseWindow = new PauseWindow(id, font, position, size);
@@ -180,6 +188,8 @@ UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D posit
 void UIManager::start()
 {
 	ASSERT(m_MainMenu != nullptr, "Main Menu does not exist");
+	ASSERT(m_EndWindow != nullptr, "End Window does not exist");
+	ASSERT(m_MiniMap != nullptr, "Mini Map does not exist");
 	ASSERT(m_PauseWindow != nullptr, "Pause Window does not exist");
 	ASSERT(m_CharacterWindow != nullptr, "Character Window does not exist");
 	ASSERT(m_FamilyTreeWindow != nullptr, "Family Tree Window does not exist");
@@ -202,6 +212,7 @@ void UIManager::start()
 
 void UIManager::update()
 {
+	m_EndWindow->update();
 	m_MainMenu->update();
 	for (std::map<UIID, EventWindow*>::reverse_iterator eventWindowIterator = m_EventWindows.rbegin(); eventWindowIterator != m_EventWindows.rend(); ++eventWindowIterator)
 	{
@@ -290,6 +301,7 @@ void UIManager::render()
 		eventWindowPair.second->render();
 	}
 	m_PauseWindow->render();
+	m_EndWindow->render();
 	m_MainMenu->render();
 }
 
