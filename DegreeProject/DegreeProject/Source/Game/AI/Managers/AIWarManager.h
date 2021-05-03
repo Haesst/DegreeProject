@@ -9,6 +9,7 @@ namespace warConstants
 	const float m_warAcceptance = .4f;
 	const float m_expansionAcceptance = .4f;
 	const float m_RandomWarWeight = .3f;
+	const float goldPenaltyOnBrokenAlliance = 200.0f;
 };
 
 class AIWarManager

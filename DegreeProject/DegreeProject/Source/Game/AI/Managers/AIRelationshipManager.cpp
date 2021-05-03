@@ -72,7 +72,8 @@ void AIRelationshipManager::makeAlliance(AIData& data)
 float AIRelationshipManager::marriageDecision(AIData& data, CharacterID potentialSpouse)
 {
 	MarriageConsideration marriage;
-	return marriage.evaluate(data.m_OwnerID, potentialSpouse);
+	float opinionWeight = CharacterManager::get().getCharacterOpinion(data.m_OwnerID, potentialSpouse);
+	return marriage.evaluate(data.m_OwnerID, potentialSpouse) + (opinionWeight * 0.1f);
 }
 
 float AIRelationshipManager::allianceDecision(AIData& data, CharacterID ally)
@@ -82,7 +83,7 @@ float AIRelationshipManager::allianceDecision(AIData& data, CharacterID ally)
 
 	float goldEval = goldConsideration.evaluate(data.m_OwnerID, ally);
 	float armyEval = armyConsideration.evaluate(data.m_OwnerID, ally);
-	float actionScore = armyEval * goldEval;
+	float actionScore = (armyEval * goldEval);
 
 	if (actionScore > .5f)
 	{

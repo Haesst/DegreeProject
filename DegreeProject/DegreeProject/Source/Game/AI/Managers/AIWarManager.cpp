@@ -63,6 +63,7 @@ float AIWarManager::warDecision(CharacterID ID)
 {
 	GoldConsideration goldConsideration;
 	ArmySizeConsideration armySizeConsideration;
+	AIManager* aiManager = &AIManager::get();
 
 	goldConsideration.setContext(ID);
 	armySizeConsideration.setContext(ID);
@@ -78,7 +79,7 @@ float AIWarManager::warDecision(CharacterID ID)
 		randomWeight = warConstants::m_warAcceptance;
 	}
 
-	if (CharacterManager::get().isAlliedWith(ID, AIManager::get().getWarmindOfCharacter(ID).m_Opponent))
+	if (CharacterManager::get().isAlliedWith(ID, AIManager::get().getWarmindOfCharacter(ID).m_Opponent) && aiManager->getAIDataofCharacter(ID).m_Personality.m_DeclareWarModifier == 0.0f)
 	{
 		return 0.0f;
 	}
@@ -155,6 +156,7 @@ float AIWarManager::expansionDecision(CharacterID ID)
 void AIWarManager::declareWar(AIData& data)
 {
 	CharacterManager& characterManager = CharacterManager::get();
+	DiplomacyManager& diplomacyManager = DiplomacyManager::get();
 	unsigned int opponent = AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent;
 
 	if (opponent == INT_MAX || opponent == characterManager.getCharacter(data.m_OwnerID).m_Spouse)
@@ -162,9 +164,10 @@ void AIWarManager::declareWar(AIData& data)
 		return;
 	}
 
-	if (characterManager.isAlliedWith(data.m_OwnerID, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
+	if (diplomacyManager.isAllied(data.m_OwnerID, opponent))
 	{
-		return;
+		characterManager.getCharacter(data.m_OwnerID).m_CurrentGold -= warConstants::goldPenaltyOnBrokenAlliance;
+		diplomacyManager.breakAlliance(data.m_OwnerID, opponent);
 	}
 
 	if (!AIManager::get().isValidWarmind(AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
