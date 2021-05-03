@@ -161,6 +161,7 @@ void Game::addEntitys()
 	std::vector<unsigned int> characterTwelveRegions{ 28 };
 	std::vector<unsigned int> characterThirteenRegions{ 29 };
 	std::vector<unsigned int> characterFourteenRegions{ 30 };
+	std::vector<unsigned int> characterFifteenRegions{ 34 };
 
 	CharacterID char4 = createCharacter(characterFourRegions, Title::Count, Gender::Male, "County of Krain", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(16, 181, 191));
 	UIManager::get().createUITextElement(m_UIFont, char4, CharacterManager::get().getCharacter(char4).m_KingdomName, characterFourRegions);
@@ -198,7 +199,9 @@ void Game::addEntitys()
 	addRandomEntityOwningRegion({ 31 });
 	addRandomEntityOwningRegion({ 32 });
 	addRandomEntityOwningRegion({ 33 });
-	addRandomEntityOwningRegion({ 34 });
+
+	CharacterID char15 = createCharacter(characterFifteenRegions, Title::Baron, Gender::Male, "Barony of Dyrachion", "Gjergj Kastrioti", 50, 5, false, sf::Color(152, 182, 54));
+	UIManager::get().createUITextElement(m_UIFont, char15, CharacterManager::get().getCharacter(char15).m_KingdomName, characterFifteenRegions);
 	addRandomEntityOwningRegion({ 35 });
 	addRandomEntityOwningRegion({ 36 });
 	addRandomEntityOwningRegion({ 37 });
