@@ -927,6 +927,8 @@ void CharacterManager::addRegion(const CharacterID characterId, const unsigned i
 
 		character.m_MaxArmySize += GameData::m_Buildings[buildingSlot.m_BuildingId].m_ArmyModifier;
 	}
+
+	updateTitleAndUIText(character);
 }
 
 void CharacterManager::removeRegion(const CharacterID characterId, const unsigned int regionId)

@@ -51,6 +51,7 @@ private:
 	void initSound();
 
 	void addEntitys();
+	void addRandomEntityOwningRegion(std::vector<size_t> regions);
 
 	CharacterID createCharacter(std::vector<unsigned int>& ownedRegions, Title title, Gender gender, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color);
 };

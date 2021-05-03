@@ -185,7 +185,7 @@ void Game::addEntitys()
 
 	CharacterID char11 = createCharacter(characterElevenRegions, Title::Baron, Gender::Male, "Barony of Corsica", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(86, 175, 125));
 	UIManager::get().createUITextElement(m_UIFont, char11, CharacterManager::get().getCharacter(char11).m_KingdomName, characterElevenRegions);
-	
+
 	CharacterID char12 = createCharacter(characterTwelveRegions, Title::Baron, Gender::Female, "Barony of Sardinia", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(24, 125, 223));
 	UIManager::get().createUITextElement(m_UIFont, char12, CharacterManager::get().getCharacter(char12).m_KingdomName, characterTwelveRegions);
 
@@ -194,6 +194,25 @@ void Game::addEntitys()
 
 	CharacterID char14 = createCharacter(characterFourteenRegions, Title::Baron, Gender::Female, "Barony of Valle d'Aosta", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(223, 125, 24));
 	UIManager::get().createUITextElement(m_UIFont, char14, CharacterManager::get().getCharacter(char14).m_KingdomName, characterFourteenRegions);
+
+	addRandomEntityOwningRegion({ 31 });
+	addRandomEntityOwningRegion({ 32 });
+	addRandomEntityOwningRegion({ 33 });
+	addRandomEntityOwningRegion({ 34 });
+	addRandomEntityOwningRegion({ 35 });
+	addRandomEntityOwningRegion({ 36 });
+	addRandomEntityOwningRegion({ 37 });
+	addRandomEntityOwningRegion({ 38 });
+	addRandomEntityOwningRegion({ 39 });
+	addRandomEntityOwningRegion({ 40 });
+	addRandomEntityOwningRegion({ 41 });
+	addRandomEntityOwningRegion({ 42 });
+	addRandomEntityOwningRegion({ 43 });
+	addRandomEntityOwningRegion({ 44 });
+	addRandomEntityOwningRegion({ 45 });
+	addRandomEntityOwningRegion({ 46 });
+	addRandomEntityOwningRegion({ 47 });
+	addRandomEntityOwningRegion({ 48 });
 
 	//UI
 	Vector2D mainMenuPosition = { 960.0f, 540.0f };
@@ -231,6 +250,21 @@ void Game::addEntitys()
 	Vector2D dateBarPosition = { Window::getWindow()->getSize().x - (600.0f + 10.0f), Window::getWindow()->getSize().y - (50.0f + 10.0f) };
 	Vector2D dateBarSize = { 600.0f, 50.0f };
 	UIManager::get().createUIWindowElement(m_UIFont, UIType::DateBar, dateBarPosition, dateBarSize);
+}
+
+void Game::addRandomEntityOwningRegion(std::vector<size_t> regions)
+{
+	bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
+	Gender gender = male ? Gender::Male : Gender::Female;
+	char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
+	sf::Color regionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
+	CharacterID character = createCharacter(regions, Title::Count, gender, "County of Region", name, 50, 5, false, regionColor);
+	UIManager::get().createUITextElement(m_UIFont, character, CharacterManager::get().getCharacter(character).m_KingdomName, regions);
+
+	for (size_t i = 0; i < regions.size(); ++i)
+	{
+		CharacterManager::get().addRegion(character, regions[i]);
+	}
 }
 
 CharacterID Game::createCharacter(std::vector<unsigned int>& ownedRegions, Title title, Gender gender, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color)

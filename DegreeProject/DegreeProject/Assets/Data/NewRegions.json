@@ -298,5 +298,185 @@
 	"manPower": 20,
 	"capitalx" : 229,
 	"capitaly" : 15
+	},
+	{
+	"name": "Duklja",
+	"id": 31,
+	"mapchar": "u",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 40,
+	"capitalx" : 363,
+	"capitaly" : 40
+	},
+	{
+	"name": "Rashka",
+	"id": 32,
+	"mapchar": "r",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 50,
+	"capitalx" : 377,
+	"capitaly" : 37
+	},
+	{
+	"name": "Mačva",
+	"id": 33,
+	"mapchar": "m",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 20,
+	"capitalx" : 365,
+	"capitaly" : 20
+	},
+	{
+	"name": "Dyrachion",
+	"id": 34,
+	"mapchar": "Y",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 40,
+	"capitalx" : 373,
+	"capitaly" : 51
+	},
+	{
+	"name": "Epirus",
+	"id": 35,
+	"mapchar": "e",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 40,
+	"capitalx" : 396,
+	"capitaly" : 69
+	},
+	{
+	"name": "Thessali",
+	"id": 36,
+	"mapchar": "t",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 40,
+	"capitalx" : 417,
+	"capitaly" : 62
+	},
+	{
+	"name": "Athens",
+	"id": 37,
+	"mapchar": "N",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 50,
+	"capitalx" : 436,
+	"capitaly" : 74
+	},
+	{
+	"name": "Achaia",
+	"id": 38,
+	"mapchar": "H",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 40,
+	"capitalx" : 406,
+	"capitaly" : 75
+	},
+	{
+	"name": "Thessalonika",
+	"id": 39,
+	"mapchar": "h",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 30,
+	"capitalx" : 417,
+	"capitaly" : 54
+	},
+	{
+	"name": "Strymon",
+	"id": 40,
+	"mapchar": "y",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 30,
+	"capitalx" : 446,
+	"capitaly" : 47
+	},
+	{
+	"name": "Thrace",
+	"id": 41,
+	"mapchar": "!",
+	"color": "Yellow",
+	"tax": 6,
+	"manPower": 80,
+	"capitalx" : 491,
+	"capitaly" : 41
+	},
+	{
+	"name": "Aegean Islands",
+	"id": 42,
+	"mapchar": "G",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 30,
+	"capitalx" : 460,
+	"capitaly" : 79
+	},
+	{
+	"name": "Philippopolis",
+	"id": 43,
+	"mapchar": "p",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 40,
+	"capitalx" : 433,
+	"capitaly" : 37
+	},
+	{
+	"name": "Bulgaria",
+	"id": 44,
+	"mapchar": "b",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 50,
+	"capitalx" : 401,
+	"capitaly" : 35
+	},
+	{
+	"name": "Vidin",
+	"id": 45,
+	"mapchar": "v",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 20,
+	"capitalx" : 402,
+	"capitaly" : 30
+	},
+	{
+	"name": "Moesia",
+	"id": 46,
+	"mapchar": "i",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 30,
+	"capitalx" : 449,
+	"capitaly" : 39
+	},
+	{
+	"name": "Dobrudja",
+	"id": 47,
+	"mapchar": "J",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 40,
+	"capitalx" : 475,
+	"capitaly" : 16
+	},
+	{
+	"name": "Krete",
+	"id": 48,
+	"mapchar": "k",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 30,
+	"capitalx" : 460,
+	"capitaly" : 97
 	}
 ]
