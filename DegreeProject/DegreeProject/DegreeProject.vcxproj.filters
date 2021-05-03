@@ -216,6 +216,7 @@
     <ClInclude Include="Source\Game\War.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\UI\EndWindow.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
@@ -348,5 +349,6 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
+    <ClCompile Include="Source\Game\UI\EndWindow.cpp" />
   </ItemGroup>
 </Project>
