@@ -703,16 +703,8 @@ void CharacterWindow::updateInfo()
 		stream.clear();
 
 		Unit& unit = UnitManager::get().getUnitOfCharacter(m_CurrentCharacterID);
-		if (unit.m_Raised)
-		{
-			stream << unit.m_RepresentedForce << m_Dash << m_CurrentCharacter->m_MaxArmySize;
-			m_ArmyText.setString(stream.str());
-		}
-		else
-		{
-			stream << 0 << m_Dash << m_CurrentCharacter->m_MaxArmySize;
-			m_ArmyText.setString(stream.str());
-		}
+		stream << unit.m_RepresentedForce << m_Dash << m_CurrentCharacter->m_MaxArmySize;
+		m_ArmyText.setString(stream.str());
 		m_ArmyText.setFillColor(m_OwnerColor);
 		stream.str(std::string());
 		stream.clear();

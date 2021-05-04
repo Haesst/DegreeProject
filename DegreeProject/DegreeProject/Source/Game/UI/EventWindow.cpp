@@ -133,7 +133,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Peace.png");
 			if (m_MessageType == UIType::PeaceRequest)
 			{
-				stream << "\nwants peace.\n\n               Do you accept?";
+				stream << "\nwants a white peace.\n\n               Do you accept?";
 			}
 			else if (m_MessageType == UIType::PeaceAccepted)
 			{
