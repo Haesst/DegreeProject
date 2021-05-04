@@ -12,7 +12,7 @@ public:
 	static void initialize();
 	static HeraldicShield generateRandomShield();
 
-	static void renderShield(const HeraldicShield& shield, const Vector2D& position);
+	static void renderShield(const HeraldicShield& shield, const Vector2D& position, const float& scale = 1.0f);
 
 private:
 	static void loadBaseShield();

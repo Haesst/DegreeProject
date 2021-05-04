@@ -8,6 +8,7 @@
 #include "Game/GameDate.h"
 
 struct War;
+struct HeraldicShield;
 
 class WarIcon
 {
@@ -23,9 +24,8 @@ public:
 	void clickButton();
 	void updatePosition(unsigned int index);
 	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
-	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Vector2f position);
-	void setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position);
-	void setWarscore(CharacterID& characterID, std::stringstream& stream);
+	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f position);
+	void setWarscore(int& warscore, std::stringstream& stream);
 	bool m_Active = false;
 	unsigned int m_Index = 0;
 
@@ -51,9 +51,12 @@ private:
 
 	CharacterID m_AttackerID = INVALID_CHARACTER_ID;
 	CharacterID m_DefenderID = INVALID_CHARACTER_ID;
+	bool m_PlayerAttacker = false;
 
 	sf::RectangleShape m_WarIconShape;
-	sf::Sprite m_WarIconSprite;
-	sf::Texture m_WarIconTexture;
 	sf::Text m_WarscoreText;
+	sf::Color m_TextOutlineColor = sf::Color::Black;
+	const float m_TextOutlineThickness = 1.0f;
+	HeraldicShield* m_HeraldicShield;
+	const float m_HeraldicShieldScale = 2.0f;
 };

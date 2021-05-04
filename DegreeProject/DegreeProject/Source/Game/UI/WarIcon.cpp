@@ -8,6 +8,9 @@
 #include "Game/DiplomacyManager.h"
 #include "Time.h"
 #include <sstream>
+#include "Game/Systems/HeraldicShieldManager.h"
+#include "Game/Map/Map.h"
+#include "Game/UI/CharacterWindow.h"
 
 WarIcon::WarIcon(UIID ID, sf::Font font, unsigned int index, CharacterID attackerID, CharacterID defenderID)
 {
@@ -20,12 +23,9 @@ WarIcon::WarIcon(UIID ID, sf::Font font, unsigned int index, CharacterID attacke
 
 	m_Window = Window::getWindow();
 
-	m_WarIconTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Charizard.png");
-
 	sf::Vector2f warIconPosition = { m_Window->getSize().x - 600 - m_SpriteSize - m_OutlineThickness * 5 - (m_SpriteSize + m_OutlineThickness * 4) * m_Index, m_Window->getSize().y - m_SpriteSize - m_OutlineThickness * 2 };
 	setShape(m_WarIconShape, m_WarIconOutlineColor, m_WarIconOutlineColor, m_OutlineThickness, { m_SizeX, m_SizeY }, warIconPosition);
-	setSprite(m_WarIconSprite, m_WarIconTexture, warIconPosition);
-	setText(m_WarscoreText, m_Font, m_CharacterSize, { warIconPosition.x, warIconPosition.y + m_SizeY * 0.5f });
+	setText(m_WarscoreText, m_Font, m_CharacterSize, m_PositiveColor, m_TextOutlineColor, m_TextOutlineThickness, { warIconPosition.x + m_SizeX * 0.5f, warIconPosition.y + m_SizeY * 0.5f });
 
 	activate();
 }
@@ -58,15 +58,11 @@ void WarIcon::updatePosition(unsigned int index)
 	m_Index = index;
 	sf::Vector2f warIconPosition = { m_Window->getSize().x - 600 - m_SpriteSize - m_OutlineThickness * 5 - (m_SpriteSize + m_OutlineThickness * 4) * m_Index, m_Window->getSize().y - m_SpriteSize - m_OutlineThickness * 2 };
 	m_WarIconShape.setPosition(warIconPosition);
-	m_WarIconSprite.setPosition(warIconPosition);
-	m_WarscoreText.setPosition({ warIconPosition.x, warIconPosition.y + m_SizeY * 0.5f });
+	m_WarscoreText.setPosition({ warIconPosition.x + m_SizeX * 0.5f, warIconPosition.y + m_SizeY * 0.5f });
 }
 
-void WarIcon::setWarscore(CharacterID& characterID, std::stringstream& stream)
+void WarIcon::setWarscore(int& warscore, std::stringstream& stream)
 {
-	DiplomacyManager& warManager = DiplomacyManager::get();
-
-	int warscore = warManager.getWarscore(m_WarHandle, characterID);
 	if (warscore > 100)
 	{
 		warscore = 100;
@@ -92,24 +88,30 @@ void WarIcon::updateInfo()
 	m_WarHandle = DiplomacyManager::get().getWarHandleAgainst(m_AttackerID, m_DefenderID);
 	if (m_WarHandle != -1)
 	{
+		DiplomacyManager& diplomacyManager = DiplomacyManager::get();
+		War& war = *diplomacyManager.getWar(m_WarHandle);
+		MapRegion& wargoalRegion = Map::get().getRegionById(war.m_WargoalRegion);
+		m_HeraldicShield = &wargoalRegion.m_HeraldicShield;
+
 		std::stringstream stream;
 		CharacterID playerCharacterID = CharacterManager::get().getPlayerCharacterID();
-		if (m_AttackerID == playerCharacterID)
+		m_PlayerAttacker = diplomacyManager.isAttacker(m_WarHandle, playerCharacterID);
+		if (m_PlayerAttacker)
 		{
-			setWarscore(m_AttackerID, stream);
-		}
-		else if (m_DefenderID == playerCharacterID)
-		{
-			setWarscore(m_DefenderID, stream);
+			int warscore = diplomacyManager.getWarscore(m_WarHandle, m_AttackerID);
+			setWarscore(warscore, stream);
 		}
 		else
 		{
-			setWarscore(m_AttackerID, stream);
+			int warscore = diplomacyManager.getWarscore(m_WarHandle, m_DefenderID);
+			setWarscore(warscore, stream);
 		}
 		stream << m_PercentSign;
 		m_WarscoreText.setString(stream.str());
 		stream.str(std::string());
 		stream.clear();
+
+		m_WarscoreText.setOrigin(m_WarscoreText.getLocalBounds().width * 0.5f, m_WarscoreText.getLocalBounds().height * 0.75f);
 	}
 	else if (m_DaySubscriptionHandle != -1)
 	{
@@ -130,7 +132,7 @@ void WarIcon::render()
 	if (m_Active)
 	{
 		m_Window->draw(m_WarIconShape);
-		m_Window->draw(m_WarIconSprite);
+		HeraldicShieldManager::renderShield(*m_HeraldicShield, { m_WarIconShape.getPosition() }, m_HeraldicShieldScale);
 		m_Window->draw(m_WarscoreText);
 	}
 }
@@ -146,6 +148,27 @@ void WarIcon::clickButton()
 			UIManager::get().m_WarWindow->openWindow(m_AttackerID, m_DefenderID, m_WarStartDate);
 		}
 	}
+	if (InputHandler::getRightMouseReleased())
+	{
+		Vector2D mousePosition = InputHandler::getUIMousePosition();
+		if (m_WarIconShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		{
+			InputHandler::setRightMouseReleased(false);
+			UIManager& uiManager = UIManager::get();
+			CharacterWindow& characterWindow = *uiManager.m_CharacterWindow;
+			if (m_PlayerAttacker)
+			{
+				characterWindow.m_CurrentCharacterID = m_DefenderID;
+			}
+			else
+			{
+				characterWindow.m_CurrentCharacterID = m_AttackerID;
+			}
+			characterWindow.checkIfPlayerCharacter();
+			characterWindow.updateInfo();
+			characterWindow.openWindow();
+		}
+	}
 }
 
 void WarIcon::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position)
@@ -157,16 +180,12 @@ void WarIcon::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Colo
 	shape.setPosition(position);
 }
 
-void WarIcon::setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Vector2f position)
+void WarIcon::setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f position)
 {
 	text.setFont(font);
 	text.setCharacterSize(characterSize);
+	text.setFillColor(fillColor);
+	text.setOutlineColor(outlineColor);
+	text.setOutlineThickness(outlineThickness);
 	text.setPosition(position);
-}
-
-void WarIcon::setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position)
-{
-	sprite.setTexture(texture, true);
-	sprite.setScale(m_SpriteSize / sprite.getGlobalBounds().width, m_SpriteSize / sprite.getGlobalBounds().height);
-	sprite.setPosition(position);
 }

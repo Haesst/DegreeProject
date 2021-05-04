@@ -60,13 +60,15 @@ HeraldicShield HeraldicShieldManager::generateRandomShield()
 	return shield;
 }
 
-void HeraldicShieldManager::renderShield(const HeraldicShield& shield, const Vector2D& position)
+void HeraldicShieldManager::renderShield(const HeraldicShield& shield, const Vector2D& position, const float& scale)
 {
+	m_ShieldBaseSprite.setScale({ scale, scale });
 	m_ShieldBaseSprite.setPosition({ position.x, position.y });
 	m_ShieldShader.setUniform("u_Color", sf::Glsl::Vec4(shield.m_BaseColor));
 	Window::getWindow()->draw(m_ShieldBaseSprite, &m_ShieldShader);
 
 	m_ShieldShader.setUniform("u_Color", sf::Glsl::Vec4(shield.m_PatternColor));
+	m_PatternSprites[shield.m_PatternId].setScale({ scale, scale });
 	m_PatternSprites[shield.m_PatternId].setPosition({ position.x, position.y });
 	Window::getWindow()->draw(m_PatternSprites[shield.m_PatternId], &m_ShieldShader);
 }
