@@ -181,6 +181,16 @@ struct ExpansionConsideration : public Consideration
 
 	float evaluate(CharacterID context, int regionIndex)
 	{
+		auto& character = CharacterManager::get().getCharacter(context);
+
+		for (auto& region : character.m_OwnedRegionIDs)
+		{
+			if (region == regionIndex)
+			{
+				return 0.0f;
+			}
+		}
+
 		float distanceWeight = 0.0f;
 
 		Vector2DInt wantedRegionPos = Map::get().getRegionById(regionIndex).m_RegionCapital;
@@ -193,7 +203,7 @@ struct ExpansionConsideration : public Consideration
 
 			if (dist > 10)
 			{
-				distanceWeight = -0.2f;
+				distanceWeight = -0.6f;
 			}
 
 			else
