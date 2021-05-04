@@ -193,7 +193,7 @@ void Map::loadMap()
 			++charIndex;
 			++y;
 
-			if (buffer[charIndex] == '\n')
+			if ((1 + charIndex) < charCount && buffer[charIndex] == '\n')
 			{
 				++charIndex;
 			}
