@@ -18,7 +18,7 @@ AIWarManager::~AIWarManager()
 
 void AIWarManager::update(AIData& data)
 {
-	if (data.m_CurrentAction != Action::War && m_Warmanager->getWarHandlesOfCharacter(data.m_OwnerID).size() == 0)
+	if (m_Warmanager->getWarHandlesOfCharacter(data.m_OwnerID).size() == 0)
 	{
 		if (expansionDecision(data.m_OwnerID) > warConstants::m_expansionAcceptance)
 		{
