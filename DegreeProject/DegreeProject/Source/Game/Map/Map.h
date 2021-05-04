@@ -26,7 +26,7 @@ struct Building;
 
 struct SquareData
 {
-	std::list<UnitID> m_EntitiesInSquare = std::list<UnitID>();
+	std::vector<UnitID> m_EntitiesInSquare = std::vector<UnitID>();
 	unsigned int m_RegionID;
 	Vector2DInt m_Position;
 
@@ -45,7 +45,23 @@ struct SquareData
 
 	void remove(UnitID entityToRemove)
 	{
-		m_EntitiesInSquare.remove(entityToRemove);
+		int index = -1;
+		
+		for (size_t i = 0; i < m_EntitiesInSquare.size(); ++i)
+		{
+			if (m_EntitiesInSquare[i] == entityToRemove)
+			{
+				index = (int)i;
+				break;
+			}
+		}
+
+		if (index < 0)
+		{
+			return;
+		}
+
+		m_EntitiesInSquare.erase(m_EntitiesInSquare.begin() + index);
 	}
 
 	SquareData(unsigned int regionID)
