@@ -20,10 +20,13 @@ void AIWarManager::update(AIData& data)
 {
 	if (m_Warmanager->getWarHandlesOfCharacter(data.m_OwnerID).size() == 0)
 	{
-		if (expansionDecision(data.m_OwnerID) > warConstants::m_expansionAcceptance)
+		float expansionEval = expansionDecision(data.m_OwnerID);
+		LOG_INFO("expansion Eval: {0}", expansionEval);
+
+		if (expansionEval > warConstants::m_expansionAcceptance)
 		{
 			float warEval = warDecision(data.m_OwnerID);
-
+			LOG_INFO("War Eval: {0}", warEval);
 			if (warEval > warConstants::m_warAcceptance)
 			{
 				if (!DiplomacyManager::get().hasTruce(data.m_OwnerID, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent))

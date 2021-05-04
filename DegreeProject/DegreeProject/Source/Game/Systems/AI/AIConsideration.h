@@ -153,6 +153,11 @@ struct GoldConsideration : public Consideration
 		float targetGold = (float)targetCharComp.m_CurrentGold;
 		float contextGold = (float)contextCharComp.m_CurrentGold;
 
+		for (auto& ally : DiplomacyManager::get().getAlliances(context))
+		{
+			contextGold += CharacterManager::get().getCharacter(ally).m_CurrentGold;
+		}
+
 		float goldDiff = contextGold / targetGold;
 		float percentDiff = (float)contextGold / targetGold;
 
