@@ -478,5 +478,65 @@
 	"manPower": 30,
 	"capitalx" : 460,
 	"capitaly" : 97
+	},
+	{
+	"name": "Provence",
+	"id": 49,
+	"mapchar": "n",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 40,
+	"capitalx" : 198,
+	"capitaly" : 35
+	},
+	{
+	"name": "Languedoc",
+	"id": 50,
+	"mapchar": "l",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 30,
+	"capitalx" : 171,
+	"capitaly" : 30
+	},
+	{
+	"name": "Armagnac",
+	"id": 51,
+	"mapchar": "g",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 20,
+	"capitalx" : 136,
+	"capitaly" : 24
+	},
+	{
+	"name": "Gascogne",
+	"id": 52,
+	"mapchar": "-",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 20,
+	"capitalx" : 134,
+	"capitaly" : 20
+	},
+	{
+	"name": "Aquitaine",
+	"id": 53,
+	"mapchar": "Q",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 40,
+	"capitalx" : 135,
+	"capitaly" : 15
+	},
+	{
+	"name": "Toulouse",
+	"id": 54,
+	"mapchar": ".",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 60,
+	"capitalx" : 160,
+	"capitaly" : 30
 	}
 ]
