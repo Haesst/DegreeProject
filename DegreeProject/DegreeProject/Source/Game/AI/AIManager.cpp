@@ -218,6 +218,11 @@ bool AIManager::handlePeaceRequest(CharacterID sender, CharacterID reciever, Pea
 		return true;
 	}
 
+	if (type == PeaceType::Enforce_Demands && warManager.getWarscore(war, sender) >= 80)
+	{
+		return (rand() % 100) < 50;
+	}
+
 	float acceptance = 0.0f;
 
 	if (warManager.getWarscore(war, sender) > warManager.getWarscore(war, reciever))

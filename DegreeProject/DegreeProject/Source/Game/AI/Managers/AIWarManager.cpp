@@ -52,7 +52,8 @@ void AIWarManager::update(AIData& data)
 
 			if (m_Warmanager->getWarscore(war, data.m_OwnerID) >= 80)
 			{
-				bool tryEnforce = (rand() % 100) < 10;
+				bool tryEnforce = (rand() % 100) < 20;
+
 				if (tryEnforce)
 				{
 					CharacterManager::get().sendPeaceOffer(data.m_OwnerID, m_Warmanager->getOpposingForce(war, data.m_OwnerID), PeaceType::Enforce_Demands);
@@ -121,7 +122,7 @@ float AIWarManager::expansionDecision(CharacterID ID)
 
 		float eval = expansionConsideration.evaluate(ID, regionIndexes[i]);
 
-		if (eval > .5f)
+		if (eval > .3f)
 		{
 			auto pair = std::make_pair(eval, regionIndexes[i]);
 			actionScorePerRegion.push_back(pair);
@@ -143,7 +144,17 @@ float AIWarManager::expansionDecision(CharacterID ID)
 
 	else
 	{
-		region = actionScorePerRegion[0];
+		int bestRegion = -1;
+		float bestEval = -1.f;
+
+		for (auto& region : actionScorePerRegion)
+		{
+			if (region.first > bestEval)
+			{
+				bestEval = region.first;
+				bestRegion = region.second;
+			}
+		}
 	}
 
 
