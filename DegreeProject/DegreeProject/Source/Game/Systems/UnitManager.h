@@ -42,7 +42,7 @@ private:
 	void startConquerRegion(Unit& unit);
 
 	void updateSprite(Unit& unit);
-	void displayProgressMeter(Unit& unit, float timeElapsed, float totalTime, sf::Vector2f offset, sf::Color fillColor);
+	void displayProgressMeter(Unit& unit, float timeElapsed, float totalTime, sf::Vector2f offset, float rotation, sf::Color fillColor);
 	
 private:
 	sf::Texture m_BoatTexture;
@@ -55,8 +55,8 @@ private:
 	float m_MoveTolerance = 6.f;
 
 	Vector2D m_SeizeMeterOffset = { 0.0f, -20.0f };
-	Vector2D m_CombatMeterOffset = { 0.0f, 30.0f };
-	Vector2D m_SeizeMeterInnerOffset = { 1.0f, 1.0f };
+	Vector2D m_CombatMeterOffset = { 32.0f, 32.0f };
+	Vector2D m_SeizeMeterInnerOffset = { 0.5f, 0.5f };
 
 	float m_ProgressMeterWidth = 32.0f;
 	float m_ProgressMeterHeight = 12.0f;

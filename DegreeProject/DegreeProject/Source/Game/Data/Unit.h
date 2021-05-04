@@ -20,8 +20,13 @@ struct Unit
 	bool m_Selected = false;
 	sf::Sprite m_Sprite;
 
+	sf::RectangleShape m_StrengthShape;
+	sf::Text m_StrengthText;
+	sf::Color m_StrengthOutlineColor = sf::Color::Black;
+	float m_OutlineThickness = 1.0f;
+	unsigned int m_CharacterSize = 20;
 	sf::RectangleShape m_HighlightShape;
-	sf::Color m_FillColor = sf::Color::Transparent;
+	sf::Color m_TransparentColor = sf::Color::Transparent;
 	sf::Color m_OutlineColor = sf::Color::White;
 	sf::Vector2<float> m_HighlightShapeSize = sf::Vector2(32.0f, 32.0f);
 

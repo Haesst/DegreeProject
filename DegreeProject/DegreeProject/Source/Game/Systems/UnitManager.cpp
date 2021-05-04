@@ -8,6 +8,8 @@
 #include "Game/DiplomacyManager.h"
 #include "Game/UI/UIManager.h"
 #include "Game/AI/AIManager.h"
+#include "Game/Game.h"
+#include "Engine/InputHandler.h"
 
 UnitManager* UnitManager::m_Instance = nullptr;
 UnitID UnitManager::m_UnitIDs = INVALID_UNIT_ID + 1;
@@ -17,10 +19,29 @@ void UnitManager::start()
 	m_UnitTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/soldier unit.png");
 	m_BoatTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Boat.png");
 	m_UnitSprite.setTexture(m_UnitTexture);
-
+	
 	for (auto& unit : m_Units)
 	{
 		unit.m_RepresentedForce = CharacterManager::get().getCharacter(unit.m_Owner).m_MaxArmySize;
+
+		unit.m_StrengthShape.setPosition({ unit.m_Position.x, unit.m_Position.y + unit.m_HighlightShapeSize.y });
+		unit.m_StrengthShape.setFillColor(CharacterManager::get().getCharacter(unit.m_Owner).m_RegionColor);
+		unit.m_StrengthShape.setSize({ unit.m_HighlightShapeSize.x, unit.m_HighlightShapeSize.y * 0.5f });
+		unit.m_StrengthShape.setOutlineThickness(unit.m_OutlineThickness);
+		unit.m_StrengthShape.setOutlineColor(unit.m_StrengthOutlineColor);
+
+		unit.m_StrengthText.setFont(Game::m_UIFont);
+		unit.m_StrengthText.setCharacterSize(unit.m_CharacterSize);
+		unit.m_StrengthText.setFillColor(unit.m_OutlineColor);
+		unit.m_StrengthText.setOutlineColor(unit.m_StrengthOutlineColor);
+		unit.m_StrengthText.setOutlineThickness(unit.m_OutlineThickness);
+		std::stringstream stream;
+		stream << unit.m_RepresentedForce;
+		unit.m_StrengthText.setString(stream.str());
+		stream.str(std::string());
+		stream.clear();
+		unit.m_StrengthText.setOrigin(unit.m_StrengthText.getLocalBounds().width * 0.5f, unit.m_StrengthText.getLocalBounds().height * 0.75f);
+		unit.m_StrengthText.setPosition(unit.m_StrengthShape.getPosition() + unit.m_StrengthShape.getSize() * 0.5f);
 	}
 }
 
@@ -100,12 +121,24 @@ void UnitManager::render()
 			}
 		}
 
+		unit.m_StrengthShape.setOutlineThickness(unit.m_OutlineThickness * InputHandler::m_TotalZoom);
+		unit.m_StrengthShape.setPosition({ unit.m_Position.x, unit.m_Position.y + unit.m_HighlightShapeSize.y });
+		Window::getWindow()->draw(unit.m_StrengthShape);
+		std::stringstream stream;
+		stream << unit.m_RepresentedForce;
+		unit.m_StrengthText.setString(stream.str());
+		stream.str(std::string());
+		stream.clear();
+		unit.m_StrengthText.setOutlineThickness(unit.m_OutlineThickness * InputHandler::m_TotalZoom);
+		unit.m_StrengthText.setPosition(unit.m_StrengthShape.getPosition() + unit.m_StrengthShape.getSize() * 0.5f);
+		Window::getWindow()->draw(unit.m_StrengthText);
+
 		if (unit.m_Selected)
 		{
 			unit.m_HighlightShape.setPosition({ unit.m_Position.x, unit.m_Position.y });
-			unit.m_HighlightShape.setOutlineThickness(1.0f);
-			unit.m_HighlightShape.setFillColor(unit.m_FillColor); // Rename fillcolor to highlight fill
-			unit.m_HighlightShape.setOutlineColor(unit.m_OutlineColor); // Rename outline color to highlight border
+			unit.m_HighlightShape.setOutlineThickness(unit.m_OutlineThickness * InputHandler::m_TotalZoom);
+			unit.m_HighlightShape.setFillColor(unit.m_TransparentColor);
+			unit.m_HighlightShape.setOutlineColor(unit.m_OutlineColor);
 			unit.m_HighlightShape.setSize(unit.m_HighlightShapeSize);
 			Window::getWindow()->draw(unit.m_HighlightShape);
 		}
@@ -126,12 +159,12 @@ void UnitManager::render()
 				daysToSiegeRegion += building.m_HoldingModifier;
 			}
 
-			displayProgressMeter(unit, (float)unit.m_DaysSeizing, (float)daysToSiegeRegion, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, m_SeizeMeterFillColor);
+			displayProgressMeter(unit, (float)unit.m_DaysSeizing, (float)daysToSiegeRegion, { m_SeizeMeterOffset.x, m_SeizeMeterOffset.y }, 0.0f, m_SeizeMeterFillColor);
 		}
 
 		if(unit.m_InCombat)
 		{
-			displayProgressMeter(unit, (float)unit.m_CombatTimerAccu, (float)unit.m_CombatTimer, { m_CombatMeterOffset.x, m_CombatMeterOffset.y }, m_CombatMeterFillColor);
+			displayProgressMeter(unit, (float)unit.m_CombatTimerAccu, (float)unit.m_CombatTimer, { m_CombatMeterOffset.x, m_CombatMeterOffset.y }, -90.0f, m_CombatMeterFillColor);
 		}
 	}
 }
@@ -303,16 +336,18 @@ void UnitManager::giveUnitPath(UnitID unitID, std::vector<Vector2DInt> path)
 	}
 }
 
-void UnitManager::displayProgressMeter(Unit& unit, float timeElapsed, float totalTime, sf::Vector2f offset, sf::Color fillColor)
+void UnitManager::displayProgressMeter(Unit& unit, float timeElapsed, float totalTime, sf::Vector2f offset, float rotation, sf::Color fillColor)
 {
 	sf::Vector2 innerOffset(m_SeizeMeterInnerOffset.x, m_SeizeMeterInnerOffset.y);
 
 	float innerWidth = m_ProgressMeterWidth - m_ProgressMeterDoubleBorder;
 	innerWidth *= timeElapsed / totalTime;
 
+	unit.m_InnerSeizeMeter.setRotation(rotation);
 	unit.m_InnerSeizeMeter.setPosition(offset + innerOffset + sf::Vector2(unit.m_Position.x, unit.m_Position.y));
 	unit.m_InnerSeizeMeter.setSize({ innerWidth, m_ProgressMeterHeight - m_ProgressMeterDoubleBorder });
 	unit.m_InnerSeizeMeter.setFillColor(fillColor);
+	unit.m_OuterSeizeMeter.setRotation(rotation);
 	unit.m_OuterSeizeMeter.setSize({ m_ProgressMeterWidth, m_ProgressMeterHeight });
 	unit.m_OuterSeizeMeter.setPosition(offset + sf::Vector2(unit.m_Position.x, unit.m_Position.y));
 	unit.m_OuterSeizeMeter.setFillColor(m_ProgressMeterOuterColor);
@@ -662,7 +697,7 @@ void UnitManager::unitSiege(Unit& unit)
 			daysToSiegeRegion += building.m_HoldingModifier;
 		}
 
-		if ((unsigned int)unit.m_DaysSeizing >= region.m_DaysToSeize)
+		if (unit.m_DaysSeizing >= daysToSiegeRegion)
 		{
 			CharacterManager& characterManager = CharacterManager::get();
 			Character& attacker = characterManager.getCharacter(unit.m_Owner);
