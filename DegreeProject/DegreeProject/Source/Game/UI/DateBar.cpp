@@ -45,7 +45,7 @@ DateBar::DateBar(UIID id, sf::Font font, Vector2D, Vector2D size)
 		{
 			path = "Assets/Graphics/UI/MinusButton.png";
 		}
-		else if (index == 2)
+		else
 		{
 			path = "Assets/Graphics/UI/PlusButton.png";
 		}
@@ -142,7 +142,7 @@ void DateBar::clickButton()
 					}
 				}
 			}
-			if (m_Paused != Time::gamePaused() || m_CurrentSpeedLevel != Time::m_CurrentSpeedLevel)
+			if (m_Paused != Time::gamePaused() || m_CurrentSpeedLevel != (unsigned int)Time::m_CurrentSpeedLevel)
 			{
 				break;
 			}
@@ -161,7 +161,7 @@ void DateBar::clickButton()
 			InputHandler::setLeftMouseReleased(false);
 		}
 	}
-	if (m_Paused != Time::gamePaused() || m_CurrentSpeedLevel != Time::m_CurrentSpeedLevel)
+	if (m_Paused != Time::gamePaused() || m_CurrentSpeedLevel != (unsigned int)Time::m_CurrentSpeedLevel)
 	{
 		updateSpeedShapes();
 	}

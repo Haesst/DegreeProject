@@ -411,14 +411,12 @@ void CharacterManager::dailyUpdates(Character& character)
 	if (!character.m_Dead)
 	{
 		unsigned int age = Time::m_GameDate.getAge(character.m_Birthday);
-		if (age > character.m_DeadlyAge)
+		float dieChance = ((float)((age - character.m_DeadlyAge) * (age - character.m_DeadlyAge)) / (character.m_AgeMax * character.m_AgeMax)) * m_MortalityRate;
+		age < character.m_DeadlyAge ? dieChance *= 0.001f : dieChance;
+		bool die = chancePerPercent(dieChance);
+		if (die)
 		{
-			float dieChance = ((float)((age - character.m_DeadlyAge) * (age - character.m_DeadlyAge)) / (character.m_AgeMax * character.m_AgeMax)) * m_MortalityRate;
-			bool die = chancePerPercent(dieChance);
-			if (die)
-			{
-				killCharacter(character.m_CharacterID);
-			}
+			killCharacter(character.m_CharacterID);
 		}
 	}
 }
@@ -645,6 +643,11 @@ void CharacterManager::killCharacter(CharacterID characterID)
 		UIManager::get().createUIEventElement(characterID, characterID, UIType::Death);
 		handleInheritance(character);
 		UIManager::get().SetRealmTextAsConquered(character.m_CharacterID);
+	}
+	else if (character.m_Spouse == m_PlayerCharacterID || character.m_Father == m_PlayerCharacterID
+		  || character.m_Mother == m_PlayerCharacterID || character.m_NextSibling == m_PlayerCharacterID)
+	{
+		UIManager::get().createUIEventElement(characterID, characterID, UIType::Death);
 	}
 
 	character.m_RegionColor = sf::Color::Black;
