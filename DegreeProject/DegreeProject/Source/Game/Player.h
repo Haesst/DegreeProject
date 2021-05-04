@@ -54,4 +54,5 @@ private:
 
 	int m_HighlightedRegion = -1;
 	unsigned int m_SelectedUnitID = INVALID_UNIT_ID;
+	float m_DragThickness = 2.0f;
 };
