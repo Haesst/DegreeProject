@@ -163,16 +163,13 @@ void AIWarManager::declareWar(AIData& data)
 
 	int warHandle = DiplomacyManager::get().createWar(data.m_OwnerID, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_WargoalRegionId);
 
-	characterManager.callAllies(data.m_OwnerID, warHandle);
-
-	AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Active = true;
-
 	WarmindComponent& warmind = AIManager::get().getWarmindOfCharacter(data.m_OwnerID);
 
 	if (!characterManager.getCharacter(warmind.m_Opponent).m_IsPlayerControlled)
 	{
 		AIManager::get().getWarmindOfCharacter(warmind.m_Opponent).m_Active = true;
 		AIManager::get().getWarmindOfCharacter(warmind.m_Opponent).m_Opponent = warmind.m_OwnerID;
+		characterManager.callAllies(opponent, warHandle);
 	}
 
 	else
@@ -181,6 +178,9 @@ void AIWarManager::declareWar(AIData& data)
 		UIManager::get().createWarIcon(warmind.m_OwnerID, characterManager.getPlayerCharacterID());
 		characterManager.callAllies(characterManager.getPlayerCharacterID(), warHandle);
 	}
+
+	characterManager.callAllies(data.m_OwnerID, warHandle);
+	AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Active = true;
 
 	LOG_INFO("{0} Declared war against {1}", characterManager.getCharacter(data.m_OwnerID).m_Name, characterManager.getCharacter(AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Name);
 	data.m_LastAction = Action::War;
