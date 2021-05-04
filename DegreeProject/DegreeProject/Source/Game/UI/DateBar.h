@@ -4,9 +4,6 @@
 #include "Game/Data/Types.h"
 #include "Engine/Vector2D.h"
 
-const static unsigned int NUMBER_OF_SPEEDS = 5;
-const static unsigned int NUMBER_OF_BUTTONS = 3;
-
 class DateBar
 {
 public:
@@ -19,23 +16,23 @@ public:
 	void updateStats();
 	void clickButton();
 	void updateOwnerColor(sf::Color& newColor);
-
+	void updateSpeedShapes();
 	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
 	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position);
+	void setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize = m_SpriteSize);
 
 	sf::RectangleShape m_WindowShape;
-	sf::RectangleShape m_DecreaseSpeedShape;
-	sf::RectangleShape m_IncreaseSpeedVerticalShape;
-	sf::RectangleShape m_IncreaseSpeedHorizontalShape;
-	sf::RectangleShape m_PauseLeftShape;
-	sf::RectangleShape m_PauseRightShape;
-	sf::RectangleShape m_ButtonShapes[NUMBER_OF_BUTTONS];
-	sf::RectangleShape m_SpeedShapes[NUMBER_OF_SPEEDS];
-	unsigned int m_NumberOfSpeeds = NUMBER_OF_SPEEDS;
-	unsigned int m_NumberOfButtons = NUMBER_OF_BUTTONS;
+	std::vector<sf::Sprite> m_ButtonSprites;
+	std::vector<sf::Texture> m_ButtonTextures;
+	std::vector<sf::RectangleShape> m_ButtonShapes;
+	std::vector<sf::RectangleShape> m_SpeedShapes;
+	const unsigned int m_NumberOfSpeeds = 5;
+	const unsigned int m_NumberOfButtons = 3;
 	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
-	sf::Color m_SpeedColor = sf::Color::Green;
+	sf::Color m_PauseSpeedColor = sf::Color::Red;
+	sf::Color m_PlaySpeedColor = sf::Color::Green;
+	sf::Color m_TransparentColor = sf::Color::Transparent;
 	float m_SizeX = 600.0f;
 	float m_SizeY = 50.0f;
 	float m_OutlineThickness = 5.0f;
@@ -47,4 +44,6 @@ public:
 	unsigned int m_CurrentSpeedLevel = 3;
 	int m_DaySubscriptionHandle = 0;
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
+	const static int m_SpriteSize = 32;
+	bool m_Paused = false;
 };
