@@ -497,7 +497,16 @@ void AIManager::giveAttackerOrders(WarmindComponent& warmind, CharacterID target
 
 	if (Map::get().regionOccupiedByFriendlies(CharacterManager::get().getCharacter(unit.m_Owner), warmind.m_WargoalRegionId))
 	{
-		m_Orders.orderAttackEnemyRegion(unit, enemyUnit);
+		bool validRegionExists = false;
+		for (auto& region : CharacterManager::get().getCharacter(enemyUnit.m_Owner).m_OwnedRegionIDs)
+		{
+			if (Map::get().getRegionById(region).m_OccupiedBy == INVALID_CHARACTER_ID)
+			{
+				validRegionExists = true;
+			}
+		}
+
+		validRegionExists ? m_Orders.orderAttackEnemyRegion(unit, enemyUnit) : m_Orders.orderFightEnemyArmy(warmind, unit);
 		return;
 	}
 
@@ -517,7 +526,16 @@ void AIManager::giveDefenderOrders(WarmindComponent& warmind, CharacterID /*targ
 
 	if (CharacterManager::get().ownsRegion(unit.m_Owner, enemyUnit.m_SeizingRegionID))
 	{
-		m_Orders.orderAttackArmy(unit, enemyUnit);
+		bool validRegionExists = false;
+		for (auto& region : CharacterManager::get().getCharacter(enemyUnit.m_Owner).m_OwnedRegionIDs)
+		{
+			if (Map::get().getRegionById(region).m_OccupiedBy == INVALID_CHARACTER_ID)
+			{
+				validRegionExists = true;
+			}
+		}
+
+		validRegionExists ? m_Orders.orderAttackEnemyRegion(unit, enemyUnit) : m_Orders.orderFightEnemyArmy(warmind, unit);
 		return;
 	}
 

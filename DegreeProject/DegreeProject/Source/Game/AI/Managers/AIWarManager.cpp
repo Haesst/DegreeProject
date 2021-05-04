@@ -78,10 +78,6 @@ float AIWarManager::warDecision(CharacterID ID)
 
 	float actionScore = (goldEvaluation * enemyArmyEvaluation) + warMongerWeight;
 
-	for (auto& war : DiplomacyManager::get().getWarsForRegion(AIManager::get().getWarmindOfCharacter(ID).m_WargoalRegionId))
-	{
-		actionScore -= .1f;
-	}
 
 	if (actionScore <= .3f)
 	{

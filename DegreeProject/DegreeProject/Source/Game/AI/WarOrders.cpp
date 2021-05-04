@@ -139,11 +139,11 @@ void WarOrders::orderAttackEnemyRegion(Unit& unit, Unit& enemyUnit)
 	for (auto region : enemyCharacter.m_OwnedRegionIDs)
 	{
 		Vector2DInt regionPos = Map::get().getRegionById(region).m_RegionCapital;
-
+		LOG_INFO("Region pos: {0}", regionPos);
 		for (auto ownedRegion : character.m_OwnedRegionIDs)
 		{
 			float dist = (regionPos - Map::get().getRegionById(ownedRegion).m_RegionCapital).getLength();
-
+			LOG_INFO("DIST: {0}", dist);
 			if (dist < shortestDistance)
 			{
 				if (Map::get().getRegionById(ownedRegion).m_OccupiedBy != INVALID_CHARACTER_ID)
@@ -157,7 +157,10 @@ void WarOrders::orderAttackEnemyRegion(Unit& unit, Unit& enemyUnit)
 		}
 	}
 
-	ASSERT(shortestDistance != FLT_MAX, "This should not happen :(");
-	
+	if (shortestDistance == FLT_MAX)
+	{
+		return;
+	}
+
 	UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(Map::get().convertToMap(unit.m_Position), bestRegion));
 }
