@@ -3,6 +3,7 @@
 struct MapData
 {
 	std::vector<MapRegion> m_Regions;
+	std::unordered_map<char, unsigned int> m_CharToRegionIndex;
 
 	sf::Texture m_LandTexture;
 	sf::RenderStates m_RenderStates;

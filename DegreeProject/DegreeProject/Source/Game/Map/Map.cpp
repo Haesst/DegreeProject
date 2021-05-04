@@ -119,80 +119,94 @@ void Map::loadAllRegions()
 			region.m_MapChar = mapCharString[0];
 		}
 
+		m_Data.m_CharToRegionIndex[region.m_MapChar] = m_Data.m_Regions.size();
 		m_Data.m_Regions.push_back(region);
 	}
 }
 
 void Map::loadMap()
 {
-	ASSERT(m_Data.m_Regions[0].m_MapSquares.size() <= 0, "Mapsquare is empty");
+	ASSERT(m_Data.m_Regions[0].m_MapSquares.size() <= 0, "Mapsquare isn't empty");
 
-	std::string tempString;
-	std::ifstream inData = loadFile(m_Data.m_MapPath);
-
-	int maxWidth = 0;
-	int maxHeight = 0;
-
-	if (inData.is_open())
+	std::ifstream stream(m_Data.m_MapPath, std::ifstream::binary);
+	
+	if (stream)
 	{
+		stream.seekg(0, stream.end); // Find end of file
+		int charCount = (int)stream.tellg(); // tellg returns current char position. Since we searched for the end previously this returns total length
+		stream.seekg(0, stream.beg); // Find start again
+
+		char* buffer = new char[charCount];
+		stream.read(buffer, charCount);
+		
+		ASSERT(stream, "All characters couldn't be read");
+		stream.close();
+
+		height = charCount;
+		int charIndex = 0;
 		int y = 0;
-		while (!inData.eof())
+		int x = 0;
+
+		int mountainSquareCount = 0;
+		int unreachableLandSquareCount = 0;
+		int waterSquareCount = 0;
+
+		m_MapSquareData.reserve(charCount);
+		m_MountainSquares.reserve(charCount);
+		m_UnreachableLandSquares.reserve(charCount);
+		m_WaterSquares.reserve(charCount);
+
+		while (y < height)
 		{
-			getline(inData, tempString);
-
-			if (tempString.empty())
+			while (charIndex < charCount && buffer[charIndex] != '\r')
 			{
-				break;
-			}
+				char character = buffer[charIndex];
 
-			int x = 0;
-			for (char character : tempString)
-			{
-				int regionPosition = getRegionPositionFromMapCharacter(character);
-
-				if (regionPosition >= 0)
+				switch (character)
 				{
-					m_Data.m_Regions[regionPosition].m_MapSquares.push_back({ x, y });
-					Vector2DInt loc = { x,y };
-					SquareData data = { m_Data.m_Regions[regionPosition].m_RegionId };
-					data.m_Position = { x,y };
-
-					m_MapSquareData.push_back(data);
-				}
-				else if (character == '^')
-				{
+				case '^':
 					m_MountainSquares.push_back({ x,y });
-				}
-				else if (character == 'O')
-				{
+					mountainSquareCount++;
+					break;
+				case 'O':
 					m_UnreachableLandSquares.push_back({ x,y });
-				}
+					unreachableLandSquareCount++;
+					break;
+				case '~':
+					m_WaterSquares.push_back({ x,y });
+					waterSquareCount++;
+					break;
+				default:
+					auto it = m_Data.m_CharToRegionIndex.find(character);
+					ASSERT(it != m_Data.m_CharToRegionIndex.end(), "Could not find region character");
 
-				else if (character == '~')
-				{
-					m_WaterSquares.push_back({ x, y });
+					m_Data.m_Regions[it->second].m_MapSquares.push_back({ x,y });
+					m_MapSquareData.push_back({ {m_Data.m_Regions[it->second].m_RegionId}, {x,y} });
+					break;
 				}
-
-				x++;
+				++x;
+				++charIndex;
 			}
 
-			y++;
+			height = charCount / x;
+			x = 0;
+			++charIndex;
+			++y;
 
-			if (x > maxWidth)
+			if (buffer[charIndex] == '\n')
 			{
-				maxWidth = x;
-			}
-
-			if (y > maxHeight)
-			{
-				maxHeight = y;
+				++charIndex;
 			}
 		}
-	}
-	width = maxWidth;
-	height = maxHeight;
 
-	inData.close();
+		delete[] buffer;
+
+		width = charCount / height;
+
+		m_MountainSquares.resize(mountainSquareCount);
+		m_UnreachableLandSquares.resize(unreachableLandSquareCount);
+		m_WaterSquares.resize(waterSquareCount);
+	}
 }
 
 void Map::updateRegions()

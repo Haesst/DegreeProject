@@ -54,6 +54,12 @@ struct SquareData
 		m_EntitiesInSquare.clear();
 	}
 
+	SquareData(unsigned int regionID, Vector2DInt position)
+		:m_RegionID(regionID), m_Position(position)
+	{
+		m_EntitiesInSquare.clear();
+	}
+
 	SquareData()
 	{
 		m_EntitiesInSquare.clear();
