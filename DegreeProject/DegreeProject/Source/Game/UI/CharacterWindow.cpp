@@ -1101,6 +1101,7 @@ void CharacterWindow::declareWar()
 		uiManager.createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::WarDeclaration);
 		uiManager.createWarIcon(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID);
 
+		CharacterManager::get().callAllies(m_CurrentCharacterID, warHandle);
 		CharacterManager::get().callAllies(m_PlayerCharacter->m_CharacterID, warHandle);
 
 		Game::m_Sound.pause();
