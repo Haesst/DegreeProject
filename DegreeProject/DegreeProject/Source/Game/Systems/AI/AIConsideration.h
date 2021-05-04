@@ -56,7 +56,7 @@ struct ArmySizeConsideration : public Consideration
 		if (armySizeDiff > 0)
 		{
 			//y = x^2
-			float value = 0.5f * percentDiff + 0.5f;
+			float value = percentDiff + 0.5f;
 			return std::clamp(value, 0.0f, 1.0f);
 		}
 
