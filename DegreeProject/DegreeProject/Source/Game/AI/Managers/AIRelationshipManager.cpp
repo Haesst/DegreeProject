@@ -35,7 +35,7 @@ void AIRelationshipManager::update(AIData& data)
 		}
 	}
 
-	if (m_WarManager->getAlliances(data.m_OwnerID).empty())
+	if (m_WarManager->getAlliances(data.m_OwnerID).size() < relationshipConstants::maxAllies)
 	{
 		CharacterID potentialAlly = getPotentialAlly(data);
 		float eval = allianceDecision(data, potentialAlly);
@@ -152,26 +152,33 @@ CharacterID AIRelationshipManager::getUnlandedPotentialSpouse(AIData& data)
 CharacterID AIRelationshipManager::getPotentialAlly(AIData& data)
 {
 	std::vector<std::pair<float, int>> evalToAlly;
+	DiplomacyManager& diplomacyManager = DiplomacyManager::get();
+	Map& gameMap = Map::get();
 
 	for (auto& region : Map::get().getRegionIDs())
 	{
 		if (Map::get().getRegionById(region).m_OwnerID != data.m_OwnerID)
 		{
-			if (CharacterManager::get().getCharacter(Map::get().getRegionById(region).m_OwnerID).m_CharacterTitle == Title::Unlanded)
+			if (CharacterManager::get().getCharacter(gameMap.getRegionById(region).m_OwnerID).m_CharacterTitle == Title::Unlanded)
 			{
 				continue;
 			}
 
-			if (DiplomacyManager::get().atWarWith(data.m_OwnerID, Map::get().getRegionById(region).m_OwnerID))
+			if (diplomacyManager.atWarWith(data.m_OwnerID, gameMap.getRegionById(region).m_OwnerID))
 			{
 				continue;
 			}
 
-			float eval = allianceDecision(data, Map::get().getRegionById(region).m_OwnerID);
+			float eval = allianceDecision(data, gameMap.getRegionById(region).m_OwnerID);
+
+			if (diplomacyManager.getAlliances(gameMap.getRegionById(region).m_OwnerID).size() > 2)
+			{
+				eval -= (.2f * diplomacyManager.getAlliances(gameMap.getRegionById(region).m_OwnerID).size());
+			}
 
 			if (eval > .4f)
 			{
-				evalToAlly.push_back(std::make_pair(eval, Map::get().getRegionById(region).m_OwnerID));
+				evalToAlly.push_back(std::make_pair(eval, gameMap.getRegionById(region).m_OwnerID));
 			}
 		}
 	}

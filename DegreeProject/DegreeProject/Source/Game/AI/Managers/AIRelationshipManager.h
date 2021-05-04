@@ -9,6 +9,7 @@ namespace relationshipConstants
 	const float marriageAcceptance = .5f;
 	const float allianceAcceptance = .5f;
 	const float marriageOfferCooldown = 5.0f;
+	const int maxAllies = 2;
 };
 
 class AIRelationshipManager
