@@ -206,10 +206,15 @@ struct ExpansionConsideration : public Consideration
 				distanceWeight = -0.6f;
 			}
 
+			if (dist >= 30)
+			{
+				distanceWeight = -1.0f;
+			}
+
 			else
 			{
 				distanceWeight = 0.0f;
-				break;
+				continue;
 			}
 		}
 
