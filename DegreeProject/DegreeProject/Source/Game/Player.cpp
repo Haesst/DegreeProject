@@ -93,7 +93,7 @@ void Player::clickDrag()
 		m_DragWindow.setSize(sf::Vector2f(10.0f, 10.0f));
 		m_DragWindow.setPosition(m_MousePosition.x, m_MousePosition.y);
 		m_DragWindow.setFillColor(sf::Color::Transparent);
-		m_DragWindow.setOutlineThickness(1.0f);
+		m_DragWindow.setOutlineThickness(m_DragThickness * InputHandler::m_TotalZoom);
 	}
 
 	if (m_Draging)
