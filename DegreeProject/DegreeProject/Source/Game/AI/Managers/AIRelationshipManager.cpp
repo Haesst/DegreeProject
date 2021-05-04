@@ -28,9 +28,13 @@ void AIRelationshipManager::update(AIData& data)
 		{
 			if (CharacterManager::get().getCharacter(data.m_OwnerID).m_Spouse == INVALID_CHARACTER_ID)
 			{
-				CharacterID potentialSpouse = getUnlandedPotentialSpouse(data);
-				data.m_PotentialSpouseID = potentialSpouse;
-				marry(data);
+				CharacterID spouse = getUnlandedPotentialSpouse(data);
+
+				if (spouse != INVALID_CHARACTER_ID)
+				{
+					data.m_PotentialSpouseID = spouse;
+					marry(data);
+				}
 			}
 		}
 	}
@@ -147,6 +151,8 @@ CharacterID AIRelationshipManager::getUnlandedPotentialSpouse(AIData& data)
 	{
 		return CharacterManager::get().getUnlandedCharacterOfGender(Gender::Male);
 	}
+
+	return INVALID_CHARACTER_ID;
 }
 
 CharacterID AIRelationshipManager::getPotentialAlly(AIData& data)

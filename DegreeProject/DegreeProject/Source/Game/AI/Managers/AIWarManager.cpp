@@ -78,7 +78,6 @@ float AIWarManager::warDecision(CharacterID ID)
 
 	float actionScore = (goldEvaluation * enemyArmyEvaluation) + warMongerWeight;
 
-
 	if (actionScore <= .3f)
 	{
 		return 0.0f;

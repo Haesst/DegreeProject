@@ -35,7 +35,7 @@ void Game::init()
 void Game::run()
 {
 	sf::RenderWindow* internalWindow = m_Window->getWindow();
-	//internalWindow->setFramerateLimit(60);
+	internalWindow->setFramerateLimit(60);
 	sf::Vector2f floatResolution = sf::Vector2f((float)m_Resolution.x, (float)m_Resolution.y);
 	sf::View view({ floatResolution.x * 4.5f, floatResolution.y * 1.25f }, floatResolution);
 	sf::View uiView(floatResolution * 0.5f, floatResolution);

@@ -81,7 +81,7 @@ void WarOrders::orderSiegeCapital(WarmindComponent& warmind, Unit& unit)
 	UnitManager::get().giveUnitPath(unit.m_UnitID, Pathfinding::get().findPath(startingPosition, capitalPosition));
 }
 
-void WarOrders::orderFollowMainAlly(WarmindComponent& warmind, Unit& unit, CharacterID mainAttacker)
+void WarOrders::orderFollowMainAlly(WarmindComponent&, Unit& unit, CharacterID mainAttacker)
 {
 	Unit& mainAttackerUnit = UnitManager::get().getUnitOfCharacter(mainAttacker);
 

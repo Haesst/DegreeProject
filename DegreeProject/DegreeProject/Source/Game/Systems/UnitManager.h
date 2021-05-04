@@ -52,7 +52,7 @@ private:
 	static UnitManager* m_Instance;
 	std::vector<Unit> m_Units;
 
-	float m_MoveTolerance = 5.f;
+	float m_MoveTolerance = 6.f;
 
 	Vector2D m_SeizeMeterOffset = { 0.0f, -20.0f };
 	Vector2D m_CombatMeterOffset = { 0.0f, 30.0f };
