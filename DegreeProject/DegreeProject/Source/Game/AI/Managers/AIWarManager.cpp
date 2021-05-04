@@ -42,10 +42,25 @@ void AIWarManager::update(AIData& data)
 			continue;
 		}
 
-		if (Time::m_GameDate.m_Date.m_Month - m_Warmanager->getWar(war)->getStartDate().m_Month >= 4)
+		if (Time::m_GameDate.m_Date.m_Month - m_Warmanager->getWar(war)->getStartDate().m_Month >= 6)
 		{
-			bool sendOffer = (rand() % 100) < 10;
+			if (m_Warmanager->getWarscore(war, data.m_OwnerID) == 100)
+			{
+				CharacterManager::get().sendPeaceOffer(data.m_OwnerID, m_Warmanager->getOpposingForce(war, data.m_OwnerID), PeaceType::Enforce_Demands);
+				continue;
+			}
 
+			if (m_Warmanager->getWarscore(war, data.m_OwnerID) >= 80)
+			{
+				bool tryEnforce = (rand() % 100) < 10;
+				if (tryEnforce)
+				{
+					CharacterManager::get().sendPeaceOffer(data.m_OwnerID, m_Warmanager->getOpposingForce(war, data.m_OwnerID), PeaceType::Enforce_Demands);
+					continue;
+				}
+			}
+
+			bool sendOffer = (rand() % 100) < 10;
 			if (sendOffer)
 			{
 				CharacterManager::get().sendPeaceOffer(data.m_OwnerID, m_Warmanager->getOpposingForce(war, data.m_OwnerID), PeaceType::White_Peace);
