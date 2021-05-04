@@ -377,7 +377,7 @@
 	"tax": 5,
 	"manPower": 40,
 	"capitalx" : 406,
-	"capitaly" : 75
+	"capitaly" : 74
 	},
 	{
 	"name": "Thessalonika",
@@ -406,7 +406,7 @@
 	"color": "Yellow",
 	"tax": 6,
 	"manPower": 80,
-	"capitalx" : 491,
+	"capitalx" : 490,
 	"capitaly" : 41
 	},
 	{
@@ -457,7 +457,7 @@
 	"tax": 3,
 	"manPower": 30,
 	"capitalx" : 449,
-	"capitaly" : 39
+	"capitaly" : 29
 	},
 	{
 	"name": "Dobrudja",
