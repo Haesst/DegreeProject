@@ -52,7 +52,8 @@ void AIWarManager::update(AIData& data)
 
 			if (m_Warmanager->getWarscore(war, data.m_OwnerID) >= 80)
 			{
-				bool tryEnforce = (rand() % 100) < 10;
+				bool tryEnforce = (rand() % 100) < 20;
+
 				if (tryEnforce)
 				{
 					CharacterManager::get().sendPeaceOffer(data.m_OwnerID, m_Warmanager->getOpposingForce(war, data.m_OwnerID), PeaceType::Enforce_Demands);
