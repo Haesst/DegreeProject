@@ -18,16 +18,15 @@ AIWarManager::~AIWarManager()
 
 void AIWarManager::update(AIData& data)
 {
-	if (m_Warmanager->getWarHandlesOfCharacter(data.m_OwnerID).size() == 0)
+	if (m_Warmanager->getWarHandlesOfCharacter(data.m_OwnerID).size() < 3)
 	{
 		float expansionEval = expansionDecision(data.m_OwnerID);
-		LOG_INFO("expansion Eval: {0}", expansionEval);
-
+		LOG_INFO("Expansion Eval: {0}", expansionEval);
 		if (expansionEval > warConstants::m_expansionAcceptance)
 		{
 			float warEval = warDecision(data.m_OwnerID);
 			LOG_INFO("War Eval: {0}", warEval);
-			if (warEval > warConstants::m_warAcceptance)
+			if (warEval > 0)// warConstants::m_warAcceptance)
 			{
 				if (!DiplomacyManager::get().hasTruce(data.m_OwnerID, AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
 				{
@@ -87,19 +86,19 @@ float AIWarManager::warDecision(CharacterID ID)
 	bool useRandomWeight = (rand() % 100) < 40;
 	if (useRandomWeight)
 	{
-		randomWeight = warConstants::m_warAcceptance;
+		randomWeight = warConstants::m_RandomWarWeight;
 	}
 
-	if (CharacterManager::get().isAlliedWith(ID, AIManager::get().getWarmindOfCharacter(ID).m_Opponent) && aiManager->getAIDataofCharacter(ID).m_Personality.m_DeclareWarModifier == 0.0f)
+	if (CharacterManager::get().isAlliedWith(ID, AIManager::get().getWarmindOfCharacter(ID).m_Opponent) && aiManager->getAIDataofCharacter(ID).m_Personality.m_DeclareWarModifier >= 0.0f)
 	{
 		return 0.0f;
 	}
 
 	float actionScore = (goldEvaluation * enemyArmyEvaluation) + warMongerWeight;
 
-	if (actionScore <= .3f)
+	if (AIManager::get().getWarmindOfCharacter(ID).m_Opponent == CharacterManager::get().getPlayerCharacterID())
 	{
-		return 0.0f;
+		actionScore += warConstants::m_PlayerWeight;
 	}
 
 	return std::clamp(actionScore, 0.0f, 1.0f);
@@ -140,27 +139,27 @@ float AIWarManager::expansionDecision(CharacterID ID)
 	std::sort(actionScorePerRegion.begin(), actionScorePerRegion.end());
 	std::pair<float, int> region;
 
-	if (actionScorePerRegion.size() > 2)
-	{
-		region = actionScorePerRegion[rand() % 2];
-	}
+	int bestRegion = -1;
+	float bestEval = -1.f;
 
-	else
-	{
-		int bestRegion = -1;
-		float bestEval = -1.f;
+	int warsAgainstPlayer = DiplomacyManager::get().getWarHandlesAgainstCharacter(CharacterManager::get().getPlayerCharacterID()).size();
 
-		for (auto& region : actionScorePerRegion)
+	for (auto& region : actionScorePerRegion)
+	{
+		if (Map::get().getRegionById(region.second).m_OwnerID == CharacterManager::get().getPlayerCharacterID())
 		{
-			if (region.first > bestEval)
-			{
-				bestEval = region.first;
-				bestRegion = region.second;
-			}
+			region.first += warConstants::m_PlayerWeight;
+		}
+
+		if (region.first > bestEval)
+		{
+			bestEval = region.first;
+			bestRegion = region.second;
+			continue;
 		}
 	}
 
-
+	region = std::make_pair(bestEval, bestRegion);
 	AIManager::get().getWarmindOfCharacter(ID).m_WargoalRegionId = region.second;
 	AIManager::get().getWarmindOfCharacter(ID).m_Opponent = Map::get().getRegionById(region.second).m_OwnerID;
 
@@ -184,7 +183,7 @@ void AIWarManager::declareWar(AIData& data)
 		diplomacyManager.breakAlliance(data.m_OwnerID, opponent);
 	}
 
-	if (!AIManager::get().isValidWarmind(AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent))
+	if (!AIManager::get().isValidWarmind(AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent) && !characterManager.getCharacter(opponent).m_IsPlayerControlled)
 	{
 		AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent = INVALID_CHARACTER_ID;
 		return;
@@ -211,7 +210,7 @@ void AIWarManager::declareWar(AIData& data)
 	characterManager.callAllies(data.m_OwnerID, warHandle);
 	AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Active = true;
 
-	LOG_INFO("{0} Declared war against {1}", characterManager.getCharacter(data.m_OwnerID).m_Name, characterManager.getCharacter(AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Name);
+	LOG_WARN("{0} Declared war against {1}", characterManager.getCharacter(data.m_OwnerID).m_Name, characterManager.getCharacter(AIManager::get().getWarmindOfCharacter(data.m_OwnerID).m_Opponent).m_Name);
 	data.m_LastAction = Action::War;
 	data.m_CurrentAction = Action::War;
 

@@ -626,6 +626,21 @@ std::vector<int> DiplomacyManager::getWarHandlesOfCharacter(CharacterID ID)
 	return wars;
 }
 
+std::vector<int> DiplomacyManager::getWarHandlesAgainstCharacter(CharacterID ID)
+{
+	std::vector<int> wars;
+
+	for (auto& war : m_Wars)
+	{
+		if (war.second.m_Attackers[0] == ID || war.second.m_Defenders[0] == ID)
+		{
+			wars.push_back(war.first);
+		}
+	}
+
+	return wars;
+}
+
 std::vector<CharacterID> DiplomacyManager::getOpposingSide(CharacterID ID)
 {
 	std::vector<CharacterID> enemies;

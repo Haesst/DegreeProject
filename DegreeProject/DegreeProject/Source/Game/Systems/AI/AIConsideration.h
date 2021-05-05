@@ -52,18 +52,19 @@ struct ArmySizeConsideration : public Consideration
 		float armySizeDiff = friendlyArmy - targetCharComp.m_MaxArmySize;
 
 		float percentDiff = (float)targetCharComp.m_MaxArmySize / contextCharComp.m_MaxArmySize;
+		float smallDiffWeight = 0.0f;
 
-		if (armySizeDiff > 0)
+		if (std::abs(armySizeDiff) < 200)
+		{
+			smallDiffWeight = .3f;
+		}
+
+		if (percentDiff > 0)
 		{
 			//y = x^2
 			float value = percentDiff + 0.5f;
+			value = std::pow(0.5, percentDiff) + smallDiffWeight;
 			return std::clamp(value, 0.0f, 1.0f);
-		}
-
-		else
-		{
-			//y = 0.1^x
-			return std::clamp(std::pow(0.1f, percentDiff), 0.0f, 1.0f);
 		}
 
 		return 0.0f;
@@ -161,19 +162,7 @@ struct GoldConsideration : public Consideration
 		float goldDiff = contextGold / targetGold;
 		float percentDiff = (float)contextGold / targetGold;
 
-		if (goldDiff > 0)
-		{
-			//y = x^2
-			return std::clamp(std::pow(percentDiff, 2.0f), 0.0f, 1.0f) + ConsiderationConstants::positiveGoldDiffWeight;
-		}
-
-		else
-		{
-			//y = 0.1^x
-			return std::clamp(std::pow(0.1f, percentDiff), 0.0f, 1.0f);
-		}
-
-		return 0.0f;
+		return std::clamp(std::pow(percentDiff, 2.0f), 0.0f, 1.0f) + ConsiderationConstants::positiveGoldDiffWeight;
 	}
 };
 
@@ -213,13 +202,7 @@ struct ExpansionConsideration : public Consideration
 
 			if (dist >= 30)
 			{
-				distanceWeight = -1.0f;
-			}
-
-			else
-			{
-				distanceWeight = 0.0f;
-				continue;
+				return 0.0f;
 			}
 		}
 

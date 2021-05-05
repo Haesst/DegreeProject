@@ -6,6 +6,7 @@ class DiplomacyManager;
 
 namespace warConstants
 {
+	const float m_PlayerWeight = .1f;
 	const float m_warAcceptance = .4f;
 	const float m_expansionAcceptance = .4f;
 	const float m_RandomWarWeight = .4f;

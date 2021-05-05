@@ -75,6 +75,7 @@ public:
 
 	std::vector<int> getWarsForRegion(int regionID);
 	std::vector<int> getWarHandlesOfCharacter(CharacterID ID);
+	std::vector<int> getWarHandlesAgainstCharacter(CharacterID ID);
 
 	std::vector<CharacterID> getOpposingSide(CharacterID ID);
 
