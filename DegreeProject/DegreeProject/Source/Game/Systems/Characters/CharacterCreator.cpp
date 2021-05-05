@@ -144,6 +144,7 @@ CharacterID CharacterCreator::internalCreateCharacter(Character& character, cons
 	for (auto& regionid : ownedRegions)
 	{
 		MapRegion& region = Map::get().getRegionById(regionid);
+		region.m_OwnerID = character.m_CharacterID;
 		character.m_MaxArmySize += region.m_ManPower;
 
 		for (auto& buildingSlot : region.m_BuildingSlots)

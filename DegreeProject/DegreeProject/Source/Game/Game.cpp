@@ -196,43 +196,10 @@ void Game::addEntitys()
 	CharacterID char14 = createCharacter(characterFourteenRegions, Title::Baron, Gender::Female, "Barony of Valle d'Aosta", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(223, 125, 24));
 	UIManager::get().createUITextElement(m_UIFont, char14, CharacterManager::get().getCharacter(char14).m_KingdomName, characterFourteenRegions);
 
-	addRandomEntityOwningRegion({ 31 });
-	addRandomEntityOwningRegion({ 32 });
-	addRandomEntityOwningRegion({ 33 });
-
 	CharacterID char15 = createCharacter(characterFifteenRegions, Title::Baron, Gender::Male, "Barony of Dyrachion", "Gjergj Kastrioti", 50, 5, false, sf::Color(152, 182, 54));
 	UIManager::get().createUITextElement(m_UIFont, char15, CharacterManager::get().getCharacter(char15).m_KingdomName, characterFifteenRegions);
-	addRandomEntityOwningRegion({ 35 });
-	addRandomEntityOwningRegion({ 36 });
-	addRandomEntityOwningRegion({ 37 });
-	addRandomEntityOwningRegion({ 38 });
-	addRandomEntityOwningRegion({ 39 });
-	addRandomEntityOwningRegion({ 40 });
-	addRandomEntityOwningRegion({ 41 });
-	addRandomEntityOwningRegion({ 42 });
-	addRandomEntityOwningRegion({ 43 });
-	addRandomEntityOwningRegion({ 44 });
-	addRandomEntityOwningRegion({ 45 });
-	addRandomEntityOwningRegion({ 46 });
-	addRandomEntityOwningRegion({ 47 });
-	addRandomEntityOwningRegion({ 48 });
-	addRandomEntityOwningRegion({ 49 });
-	addRandomEntityOwningRegion({ 50 });
-	addRandomEntityOwningRegion({ 51 });
-	addRandomEntityOwningRegion({ 52 });
-	addRandomEntityOwningRegion({ 53 });
-	addRandomEntityOwningRegion({ 54 });
-	addRandomEntityOwningRegion({ 55 });
-	addRandomEntityOwningRegion({ 56 });
-	addRandomEntityOwningRegion({ 57 });
-	addRandomEntityOwningRegion({ 58 });
-	addRandomEntityOwningRegion({ 59 });
-	addRandomEntityOwningRegion({ 60 });
-	addRandomEntityOwningRegion({ 61 });
-	addRandomEntityOwningRegion({ 62 });
-	addRandomEntityOwningRegion({ 63 });
-	addRandomEntityOwningRegion({ 64 });
-	addRandomEntityOwningRegion({ 65 });
+
+	fillEmptyRegionWithOwners();
 
 	//UI
 	Vector2D mainMenuPosition = { 960.0f, 540.0f };
@@ -270,6 +237,17 @@ void Game::addEntitys()
 	Vector2D dateBarPosition = { Window::getWindow()->getSize().x - (600.0f + 10.0f), Window::getWindow()->getSize().y - (50.0f + 10.0f) };
 	Vector2D dateBarSize = { 600.0f, 50.0f };
 	UIManager::get().createUIWindowElement(m_UIFont, UIType::DateBar, dateBarPosition, dateBarSize);
+}
+
+void Game::fillEmptyRegionWithOwners()
+{
+	for (auto& region : Map::get().m_Data.m_Regions)
+	{
+		if (region.m_OwnerID == INVALID_CHARACTER_ID)
+		{
+			addRandomEntityOwningRegion({ region.m_RegionId });
+		}
+	}
 }
 
 void Game::addRandomEntityOwningRegion(std::vector<size_t> regions)

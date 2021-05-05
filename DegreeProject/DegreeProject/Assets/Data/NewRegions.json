@@ -36,7 +36,7 @@
 	"color": "Cyan",
 	"tax": 7,
 	"manPower": 50,
-	"capitalx" : 282,
+	"capitalx" : 284,
 	"capitaly" : 18
 	},
 	{
@@ -586,7 +586,7 @@
 	"color": "Yellow",
 	"tax": 4,
 	"manPower": 80,
-	"capitalx" : 128,
+	"capitalx" : 126,
 	"capitaly" : 68
 	},
 	{
@@ -648,5 +648,135 @@
 	"manPower": 40,
 	"capitalx" : 30,
 	"capitaly" : 24
+	},
+	{
+	"name": "Portucale",
+	"id": 66,
+	"mapchar": "$",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 50,
+	"capitalx" : 26,
+	"capitaly" : 42
+	},
+	{
+	"name": "Coimbra",
+	"id": 67,
+	"mapchar": "{",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 60,
+	"capitalx" : 28,
+	"capitaly" : 49
+	},
+	{
+	"name": "Lisboa",
+	"id": 68,
+	"mapchar": "[",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 70,
+	"capitalx" : 28,
+	"capitaly" : 49
+	},
+	{
+	"name": "Algarve",
+	"id": 69,
+	"mapchar": "}",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 10,
+	"capitalx" : 28,
+	"capitaly" : 49
+	},
+	{
+	"name": "Leon",
+	"id": 70,
+	"mapchar": "|",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 10,
+	"capitalx" : 28,
+	"capitaly" : 49
+	},
+	{
+	"name": "Castille",
+	"id": 71,
+	"mapchar": "]",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 50,
+	"capitalx" : 77,
+	"capitaly" : 34
+	},
+	{
+	"name": "Badajoz",
+	"id": 72,
+	"mapchar": "+",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 50,
+	"capitalx" : 43,
+	"capitaly" : 62
+	},
+	{
+	"name": "Toledo",
+	"id": 73,
+	"mapchar": "<",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 60,
+	"capitalx" : 86,
+	"capitaly" : 53
+	},
+	{
+	"name": "Cordoba",
+	"id": 74,
+	"mapchar": "\\",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 40,
+	"capitalx" : 65,
+	"capitaly" : 69
+	},
+	{
+	"name": "Sevilla",
+	"id": 75,
+	"mapchar": ">",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 50,
+	"capitalx" : 44,
+	"capitaly" : 77
+	},
+	{
+	"name": "Granada",
+	"id": 76,
+	"mapchar": ",",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 50,
+	"capitalx" : 82,
+	"capitaly" : 73
+	},
+	{
+	"name": "Murcia",
+	"id": 77,
+	"mapchar": ":",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 40,
+	"capitalx" : 82,
+	"capitaly" : 73
+	},
+	{
+	"name": "Mallorca",
+	"id": 78,
+	"mapchar": ";",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 20,
+	"capitalx" : 164,
+	"capitaly" : 65
 	}
 ]
