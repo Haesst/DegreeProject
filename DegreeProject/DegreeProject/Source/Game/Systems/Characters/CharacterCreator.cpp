@@ -9,11 +9,6 @@
 #include "Game/Map/MapRegion.h"
 #include "Game/AI/AIManager.h"
 
-CharacterCreator::CharacterCreator()
-{
-	loadAllPortraits();
-}
-
 CharacterID CharacterCreator::createRandomUnlandedCharacter(CharacterPool& characterPool, int minAge, int maxAge)
 {
 	bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
@@ -125,11 +120,11 @@ CharacterID CharacterCreator::internalCreateCharacter(Character& character, cons
 	character.m_Gender = gender;
 	if (character.m_Gender == Gender::Male)
 	{
-		setRandomMalePortrait(character);
+		setRandomMalePortraitPath(character);
 	}
 	else
 	{
-		setRandomFemalePortrait(character);
+		setRandomFemalePortraitPath(character);
 	}
 
 	character.m_CurrentGold = gold;
@@ -188,50 +183,22 @@ CharacterID CharacterCreator::internalCreateCharacter(Character& character, cons
 	return id;
 }
 
-void CharacterCreator::loadAllPortraits()
+void CharacterCreator::setRandomMalePortraitPath(Character& character)
 {
-	AssetHandler& assethandler = AssetHandler::get();
+	character.m_PortraitIndex = rand() * CharacterConstants::m_NumberOfMalePortraits / RAND_MAX;
 	std::stringstream stream;
-	m_MalePortraitTextures.reserve(m_NumberOfMalePortraits);
-	m_FemalePortraitTextures.reserve(m_NumberOfFemalePortraits);
-	for (unsigned int index = 0; index < m_NumberOfMalePortraits; index++)
-	{
-		stream << m_PortraitPath << m_MalePath << index + 1 << m_PortraitPathEnding;
-		m_MalePortraitTextures.push_back(assethandler.getTextureAtPath(stream.str().c_str()));
-		stream.str(std::string());
-		stream.clear();
-	}
-	for (unsigned int index = 0; index < m_NumberOfFemalePortraits; index++)
-	{
-		stream << m_PortraitPath << m_FemalePath << index + 1 << m_PortraitPathEnding;
-		m_FemalePortraitTextures.push_back(assethandler.getTextureAtPath(stream.str().c_str()));
-		stream.str(std::string());
-		stream.clear();
-	}
+	stream << CharacterConstants::m_MalePortraitPath << character.m_PortraitIndex + 1 << CharacterConstants::m_PortraitPathEnding;
+	character.m_PortraitPath = stream.str();
+	stream.str(std::string());
+	stream.clear();
 }
 
-void CharacterCreator::setRandomFemalePortrait(Character& character)
+void CharacterCreator::setRandomFemalePortraitPath(Character& character)
 {
-	int portraitIndex = rand() * m_NumberOfFemalePortraits / RAND_MAX;
-	character.m_PortraitTexture = &m_FemalePortraitTextures[portraitIndex];
-	character.m_Portrait.setTexture(*character.m_PortraitTexture);
-	character.m_Portrait.setScale(m_PortraitSize / character.m_Portrait.getLocalBounds().width, m_PortraitSize / character.m_Portrait.getLocalBounds().height);
-	//std::stringstream stream;
-	//stream << m_PortraitPath << m_FemalePath << portraitIndex + 1 << m_PortraitPathEnding;
-	//character.m_PortraitPath = stream.str().c_str();
-	//stream.str(std::string());
-	//stream.clear();
-}
-
-void CharacterCreator::setRandomMalePortrait(Character& character)
-{
-	int portraitIndex = rand() * m_NumberOfMalePortraits / RAND_MAX;
-	character.m_PortraitTexture = &m_MalePortraitTextures[portraitIndex];
-	character.m_Portrait.setTexture(*character.m_PortraitTexture);
-	character.m_Portrait.setScale(m_PortraitSize / character.m_Portrait.getLocalBounds().width, m_PortraitSize / character.m_Portrait.getLocalBounds().height);
-	//std::stringstream stream;
-	//stream << m_PortraitPath << m_MalePath << portraitIndex + 1 << m_PortraitPathEnding;
-	//character.m_PortraitPath = stream.str().c_str();
-	//stream.str(std::string());
-	//stream.clear();
+	character.m_PortraitIndex = rand() * CharacterConstants::m_NumberOfFemalePortraits / RAND_MAX;
+	std::stringstream stream;
+	stream << CharacterConstants::m_FemalePortraitPath << character.m_PortraitIndex + 1 << CharacterConstants::m_PortraitPathEnding;
+	character.m_PortraitPath = stream.str();
+	stream.str(std::string());
+	stream.clear();
 }

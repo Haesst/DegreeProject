@@ -23,7 +23,7 @@ public:
 	void closeWindow();
 
 private:
-	void updateWarParticipants(CharacterID& mainParticipantID, CharacterID& participantID, std::vector<CharacterID>& participantsIDs, std::vector<sf::RectangleShape>& participantsShapes, std::vector<sf::Sprite>& participantsSprites, sf::Vector2f& mainParticipantPosition, sf::Vector2f& participantPosition, unsigned int& index);
+	void updateWarParticipants(CharacterID& mainParticipantID, CharacterID& participantID, std::vector<CharacterID>& participantsIDs, std::vector<sf::RectangleShape>& participantsShapes, std::vector<sf::Sprite>& participantsSprites, std::vector<sf::Texture>& participantsTextures, sf::Vector2f& mainParticipantPosition, sf::Vector2f& participantPosition, unsigned int& index);
 	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
 	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string = "");
 	void setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize = m_SpriteSize);
@@ -137,11 +137,13 @@ private:
 	const char* m_PercentSign = "%";
 	const char* m_DashSign = "/";
 
-	std::vector<CharacterID> m_DefenderCharacterIDs = std::vector<CharacterID>();
-	std::vector<sf::RectangleShape> m_DefenderCharacterShapes = std::vector<sf::RectangleShape>();
-	std::vector<sf::Sprite> m_DefenderCharacterSprites = std::vector<sf::Sprite>();
-
-	std::vector<CharacterID> m_AttackerCharacterIDs = std::vector<CharacterID>();
-	std::vector<sf::RectangleShape> m_AttackerCharacterShapes = std::vector<sf::RectangleShape>();
-	std::vector<sf::Sprite> m_AttackerCharacterSprites = std::vector<sf::Sprite>();
+	std::vector<CharacterID> m_DefenderCharacterIDs;
+	std::vector<sf::RectangleShape> m_DefenderCharacterShapes;
+	std::vector<sf::Sprite> m_DefenderCharacterSprites;
+	std::vector<sf::Texture> m_DefenderCharacterTextures;
+														
+	std::vector<CharacterID> m_AttackerCharacterIDs;
+	std::vector<sf::RectangleShape> m_AttackerCharacterShapes;
+	std::vector<sf::Sprite> m_AttackerCharacterSprites;
+	std::vector<sf::Texture> m_AttackerCharacterTextures;
 };

@@ -19,6 +19,7 @@
 #include "Game/UI/FamilyTreeWindow.h"
 #include "Game/Systems/UnitManager.h"
 #include "Game/Data/Unit.h"
+#include "Game/Data/CharacterConstants.h"
 
 CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 {
@@ -180,6 +181,7 @@ void CharacterWindow::render()
 		{
 			m_Window->draw(m_FamilyTreeText);
 		}
+		//m_Window->draw(CharacterConstants::m_MalePortraitSprites[m_CurrentCharacter->m_PortraitIndex]);
 		m_Window->draw(m_CharacterSprite);
 
 		if (m_Pregnant)
@@ -352,21 +354,25 @@ void CharacterWindow::clearInfo()
 	m_ChildrenShapes.clear();
 	m_ChildrenSprites.clear();
 	m_ChildrenNames.clear();
+	m_ChildrenTextures.clear();
 
 	m_AlliesShapes.clear();
 	m_AlliesSprites.clear();
 	m_AlliesPositions.clear();
+	m_AlliesTextures.clear();
 
 	m_WarShapes.clear();
 	m_WarSprites.clear();
 	m_WarPositions.clear();
 	m_WarDefenders.clear();
 	m_WarAttackers.clear();
+	m_WarTextures.clear();
 
 	m_TruceShapes.clear();
 	m_TruceSprites.clear();
 	m_TruceIDs.clear();
 	m_TruceTexts.clear();
+	m_TruceTextures.clear();
 }
 
 void CharacterWindow::updateParents()
@@ -462,6 +468,7 @@ void CharacterWindow::updateChildren()
 	m_ChildrenShapes.reserve(sizeChildren);
 	m_ChildrenNames.reserve(sizeChildren);
 	m_ChildrenSprites.reserve(sizeChildren);
+	m_ChildrenTextures.reserve(sizeChildren);
 	for (unsigned int index = 0; index < sizeChildren; index++)
 	{
 		Character& child = characterManager.getCharacter(m_CurrentCharacter->m_Children[index]);
@@ -492,8 +499,12 @@ void CharacterWindow::updateChildren()
 
 		m_ChildrenShapes.push_back(childShape);
 		m_ChildrenNames.push_back(childNameText);
-		m_ChildrenSprites.push_back(child.m_Portrait);
-		m_ChildrenSprites[index].setPosition(childShape.getPosition());
+
+		sf::Sprite childSprite;
+		m_ChildrenSprites.push_back(childSprite);
+		const char* portraitPath = child.m_PortraitPath.c_str();
+		m_ChildrenTextures.push_back(AssetHandler::get().getTextureAtPath(portraitPath));
+		setSprite(m_ChildrenSprites[index], m_ChildrenTextures[index], m_ChildrenShapes[index].getPosition(), m_SpriteSize);
 	}
 }
 
@@ -504,16 +515,20 @@ void CharacterWindow::updateAllies()
 	unsigned int sizeAlliances = m_AlliesIDs.size();
 	m_AlliesShapes.reserve(sizeAlliances);
 	m_AlliesSprites.reserve(sizeAlliances);
+	m_AlliesTextures.reserve(sizeAlliances);
 	for (unsigned int index = 0; index < sizeAlliances; index++)
 	{
 		Character& ally = characterManager.getCharacter(m_AlliesIDs[index]);
 
 		sf::RectangleShape allyShape;
 		setShape(allyShape, m_TransparentColor, ally.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.3f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
-
 		m_AlliesShapes.push_back(allyShape);
-		m_AlliesSprites.push_back(ally.m_Portrait);
-		m_AlliesSprites[index].setPosition(allyShape.getPosition());
+
+		sf::Sprite allySprite;
+		m_AlliesSprites.push_back(allySprite);
+		const char* portraitPath = ally.m_PortraitPath.c_str();
+		m_AlliesTextures.push_back(AssetHandler::get().getTextureAtPath(portraitPath));
+		setSprite(m_AlliesSprites[index], m_AlliesTextures[index], m_AlliesShapes[index].getPosition(), m_SpriteSize);
 	}
 }
 
@@ -526,6 +541,7 @@ void CharacterWindow::updateWars()
 	m_WarSprites.reserve(sizeWars);
 	m_WarDefenders.reserve(sizeWars);
 	m_WarAttackers.reserve(sizeWars);
+	m_WarTextures.reserve(sizeWars);
 	for (unsigned int index = 0; index < sizeWars; index++)
 	{
 		int warHandle = diplomacyManager.getWarHandlesOfCharacter(m_CurrentCharacter->m_CharacterID)[index];
@@ -545,11 +561,15 @@ void CharacterWindow::updateWars()
 		sf::RectangleShape warShape;
 		setShape(warShape, m_TransparentColor, opponent.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.4f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
 
-		m_WarShapes.push_back(warShape);
-		m_WarSprites.push_back(opponent.m_Portrait);
-		m_WarSprites[index].setPosition(warShape.getPosition());
+		m_WarShapes.push_back(warShape);;
 		m_WarDefenders.push_back(defenderID);
 		m_WarAttackers.push_back(attackerID);
+
+		sf::Sprite opponentSprite;
+		m_WarSprites.push_back(opponentSprite);
+		const char* portraitPath = opponent.m_PortraitPath.c_str();
+		m_WarTextures.push_back(AssetHandler::get().getTextureAtPath(portraitPath));
+		setSprite(m_WarSprites[index], m_WarTextures[index], m_WarShapes[index].getPosition(), m_SpriteSize);
 	}
 }
 
@@ -563,6 +583,7 @@ void CharacterWindow::updateTruces()
 	m_TruceShapes.reserve(numberOfTruces);
 	m_TruceSprites.reserve(numberOfTruces);
 	m_TruceIDs.reserve(numberOfTruces);
+	m_TruceTextures.reserve(numberOfTruces);
 	for (unsigned int index = 0; index < numberOfTruces; index++)
 	{
 		Truce truce = truces[index];
@@ -579,10 +600,14 @@ void CharacterWindow::updateTruces()
 		stream.clear();
 		
 		m_TruceTexts.push_back(truceText);
-		m_TruceShapes.push_back(truceShape);
-		m_TruceSprites.push_back(opponent.m_Portrait);
-		m_TruceSprites[index].setPosition(truceShape.getPosition());
+		m_TruceShapes.push_back(truceShape);;
 		m_TruceIDs.push_back(truce.m_TruceOpponent);
+
+		sf::Sprite opponentSprite;
+		m_TruceSprites.push_back(opponentSprite);
+		const char* portraitPath = opponent.m_PortraitPath.c_str();
+		m_TruceTextures.push_back(AssetHandler::get().getTextureAtPath(portraitPath));
+		setSprite(m_TruceSprites[index], m_TruceTextures[index], m_TruceShapes[index].getPosition(), m_SpriteSize);
 	}
 }
 
@@ -675,10 +700,14 @@ void CharacterWindow::updateInfo()
 		m_CharacterNameText.setFillColor(m_OwnerColor);
 		stream.str(std::string());
 		stream.clear();
-		
-		m_CharacterSprite = m_CurrentCharacter->m_Portrait;
-		m_CharacterSprite.setScale(0.25f, 0.25f);
-		m_CharacterSprite.setPosition({ m_SizeX * 0.1f, m_SpriteSize });
+
+		if (m_CurrentCharacterID != m_PreviousCharacterID)
+		{
+			m_PreviousCharacterID = m_CurrentCharacterID;
+			const char* portraitPath = m_CurrentCharacter->m_PortraitPath.c_str();
+			m_CurrentCharacterTexture = AssetHandler::get().getTextureAtPath(portraitPath);
+			setSprite(m_CharacterSprite, m_CurrentCharacterTexture, { m_SizeX * 0.1f, m_SpriteSize }, m_SpriteSize * 2);
+		}
 
 		Unit& unit = UnitManager::get().getUnitOfCharacter(m_CurrentCharacterID);
 		stream << unit.m_RepresentedForce << m_Dash << m_CurrentCharacter->m_MaxArmySize;

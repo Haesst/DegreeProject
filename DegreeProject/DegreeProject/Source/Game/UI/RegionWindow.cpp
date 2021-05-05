@@ -193,9 +193,9 @@ void RegionWindow::updateInfo()
 
 		m_WindowShape.setOutlineColor(m_OwnerColor);
 
-		m_CharacterSprite = character.m_Portrait;
-		m_CharacterSprite.setPosition(m_CharacterPosition);
-		m_CharacterSprite.setScale(m_PortraitScale, m_PortraitScale);
+		const char* portraitPath = character.m_PortraitPath.c_str();
+		m_CharacterTexture = AssetHandler::get().getTextureAtPath(portraitPath);
+		setSprite(m_CharacterSprite, m_CharacterTexture, m_CharacterPosition, m_SpriteSize);
 
 		std::stringstream stream;
 		stream << m_CurrentMapRegion->m_RegionTax;

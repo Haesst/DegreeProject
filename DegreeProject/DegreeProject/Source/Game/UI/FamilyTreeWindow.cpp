@@ -73,6 +73,7 @@ void FamilyTreeWindow::clearInfo()
 {
 	m_CharacterShapes.clear();
 	m_CharacterSprites.clear();
+	m_CharacterTextures.clear();
 	m_CharacterIDs.clear();
 	m_CharacterInfo.clear();
 	m_ShowCharacterInfo.clear();
@@ -250,10 +251,10 @@ void FamilyTreeWindow::setFamilyMember(CharacterID& characterID, unsigned int de
 		characterTitle += (unsigned int)Title::Unlanded + 1;
 	}
 
+	const char* portraitPath = character.m_PortraitPath.c_str();
+	m_CharacterTextures.push_back(AssetHandler::get().getTextureAtPath(portraitPath));
 	sf::Sprite characterSprite;
-	characterSprite = character.m_Portrait;
-	characterSprite.setPosition(characterShape.getPosition());
-	characterSprite.setScale(m_PortraitScale, m_PortraitScale);
+	setSprite(characterSprite, m_CharacterTextures.back(), characterShape.getPosition(), m_SpriteSize);
 	m_CharacterSprites.push_back(characterSprite);
 
 	std::stringstream stream;

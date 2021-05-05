@@ -62,6 +62,7 @@ public:
 	std::vector<sf::Text> m_CharacterInfo = std::vector<sf::Text>();
 	std::vector<bool> m_ShowCharacterInfo = std::vector<bool>();
 	std::vector<sf::Sprite> m_CharacterDeadSprites = std::vector<sf::Sprite>();
+	std::vector<sf::Texture> m_CharacterTextures = std::vector<sf::Texture>();
 
 	const float m_PortraitScale = 0.125f;
 	sf::Texture m_DeadTexture;

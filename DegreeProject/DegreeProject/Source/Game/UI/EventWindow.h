@@ -63,12 +63,14 @@ public:
 	sf::Sprite m_InstigatorSprite;
 	sf::Color m_InstigatorColor = sf::Color::Black;
 	sf::Vector2f m_InstigatorPosition;
+	sf::Texture m_InstigatorTexture;
 
 	CharacterID m_SubjectID = INVALID_CHARACTER_ID;
 	sf::RectangleShape m_SubjectShape;
 	sf::Sprite m_SubjectSprite;
 	sf::Color m_SubjectColor = sf::Color::Black;
 	sf::Vector2f m_SubjectPosition;
+	sf::Texture m_SubjectTexture;
 
 	sf::Texture m_MessageTypeTexture;
 	sf::Sprite m_MessageTypeSprite;

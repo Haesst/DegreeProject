@@ -54,6 +54,7 @@ public:
 	sf::Texture m_RaiseArmyTexture;
 	sf::Sprite m_RaiseArmySprite;
 	sf::Sprite m_CharacterSprite;
+	sf::Texture m_CharacterTexture;
 	const float m_PortraitScale = 0.25f;
 
 	sf::Sprite m_RegionManpowerSprite;

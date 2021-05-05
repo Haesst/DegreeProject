@@ -29,4 +29,18 @@ namespace CharacterConstants
 
 	static const float m_InheritTraitChance = 0.4f;
 	static const float m_NewTraitChance = 0.05f;
+
+	static const char* m_MalePortraitPath = "Assets/Graphics/Portraits/Male/(";
+	static const char* m_FemalePortraitPath = "Assets/Graphics/Portraits/Female/(";
+	static const char* m_YoungMalePortraitPath = "Assets/Graphics/Portraits/Male/Young(";
+	static const char* m_YoungFemalePortraitPath = "Assets/Graphics/Portraits/Female/Young(";
+	static const char* m_ChildMalePortraitPath = "Assets/Graphics/Portraits/Male/Child(";
+	static const char* m_ChildFemalePortraitPath = "Assets/Graphics/Portraits/Female/Child(";
+	static const char* m_PortraitPathEnding = ").png";
+	static const unsigned int m_NumberOfFemalePortraits = 121;
+	static const unsigned int m_NumberOfMalePortraits = 151;
+	static const unsigned int m_NumberOfYoungFemalePortraits = 121;
+	static const unsigned int m_NumberOfYoungMalePortraits = 151;
+	static const unsigned int m_NumberOfChildFemalePortraits = 121;
+	static const unsigned int m_NumberOfChildMalePortraits = 151;
 }

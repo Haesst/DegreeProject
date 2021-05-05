@@ -73,22 +73,26 @@ public:
 
 	std::vector<sf::RectangleShape> m_ChildrenShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_ChildrenSprites = std::vector<sf::Sprite>();
+	std::vector<sf::Texture> m_ChildrenTextures = std::vector<sf::Texture>();
 
 	std::vector<sf::RectangleShape> m_AlliesShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_AlliesSprites = std::vector<sf::Sprite>();
 	std::vector<Vector2DInt> m_AlliesPositions = std::vector<Vector2DInt>();
 	std::vector<CharacterID> m_AlliesIDs = std::vector<CharacterID>();
+	std::vector<sf::Texture> m_AlliesTextures = std::vector<sf::Texture>();
 
 	std::vector<sf::RectangleShape> m_WarShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_WarSprites = std::vector<sf::Sprite>();
 	std::vector<Vector2DInt> m_WarPositions = std::vector<Vector2DInt>();
 	std::vector<CharacterID> m_WarDefenders = std::vector<CharacterID>();
 	std::vector<CharacterID> m_WarAttackers = std::vector<CharacterID>();
+	std::vector<sf::Texture> m_WarTextures = std::vector<sf::Texture>();
 
 	std::vector<sf::RectangleShape> m_TruceShapes = std::vector<sf::RectangleShape>();
 	std::vector<sf::Sprite> m_TruceSprites = std::vector<sf::Sprite>();
 	std::vector<sf::Text> m_TruceTexts = std::vector<sf::Text>();
 	std::vector<CharacterID> m_TruceIDs = std::vector<CharacterID>();
+	std::vector<sf::Texture> m_TruceTextures = std::vector<sf::Texture>();
 
 	const unsigned int m_NumberOfTraits = 8;
 	std::vector<sf::Texture> m_TraitTextures = std::vector<sf::Texture>();
@@ -136,6 +140,7 @@ public:
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	unsigned int m_CurrentWars = 0;
 
+	CharacterID m_PreviousCharacterID = INVALID_CHARACTER_ID;
 	sf::Texture m_CurrentCharacterTexture;
 	sf::Sprite m_CharacterSprite;
 	const static int m_SpriteSize = 32;

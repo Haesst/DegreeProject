@@ -352,7 +352,7 @@ void WarWindow::handleWindow()
 	}
 }
 
-void WarWindow::updateWarParticipants(CharacterID& mainParticipantID, CharacterID& participantID, std::vector<CharacterID>& participantsIDs, std::vector<sf::RectangleShape>& participantsShapes, std::vector<sf::Sprite>& participantsSprites, sf::Vector2f& mainParticipantPosition, sf::Vector2f& participantPosition, unsigned int& index)
+void WarWindow::updateWarParticipants(CharacterID& mainParticipantID, CharacterID& participantID, std::vector<CharacterID>& participantsIDs, std::vector<sf::RectangleShape>& participantsShapes, std::vector<sf::Sprite>& participantsSprites, std::vector<sf::Texture>& participantsTextures, sf::Vector2f& mainParticipantPosition, sf::Vector2f& participantPosition, unsigned int& index)
 {
 	Character& participant = CharacterManager::get().getCharacter(participantID);
 
@@ -364,8 +364,6 @@ void WarWindow::updateWarParticipants(CharacterID& mainParticipantID, CharacterI
 	sf::Vector2f shapeSize;
 	float outlineThickness = 0.0f;
 
-	sf::RectangleShape shape;
-	sf::Sprite sprite;
 	sf::Vector2f shapePosition = mainParticipantPosition;
 	if (participantID == mainParticipantID)
 	{
@@ -386,13 +384,15 @@ void WarWindow::updateWarParticipants(CharacterID& mainParticipantID, CharacterI
 	}
 	shapeSize = { m_SpriteSize * sizeMultiplier, m_SpriteSize * sizeMultiplier };
 	outlineThickness = m_OutlineThickness * 0.25f * sizeMultiplier;
+	sf::RectangleShape shape;
 	setShape(shape, m_TransparentColor, participant.m_RegionColor, outlineThickness, shapeSize, shapePosition);
-	sprite = participant.m_Portrait;
-	sprite.setPosition(shape.getPosition());
-	sprite.setScale(m_PortraitScale * sizeMultiplier, m_PortraitScale * sizeMultiplier);
-
 	participantsShapes.push_back(shape);
+
+	sf::Sprite sprite;
 	participantsSprites.push_back(sprite);
+	const char* portraitPath = participant.m_PortraitPath.c_str();
+	participantsTextures.push_back(AssetHandler::get().getTextureAtPath(portraitPath));
+	setSprite(participantsSprites[index], participantsTextures[index], participantsShapes[index].getPosition(), m_SpriteSize * sizeMultiplier);
 }
 
 void WarWindow::openWindow(CharacterID mainAttackerID, CharacterID mainDefenderID, Date startDate)
@@ -407,13 +407,13 @@ void WarWindow::openWindow(CharacterID mainAttackerID, CharacterID mainDefenderI
 			unsigned int index = 0;
 			for (CharacterID attackerID : m_War->m_Attackers)
 			{
-				updateWarParticipants(mainAttackerID, attackerID, m_AttackerCharacterIDs, m_AttackerCharacterShapes, m_AttackerCharacterSprites, m_AttackerPosition, m_AttackerAlliesTextPosition, index);
+				updateWarParticipants(mainAttackerID, attackerID, m_AttackerCharacterIDs, m_AttackerCharacterShapes, m_AttackerCharacterSprites, m_AttackerCharacterTextures, m_AttackerPosition, m_AttackerAlliesTextPosition, index);
 				index++;
 			}
 			index = 0;
 			for (CharacterID defenderID : m_War->m_Defenders)
 			{
-				updateWarParticipants(mainDefenderID, defenderID, m_DefenderCharacterIDs, m_DefenderCharacterShapes, m_DefenderCharacterSprites, m_DefenderPosition, m_DefenderAlliesTextPosition, index);
+				updateWarParticipants(mainDefenderID, defenderID, m_DefenderCharacterIDs, m_DefenderCharacterShapes, m_DefenderCharacterSprites, m_DefenderCharacterTextures, m_DefenderPosition, m_DefenderAlliesTextPosition, index);
 				index++;
 			}
 			updateInfo();
@@ -433,10 +433,12 @@ void WarWindow::closeWindow()
 		m_DefenderCharacterIDs.clear();
 		m_DefenderCharacterShapes.clear();
 		m_DefenderCharacterSprites.clear();
+		m_DefenderCharacterTextures.clear();
 
 		m_AttackerCharacterIDs.clear();
 		m_AttackerCharacterShapes.clear();
 		m_AttackerCharacterSprites.clear();
+		m_AttackerCharacterTextures.clear();
 
 		m_WindowShape.setSize({  });
 		m_Visible = false;

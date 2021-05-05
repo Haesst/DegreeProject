@@ -35,13 +35,13 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 	m_PositionX = m_Window->getSize().x * 0.5f - m_OutlineThickness - m_SizeX * 0.5f;
 	m_PositionY = m_Window->getSize().y * 0.5f - m_OutlineThickness - m_SizeY * 0.5f;
 
-	m_SubjectSprite = subject.m_Portrait; 
-	m_SubjectSprite.setPosition({ m_PositionX + m_SizeX - m_SpriteSize * 1.5f, m_PositionY + m_SpriteSize * 0.5f });
-	m_SubjectSprite.setScale(m_PortraitScale, m_PortraitScale);
+	const char* subjectPortraitPath = subject.m_PortraitPath.c_str();
+	m_SubjectTexture = AssetHandler::get().getTextureAtPath(subjectPortraitPath);
+	setSprite(m_SubjectSprite, m_SubjectTexture, { m_PositionX + m_SizeX - m_SpriteSize * 1.5f, m_PositionY + m_SpriteSize * 0.5f }, m_SpriteSize);
 
-	m_InstigatorSprite = instigator.m_Portrait;
-	m_InstigatorSprite.setPosition({ m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 0.5f });
-	m_InstigatorSprite.setScale(m_PortraitScale, m_PortraitScale);
+	const char* instigatorPortraitPath = instigator.m_PortraitPath.c_str();
+	m_InstigatorTexture = AssetHandler::get().getTextureAtPath(instigatorPortraitPath);
+	setSprite(m_InstigatorSprite, m_InstigatorTexture, { m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 0.5f }, m_SpriteSize);
 
 	std::stringstream stream;
 	stream << instigator.m_Name;
