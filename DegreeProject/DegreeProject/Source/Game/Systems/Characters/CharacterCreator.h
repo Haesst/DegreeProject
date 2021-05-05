@@ -26,8 +26,8 @@ private:
 	const char* m_MalePath = "Male/(";
 	const char* m_FemalePath = "Female/(";
 	const char* m_PortraitPathEnding = ").png";
-	const unsigned int m_NumberOfFemalePortraits = 120;
-	const unsigned int m_NumberOfMalePortraits = 143;
+	const unsigned int m_NumberOfFemalePortraits = 121;
+	const unsigned int m_NumberOfMalePortraits = 151;
 	const unsigned int m_PortraitSize = 32;
 	std::vector<sf::Texture> m_MalePortraitTextures;
 	std::vector<sf::Texture> m_FemalePortraitTextures;

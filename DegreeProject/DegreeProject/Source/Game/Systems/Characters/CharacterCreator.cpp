@@ -215,11 +215,11 @@ void CharacterCreator::setRandomFemalePortrait(Character& character)
 	character.m_PortraitTexture = &m_FemalePortraitTextures[portraitIndex];
 	character.m_Portrait.setTexture(*character.m_PortraitTexture);
 	character.m_Portrait.setScale(m_PortraitSize / character.m_Portrait.getLocalBounds().width, m_PortraitSize / character.m_Portrait.getLocalBounds().height);
-	std::stringstream stream;
-	stream << m_PortraitPath << m_FemalePath << portraitIndex + 1 << m_PortraitPathEnding;
-	character.m_PortraitPath = stream.str().c_str();
-	stream.str(std::string());
-	stream.clear();
+	//std::stringstream stream;
+	//stream << m_PortraitPath << m_FemalePath << portraitIndex + 1 << m_PortraitPathEnding;
+	//character.m_PortraitPath = stream.str().c_str();
+	//stream.str(std::string());
+	//stream.clear();
 }
 
 void CharacterCreator::setRandomMalePortrait(Character& character)
@@ -228,9 +228,9 @@ void CharacterCreator::setRandomMalePortrait(Character& character)
 	character.m_PortraitTexture = &m_MalePortraitTextures[portraitIndex];
 	character.m_Portrait.setTexture(*character.m_PortraitTexture);
 	character.m_Portrait.setScale(m_PortraitSize / character.m_Portrait.getLocalBounds().width, m_PortraitSize / character.m_Portrait.getLocalBounds().height);
-	std::stringstream stream;
-	stream << m_PortraitPath << m_MalePath << portraitIndex + 1 << m_PortraitPathEnding;
-	character.m_PortraitPath = stream.str().c_str();
-	stream.str(std::string());
-	stream.clear();
+	//std::stringstream stream;
+	//stream << m_PortraitPath << m_MalePath << portraitIndex + 1 << m_PortraitPathEnding;
+	//character.m_PortraitPath = stream.str().c_str();
+	//stream.str(std::string());
+	//stream.clear();
 }

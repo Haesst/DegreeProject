@@ -448,15 +448,24 @@ void EventWindow::acceptRequest()
 			{
 				if (warManager.isAttacker(handle, m_InstigatorID))
 				{
-					warManager.addAttacker(handle, playerCharacter.m_CharacterID);
+					if (!warManager.isDefender(handle, playerCharacter.m_CharacterID) && !warManager.isAttacker(handle, playerCharacter.m_CharacterID)
+						&& !warManager.atWarWith(playerCharacter.m_CharacterID, warManager.getWar(handle)->m_Defenders.front())
+						&& !warManager.atWarWith(playerCharacter.m_CharacterID, warManager.getWar(handle)->m_Attackers.front()))
+					{
+						warManager.addAttacker(handle, playerCharacter.m_CharacterID);
+						UIManager::get().createWarIcon(warManager.getAttacker(handle), warManager.getDefender(handle));
+					}
 				}
-
 				else if (warManager.isDefender(handle, m_InstigatorID))
 				{
-					warManager.addDefender(handle, playerCharacter.m_CharacterID);
+					if (!warManager.isDefender(handle, playerCharacter.m_CharacterID) && !warManager.isAttacker(handle, playerCharacter.m_CharacterID)
+					 && !warManager.atWarWith(playerCharacter.m_CharacterID, warManager.getWar(handle)->m_Defenders.front())
+				   	 && !warManager.atWarWith(playerCharacter.m_CharacterID, warManager.getWar(handle)->m_Attackers.front()))
+					{
+						warManager.addDefender(handle, playerCharacter.m_CharacterID);
+						UIManager::get().createWarIcon(warManager.getAttacker(handle), warManager.getDefender(handle));
+					}
 				}
-
-				UIManager::get().createWarIcon(warManager.getAttacker(handle), warManager.getDefender(handle));
 			}
 			break;
 		}

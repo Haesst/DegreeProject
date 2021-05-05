@@ -59,7 +59,7 @@ struct Character
 	sf::Color m_ColorAtDeath = sf::Color::Black;
 	sf::Sprite m_Portrait;
 	sf::Texture* m_PortraitTexture;
-	const char* m_PortraitPath;
+	//const char* m_PortraitPath;
 
 	unsigned int m_DeadlyAge = 50;
 	unsigned int m_AgeMax = 100;

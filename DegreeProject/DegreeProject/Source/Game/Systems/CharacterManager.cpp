@@ -280,7 +280,9 @@ void CharacterManager::callAllies(CharacterID character, int war)
 			}
 		}
 	
-		else
+		else if (!warManager.isDefender(war, m_PlayerCharacterID) && !warManager.isAttacker(war, m_PlayerCharacterID) 
+			  && !warManager.atWarWith(m_PlayerCharacterID, warManager.getWar(war)->m_Defenders.front())
+			  && !warManager.atWarWith(m_PlayerCharacterID, warManager.getWar(war)->m_Attackers.front()))
 		{
 			UIManager::get().createUIEventElement(character, ID, UIType::CallToArmsRequest);
 		}
