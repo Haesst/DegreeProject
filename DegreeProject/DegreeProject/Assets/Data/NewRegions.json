@@ -538,5 +538,35 @@
 	"manPower": 60,
 	"capitalx" : 160,
 	"capitaly" : 30
+	},
+	{
+	"name": "Viennois",
+	"id": 55,
+	"mapchar": "*",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 50,
+	"capitalx" : 192,
+	"capitaly" : 17
+	},
+	{
+	"name": "Auvergne",
+	"id": 56,
+	"mapchar": "#",
+	"color": "Yellow",
+	"tax": 5,
+	"manPower": 30,
+	"capitalx" : 159,
+	"capitaly" : 19
+	},
+	{
+	"name": "Savoy",
+	"id": 57,
+	"mapchar": "%",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 30,
+	"capitalx" : 215,
+	"capitaly" : 17
 	}
 ]
