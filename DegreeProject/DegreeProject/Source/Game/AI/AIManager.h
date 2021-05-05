@@ -71,9 +71,13 @@ private:
 	std::vector<Personality> m_Personalities;
 	mutable std::mutex m_PersonalityMtx;
 
-	int m_tickRate1 = 547;
-	int m_tickRate2 = 811;
-	int m_tickRate3 = 1087;
-
+	int m_TickRate1 = 401;
+	int m_TickRate2 = 421;
+	int m_TickRate3 = 433;
+	int m_tickRate4 = 547;
+	int m_TickRate5 = 661;
+	int m_tickRate6 = 811;
+	int m_tickRate7 = 953;
+	int m_TickRate8 = 1087;
 	std::map<int, std::vector<AIData>> m_TickPrio;
 };

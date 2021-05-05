@@ -118,7 +118,7 @@ void AIManager::initAI(CharacterID ID)
 	data.m_CurrentAction = Action::NONE;
 	data.m_LastMarriageOfferDate = Time::m_GameDate.m_Date;
 
-	int randomTickRate = (rand() % 3) + 1;
+	int randomTickRate = (rand() % 8) + 1;
 	data.m_TickPrio = randomTickRate;
 
 	m_AIDatas.push_back(data);
@@ -347,7 +347,7 @@ void AIManager::update()
 		return;
 	}
 
-	if (Time::m_Ticks % m_tickRate1 == 1)
+	if (Time::m_Ticks % m_TickRate1 == 1)
 	{
 		for (auto& data : m_TickPrio[1])
 		{
@@ -355,7 +355,7 @@ void AIManager::update()
 		}
 	}
 
-	if (Time::m_Ticks % m_tickRate2 == 1)
+	if (Time::m_Ticks % m_TickRate2 == 1)
 	{
 		for (auto& data : m_TickPrio[2])
 		{
@@ -363,9 +363,49 @@ void AIManager::update()
 		}
 	}
 
-	if (Time::m_Ticks % m_tickRate3 == 1)
+	if (Time::m_Ticks % m_TickRate3 == 1)
 	{
 		for (auto& data : m_TickPrio[3])
+		{
+			UpdateAIData(characterManager, data, warManager);
+		}
+	}
+
+	if (Time::m_Ticks % m_tickRate4 == 1)
+	{
+		for (auto& data : m_TickPrio[4])
+		{
+			UpdateAIData(characterManager, data, warManager);
+		}
+	}
+
+	if (Time::m_Ticks % m_TickRate5 == 1)
+	{
+		for (auto& data : m_TickPrio[5])
+		{
+			UpdateAIData(characterManager, data, warManager);
+		}
+	}
+
+	if (Time::m_Ticks % m_tickRate6 == 1)
+	{
+		for (auto& data : m_TickPrio[6])
+		{
+			UpdateAIData(characterManager, data, warManager);
+		}
+	}
+
+	if (Time::m_Ticks % m_tickRate7 == 1)
+	{
+		for (auto& data : m_TickPrio[7])
+		{
+			UpdateAIData(characterManager, data, warManager);
+		}
+	}
+
+	if (Time::m_Ticks % m_TickRate8 == 1)
+	{
+		for (auto& data : m_TickPrio[8])
 		{
 			UpdateAIData(characterManager, data, warManager);
 		}

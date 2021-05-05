@@ -134,17 +134,17 @@ void Game::addEntitys()
 
 	m_UIFont = m_AssetHandler->loadFontFromFile("Assets/Fonts/TestFont.ttf");
 
-	std::vector<unsigned int> id0{ 1, 2, 3, 4, 5, 6, 7 };
+	std::vector<unsigned int> id0{ 1};
 	CharacterID char0 = createCharacter(id0, Title::King, Gender::Male, "Kingdom of Milano", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(181, 54, 107));
 	UIManager::get().createUITextElement(m_UIFont, char0, CharacterManager::get().getCharacter(char0).m_KingdomName, id0);
 	CharacterManager::get().addTrait(char0, CharacterManager::get().getTrait("Ugly"));
 	CharacterManager::get().addTrait(char0, CharacterManager::get().getTrait("Sterile"));
 
-	std::vector<unsigned int> id1{ 8, 9, 10, 11, 12 };
+	std::vector<unsigned int> id1{ 8};
 	CharacterID char1 = createCharacter(id1, Title::Emperor, Gender::Female, "Roman Empire", CharacterNamePool::getFemaleName(), 100, 10, false, sf::Color(54, 181, 105));
 	UIManager::get().createUITextElement(m_UIFont, char1, CharacterManager::get().getCharacter(char1).m_KingdomName, id1);
 
-	std::vector<unsigned int> id2{ 13, 14, 15, 16, 17 };
+	std::vector<unsigned int> id2{ 17 };
 	CharacterID char2 = createCharacter(id2, Title::King, Gender::Male, "Kingdom of Sicilies", CharacterNamePool::getMaleName(), 150, 15, true, sf::Color(200, 181, 105));
 	UIManager::get().createUITextElement(m_UIFont, char2, CharacterManager::get().getCharacter(char2).m_KingdomName, id2);
 
