@@ -186,8 +186,15 @@ void Player::tryToSelectUnit()
 		sf::Vector2f topLeftPosition = { firstX, firstY };
 
 		bool foundUnit = false;
-
-		unsigned int xPositions = (unsigned int)width;
+		CharacterID playerCharacterID = CharacterManager::get().getPlayerCharacterID();
+		Unit& unit = UnitManager::get().getUnitOfCharacter(playerCharacterID);
+		Vector2D unitPosition = unit.m_Position;
+		if (m_DragWindow.getGlobalBounds().contains(unitPosition.x, unitPosition.y))
+		{
+			selectUnit(unit.m_UnitID);
+			foundUnit = true;
+		}
+		/*unsigned int xPositions = (unsigned int)width;
 		unsigned int yPositions = (unsigned int)height;
 		for (unsigned int y = 0; y < yPositions; y += (int)Map::m_TileSize)
 		{
@@ -219,7 +226,7 @@ void Player::tryToSelectUnit()
 					}
 				}
 			}
-		}
+		}*/
 
 		if (!foundUnit)
 		{
