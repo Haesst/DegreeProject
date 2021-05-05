@@ -183,17 +183,18 @@ void Player::tryToSelectUnit()
 			firstY -= height;
 		}
 
-		sf::Vector2f topLeftPosition = { firstX, firstY };
-
 		bool foundUnit = false;
 		CharacterID playerCharacterID = CharacterManager::get().getPlayerCharacterID();
 		Unit& unit = UnitManager::get().getUnitOfCharacter(playerCharacterID);
-		Vector2D unitPosition = unit.m_Position;
+		Vector2D unitPosition = { unit.m_Position.x + unit.m_HighlightShapeSize.x * 0.5f, unit.m_Position.y + unit.m_HighlightShapeSize.y * 0.5f };
 		if (m_DragWindow.getGlobalBounds().contains(unitPosition.x, unitPosition.y))
 		{
 			selectUnit(unit.m_UnitID);
 			foundUnit = true;
 		}
+
+		//sf::Vector2f topLeftPosition = { firstX, firstY };
+
 		/*unsigned int xPositions = (unsigned int)width;
 		unsigned int yPositions = (unsigned int)height;
 		for (unsigned int y = 0; y < yPositions; y += (int)Map::m_TileSize)
