@@ -225,6 +225,14 @@ void Game::addEntitys()
 	addRandomEntityOwningRegion({ 55 });
 	addRandomEntityOwningRegion({ 56 });
 	addRandomEntityOwningRegion({ 57 });
+	addRandomEntityOwningRegion({ 58 });
+	addRandomEntityOwningRegion({ 59 });
+	addRandomEntityOwningRegion({ 60 });
+	addRandomEntityOwningRegion({ 61 });
+	addRandomEntityOwningRegion({ 62 });
+	addRandomEntityOwningRegion({ 63 });
+	addRandomEntityOwningRegion({ 64 });
+	addRandomEntityOwningRegion({ 65 });
 
 	//UI
 	Vector2D mainMenuPosition = { 960.0f, 540.0f };

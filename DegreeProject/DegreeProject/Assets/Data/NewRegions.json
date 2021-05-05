@@ -568,5 +568,85 @@
 	"manPower": 30,
 	"capitalx" : 215,
 	"capitaly" : 17
+	},
+	{
+	"name": "Barcelona",
+	"id": 58,
+	"mapchar": "&",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 60,
+	"capitalx" : 170,
+	"capitaly" : 47
+	},
+	{
+	"name": "Valencia",
+	"id": 59,
+	"mapchar": "/",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 80,
+	"capitalx" : 128,
+	"capitaly" : 68
+	},
+	{
+	"name": "Aragon",
+	"id": 60,
+	"mapchar": ")",
+	"color": "Yellow",
+	"tax": 3,
+	"manPower": 60,
+	"capitalx" : 119,
+	"capitaly" : 45
+	},
+	{
+	"name": "Viscaya",
+	"id": 61,
+	"mapchar": "=",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 20,
+	"capitalx" : 95,
+	"capitaly" : 29
+	},
+	{
+	"name": "Navarra",
+	"id": 62,
+	"mapchar": "?",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 40,
+	"capitalx" : 123,
+	"capitaly" : 33
+	},
+	{
+	"name": "Santabria",
+	"id": 63,
+	"mapchar": "@",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 20,
+	"capitalx" : 79,
+	"capitaly" : 27
+	},
+	{
+	"name": "Asturias",
+	"id": 64,
+	"mapchar": "\"",
+	"color": "Yellow",
+	"tax": 2,
+	"manPower": 30,
+	"capitalx" : 26,
+	"capitaly" : 65
+	},
+	{
+	"name": "Galicia",
+	"id": 65,
+	"mapchar": "'",
+	"color": "Yellow",
+	"tax": 4,
+	"manPower": 40,
+	"capitalx" : 26,
+	"capitaly" : 65
 	}
 ]
