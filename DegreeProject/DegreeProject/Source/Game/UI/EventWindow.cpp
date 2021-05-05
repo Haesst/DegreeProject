@@ -35,29 +35,15 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 	m_PositionX = m_Window->getSize().x * 0.5f - m_OutlineThickness - m_SizeX * 0.5f;
 	m_PositionY = m_Window->getSize().y * 0.5f - m_OutlineThickness - m_SizeY * 0.5f;
 
-	if (subject.m_Gender == Gender::Male)
-	{
-		m_SubjectTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harold.jpg");
-	}
-	else
-	{
-		m_SubjectTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harriet.jpg");
-	}
-	setSprite(m_SubjectSprite, m_SubjectTexture, { m_PositionX + m_SizeX - m_SpriteSize * 1.5f, m_PositionY + m_SpriteSize * 0.5f });
+	m_SubjectSprite = subject.m_Portrait; 
+	m_SubjectSprite.setPosition({ m_PositionX + m_SizeX - m_SpriteSize * 1.5f, m_PositionY + m_SpriteSize * 0.5f });
+	m_SubjectSprite.setScale(m_PortraitScale, m_PortraitScale);
+
+	m_InstigatorSprite = instigator.m_Portrait;
+	m_InstigatorSprite.setPosition({ m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 0.5f });
+	m_InstigatorSprite.setScale(m_PortraitScale, m_PortraitScale);
 
 	std::stringstream stream;
-	if (instigator.m_Gender == Gender::Male)
-	{
-		m_InstigatorTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harold.jpg");
-		stream << m_MaleTitles[(unsigned int)instigator.m_CharacterTitle];
-	}
-	else
-	{
-		m_InstigatorTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harriet.jpg");
-		stream << m_FemaleTitles[(unsigned int)instigator.m_CharacterTitle];
-	}
-	setSprite(m_InstigatorSprite, m_InstigatorTexture, { m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 0.5f });
-
 	stream << instigator.m_Name;
 	switch (m_MessageType)
 	{

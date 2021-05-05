@@ -63,11 +63,8 @@ public:
 	std::vector<bool> m_ShowCharacterInfo = std::vector<bool>();
 	std::vector<sf::Sprite> m_CharacterDeadSprites = std::vector<sf::Sprite>();
 
+	const float m_PortraitScale = 0.125f;
 	sf::Texture m_DeadTexture;
-	sf::Texture m_MaleChildTexture;
-	sf::Texture m_FemaleChildTexture;
-	sf::Texture m_MaleCharacterTexture;
-	sf::Texture m_FemaleCharacterTexture;
 
 	sf::Text m_WindowTitle;
 };

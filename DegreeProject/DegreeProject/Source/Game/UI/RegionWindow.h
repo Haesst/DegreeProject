@@ -53,9 +53,8 @@ public:
 	sf::Texture m_BuildingSlotTextures[NUMBER_OF_BUILDING_SLOTS];
 	sf::Texture m_RaiseArmyTexture;
 	sf::Sprite m_RaiseArmySprite;
-	sf::Texture m_MaleCharacterTexture;
-	sf::Texture m_FemaleCharacterTexture;
 	sf::Sprite m_CharacterSprite;
+	const float m_PortraitScale = 0.25f;
 
 	sf::Sprite m_RegionManpowerSprite;
 	sf::Text m_RegionManpowerText;

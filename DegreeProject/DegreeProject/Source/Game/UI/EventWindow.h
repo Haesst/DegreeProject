@@ -57,17 +57,18 @@ public:
 	std::vector<const char*> m_MaleTitles = { "Emperor ", "King ", "Duke ", "Count ", "Baron ", "Unlanded " };
 	std::vector<const char*> m_FemaleTitles = { "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness ", "Unlanded " };
 
+	const float m_PortraitScale = 0.25f;
 	CharacterID m_InstigatorID = INVALID_CHARACTER_ID;
 	sf::RectangleShape m_InstigatorShape;
-	sf::Texture m_InstigatorTexture;
 	sf::Sprite m_InstigatorSprite;
 	sf::Color m_InstigatorColor = sf::Color::Black;
+	sf::Vector2f m_InstigatorPosition;
 
 	CharacterID m_SubjectID = INVALID_CHARACTER_ID;
 	sf::RectangleShape m_SubjectShape;
-	sf::Texture m_SubjectTexture;
 	sf::Sprite m_SubjectSprite;
 	sf::Color m_SubjectColor = sf::Color::Black;
+	sf::Vector2f m_SubjectPosition;
 
 	sf::Texture m_MessageTypeTexture;
 	sf::Sprite m_MessageTypeSprite;

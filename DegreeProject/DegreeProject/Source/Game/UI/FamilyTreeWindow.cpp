@@ -24,12 +24,6 @@ FamilyTreeWindow::FamilyTreeWindow(UIID id, sf::Font font, Vector2D position, Ve
 
 	AssetHandler& assetHandler = AssetHandler::get();
 
-	m_MaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/MalePortrait.jpg");
-	m_FemaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/FemalePortrait.jpg");
-
-	m_MaleChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyMale.png");
-	m_FemaleChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyFemale.png");
-
 	m_DeadTexture = assetHandler.getTextureAtPath("Assets/Graphics/Dead.png");
 
 	clearInfo();
@@ -250,31 +244,18 @@ void FamilyTreeWindow::setFamilyMember(CharacterID& characterID, unsigned int de
 	sf::RectangleShape characterShape;
 	setShape(characterShape, m_TransparentColor, characterColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, characterPosition);
 	m_CharacterShapes.push_back(characterShape);
-	sf::Sprite characterSprite;
-	if (character.m_Gender == Gender::Male)
-	{
-		if (Time::m_GameDate.getAge(character.m_Birthday) < CharacterConstants::m_AgeOfConsent)
-		{
-			setSprite(characterSprite, m_MaleChildTexture, characterShape.getPosition());
-		}
-		else
-		{
-			setSprite(characterSprite, m_MaleCharacterTexture, characterShape.getPosition());
-		}
-	}
-	else
+
+	if (character.m_Gender == Gender::Female)
 	{
 		characterTitle += (unsigned int)Title::Unlanded + 1;
-		if (Time::m_GameDate.getAge(character.m_Birthday) < CharacterConstants::m_AgeOfConsent)
-		{
-			setSprite(characterSprite, m_FemaleChildTexture, characterShape.getPosition());
-		}
-		else
-		{
-			setSprite(characterSprite, m_FemaleCharacterTexture, characterShape.getPosition());
-		}
 	}
+
+	sf::Sprite characterSprite;
+	characterSprite = character.m_Portrait;
+	characterSprite.setPosition(characterShape.getPosition());
+	characterSprite.setScale(m_PortraitScale, m_PortraitScale);
 	m_CharacterSprites.push_back(characterSprite);
+
 	std::stringstream stream;
 	stream << /*m_CharacterTitles[characterTitle] <<*/ character.m_Name << "\n" << character.m_Birthday.m_Day << "-" << character.m_Birthday.m_Month << "-" << character.m_Birthday.m_Year;
 	if (character.m_Dead)

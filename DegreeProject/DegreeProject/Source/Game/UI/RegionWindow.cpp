@@ -33,9 +33,6 @@ void RegionWindow::start()
 	m_RaiseArmyTexture = assetHandler.getTextureAtPath("Assets/Graphics/soldier unit.png");
 	m_RegionTaxTexture = assetHandler.getTextureAtPath("Assets/Graphics/Coins.png");
 
-	m_MaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harold.jpg");
-	m_FemaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/Harriet.jpg");
-
 	m_IconSlotPositionX = m_SizeX - m_SpriteSize - m_OutlineThickness;
 	m_IconSlotPositionOffset = m_SpriteSize + m_OutlineThickness * 2;
 	m_IconSlotPositionY = m_Window->getSize().y - m_SpriteSize - m_OutlineThickness * 3;
@@ -196,14 +193,9 @@ void RegionWindow::updateInfo()
 
 		m_WindowShape.setOutlineColor(m_OwnerColor);
 
-		if (character.m_Gender == Gender::Male)
-		{
-			setSprite(m_CharacterSprite, m_MaleCharacterTexture, m_CharacterPosition);
-		}
-		else
-		{
-			setSprite(m_CharacterSprite, m_FemaleCharacterTexture, m_CharacterPosition);
-		}
+		m_CharacterSprite = character.m_Portrait;
+		m_CharacterSprite.setPosition(m_CharacterPosition);
+		m_CharacterSprite.setScale(m_PortraitScale, m_PortraitScale);
 
 		std::stringstream stream;
 		stream << m_CurrentMapRegion->m_RegionTax;

@@ -23,7 +23,7 @@ public:
 	void closeWindow();
 
 private:
-	void updateWarParticipants(CharacterID& mainParticipantID, CharacterID& participantID, std::vector<CharacterID>& participantsIDs, std::vector<sf::RectangleShape>& participantsShapes, std::vector<sf::Sprite>& participantsSprites, sf::Texture& mainParticipantTexture, sf::Texture& participantTexture, sf::Vector2f& mainParticipantPosition, sf::Vector2f& participantPosition, unsigned int& index);
+	void updateWarParticipants(CharacterID& mainParticipantID, CharacterID& participantID, std::vector<CharacterID>& participantsIDs, std::vector<sf::RectangleShape>& participantsShapes, std::vector<sf::Sprite>& participantsSprites, sf::Vector2f& mainParticipantPosition, sf::Vector2f& participantPosition, unsigned int& index);
 	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
 	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string = "");
 	void setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize = m_SpriteSize);
@@ -38,7 +38,7 @@ private:
 	sf::RenderWindow* m_Window = nullptr;
 	War* m_War = nullptr;
 	int m_DaySubscriptionHandle = 0;
-
+	const float m_PortraitScale = 0.125f;
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	float m_SizeX = 1900.0f;
 	float m_SizeY = 300.0f;
@@ -62,10 +62,6 @@ private:
 
 	const char* m_MaleTitles[(unsigned int)Title::Baron + 1] = { "Emperor ", "King ", "Duke ", "Count ", "Baron " };
 	const char* m_FemaleTitles[(unsigned int)Title::Baron + 1] = { "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness " };
-	sf::Texture m_MaleCharacterTexture;
-	sf::Texture m_FemaleCharacterTexture;
-	sf::Texture m_YoungMaleCharacterTexture;
-	sf::Texture m_YoungFemaleCharacterTexture;
 
 	sf::Texture m_ArmyTexture;
 	sf::Sprite m_AttackerArmySprite;
