@@ -2242,11 +2242,6 @@
                     "Name" = "8:Microsoft .NET Framework 4.7.2 (x86 and x64)"
                     "ProductCode" = "8:.NETFramework,Version=v4.7.2"
                     }
-                    "{EDC2488A-8267-493A-A98E-7D9C3B36CDF3}:Microsoft.Visual.C++.14.0.x64"
-                    {
-                    "Name" = "8:Visual C++ \"14\" Runtime Libraries (x64)"
-                    "ProductCode" = "8:Microsoft.Visual.C++.14.0.x64"
-                    }
                 }
             }
         }
@@ -9661,7 +9656,7 @@
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:Mare Nostrum"
         "ProductCode" = "8:{03583739-FDD9-44C7-BB84-4D19A74974C1}"
-        "PackageCode" = "8:{92A4C2D1-5B68-49B1-BC3B-41D57D6033AF}"
+        "PackageCode" = "8:{104A355E-50D3-43AB-94B7-D064CEF9DA97}"
         "UpgradeCode" = "8:{F69364D1-1B42-4FA1-81DB-7D3540A105C8}"
         "AspNetVersion" = "8:2.0.50727.0"
         "RestartWWWService" = "11:FALSE"
@@ -9995,7 +9990,7 @@
                 {
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_3CD27DF6CC0E4699BE73AD8E7B48A563"
                     {
-                    "Sequence" = "3:300"
+                    "Sequence" = "3:400"
                     "DisplayName" = "8:Confirm Installation"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
@@ -10017,7 +10012,7 @@
                     }
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_4C141A4EC9204DFDAB26FB732DDFDB47"
                     {
-                    "Sequence" = "3:100"
+                    "Sequence" = "3:200"
                     "DisplayName" = "8:Welcome"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"
@@ -10032,7 +10027,8 @@
                             "Type" = "3:8"
                             "ContextData" = "8:Bitmap"
                             "Attributes" = "3:4"
-                            "Setting" = "3:1"
+                            "Setting" = "3:2"
+                            "Value" = "8:_CA063D64CEDF4885B62F23733B64194E"
                             "UsePlugInResources" = "11:TRUE"
                             }
                             "CopyrightWarning"
@@ -10043,8 +10039,8 @@
                             "Type" = "3:3"
                             "ContextData" = "8:"
                             "Attributes" = "3:0"
-                            "Setting" = "3:1"
-                            "Value" = "8:#1202"
+                            "Setting" = "3:2"
+                            "Value" = "8:"
                             "DefaultValue" = "8:#1202"
                             "UsePlugInResources" = "11:TRUE"
                             }
@@ -10063,45 +10059,9 @@
                             }
                         }
                     }
-                    "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_ACC8129DB40B411283A64FFA05322FB7"
-                    {
-                    "Sequence" = "3:400"
-                    "DisplayName" = "8:Splash"
-                    "UseDynamicProperties" = "11:TRUE"
-                    "IsDependency" = "11:FALSE"
-                    "SourcePath" = "8:<VsdDialogDir>\\VsdSplashDlg.wid"
-                        "Properties"
-                        {
-                            "SplashBitmap"
-                            {
-                            "Name" = "8:SplashBitmap"
-                            "DisplayName" = "8:#1013"
-                            "Description" = "8:#1113"
-                            "Type" = "3:8"
-                            "ContextData" = "8:Bitmap"
-                            "Attributes" = "3:0"
-                            "Setting" = "3:2"
-                            "Value" = "8:_AB53DF07600D4360B5FC0DC8008A9A63"
-                            "UsePlugInResources" = "11:TRUE"
-                            }
-                            "Sunken"
-                            {
-                            "Name" = "8:Sunken"
-                            "DisplayName" = "8:#1007"
-                            "Description" = "8:#1107"
-                            "Type" = "3:5"
-                            "ContextData" = "8:4;True=4;False=0"
-                            "Attributes" = "3:0"
-                            "Setting" = "3:0"
-                            "Value" = "3:4"
-                            "DefaultValue" = "3:4"
-                            "UsePlugInResources" = "11:TRUE"
-                            }
-                        }
-                    }
                     "{688940B3-5CA9-4162-8DEE-2993FA9D8CBC}:_E437E6610EFD4F6C8F4F5577E1B7B61C"
                     {
-                    "Sequence" = "3:200"
+                    "Sequence" = "3:300"
                     "DisplayName" = "8:Installation Folder"
                     "UseDynamicProperties" = "11:TRUE"
                     "IsDependency" = "11:FALSE"

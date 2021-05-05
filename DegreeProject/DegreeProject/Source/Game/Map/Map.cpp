@@ -243,20 +243,6 @@ void Map::render()
 	renderSquares(m_MountainVertexArray, m_MountainBaseColor, m_MountainAlternateColor, m_Data.m_LandTexture, false);
 	renderSquares(m_UnreachableVertexArray, m_UnreachableLandColor, m_UnreachableLandColor, m_Data.m_LandTexture, false);
 
-	for (auto& region : m_Data.m_Regions)
-	{
-		sf::Color occupiedColor = region.m_HighlightColor;
-
-		if (region.m_OccupiedBy != INVALID_CHARACTER_ID)
-		{
-			occupiedColor = CharacterManager::get().getCharacter(region.m_OccupiedBy).m_RegionColor;
-		}
-
-		renderSquares(region.m_VertexArray, region.m_HighlightColor, occupiedColor, m_Data.m_LandTexture, region.m_Highlighted);
-		
-		HeraldicShieldManager::renderShield(region.m_HeraldicShield, convertToScreen(region.m_RegionCapital) + Vector2D(0.0f, -32.0f));
-	}
-
 	m_WaveTime += Time::deltaTime() * m_WaveDirection;
 
 	if (m_WaveTime >= 10.0f)
@@ -273,8 +259,22 @@ void Map::render()
 	m_Data.m_WaterShader.setUniform("u_Wave_Speed", m_WaveSpeed);
 	m_Data.m_WaterShader.setUniform("u_Zoom_Level", m_WaveZoomLevel);
 	m_Data.m_WaterShader.setUniform("u_Color", sf::Glsl::Vec4( m_WaterBaseColor));
-
 	Window::getWindow()->draw(m_WaterVertexArray, m_Data.m_WaterRenderStates);
+
+	for (auto& region : m_Data.m_Regions)
+	{
+		sf::Color occupiedColor = region.m_HighlightColor;
+
+		if (region.m_OccupiedBy != INVALID_CHARACTER_ID)
+		{
+			occupiedColor = CharacterManager::get().getCharacter(region.m_OccupiedBy).m_RegionColor;
+		}
+
+		renderSquares(region.m_VertexArray, region.m_HighlightColor, occupiedColor, m_Data.m_LandTexture, region.m_Highlighted);
+
+		HeraldicShieldManager::renderShield(region.m_HeraldicShield, convertToScreen(region.m_RegionCapital) + Vector2D(0.0f, -32.0f));
+	}
+
 }
 
 void Map::renderSquares(const sf::VertexArray& vertexArray, const sf::Color& color, const sf::Color& highlightColor, const sf::Texture& texture, const bool& highlighted)
