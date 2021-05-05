@@ -91,8 +91,6 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 
 	setText(m_RealmNameText, m_Font, m_CharacterSize, m_OwnerColor, { m_SizeX * 0.25f, m_SpriteSize * 2 });
 
-	m_MaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/MalePortrait.jpg");
-	m_FemaleCharacterTexture = assetHandler.getTextureAtPath("Assets/Graphics/FemalePortrait.jpg");
 	setText(m_CharacterNameText, m_Font, (unsigned int)(m_CharacterSize * 1.5f), m_OwnerColor, { m_SizeX * 0.25f, m_SpriteSize * 0.75f });
 
 	m_MaleChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyMale.png");
@@ -461,6 +459,9 @@ void CharacterWindow::updateChildren()
 {
 	CharacterManager& characterManager = CharacterManager::get();
 	unsigned int sizeChildren = m_CurrentCharacter->m_Children.size();
+	m_ChildrenShapes.reserve(sizeChildren);
+	m_ChildrenNames.reserve(sizeChildren);
+	m_ChildrenSprites.reserve(sizeChildren);
 	for (unsigned int index = 0; index < sizeChildren; index++)
 	{
 		Character& child = characterManager.getCharacter(m_CurrentCharacter->m_Children[index]);
@@ -489,19 +490,10 @@ void CharacterWindow::updateChildren()
 			childNameText.setFillColor(motherChild.m_RegionColor);
 		}
 
-		sf::Sprite childSprite;
-		if (child.m_Gender == Gender::Male)
-		{
-			setSprite(childSprite, m_MaleChildTexture, childShape.getPosition());
-		}
-		else
-		{
-			setSprite(childSprite, m_FemaleChildTexture, childShape.getPosition());
-		}
-
 		m_ChildrenShapes.push_back(childShape);
-		m_ChildrenSprites.push_back(childSprite);
 		m_ChildrenNames.push_back(childNameText);
+		m_ChildrenSprites.push_back(child.m_Portrait);
+		m_ChildrenSprites[index].setPosition(childShape.getPosition());
 	}
 }
 
@@ -510,6 +502,8 @@ void CharacterWindow::updateAllies()
 	CharacterManager& characterManager = CharacterManager::get();
 	m_AlliesIDs = DiplomacyManager::get().getAlliances(m_CurrentCharacterID);
 	unsigned int sizeAlliances = m_AlliesIDs.size();
+	m_AlliesShapes.reserve(sizeAlliances);
+	m_AlliesSprites.reserve(sizeAlliances);
 	for (unsigned int index = 0; index < sizeAlliances; index++)
 	{
 		Character& ally = characterManager.getCharacter(m_AlliesIDs[index]);
@@ -517,18 +511,9 @@ void CharacterWindow::updateAllies()
 		sf::RectangleShape allyShape;
 		setShape(allyShape, m_TransparentColor, ally.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.3f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
 
-		sf::Sprite allySprite;
-		if (ally.m_Gender == Gender::Male)
-		{
-			setSprite(allySprite, m_MaleCharacterTexture, allyShape.getPosition());
-		}
-		else
-		{
-			setSprite(allySprite, m_FemaleCharacterTexture, allyShape.getPosition());
-		}
-
 		m_AlliesShapes.push_back(allyShape);
-		m_AlliesSprites.push_back(allySprite);
+		m_AlliesSprites.push_back(ally.m_Portrait);
+		m_AlliesSprites[index].setPosition(allyShape.getPosition());
 	}
 }
 
@@ -537,6 +522,10 @@ void CharacterWindow::updateWars()
 	CharacterManager& characterManager = CharacterManager::get();
 	DiplomacyManager& diplomacyManager = DiplomacyManager::get();
 	unsigned int sizeWars = diplomacyManager.getWarHandlesOfCharacter(m_CurrentCharacterID).size();
+	m_WarShapes.reserve(sizeWars);
+	m_WarSprites.reserve(sizeWars);
+	m_WarDefenders.reserve(sizeWars);
+	m_WarAttackers.reserve(sizeWars);
 	for (unsigned int index = 0; index < sizeWars; index++)
 	{
 		int warHandle = diplomacyManager.getWarHandlesOfCharacter(m_CurrentCharacter->m_CharacterID)[index];
@@ -556,18 +545,9 @@ void CharacterWindow::updateWars()
 		sf::RectangleShape warShape;
 		setShape(warShape, m_TransparentColor, opponent.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.4f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
 
-		sf::Sprite opponetSprite;
-		if (opponent.m_Gender == Gender::Male)
-		{
-			setSprite(opponetSprite, m_MaleCharacterTexture, warShape.getPosition());
-		}
-		else
-		{
-			setSprite(opponetSprite, m_FemaleCharacterTexture, warShape.getPosition());
-		}
-
 		m_WarShapes.push_back(warShape);
-		m_WarSprites.push_back(opponetSprite);
+		m_WarSprites.push_back(opponent.m_Portrait);
+		m_WarSprites[index].setPosition(warShape.getPosition());
 		m_WarDefenders.push_back(defenderID);
 		m_WarAttackers.push_back(attackerID);
 	}
@@ -579,6 +559,10 @@ void CharacterWindow::updateTruces()
 	DiplomacyManager& diplomacyManager = DiplomacyManager::get();
 	std::vector<Truce> truces = diplomacyManager.getTruces(m_CurrentCharacterID);
 	unsigned int numberOfTruces = truces.size();
+	m_TruceTexts.reserve(numberOfTruces);
+	m_TruceShapes.reserve(numberOfTruces);
+	m_TruceSprites.reserve(numberOfTruces);
+	m_TruceIDs.reserve(numberOfTruces);
 	for (unsigned int index = 0; index < numberOfTruces; index++)
 	{
 		Truce truce = truces[index];
@@ -587,15 +571,6 @@ void CharacterWindow::updateTruces()
 		sf::RectangleShape truceShape;
 		setShape(truceShape, m_TransparentColor, opponent.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.6f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
 
-		sf::Sprite opponetSprite;
-		if (opponent.m_Gender == Gender::Male)
-		{
-			setSprite(opponetSprite, m_MaleCharacterTexture, truceShape.getPosition());
-		}
-		else
-		{
-			setSprite(opponetSprite, m_FemaleCharacterTexture, truceShape.getPosition());
-		}
 		sf::Text truceText;
 		std::stringstream stream;
 		stream << truce.m_StartDate.m_Day << m_Dash << truce.m_StartDate.m_Month + 1 << m_Dash << truce.m_StartDate.m_Year + truce.m_TruceTime;
@@ -605,7 +580,8 @@ void CharacterWindow::updateTruces()
 		
 		m_TruceTexts.push_back(truceText);
 		m_TruceShapes.push_back(truceShape);
-		m_TruceSprites.push_back(opponetSprite);
+		m_TruceSprites.push_back(opponent.m_Portrait);
+		m_TruceSprites[index].setPosition(truceShape.getPosition());
 		m_TruceIDs.push_back(truce.m_TruceOpponent);
 	}
 }
@@ -683,7 +659,6 @@ void CharacterWindow::updateInfo()
 			{
 				stream << m_MaleTitles[(unsigned int)m_CurrentCharacter->m_CharacterTitle] << m_CurrentCharacter->m_Name;
 			}
-			setSprite(m_CharacterSprite, m_MaleCharacterTexture, { m_SizeX * 0.1f, m_SpriteSize }, m_SpriteSize * 2);
 		}
 		else
 		{
@@ -695,12 +670,15 @@ void CharacterWindow::updateInfo()
 			{
 				stream << m_FemaleTitles[(unsigned int)m_CurrentCharacter->m_CharacterTitle] << m_CurrentCharacter->m_Name;
 			}
-			setSprite(m_CharacterSprite, m_FemaleCharacterTexture, { m_SizeX * 0.1f, m_SpriteSize }, m_SpriteSize * 2);
 		}
 		m_CharacterNameText.setString(stream.str());
 		m_CharacterNameText.setFillColor(m_OwnerColor);
 		stream.str(std::string());
 		stream.clear();
+		
+		m_CharacterSprite = m_CurrentCharacter->m_Portrait;
+		m_CharacterSprite.setScale(0.25f, 0.25f);
+		m_CharacterSprite.setPosition({ m_SizeX * 0.1f, m_SpriteSize });
 
 		Unit& unit = UnitManager::get().getUnitOfCharacter(m_CurrentCharacterID);
 		stream << unit.m_RepresentedForce << m_Dash << m_CurrentCharacter->m_MaxArmySize;

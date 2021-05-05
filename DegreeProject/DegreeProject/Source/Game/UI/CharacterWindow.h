@@ -136,8 +136,7 @@ public:
 	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	unsigned int m_CurrentWars = 0;
 
-	sf::Texture m_MaleCharacterTexture;
-	sf::Texture m_FemaleCharacterTexture;
+	sf::Texture m_CurrentCharacterTexture;
 	sf::Sprite m_CharacterSprite;
 	const static int m_SpriteSize = 32;
 	sf::Vector2f m_CharacterPosition;
