@@ -52,6 +52,7 @@ void Game::run()
 	UIManager::get().m_MiniMap->setGameView(&view);
 	UIManager::get().m_MiniMap->setUIView(&uiView);
 
+	Time::pauseGame();
 	while (internalWindow->isOpen())
 	{
 		// Time
@@ -69,7 +70,7 @@ void Game::run()
 		UIManager::get().update();
 
 		// Render
-		Window::getWindow()->clear(sf::Color::Blue);
+		Window::getWindow()->clear(sf::Color::Black);
 
 		// Render map
 		Map::get().render();
