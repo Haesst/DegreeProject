@@ -49,14 +49,11 @@ void DiplomacyManager::endWar(int warHandle, CharacterID winner)
 		if (!CharacterManager::get().getCharacter(getAttacker(warHandle)).m_IsPlayerControlled)
 		{
 			AIManager::get().getAIDataofCharacter(getAttacker(warHandle)).m_CurrentAction = Action::NONE;
-			AIManager::get().getWarmindOfCharacter(getAttacker(warHandle)).m_PrioritizedWarHandle = -1;
-
 		}
 
 		if (!CharacterManager::get().getCharacter(getDefender(warHandle)).m_IsPlayerControlled)
 		{
 			AIManager::get().getAIDataofCharacter(getDefender(warHandle)).m_CurrentAction = Action::NONE;
-			AIManager::get().getWarmindOfCharacter(getDefender(warHandle)).m_PrioritizedWarHandle = -1;
 		}
 	}
 
