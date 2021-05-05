@@ -636,8 +636,8 @@
 	"color": "Yellow",
 	"tax": 2,
 	"manPower": 30,
-	"capitalx" : 26,
-	"capitaly" : 65
+	"capitalx" : 64,
+	"capitaly" : 26
 	},
 	{
 	"name": "Galicia",
@@ -646,7 +646,7 @@
 	"color": "Yellow",
 	"tax": 4,
 	"manPower": 40,
-	"capitalx" : 26,
-	"capitaly" : 65
+	"capitalx" : 30,
+	"capitaly" : 24
 	}
 ]
