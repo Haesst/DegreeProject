@@ -90,7 +90,9 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Alliance.png");
 			stream.str(std::string());
 			stream.clear();
-			stream << "You're alliance with " << subject.m_Name << " is broken.";
+			stream << "Your alliance with\n";
+			writeTitle(subject, stream);
+			stream << subject.m_Name << "\nis broken.";
 			break;
 		}
 		case UIType::CallToArmsRequest:
@@ -121,7 +123,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Peace.png");
 			if (m_MessageType == UIType::PeaceRequestEnforce)
 			{
-				stream << "\nwants you to surrender.\n\n               Do you accept?";
+				stream << "\nis enforcing their demands.\nYou have no choice but to accept.";
 			}
 			else if (m_MessageType == UIType::PeaceRequestWhite)
 			{
@@ -150,14 +152,9 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			{
 				if (instigatorID == playerCharacter.m_CharacterID)
 				{
-					if (subject.m_Gender == Gender::Male)
-					{
-						stream << "\ndeclared war on\n" << m_MaleTitles[(unsigned int)subject.m_CharacterTitle] << subject.m_Name << "!";
-					}
-					else
-					{
-						stream << "\ndeclared war on\n" << m_FemaleTitles[(unsigned int)subject.m_CharacterTitle] << subject.m_Name << "!";
-					}
+					stream << "\ndeclared war on\n";
+					writeTitle(subject, stream);
+					stream << subject.m_Name << "!";
 				}
 				else
 				{
@@ -175,14 +172,8 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 				stream.str(std::string());
 				stream.clear();
 				stream << "You can't declare war on\n";
-				if (subject.m_Gender == Gender::Male)
-				{
-					stream << m_MaleTitles[(unsigned int)subject.m_CharacterTitle] << subject.m_Name << "\nYou have a truce!";
-				}
-				else
-				{
-					stream << m_FemaleTitles[(unsigned int)subject.m_CharacterTitle] << subject.m_Name << "\nYou have a truce!";
-				}
+				writeTitle(subject, stream);
+				stream << subject.m_Name << "\nYou have a truce!";
 			}
 			break;
 		}
@@ -238,14 +229,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Assassinate.png");
 			stream.str(std::string());
 			stream.clear();
-			if (subject.m_Gender == Gender::Male)
-			{
-				stream << m_MaleTitles[(unsigned int)subject.m_CharacterTitle];
-			}
-			else
-			{
-				stream << m_FemaleTitles[(unsigned int)subject.m_CharacterTitle];
-			}
+			writeTitle(subject, stream);
 			stream << subject.m_Name << "\ndied under suspicious circumstances.";
 			break;
 		}
@@ -254,14 +238,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Assassinate.png");
 			stream.str(std::string());
 			stream.clear();
-			if (subject.m_Gender == Gender::Male)
-			{
-				stream << m_MaleTitles[(unsigned int)subject.m_CharacterTitle];
-			}
-			else
-			{
-				stream << m_FemaleTitles[(unsigned int)subject.m_CharacterTitle];
-			}
+			writeTitle(subject, stream);
 			stream << subject.m_Name << "\nevaded an assassination!";
 			break;
 		}
@@ -295,9 +272,11 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		setText(m_AgreeText, m_Font, m_CharacterSize, m_AgreeColor, m_AgreeShape.getPosition(), m_AgreeString);
 	}
 
-	setShape(m_DismissShape, m_TransparentColor, m_DismissColor, m_OutlineThickness * 0.5f, { m_SpriteSize * 1.25f, m_SpriteSize * 0.5f }, { m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SizeY - m_SpriteSize });
-	setText(m_DismissText, m_Font, m_CharacterSize, m_DismissColor, m_DismissShape.getPosition(), m_DismissString);
-
+	if (m_MessageType != UIType::PeaceRequestEnforce)
+	{
+		setShape(m_DismissShape, m_TransparentColor, m_DismissColor, m_OutlineThickness * 0.5f, { m_SpriteSize * 1.25f, m_SpriteSize * 0.5f }, { m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SizeY - m_SpriteSize });
+		setText(m_DismissText, m_Font, m_CharacterSize, m_DismissColor, m_DismissShape.getPosition(), m_DismissString);
+	}
 	Time::pauseGame();
 }
 
@@ -328,8 +307,11 @@ void EventWindow::render()
 		m_Window->draw(m_AgreeShape);
 		m_Window->draw(m_AgreeText);
 	}
-	m_Window->draw(m_DismissShape);
-	m_Window->draw(m_DismissText);
+	if (m_MessageType != UIType::PeaceRequestEnforce)
+	{
+		m_Window->draw(m_DismissShape);
+		m_Window->draw(m_DismissText);
+	}
 }
 
 void EventWindow::handleWindow()
@@ -348,13 +330,13 @@ void EventWindow::handleWindow()
 		acceptRequest();
 		closeWindow();
 	}
-	else if(InputHandler::m_Inputs[BackSpacePressed])
+	else if(InputHandler::m_Inputs[BackSpacePressed] && m_MessageType != UIType::PeaceRequestEnforce)
 	{
 		InputHandler::m_Inputs[BackSpacePressed] = false;
 		m_DismissShape.setFillColor(m_DismissShape.getOutlineColor());
 		m_DismissText.setFillColor(m_FillColor);
 	}
-	else if (InputHandler::m_Inputs[BackSpaceReleased])
+	else if (InputHandler::m_Inputs[BackSpaceReleased] && m_MessageType != UIType::PeaceRequestEnforce)
 	{
 		m_DismissShape.setFillColor(m_TransparentColor);
 		m_DismissText.setFillColor(m_DismissShape.getOutlineColor());
@@ -479,6 +461,11 @@ void EventWindow::acceptRequest()
 
 void EventWindow::clickButton()
 {
+	if (m_MessageType == UIType::PeaceRequestEnforce && InputHandler::m_Inputs[KeyPressed])
+	{
+		acceptRequest();
+		closeWindow();
+	}
 	if (InputHandler::getLeftMouseClicked())
 	{
 		m_MousePosition = InputHandler::getUIMousePosition();
@@ -570,4 +557,16 @@ void EventWindow::setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector
 	sprite.setTexture(texture, true);
 	sprite.setScale(spriteSize / sprite.getLocalBounds().width, spriteSize / sprite.getLocalBounds().height);
 	sprite.setPosition(position);
+}
+
+void EventWindow::writeTitle(Character& character, std::stringstream& stream)
+{
+	if (character.m_Gender == Gender::Male)
+	{
+		stream << m_CharacterTitles[(unsigned int)character.m_CharacterTitle];
+	}
+	else
+	{
+		stream << m_CharacterTitles[(unsigned int)character.m_CharacterTitle + (unsigned int)Title::Unlanded + 1];
+	}
 }

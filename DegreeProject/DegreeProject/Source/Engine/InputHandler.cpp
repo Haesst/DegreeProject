@@ -27,6 +27,7 @@ float InputHandler::minCenterYPosition = -85.0f;
 
 void InputHandler::handleInputEvents()
 {
+	m_Inputs[KeyPressed] = false;
 	m_Inputs[LeftMouseClicked] = false;
 	m_Inputs[RightMouseClicked] = false;
 	m_Inputs[LeftMouseReleased] = false;
@@ -50,6 +51,7 @@ void InputHandler::handleInputEvents()
 		}
 		case sf::Event::KeyPressed:
 		{
+			m_Inputs[KeyPressed] = true;
 			switch (event.key.code)
 			{
 			case sf::Keyboard::Up:

@@ -3,6 +3,7 @@
 
 enum Inputs
 {
+	KeyPressed,
 	LeftMouseClicked,
 	RightMouseClicked,
 	LeftMouseReleased,

@@ -25,7 +25,8 @@ public:
 	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
 	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string = "");
 	void setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize = m_SpriteSize);
-	
+	void writeTitle(Character& character, std::stringstream& stream);
+
 	sf::RectangleShape m_WindowShape;
 
 	sf::RectangleShape m_DismissShape;
@@ -54,8 +55,7 @@ public:
 	bool m_Dismissed = false;
 	bool m_MovingWindow = false;
 	Vector2D m_MousePosition = Vector2D();
-	std::vector<const char*> m_MaleTitles = { "Emperor ", "King ", "Duke ", "Count ", "Baron ", "Unlanded " };
-	std::vector<const char*> m_FemaleTitles = { "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness ", "Unlanded " };
+	std::vector<const char*> m_CharacterTitles = { "Emperor ", "King ", "Duke ", "Count ", "Baron ", "Unlanded ", "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness ", "Unlanded " };
 
 	const float m_PortraitScale = 0.25f;
 	CharacterID m_InstigatorID = INVALID_CHARACTER_ID;
