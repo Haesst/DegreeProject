@@ -126,8 +126,8 @@
 	"color": "Red",
 	"tax": 4,
 	"manPower": 70,
-	"capitalx" : 316,
-	"capitaly" : 57
+	"capitalx" : 317,
+	"capitaly" : 58
 	},
 	{
 	"name": "Apulia",
@@ -137,7 +137,7 @@
 	"tax": 5,
 	"manPower": 60,
 	"capitalx" : 346,
-	"capitaly" : 57
+	"capitaly" : 58
 	},
 	{
 	"name": "Basilicata",
