@@ -361,7 +361,28 @@ void CharacterManager::sendPeaceOffer(CharacterID sender, CharacterID reciever, 
 	}
 	else
 	{
-		UIManager::get().createUIEventElement(sender, reciever, UIType::PeaceRequest);
+		switch (type)
+		{
+			case PeaceType::Enforce_Demands:
+			{
+				UIManager::get().createUIEventElement(sender, reciever, UIType::PeaceRequestEnforce);
+				break;
+			}
+			case PeaceType::White_Peace:
+			{
+				UIManager::get().createUIEventElement(sender, reciever, UIType::PeaceRequestWhite);
+				break;
+			}
+			case PeaceType::Surrender:
+			{
+				UIManager::get().createUIEventElement(sender, reciever, UIType::PeaceRequestSurrender);
+				break;
+			}
+			default:
+			{
+				break;
+			}
+		}
 	}
 }
 

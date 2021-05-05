@@ -191,7 +191,7 @@ void InputHandler::handleInputEvents()
 		}
 		case sf::Event::GainedFocus:
 		{
-			Time::unpauseGame();
+			//Time::unpauseGame();
 			break;
 		}
 		case sf::Event::LostFocus:

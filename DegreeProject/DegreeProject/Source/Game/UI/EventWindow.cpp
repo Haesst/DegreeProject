@@ -112,14 +112,24 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 			}
 			break;
 		}
-		case UIType::PeaceRequest:
+		case UIType::PeaceRequestEnforce:
+		case UIType::PeaceRequestWhite:
+		case UIType::PeaceRequestSurrender:
 		case UIType::PeaceAccepted:
 		case UIType::PeaceDeclined:
 		{
 			m_MessageTypeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Peace.png");
-			if (m_MessageType == UIType::PeaceRequest)
+			if (m_MessageType == UIType::PeaceRequestEnforce)
+			{
+				stream << "\nwants you to surrender.\n\n               Do you accept?";
+			}
+			else if (m_MessageType == UIType::PeaceRequestWhite)
 			{
 				stream << "\nwants a white peace.\n\n               Do you accept?";
+			}
+			else if (m_MessageType == UIType::PeaceRequestSurrender)
+			{
+				stream << "\nsurrenders to you.\n\n               Do you accept?";
 			}
 			else if (m_MessageType == UIType::PeaceAccepted)
 			{
@@ -277,7 +287,9 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 
 	setShape(m_SubjectShape, m_TransparentColor, m_SubjectColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, m_SubjectSprite.getPosition());
 
-	if (m_MessageType == UIType::MarriageRequest || m_MessageType == UIType::AllianceRequest || m_MessageType == UIType::PeaceRequest || m_MessageType == UIType::CallToArmsRequest)
+	if (m_MessageType == UIType::MarriageRequest || m_MessageType == UIType::AllianceRequest 
+		|| m_MessageType == UIType::PeaceRequestEnforce || m_MessageType == UIType::PeaceRequestWhite
+		|| m_MessageType == UIType::PeaceRequestSurrender || m_MessageType == UIType::CallToArmsRequest)
 	{
 		setShape(m_AgreeShape, m_TransparentColor, m_AgreeColor, m_OutlineThickness * 0.5f, { m_SpriteSize * 1.25f, m_SpriteSize * 0.5f }, { m_PositionX + m_SizeX - m_SpriteSize * 1.75f, m_PositionY + m_SizeY - m_SpriteSize });
 		setText(m_AgreeText, m_Font, m_CharacterSize, m_AgreeColor, m_AgreeShape.getPosition(), m_AgreeString);
@@ -309,8 +321,9 @@ void EventWindow::render()
 	m_Window->draw(m_SubjectSprite);
 	m_Window->draw(m_MessageTypeSprite);
 	m_Window->draw(m_MessageText);
-	if (m_MessageType == UIType::MarriageRequest || m_MessageType == UIType::AllianceRequest 
-	 || m_MessageType == UIType::PeaceRequest || m_MessageType == UIType::CallToArmsRequest)
+	if (m_MessageType == UIType::MarriageRequest || m_MessageType == UIType::AllianceRequest
+		|| m_MessageType == UIType::PeaceRequestEnforce || m_MessageType == UIType::PeaceRequestWhite
+		|| m_MessageType == UIType::PeaceRequestSurrender || m_MessageType == UIType::CallToArmsRequest)
 	{
 		m_Window->draw(m_AgreeShape);
 		m_Window->draw(m_AgreeText);
@@ -417,7 +430,9 @@ void EventWindow::acceptRequest()
 			}
 			break;
 		}
-		case UIType::PeaceRequest:
+		case UIType::PeaceRequestEnforce:
+		case UIType::PeaceRequestWhite:
+		case UIType::PeaceRequestSurrender:
 		{
 			if (DiplomacyManager::get().getWarHandleAgainst(m_InstigatorID, m_SubjectID) != -1)
 			{
