@@ -255,6 +255,11 @@ std::vector<Vector2DInt> Pathfinding::findPerformantPath(Vector2DInt start, Vect
 			const int x = current.x + dirx[i];
 			const int y = current.y + diry[i];
 
+			if (x < 0 || y < 0 || x > m_MapWidth || y > m_MapHeight)
+			{
+				continue;
+			}
+
 			if (!walkable[x + y * m_MapWidth])
 			{
 				continue;
