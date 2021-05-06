@@ -70,6 +70,8 @@ public:
 	bool ownsRegion(CharacterID ID, int regionIndex);
 	void updateTitleAndUIText(Character& character);
 
+	void setRandomPortraitPath(CharacterID& characterID);
+
 private:
 	//CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
 

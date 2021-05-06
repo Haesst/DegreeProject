@@ -60,8 +60,7 @@ struct Character
 	std::string m_PortraitPath;
 	int m_PortraitIndex = 0;
 
-	unsigned int m_DeadlyAge = 50;
-	unsigned int m_AgeMax = 100;
+	unsigned int m_Age = 0;
 	bool m_Dead = false;
 	Date m_DeathDate;
 	unsigned int m_AgeAtDeath = 0;

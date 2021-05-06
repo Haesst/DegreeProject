@@ -434,13 +434,18 @@ void CharacterManager::dailyUpdates(Character& character)
 	if (!character.m_Dead)
 	{
 		unsigned int age = Time::m_GameDate.getAge(character.m_Birthday);
-		float dieChance = ((float)((age - character.m_DeadlyAge) * (age - character.m_DeadlyAge)) / (character.m_AgeMax * character.m_AgeMax)) * m_MortalityRate;
-		age < character.m_DeadlyAge ? dieChance *= 0.001f : dieChance;
+		float dieChance = ((float)((age - CharacterConstants::m_DeadlyAge) * (age - CharacterConstants::m_DeadlyAge)) / (CharacterConstants::m_AgeMax * CharacterConstants::m_AgeMax)) * m_MortalityRate;
+		age < CharacterConstants::m_DeadlyAge ? dieChance *= 0.001f : dieChance;
 		bool die = chancePerPercent(dieChance);
 		if (die)
 		{
 			killCharacter(character.m_CharacterID);
 		}
+		if (character.m_Age != age && (age == CharacterConstants::m_AgeOfConsent || age == CharacterConstants::m_AgeOfConsent * 2 || age == CharacterConstants::m_DeadlyAge))
+		{
+			setRandomPortraitPath(character.m_CharacterID);
+		}
+		character.m_Age = age;
 	}
 }
 
@@ -768,6 +773,11 @@ void CharacterManager::updateTitleAndUIText(Character& character)
 	{
 		UIManager::get().SetRealmNameOnText(character.m_CharacterID, character.m_KingdomName);
 	}
+}
+
+void CharacterManager::setRandomPortraitPath(CharacterID& characterID)
+{
+	m_CharacterCreator.setRandomPortraitPath(characterID);
 }
 
 void CharacterManager::handleInheritance(Character& character)

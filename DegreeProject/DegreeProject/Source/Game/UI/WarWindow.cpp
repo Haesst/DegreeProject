@@ -392,7 +392,7 @@ void WarWindow::updateWarParticipants(CharacterID& mainParticipantID, CharacterI
 	participantsSprites.push_back(sprite);
 	const char* portraitPath = participant.m_PortraitPath.c_str();
 	participantsTextures.push_back(AssetHandler::get().getTextureAtPath(portraitPath));
-	setSprite(participantsSprites[index], participantsTextures[index], participantsShapes[index].getPosition(), m_SpriteSize * sizeMultiplier);
+	setSprite(participantsSprites[index], participantsTextures[index], participantsShapes[index].getPosition(), (unsigned int)(m_SpriteSize * sizeMultiplier));
 }
 
 void WarWindow::openWindow(CharacterID mainAttackerID, CharacterID mainDefenderID, Date startDate)

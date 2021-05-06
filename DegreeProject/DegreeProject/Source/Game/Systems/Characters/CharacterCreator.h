@@ -16,8 +16,7 @@ public:
 	CharacterID createCharacter(CharacterPool& characterPool, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday);
 	CharacterID createNewChild(CharacterPool& characterPool, CharacterID motherID);
 	CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
-	
+	void setRandomPortraitPath(CharacterID& characterID);
 private:
-	void setRandomMalePortraitPath(Character& character);
-	void setRandomFemalePortraitPath(Character& character);
+	void setRandomPortraitPath(Character& character, const unsigned int numberOfPortraits, const char* portraitPath);
 };
