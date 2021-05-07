@@ -114,8 +114,6 @@ CharacterID CharacterCreator::internalCreateCharacter(Character& character, cons
 	character.m_OwnedRegionIDs = ownedRegions;
 	character.m_KingdomName = realmName;
 
-	character.m_CurrentMaxArmySize = army;
-
 	character.m_Fertility = (rand() % (CharacterConstants::m_UpperBaseFertility - CharacterConstants::m_LowerBaseFertility) + CharacterConstants::m_LowerBaseFertility) * CharacterConstants::m_OneOverOneHundred;
 	character.m_Gender = gender;
 
@@ -126,7 +124,6 @@ CharacterID CharacterCreator::internalCreateCharacter(Character& character, cons
 	character.m_RegionColor = color;
 
 	character.m_Name = characterName;
-	character.m_UnitEntity = UnitManager::get().addUnit(id, army);
 
 	for (auto& regionid : ownedRegions)
 	{
@@ -144,6 +141,8 @@ CharacterID CharacterCreator::internalCreateCharacter(Character& character, cons
 			character.m_MaxArmySize += GameData::m_Buildings[buildingSlot.m_BuildingId].m_ArmyModifier;
 		}
 	}
+
+	character.m_UnitEntity = UnitManager::get().addUnit(id, character.m_MaxArmySize);
 
 	characterManager.addNewCharacter(character);
 

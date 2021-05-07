@@ -37,7 +37,6 @@ struct Unit
 	Vector2D m_LastPosition;
 	bool m_Moving = false;
 	std::vector<Vector2DInt> m_CurrentPath = std::vector<Vector2DInt>();
-	std::vector<sf::RectangleShape> m_TargetPath = std::vector<sf::RectangleShape>();
 	Vector2D m_Target;
 	Vector2D m_Direction;
 	float m_Speed = 150.0f;

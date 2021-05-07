@@ -19,30 +19,7 @@ void UnitManager::start()
 	m_UnitTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/soldier unit.png");
 	m_BoatTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/Boat.png");
 	m_UnitSprite.setTexture(m_UnitTexture);
-	
-	for (auto& unit : m_Units)
-	{
-		unit.m_RepresentedForce = CharacterManager::get().getCharacter(unit.m_Owner).m_MaxArmySize;
-
-		unit.m_StrengthShape.setPosition({ unit.m_Position.x, unit.m_Position.y + unit.m_HighlightShapeSize.y });
-		unit.m_StrengthShape.setFillColor(CharacterManager::get().getCharacter(unit.m_Owner).m_RegionColor);
-		unit.m_StrengthShape.setSize({ unit.m_HighlightShapeSize.x, unit.m_HighlightShapeSize.y * 0.5f });
-		unit.m_StrengthShape.setOutlineThickness(unit.m_OutlineThickness);
-		unit.m_StrengthShape.setOutlineColor(unit.m_StrengthOutlineColor);
-
-		unit.m_StrengthText.setFont(Game::m_UIFont);
-		unit.m_StrengthText.setCharacterSize(unit.m_CharacterSize);
-		unit.m_StrengthText.setFillColor(unit.m_OutlineColor);
-		unit.m_StrengthText.setOutlineColor(unit.m_StrengthOutlineColor);
-		unit.m_StrengthText.setOutlineThickness(unit.m_OutlineThickness);
-		std::stringstream stream;
-		stream << unit.m_RepresentedForce;
-		unit.m_StrengthText.setString(stream.str());
-		stream.str(std::string());
-		stream.clear();
-		unit.m_StrengthText.setOrigin(unit.m_StrengthText.getLocalBounds().width * 0.5f, unit.m_StrengthText.getLocalBounds().height * 0.75f);
-		unit.m_StrengthText.setPosition(unit.m_StrengthShape.getPosition() + unit.m_StrengthShape.getSize() * 0.5f);
-	}
+	m_UnitLinePath.setPrimitiveType(sf::LineStrip);
 }
 
 void UnitManager::update()
@@ -73,7 +50,8 @@ void UnitManager::update()
 		moveUnit(unit);
 		if (unit.m_Owner == CharacterManager::get().getPlayerCharacterID())
 		{
-			showPath(unit);
+			//showPath(unit);
+			showLinePath(unit);
 		}
 		// Engage enemy
 		unitCombat(unit);
@@ -113,14 +91,12 @@ void UnitManager::render()
 
 		Window::getWindow()->draw(unit.m_Sprite);
 
-		if (unit.m_Moving)
+		if (unit.m_Moving && unit.m_Owner == CharacterManager::get().getPlayerCharacterID())
 		{
-			for each (sf::RectangleShape rectangle in unit.m_TargetPath)
-			{
-				Window::getWindow()->draw(rectangle);
-			}
+			Window::getWindow()->draw(m_UnitLinePath);
 		}
 
+		unit.m_StrengthShape.setFillColor(CharacterManager::get().getCharacter(unit.m_Owner).m_RegionColor);
 		unit.m_StrengthShape.setOutlineThickness(unit.m_OutlineThickness * InputHandler::m_TotalZoom);
 		unit.m_StrengthShape.setPosition({ unit.m_Position.x, unit.m_Position.y + unit.m_HighlightShapeSize.y });
 		Window::getWindow()->draw(unit.m_StrengthShape);
@@ -187,10 +163,8 @@ UnitID UnitManager::addUnit(CharacterID owner, int size)
 	newUnit.m_UnitID = m_UnitIDs++;
 	newUnit.m_RepresentedForce = size;
 
-	newUnit.m_Sprite.setTexture(m_UnitTexture);
-	newUnit.m_Sprite.setPosition({ newUnit.m_Position.x, newUnit.m_Position.y });
 	updateSprite(newUnit);
-
+	setStrengthBox(newUnit);
 	m_Units.push_back(newUnit);
 
 	return newUnit.m_UnitID;
@@ -649,7 +623,6 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 		}
 	}
 
-
 	getUnitWithId(unitID).m_FightingArmyID = INVALID_UNIT_ID;
 	getUnitWithId(enemyID).m_FightingArmyID = INVALID_UNIT_ID;
 	getUnitWithId(unitID).m_CombatTimerAccu = 0.0f;
@@ -895,83 +868,38 @@ void UnitManager::updateSprite(Unit& unit)
 	unit.m_Sprite.setTextureRect(unit.m_Direction.x > 0 ? sf::IntRect((int)localSize.width, 0, -(int)localSize.width, (int)localSize.width) : sf::IntRect(0, 0, (int)localSize.width, (int)localSize.width));
 
 	unit.m_Sprite.setScale(
-		32 / localSize.width, // Todo: Remove magic number
-		32 / localSize.height
+		m_SpriteSize / localSize.width,
+		m_SpriteSize / localSize.height
 	);
 }
 
-
-void UnitManager::showPath(Unit& unit)
+void UnitManager::showLinePath(Unit& unit)
 {
-	unit.m_TargetPath.clear();
-	std::vector<Vector2DInt> path;
+	m_UnitLinePath.clear();
 	for each (Vector2DInt position in unit.m_CurrentPath)
 	{
-		path.push_back(position);
-	}
-	unsigned int index = 0;
-	for each (Vector2DInt position in path)
-	{
 		Vector2D screenPosition = Map::convertToScreen(position);
-		Vector2D rectangleSize = Vector2D(unit.m_HighlightShape.getSize().x * 1.45f, unit.m_HighlightShape.getSize().y * 0.25f);
-		float rotation = 0.0f;
-		Vector2DInt oldPosition = Vector2DInt();
-		if (unit.m_TargetPath.size() > 0)
-		{
-			oldPosition = path[index - 1];
-		}
-		else
-		{
-			oldPosition = Map::convertToMap(unit.m_Position);
-		}
-		Vector2DInt change = position - oldPosition;
-		if (abs(change.y) == 1 && change.x == 0)
-		{
-			rotation = 90.0f;
-			screenPosition.x += unit.m_HighlightShape.getSize().x * 0.625f;
-			screenPosition.y -= unit.m_HighlightShape.getSize().y * 0.375f;
-			if (change.y < 0)
-			{
-				screenPosition.y += unit.m_HighlightShape.getSize().y * 0.5f;
-			}
-			else
-			{
-				screenPosition.y -= unit.m_HighlightShape.getSize().y * 0.5f;
-			}
-		}
-		else if (change.x > 0 && change.y > 0 || change.x < 0 && change.y < 0)
-		{
-			rotation = 45.0f;
-			screenPosition.x += unit.m_HighlightShape.getSize().x * 0.28125f;
-			screenPosition.y -= unit.m_HighlightShape.getSize().y * 0.28125f;
-			if (change.x > 0 && change.y > 0)
-			{
-				screenPosition.x -= unit.m_HighlightShape.getSize().x;
-				screenPosition.y -= unit.m_HighlightShape.getSize().y;
-			}
-			if (change.x < 0 && change.y < 0)
-			{
-				screenPosition.x += unit.m_HighlightShape.getSize().x * 0.5f;
-				screenPosition.y += unit.m_HighlightShape.getSize().y * 0.5f;
-			}
-		}
-		else if (change.x > 0 && change.y < 0 || change.x < 0 && change.y > 0)
-		{
-			rotation = -45.0f;
-			screenPosition.x += unit.m_HighlightShape.getSize().x * 0.21875f;
-			screenPosition.y += unit.m_HighlightShape.getSize().y * 0.21875f;
-			if (change.x > 0 && change.y < 0)
-			{
-				screenPosition.x -= unit.m_HighlightShape.getSize().x;
-				screenPosition.y += unit.m_HighlightShape.getSize().y;
-			}
-		}
-
-		sf::RectangleShape rectangle = sf::RectangleShape(sf::Vector2f(rectangleSize.x, rectangleSize.y));
-		rectangle.setFillColor(sf::Color::White);
-		rectangle.setRotation(rotation);
-		rectangle.setPosition(screenPosition.x, screenPosition.y + unit.m_HighlightShape.getSize().y * 0.375f);
-		unit.m_TargetPath.push_back(rectangle);
-		index++;
+		m_UnitLinePath.append(sf::Vertex({ screenPosition.x + m_SpriteSize / 2, screenPosition.y + m_SpriteSize / 2}));
 	}
+}
+
+void UnitManager::setStrengthBox(Unit& unit)
+{
+	unit.m_StrengthShape.setPosition({ unit.m_Position.x, unit.m_Position.y + unit.m_HighlightShapeSize.y });
+	unit.m_StrengthShape.setSize({ unit.m_HighlightShapeSize.x, unit.m_HighlightShapeSize.y * 0.5f });
+	unit.m_StrengthShape.setOutlineThickness(unit.m_OutlineThickness);
+	unit.m_StrengthShape.setOutlineColor(unit.m_StrengthOutlineColor);
+
+	unit.m_StrengthText.setFont(Game::m_UIFont);
+	unit.m_StrengthText.setCharacterSize(unit.m_CharacterSize);
+	unit.m_StrengthText.setFillColor(unit.m_OutlineColor);
+	unit.m_StrengthText.setOutlineColor(unit.m_StrengthOutlineColor);
+	unit.m_StrengthText.setOutlineThickness(unit.m_OutlineThickness);
+	std::stringstream stream;
+	stream << unit.m_RepresentedForce;
+	unit.m_StrengthText.setString(stream.str());
+	stream.str(std::string());
+	stream.clear();
+	unit.m_StrengthText.setOrigin(unit.m_StrengthText.getLocalBounds().width * 0.5f, unit.m_StrengthText.getLocalBounds().height * 0.75f);
+	unit.m_StrengthText.setPosition(unit.m_StrengthShape.getPosition() + unit.m_StrengthShape.getSize() * 0.5f);
 }

@@ -32,7 +32,8 @@ private:
 	void moveUnit(Unit& unit);
 	void unitCombat(Unit& unit);
 	void unitSiege(Unit& unit);
-	void showPath(Unit& unit);
+	void showLinePath(Unit& unit);
+	void setStrengthBox(Unit& unit);
 	void startCombatTimer(UnitID unit, UnitID enemyUnit);
 	UnitID unitAtSquare(Vector2DInt square, UnitID unitID);
 	std::vector<UnitID> getAlliesAtSquare(const Character& character, Vector2DInt square);
@@ -67,6 +68,8 @@ private:
 	sf::Color m_SeizeMeterFillColor = sf::Color(40, 70, 170, 250);
 	sf::Color m_CombatMeterFillColor = sf::Color(170, 70, 40, 250);
 
+	const unsigned int m_SpriteSize = 32;
 	sf::Texture m_UnitTexture;
 	sf::Sprite m_UnitSprite;
+	sf::VertexArray m_UnitLinePath;
 };
