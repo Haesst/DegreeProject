@@ -26,6 +26,7 @@ project "DegreeProject"
 	language "C++"
 	cppdialect "C++17"
 	warnings "Extra"
+	flags "MultiProcessorCompile"
 
 	targetdir ("bin/" .. outputdir .. "/%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "%{prj.name}")
