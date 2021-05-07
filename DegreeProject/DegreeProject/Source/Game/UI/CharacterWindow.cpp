@@ -119,17 +119,13 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	setText(m_DeathDate, m_Font, m_CharacterSize, m_OwnerColor, { m_DeadPosition.x, m_DeadPosition.y + m_SpriteSize });
 	setText(m_Birthday, m_Font, m_CharacterSize, m_OwnerColor, { m_BirthPosition.x, m_BirthPosition.y + m_SpriteSize });
 
-	m_FatherTexture = assetHandler.getTextureAtPath("Assets/Graphics/Father.png");
 	m_FatherPosition = { m_SizeX * 0.5f, m_SpriteSize * 12 };
 	setShape(m_FatherShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, m_FatherPosition);
 	setText(m_FatherName, m_Font, m_CharacterSize, m_OwnerColor, { m_FatherPosition.x + m_SizeX * 0.1f, m_FatherPosition.y });
-	setSprite(m_FatherSprite, m_FatherTexture, m_FatherPosition);
 
-	m_MotherTexture = assetHandler.getTextureAtPath("Assets/Graphics/Mother.png");
 	m_MotherPosition = { m_SizeX * 0.5f, m_SpriteSize * 13 + m_OutlineThickness * 1.5f };
 	setShape(m_MotherShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, m_MotherPosition);
 	setText(m_MotherName, m_Font, m_CharacterSize, m_OwnerColor, { m_MotherPosition.x + m_SizeX * 0.1f, m_MotherPosition.y });
-	setSprite(m_MotherSprite, m_MotherTexture, m_MotherPosition);
 
 	m_FamilyTreeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Bloodline3.png");
 	setSprite(m_FamilyTreeSprite, m_FamilyTreeTexture, { m_DiplomacySprites.back().getPosition().x + m_SpriteSize * 2, m_DiplomacySprites.back().getPosition().y });
@@ -383,6 +379,17 @@ void CharacterWindow::updateParents()
 		m_FatherName.setFillColor(father.m_RegionColor);
 		m_FatherName.setString(father.m_Name);
 		m_FatherShape.setOutlineColor(father.m_RegionColor);
+		const char* portraitPath = father.m_PortraitPath.c_str();
+		bool textureLoaded = false;
+		while (!textureLoaded)
+		{
+			m_FatherTexture = AssetHandler::get().getTextureAtPath(portraitPath);
+			if (m_FatherTexture.getSize().x != 0)
+			{
+				textureLoaded = true;
+			}
+		}
+		setSprite(m_FatherSprite, m_FatherTexture, m_FatherPosition);
 	}
 
 	if (m_MotherID != INVALID_CHARACTER_ID)
@@ -391,6 +398,17 @@ void CharacterWindow::updateParents()
 		m_MotherName.setFillColor(mother.m_RegionColor);
 		m_MotherName.setString(mother.m_Name);
 		m_MotherShape.setOutlineColor(mother.m_RegionColor);
+		const char* portraitPath = mother.m_PortraitPath.c_str();
+		bool textureLoaded = false;
+		while (!textureLoaded)
+		{
+			m_MotherTexture = AssetHandler::get().getTextureAtPath(portraitPath);
+			if (m_MotherTexture.getSize().x != 0)
+			{
+				textureLoaded = true;
+			}
+		}
+		setSprite(m_MotherSprite, m_MotherTexture, m_MotherPosition);
 	}
 }
 
@@ -503,7 +521,16 @@ void CharacterWindow::updateChildren()
 		sf::Sprite childSprite;
 		m_ChildrenSprites.push_back(childSprite);
 		const char* portraitPath = child.m_PortraitPath.c_str();
-		m_ChildrenTextures.push_back(AssetHandler::get().getTextureAtPath(portraitPath));
+		bool textureLoaded = false;
+		while (!textureLoaded)
+		{
+			sf::Texture texture = AssetHandler::get().getTextureAtPath(portraitPath);
+			if (texture.getSize().x != 0)
+			{
+				textureLoaded = true;
+				m_ChildrenTextures.push_back(texture);
+			}
+		}
 		setSprite(m_ChildrenSprites[index], m_ChildrenTextures[index], m_ChildrenShapes[index].getPosition(), m_SpriteSize);
 	}
 }
@@ -527,7 +554,16 @@ void CharacterWindow::updateAllies()
 		sf::Sprite allySprite;
 		m_AlliesSprites.push_back(allySprite);
 		const char* portraitPath = ally.m_PortraitPath.c_str();
-		m_AlliesTextures.push_back(AssetHandler::get().getTextureAtPath(portraitPath));
+		bool textureLoaded = false;
+		while (!textureLoaded)
+		{
+			sf::Texture texture = AssetHandler::get().getTextureAtPath(portraitPath);
+			if (texture.getSize().x != 0)
+			{
+				textureLoaded = true;
+				m_AlliesTextures.push_back(texture);
+			}
+		}
 		setSprite(m_AlliesSprites[index], m_AlliesTextures[index], m_AlliesShapes[index].getPosition(), m_SpriteSize);
 	}
 }
@@ -568,7 +604,16 @@ void CharacterWindow::updateWars()
 		sf::Sprite opponentSprite;
 		m_WarSprites.push_back(opponentSprite);
 		const char* portraitPath = opponent.m_PortraitPath.c_str();
-		m_WarTextures.push_back(AssetHandler::get().getTextureAtPath(portraitPath));
+		bool textureLoaded = false;
+		while (!textureLoaded)
+		{
+			sf::Texture texture = AssetHandler::get().getTextureAtPath(portraitPath);
+			if (texture.getSize().x != 0)
+			{
+				textureLoaded = true;
+				m_WarTextures.push_back(texture);
+			}
+		}
 		setSprite(m_WarSprites[index], m_WarTextures[index], m_WarShapes[index].getPosition(), m_SpriteSize);
 	}
 }
@@ -606,7 +651,16 @@ void CharacterWindow::updateTruces()
 		sf::Sprite opponentSprite;
 		m_TruceSprites.push_back(opponentSprite);
 		const char* portraitPath = opponent.m_PortraitPath.c_str();
-		m_TruceTextures.push_back(AssetHandler::get().getTextureAtPath(portraitPath));
+		bool textureLoaded = false;
+		while (!textureLoaded)
+		{
+			sf::Texture texture = AssetHandler::get().getTextureAtPath(portraitPath);
+			if (texture.getSize().x != 0)
+			{
+				textureLoaded = true;
+				m_TruceTextures.push_back(texture);
+			}
+		}
 		setSprite(m_TruceSprites[index], m_TruceTextures[index], m_TruceShapes[index].getPosition(), m_SpriteSize);
 	}
 }
@@ -705,7 +759,15 @@ void CharacterWindow::updateInfo()
 		{
 			m_PreviousCharacterID = m_CurrentCharacterID;
 			const char* portraitPath = m_CurrentCharacter->m_PortraitPath.c_str();
-			m_CurrentCharacterTexture = AssetHandler::get().getTextureAtPath(portraitPath);
+			bool textureLoaded = false;
+			while (!textureLoaded)
+			{
+				m_CurrentCharacterTexture = AssetHandler::get().getTextureAtPath(portraitPath);
+				if (m_CurrentCharacterTexture.getSize().x != 0)
+				{
+					textureLoaded = true;
+				}
+			}
 			setSprite(m_CharacterSprite, m_CurrentCharacterTexture, { m_SizeX * 0.1f, m_SpriteSize }, m_SpriteSize * 2);
 		}
 
@@ -1144,7 +1206,7 @@ void CharacterWindow::assassinate()
 	if (m_PlayerCharacter->m_CurrentGold >= m_AssassinationCost)
 	{
 		m_PlayerCharacter->m_CurrentGold -= m_AssassinationCost;
-		if (characterManager.chancePerPercent(0.5f))
+		if (characterManager.chancePerPercent(m_AssassinationChance))
 		{
 			UIManager::get().createUIEventElement(m_PlayerCharacter->m_CharacterID, m_CurrentCharacterID, UIType::AssassinationSuccess);
 			characterManager.killCharacter(m_CurrentCharacterID);

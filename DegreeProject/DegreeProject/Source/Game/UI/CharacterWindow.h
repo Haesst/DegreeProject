@@ -131,7 +131,8 @@ public:
 	int m_CharacterSize = 25;
 	int m_DaySubscriptionHandle = -1;
 	bool m_Open = false;
-	float m_AssassinationCost = 50.0f;
+	const float m_AssassinationCost = 50.0f;
+	const float m_AssassinationChance = 0.5f;
 	sf::RenderWindow* m_Window = nullptr;
 	Character* m_PlayerCharacter = nullptr;
 	Character* m_CurrentCharacter = nullptr;

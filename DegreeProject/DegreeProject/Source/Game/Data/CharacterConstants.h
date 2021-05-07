@@ -41,12 +41,12 @@ namespace CharacterConstants
 	static const char* m_OldMalePortraitPath = "Assets/Graphics/Portraits/Male/Old/(";
 	static const char* m_OldFemalePortraitPath = "Assets/Graphics/Portraits/Female/Old/(";
 	static const char* m_PortraitPathEnding = ").png";
-	static const unsigned int m_NumberOfChildFemalePortraits = 13;
-	static const unsigned int m_NumberOfChildMalePortraits = 27;
-	static const unsigned int m_NumberOfYoungFemalePortraits = 70;
-	static const unsigned int m_NumberOfYoungMalePortraits = 72;
-	static const unsigned int m_NumberOfAdultFemalePortraits = 19;
-	static const unsigned int m_NumberOfAdultMalePortraits = 40;
-	static const unsigned int m_NumberOfOldFemalePortraits = 21;
-	static const unsigned int m_NumberOfOldMalePortraits = 11;
+	static const unsigned int m_NumberOfChildFemalePortraits = 32;
+	static const unsigned int m_NumberOfChildMalePortraits = 24;
+	static const unsigned int m_NumberOfYoungFemalePortraits = 130;
+	static const unsigned int m_NumberOfYoungMalePortraits = 96;
+	static const unsigned int m_NumberOfAdultFemalePortraits = 42;
+	static const unsigned int m_NumberOfAdultMalePortraits = 78;
+	static const unsigned int m_NumberOfOldFemalePortraits = 33;
+	static const unsigned int m_NumberOfOldMalePortraits = 22;
 }

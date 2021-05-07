@@ -252,7 +252,16 @@ void FamilyTreeWindow::setFamilyMember(CharacterID& characterID, unsigned int de
 	}
 
 	const char* portraitPath = character.m_PortraitPath.c_str();
-	m_CharacterTextures.push_back(AssetHandler::get().getTextureAtPath(portraitPath));
+	bool textureLoaded = false;
+	while (!textureLoaded)
+	{
+		sf::Texture texture = AssetHandler::get().getTextureAtPath(portraitPath);
+		if (texture.getSize().x != 0)
+		{
+			textureLoaded = true;
+			m_CharacterTextures.push_back(texture);
+		}
+	}
 	sf::Sprite characterSprite;
 	setSprite(characterSprite, m_CharacterTextures.back(), characterShape.getPosition(), m_SpriteSize);
 	m_CharacterSprites.push_back(characterSprite);

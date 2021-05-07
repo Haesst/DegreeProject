@@ -194,7 +194,15 @@ void RegionWindow::updateInfo()
 		m_WindowShape.setOutlineColor(m_OwnerColor);
 
 		const char* portraitPath = character.m_PortraitPath.c_str();
-		m_CharacterTexture = AssetHandler::get().getTextureAtPath(portraitPath);
+		bool textureLoaded = false;
+		while (!textureLoaded)
+		{
+			m_CharacterTexture = AssetHandler::get().getTextureAtPath(portraitPath);
+			if (m_CharacterTexture.getSize().x != 0)
+			{
+				textureLoaded = true;
+			}
+		}
 		setSprite(m_CharacterSprite, m_CharacterTexture, m_CharacterPosition, m_SpriteSize);
 
 		std::stringstream stream;

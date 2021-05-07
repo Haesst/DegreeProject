@@ -36,11 +36,27 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 	m_PositionY = m_Window->getSize().y * 0.5f - m_OutlineThickness - m_SizeY * 0.5f;
 
 	const char* subjectPortraitPath = subject.m_PortraitPath.c_str();
-	m_SubjectTexture = AssetHandler::get().getTextureAtPath(subjectPortraitPath);
+	bool textureLoaded = false;
+	while (!textureLoaded)
+	{
+		m_SubjectTexture = AssetHandler::get().getTextureAtPath(subjectPortraitPath);
+		if (m_SubjectTexture.getSize().x != 0)
+		{
+			textureLoaded = true;
+		}
+	}
 	setSprite(m_SubjectSprite, m_SubjectTexture, { m_PositionX + m_SizeX - m_SpriteSize * 1.5f, m_PositionY + m_SpriteSize * 0.5f }, m_SpriteSize);
 
 	const char* instigatorPortraitPath = instigator.m_PortraitPath.c_str();
-	m_InstigatorTexture = AssetHandler::get().getTextureAtPath(instigatorPortraitPath);
+	textureLoaded = false;
+	while (!textureLoaded)
+	{
+		m_InstigatorTexture = AssetHandler::get().getTextureAtPath(instigatorPortraitPath);
+		if (m_InstigatorTexture.getSize().x != 0)
+		{
+			textureLoaded = true;
+		}
+	}
 	setSprite(m_InstigatorSprite, m_InstigatorTexture, { m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SpriteSize * 0.5f }, m_SpriteSize);
 
 	std::stringstream stream;

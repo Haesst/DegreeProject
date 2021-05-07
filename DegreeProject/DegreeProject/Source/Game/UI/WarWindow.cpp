@@ -391,7 +391,16 @@ void WarWindow::updateWarParticipants(CharacterID& mainParticipantID, CharacterI
 	sf::Sprite sprite;
 	participantsSprites.push_back(sprite);
 	const char* portraitPath = participant.m_PortraitPath.c_str();
-	participantsTextures.push_back(AssetHandler::get().getTextureAtPath(portraitPath));
+	bool textureLoaded = false;
+	while (!textureLoaded)
+	{
+		sf::Texture texture = AssetHandler::get().getTextureAtPath(portraitPath);
+		if (texture.getSize().x != 0)
+		{
+			textureLoaded = true;
+			participantsTextures.push_back(texture);
+		}
+	}
 	setSprite(participantsSprites[index], participantsTextures[index], participantsShapes[index].getPosition(), (unsigned int)(m_SpriteSize * sizeMultiplier));
 }
 
