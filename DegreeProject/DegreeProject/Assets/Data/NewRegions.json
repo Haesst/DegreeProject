@@ -576,8 +576,8 @@
 	"color": "Yellow",
 	"tax": 4,
 	"manPower": 60,
-	"capitalx" : 170,
-	"capitaly" : 47
+	"capitalx" : 162,
+	"capitaly" : 49
 	},
 	{
 	"name": "Valencia",
@@ -676,8 +676,8 @@
 	"color": "Yellow",
 	"tax": 5,
 	"manPower": 70,
-	"capitalx" : 28,
-	"capitaly" : 49
+	"capitalx" : 12,
+	"capitaly" : 62
 	},
 	{
 	"name": "Algarve",
@@ -686,8 +686,8 @@
 	"color": "Yellow",
 	"tax": 2,
 	"manPower": 10,
-	"capitalx" : 28,
-	"capitaly" : 49
+	"capitalx" : 24,
+	"capitaly" : 76
 	},
 	{
 	"name": "Leon",
@@ -696,8 +696,8 @@
 	"color": "Yellow",
 	"tax": 3,
 	"manPower": 10,
-	"capitalx" : 28,
-	"capitaly" : 49
+	"capitalx" : 64,
+	"capitaly" : 31
 	},
 	{
 	"name": "Castille",
@@ -766,8 +766,8 @@
 	"color": "Yellow",
 	"tax": 3,
 	"manPower": 40,
-	"capitalx" : 82,
-	"capitaly" : 73
+	"capitalx" : 115,
+	"capitaly" : 77
 	},
 	{
 	"name": "Mallorca",

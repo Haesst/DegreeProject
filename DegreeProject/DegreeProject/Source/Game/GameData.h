@@ -15,6 +15,7 @@ struct Building
 	int m_IncomeModifier = 0;
 	int m_ArmyModifier = 0;
 	int m_DaysToConstruct = 0;
+	bool m_Finished = false;
 };
 
 struct GameData

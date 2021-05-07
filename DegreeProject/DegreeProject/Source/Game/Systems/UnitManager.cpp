@@ -132,6 +132,12 @@ void UnitManager::render()
 				}
 
 				Building& building = GameData::m_Buildings[slot.m_BuildingId];
+				
+				if (!building.m_Finished)
+				{
+					continue;
+				}
+
 				daysToSiegeRegion += building.m_HoldingModifier;
 			}
 
@@ -667,6 +673,12 @@ void UnitManager::unitSiege(Unit& unit)
 			}
 
 			Building& building = GameData::m_Buildings[slot.m_BuildingId];
+
+			if (!building.m_Finished)
+			{
+				continue;
+			}
+
 			daysToSiegeRegion += building.m_HoldingModifier;
 		}
 

@@ -11,8 +11,9 @@ struct RegionBuilding
 	int m_DaySubscribeHandle = -1;
 	bool m_Finished = false;
 	int m_DaysBuilt = 0;
+	int m_BuildingSlot = -1;
 
-	void startBuild(int buildId);
+	void startBuild(int buildId, int buildingSlot);
 
 	void onDayChange(Date);
 };

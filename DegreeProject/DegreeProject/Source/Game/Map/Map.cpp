@@ -426,7 +426,7 @@ void Map::startConstructionOfBuilding(int buildingId, int buildSlot, int regionI
 
 	if (building.m_BuildingId < 0)
 	{
-		building.startBuild(buildingId);
+		building.startBuild(buildingId, buildSlot);
 	}
 }
 

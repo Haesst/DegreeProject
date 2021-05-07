@@ -599,7 +599,12 @@ void CharacterManager::onMonthChange(Date)
 				}
 
 				Building& building = GameData::m_Buildings[slot.m_BuildingId];
-				
+
+				if (!building.m_Finished)
+				{
+					continue;
+				}
+
 				incomingGold += building.m_IncomeModifier;
 			}
 
