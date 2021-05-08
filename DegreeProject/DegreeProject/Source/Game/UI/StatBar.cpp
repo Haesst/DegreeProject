@@ -38,8 +38,8 @@ void StatBar::start()
 
 	setText(m_CurrentGoldText, m_Font, m_CharacterSize, m_OwnerColor, { positionX + m_SizeX * 0.2f, positionY });
 	setText(m_CurrentIncomeText, m_Font, (unsigned int)(m_CharacterSize * 0.5f), m_OwnerColor, { positionX + m_SizeX * 0.2f, positionY * 4 });
-	setText(m_MaxArmyText, m_Font, m_CharacterSize, m_OwnerColor, { positionX + m_SizeX * 0.6f, positionY });
-	setText(m_CurrentMaxArmyText, m_Font, (unsigned int)(m_CharacterSize * 0.5f), m_OwnerColor, { positionX + m_SizeX * 0.625f, positionY * 4 });
+	setText(m_CurrentMaxArmyText, m_Font, m_CharacterSize, m_OwnerColor, { positionX + m_SizeX * 0.6f, positionY });
+	setText(m_MaxArmyText, m_Font, (unsigned int)(m_CharacterSize * 0.5f), m_OwnerColor, { positionX + m_SizeX * 0.625f, positionY * 4 });
 
 	setSprite(m_CoinSprite, m_CoinTexture, m_CoinPosition);
 	setSprite(m_ArmySprite, m_ArmyTexture, m_ArmyPosition);

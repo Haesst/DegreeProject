@@ -673,7 +673,6 @@ void CharacterManager::killCharacter(CharacterID characterID)
 
 	if (character.m_CharacterTitle != Title::Unlanded && character.m_OwnedRegionIDs.size() > 0)
 	{
-		UIManager::get().createUIEventElement(characterID, characterID, UIType::Death);
 		handleInheritance(character);
 		UIManager::get().SetRealmTextAsConquered(character.m_CharacterID);
 	}

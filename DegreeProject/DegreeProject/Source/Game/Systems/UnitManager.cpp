@@ -10,6 +10,7 @@
 #include "Game/AI/AIManager.h"
 #include "Game/Game.h"
 #include "Engine/InputHandler.h"
+#include "Game/Player.h"
 
 UnitManager* UnitManager::m_Instance = nullptr;
 UnitID UnitManager::m_UnitIDs = INVALID_UNIT_ID + 1;
@@ -244,6 +245,11 @@ void UnitManager::raiseUnit(UnitID unitID, Vector2DInt location)
 
 		squareData.addUnique(unitID);
 		break;
+	}
+
+	if (unit.m_Owner == CharacterManager::get().getPlayerCharacterID())
+	{
+		CharacterManager::get().m_Player->selectUnit(unitID);
 	}
 
 	startConquerRegion(unit);

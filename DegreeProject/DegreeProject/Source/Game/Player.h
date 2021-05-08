@@ -30,14 +30,13 @@ public:
 
 	void loseGame(LoseCause cause);
 	void winGame();
-
+	void selectUnit(UnitID id);
 public:
 	unsigned int m_OwnedCharacter = INVALID_CHARACTER_ID;
 
 private:
 	void hoverOverRegion();
 	void clickDrag();
-	void selectUnit(UnitID id);
 	void tryToSelectUnit();
 	void moveUnit();
 	void deselectUnits();

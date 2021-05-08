@@ -193,42 +193,6 @@ void Player::tryToSelectUnit()
 			foundUnit = true;
 		}
 
-		//sf::Vector2f topLeftPosition = { firstX, firstY };
-
-		/*unsigned int xPositions = (unsigned int)width;
-		unsigned int yPositions = (unsigned int)height;
-		for (unsigned int y = 0; y < yPositions; y += (int)Map::m_TileSize)
-		{
-			for (unsigned int x = 0; x < xPositions; x += (int)Map::m_TileSize)
-			{
-				Vector2D position = Vector2D(topLeftPosition.x + x, topLeftPosition.y + y);
-				Vector2DInt mapPosition = Map::convertToMap(position);
-
-				if (Map::get().mapSquareDataContainsKey(mapPosition))
-				{
-					for (auto& squareData : Map::get().m_MapSquareData)
-					{
-						if (squareData.m_Position != mapPosition)
-						{
-							continue;
-						}
-
-						CharacterID playerCharacter = CharacterManager::get().getPlayerCharacterID();
-
-						for (auto& unitID : squareData.m_EntitiesInSquare)
-						{
-							if (UnitManager::get().getUnitWithId(unitID).m_Owner == playerCharacter)
-							{
-								selectUnit(unitID);
-								foundUnit = true;
-								break;
-							}
-						}
-					}
-				}
-			}
-		}*/
-
 		if (!foundUnit)
 		{
 			deselectUnits();

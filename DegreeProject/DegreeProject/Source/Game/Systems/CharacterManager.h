@@ -72,6 +72,8 @@ public:
 
 	void setRandomPortraitPath(CharacterID& characterID);
 
+	Player* m_Player = nullptr;
+
 private:
 	//CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
 
@@ -91,7 +93,6 @@ private:
 	mutable std::mutex m_TraitMtx;
 	std::vector<Trait> m_Traits;
 
-	Player* m_Player = nullptr;
 	CharacterID m_PlayerCharacterID = INVALID_CHARACTER_ID;
 	Character* m_PlayerCharacter = nullptr;
 	CharacterCreator m_CharacterCreator;
