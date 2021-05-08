@@ -65,7 +65,7 @@ private:
 	float m_ProgressMeterDoubleBorder = 1.0f;
 
 	sf::Color m_ProgressMeterOuterColor = sf::Color(25, 25, 25, 250);
-	sf::Color m_SeizeMeterFillColor = sf::Color(40, 70, 170, 250);
+	sf::Color m_SeizeMeterFillColor = sf::Color(40, 150, 100, 250);
 	sf::Color m_CombatMeterFillColor = sf::Color(170, 70, 40, 250);
 
 	const unsigned int m_SpriteSize = 32;
