@@ -126,6 +126,7 @@ public:
 	unsigned int m_CurrentRegionID = 0;
 	CharacterID m_CurrentCharacterID = INVALID_CHARACTER_ID;
 	const char* m_Dash = "/";
+	const char* m_EmptyString = "";
 	std::vector<const char*> m_MaleTitles = { "Emperor ", "King ", "Duke ", "Count ", "Baron " };
 	std::vector<const char*> m_FemaleTitles = { "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness " };
 	int m_CharacterSize = 25;

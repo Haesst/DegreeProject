@@ -692,6 +692,7 @@ void CharacterWindow::updateInfo()
 		}
 		else
 		{
+			m_RealmNameText.setString(m_EmptyString);
 			m_OwnerColor = m_CurrentCharacter->m_RegionColor;
 		}
 
