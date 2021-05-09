@@ -29,18 +29,28 @@ void UnitManager::update()
 
 	for (auto& unit : m_Units)
 	{
-		if (!unit.m_Raised && (unsigned int)unit.m_RepresentedForce < CharacterManager::get().getCharacter(unit.m_Owner).m_MaxArmySize)
+		Character& character = CharacterManager::get().getCharacter(unit.m_Owner);
+		if (m_LastDay < currentDate)
 		{
-			if (m_LastDay < currentDate)
+			if (character.m_CurrentGold < 0)
+			{
+				unit.m_RepresentedForce -= 1;
+			}
+			else if (!unit.m_Raised)
 			{
 				unit.m_RepresentedForce += 1;
+			}
 
-				if ((unsigned int)unit.m_RepresentedForce > CharacterManager::get().getCharacter(unit.m_Owner).m_MaxArmySize)
-				{
-					unit.m_RepresentedForce = CharacterManager::get().getCharacter(unit.m_Owner).m_MaxArmySize;
-				}
+			if (unit.m_RepresentedForce > (int)character.m_MaxArmySize)
+			{
+				unit.m_RepresentedForce = character.m_MaxArmySize;
+			}
+			else if (unit.m_RepresentedForce < 0)
+			{
+				unit.m_RepresentedForce = 0;
 			}
 		}
+		
 
 		if (!unit.m_Raised)
 		{
