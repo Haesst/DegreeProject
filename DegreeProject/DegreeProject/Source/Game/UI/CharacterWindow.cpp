@@ -1002,7 +1002,13 @@ void CharacterWindow::clickButton()
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		UIManager& uiManager = UIManager::get();
-		if (m_FamilyTreeSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		if (m_CharacterSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		{
+			Vector2DInt mapPosition = Map::get().getRegionById(m_CurrentCharacter->m_OwnedRegionIDs.front()).m_RegionCapital;
+			Vector2D screenPosition = Map::get().convertToScreen(mapPosition);
+			Game::setGameViewCenter({ screenPosition.x, screenPosition.y });
+		}
+		else if (m_FamilyTreeSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			InputHandler::setRightMouseReleased(false);
 			FamilyTreeWindow& familyTreeWindow = *uiManager.m_FamilyTreeWindow;

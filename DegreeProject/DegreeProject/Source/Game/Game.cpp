@@ -16,6 +16,8 @@
 sf::Sound Game::m_Sound;
 sf::Sound Game::m_BattleSound;
 sf::Font Game::m_UIFont;
+sf::View Game::m_GameView;
+Window* Game::m_Window;
 
 Game::~Game()
 {
@@ -37,9 +39,10 @@ void Game::run()
 	sf::RenderWindow* internalWindow = m_Window->getWindow();
 	internalWindow->setFramerateLimit(60);
 	sf::Vector2f floatResolution = sf::Vector2f((float)m_Resolution.x, (float)m_Resolution.y);
-	sf::View view(m_ViewCenter, floatResolution);
+	m_GameView.setCenter(m_GameViewCenter);
+	m_GameView.setSize(floatResolution);
 	sf::View uiView(floatResolution * 0.5f, floatResolution);
-	internalWindow->setView(view);
+	internalWindow->setView(m_GameView);
 	InputHandler::setUIView(uiView);
 
 	//Start
@@ -49,7 +52,7 @@ void Game::run()
 	UIManager::get().start();
 	DiplomacyManager::get().start();
 
-	UIManager::get().m_MiniMap->setGameView(&view);
+	UIManager::get().m_MiniMap->setGameView(&m_GameView);
 	UIManager::get().m_MiniMap->setUIView(&uiView);
 
 	//Logo Splash Screen
@@ -73,7 +76,7 @@ void Game::run()
 	logoText.setPosition(floatResolution.x * 0.5f, floatResolution.y * 0.75f);
 	while (!InputHandler::m_Inputs[KeyPressed] && !InputHandler::m_Inputs[MouseClicked])
 	{
-		Window::getWindow()->setView(view);
+		Window::getWindow()->setView(m_GameView);
 		InputHandler::handleInputEvents();
 		Window::getWindow()->setView(uiView);
 		Window::getWindow()->clear(sf::Color::Black);
@@ -81,7 +84,7 @@ void Game::run()
 		Window::getWindow()->draw(logoText);
 		Window::getWindow()->display();
 	}
-	Window::getWindow()->setView(view);
+	Window::getWindow()->setView(m_GameView);
 
 	Time::pauseGame();
 	while (internalWindow->isOpen())
@@ -110,10 +113,10 @@ void Game::run()
 		StaticSpriteManager::get().render();
 		UnitManager::get().render();
 
-		view = Window::getWindow()->getView();
+		m_GameView = Window::getWindow()->getView();
 		Window::getWindow()->setView(uiView);
 		UIManager::get().render();
-		Window::getWindow()->setView(view);
+		Window::getWindow()->setView(m_GameView);
 
 		Window::getWindow()->display();
 	}
@@ -149,6 +152,12 @@ void Game::initSound()
 	m_Sound.setLoop(true);
 	m_Sound.setVolume(m_Volume);
 	m_Sound.play();
+}
+
+void Game::setGameViewCenter(sf::Vector2f viewCenter)
+{
+	m_GameView.setCenter(viewCenter);
+	m_Window->getWindow()->setView(m_GameView);
 }
 
 void Game::addEntitys()
@@ -220,7 +229,7 @@ void Game::fillEmptyRegionWithOwners()
 			{
 				lastCreatedCharacter = addRandomEntityOwningRegion({ region.m_RegionId }, playerControlled, 17, 31);
 				Vector2D position = Map::get().convertToScreen(region.m_RegionCapital);
-				m_ViewCenter = { position.x, position.y };
+				m_GameViewCenter = { position.x, position.y };
 			}
 			else
 			{
