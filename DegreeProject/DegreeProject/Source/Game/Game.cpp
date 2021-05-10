@@ -52,6 +52,37 @@ void Game::run()
 	UIManager::get().m_MiniMap->setGameView(&view);
 	UIManager::get().m_MiniMap->setUIView(&uiView);
 
+	//Logo Splash Screen
+	sf::Texture logoTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/UI/Logo.png");
+	sf::Sprite logoSprite;
+	logoSprite.setTexture(logoTexture, true);
+	logoSprite.setScale(1200 / logoSprite.getLocalBounds().width, 700 / logoSprite.getLocalBounds().height);
+	logoSprite.setPosition(floatResolution.x * 0.5f - logoSprite.getLocalBounds().width * 0.5f, floatResolution.y * 0.5f - logoSprite.getLocalBounds().height * 0.5f);
+	sf::Text logoText;
+	logoText.setFont(m_UIFont);
+	logoText.setCharacterSize(100);
+	sf::Color logoColor(140, 84, 161);
+	logoText.setFillColor(logoColor);
+	std::string realmNameString = CharacterManager::get().getPlayerCharacter().m_KingdomName.substr(6);
+	std::stringstream stream;
+	stream << CharacterManager::get().getPlayerCharacter().m_Name << realmNameString;
+	logoText.setString(stream.str());
+	stream.str(std::string());
+	stream.clear();
+	logoText.setOrigin(logoText.getLocalBounds().width * 0.5f, logoText.getLocalBounds().height * 0.5f);
+	logoText.setPosition(floatResolution.x * 0.5f, floatResolution.y * 0.75f);
+	while (!InputHandler::m_Inputs[KeyPressed] && !InputHandler::m_Inputs[MouseClicked])
+	{
+		Window::getWindow()->setView(view);
+		InputHandler::handleInputEvents();
+		Window::getWindow()->setView(uiView);
+		Window::getWindow()->clear(sf::Color::Black);
+		Window::getWindow()->draw(logoSprite);
+		Window::getWindow()->draw(logoText);
+		Window::getWindow()->display();
+	}
+	Window::getWindow()->setView(view);
+
 	Time::pauseGame();
 	while (internalWindow->isOpen())
 	{
