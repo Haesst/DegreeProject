@@ -127,7 +127,7 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	setShape(m_MotherShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, m_MotherPosition);
 	setText(m_MotherName, m_Font, m_CharacterSize, m_OwnerColor, { m_MotherPosition.x + m_SizeX * 0.1f, m_MotherPosition.y });
 
-	m_FamilyTreeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Bloodline3.png");
+	m_FamilyTreeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Bloodline.png");
 	setSprite(m_FamilyTreeSprite, m_FamilyTreeTexture, { m_DiplomacySprites.back().getPosition().x + m_SpriteSize * 2, m_DiplomacySprites.back().getPosition().y });
 	setText(m_FamilyTreeText, m_Font, m_CharacterSize, m_OwnerColor, { m_FamilyTreeSprite.getPosition().x, m_FamilyTreeSprite.getPosition().y + m_SpriteSize }, "Family Tree");
 }
@@ -177,7 +177,6 @@ void CharacterWindow::render()
 		{
 			m_Window->draw(m_FamilyTreeText);
 		}
-		//m_Window->draw(CharacterConstants::m_MalePortraitSprites[m_CurrentCharacter->m_PortraitIndex]);
 		m_Window->draw(m_CharacterSprite);
 
 		if (m_Pregnant)
@@ -827,7 +826,21 @@ void CharacterWindow::updateInfo()
 void CharacterWindow::handleWindow()
 {
 	InputHandler::setCharacterWindowOpen(m_Visible);
-	if (InputHandler::getRightMouseReleased() && !InputHandler::getPlayerUnitSelected() && m_Open && !m_Visible)
+	if (!m_Visible && InputHandler::m_Inputs[TabReleased])
+	{
+		InputHandler::m_Inputs[TabReleased] = false;
+		m_CurrentCharacterID = m_PlayerCharacter->m_CharacterID;
+		checkIfPlayerCharacter();
+		updateInfo();
+		m_Open = true;
+		openWindow();
+	}
+	else if (m_Visible && InputHandler::m_Inputs[TabReleased])
+	{
+		InputHandler::m_Inputs[TabReleased] = false;
+		closeWindow();
+	}
+	else if (InputHandler::getRightMouseReleased() && !InputHandler::getPlayerUnitSelected() && m_Open && !m_Visible)
 	{
 		InputHandler::setRightMouseReleased(false);
 		openWindow();

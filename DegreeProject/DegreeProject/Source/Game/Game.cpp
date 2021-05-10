@@ -37,7 +37,7 @@ void Game::run()
 	sf::RenderWindow* internalWindow = m_Window->getWindow();
 	internalWindow->setFramerateLimit(60);
 	sf::Vector2f floatResolution = sf::Vector2f((float)m_Resolution.x, (float)m_Resolution.y);
-	sf::View view({ floatResolution.x * 4.5f, floatResolution.y * 1.25f }, floatResolution);
+	sf::View view(m_ViewCenter, floatResolution);
 	sf::View uiView(floatResolution * 0.5f, floatResolution);
 	internalWindow->setView(view);
 	InputHandler::setUIView(uiView);
@@ -135,71 +135,7 @@ void Game::addEntitys()
 
 	m_UIFont = m_AssetHandler->loadFontFromFile("Assets/Fonts/TestFont.ttf");
 
-	std::vector<unsigned int> id0{ 1};
-	CharacterID char0 = createCharacter(id0, Title::King, Gender::Male, "Kingdom of Milano", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(181, 54, 107));
-	UIManager::get().createUITextElement(m_UIFont, char0, CharacterManager::get().getCharacter(char0).m_KingdomName, id0);
-	CharacterManager::get().addTrait(char0, CharacterManager::get().getTrait("Ugly"));
-	CharacterManager::get().addTrait(char0, CharacterManager::get().getTrait("Sterile"));
-
-	std::vector<unsigned int> id1{ 8};
-	CharacterID char1 = createCharacter(id1, Title::Emperor, Gender::Female, "Roman Empire", CharacterNamePool::getFemaleName(), 100, 10, false, sf::Color(54, 181, 105));
-	UIManager::get().createUITextElement(m_UIFont, char1, CharacterManager::get().getCharacter(char1).m_KingdomName, id1);
-
-	std::vector<unsigned int> id2{ 17 };
-	CharacterID char2 = createCharacter(id2, Title::King, Gender::Male, "Kingdom of Sicilies", CharacterNamePool::getMaleName(), 150, 15, true, sf::Color(200, 181, 105));
-	UIManager::get().createUITextElement(m_UIFont, char2, CharacterManager::get().getCharacter(char2).m_KingdomName, id2);
-
-	CharacterManager::get().addTrait(char2, CharacterManager::get().getTrait("Beautiful"));
-
-	std::vector<unsigned int> characterFourRegions{ 18, 20 };
-	std::vector<unsigned int> characterFiveRegions{ 19 };
-	std::vector<unsigned int> characterSixRegions{ 21 };
-	std::vector<unsigned int> characterSevenRegions{ 22 };
-	std::vector<unsigned int> characterEightRegions{ 24, 26 };
-	std::vector<unsigned int> characterNineRegions{ 25 };
-	std::vector<unsigned int> characterTenRegions{ 23 };
-	std::vector<unsigned int> characterElevenRegions{ 27 };
-	std::vector<unsigned int> characterTwelveRegions{ 28 };
-	std::vector<unsigned int> characterThirteenRegions{ 29 };
-	std::vector<unsigned int> characterFourteenRegions{ 30 };
-	std::vector<unsigned int> characterFifteenRegions{ 34 };
-
-	CharacterID char4 = createCharacter(characterFourRegions, Title::Count, Gender::Male, "County of Krain", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(16, 181, 191));
-	UIManager::get().createUITextElement(m_UIFont, char4, CharacterManager::get().getCharacter(char4).m_KingdomName, characterFourRegions);
-
-	CharacterID char5 = createCharacter(characterFiveRegions, Title::Baron, Gender::Female, "Barony of Slavonia", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(216, 153, 65));
-	UIManager::get().createUITextElement(m_UIFont, char5, CharacterManager::get().getCharacter(char5).m_KingdomName, characterFiveRegions);
-
-	CharacterID char6 = createCharacter(characterSixRegions, Title::Baron, Gender::Male, "Barony of Croatia", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(37, 130, 198));
-	UIManager::get().createUITextElement(m_UIFont, char6, CharacterManager::get().getCharacter(char6).m_KingdomName, characterSixRegions);
-
-	CharacterID char7 = createCharacter(characterSevenRegions, Title::Baron, Gender::Female, "Barony of Lower Bosnia", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(151, 160, 90));
-	UIManager::get().createUITextElement(m_UIFont, char7, CharacterManager::get().getCharacter(char7).m_KingdomName, characterSevenRegions);
-
-	CharacterID char8 = createCharacter(characterEightRegions, Title::Count, Gender::Male, "County of Dubrovnik", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(240, 140, 149));
-	UIManager::get().createUITextElement(m_UIFont, char8, CharacterManager::get().getCharacter(char8).m_KingdomName, characterEightRegions);
-
-	CharacterID char9 = createCharacter(characterNineRegions, Title::Baron, Gender::Female, "Barony of Zachlumia", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(179, 226, 163));
-	UIManager::get().createUITextElement(m_UIFont, char9, CharacterManager::get().getCharacter(char9).m_KingdomName, characterNineRegions);
-
-	CharacterID char10 = createCharacter(characterTenRegions, Title::Baron, Gender::Male, "Barony of Upper Bosnia", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(24, 225, 191));
-	UIManager::get().createUITextElement(m_UIFont, char10, CharacterManager::get().getCharacter(char10).m_KingdomName, characterTenRegions);
-
-	CharacterID char11 = createCharacter(characterElevenRegions, Title::Baron, Gender::Male, "Barony of Corsica", CharacterNamePool::getMaleName(), 50, 5, false, sf::Color(86, 175, 125));
-	UIManager::get().createUITextElement(m_UIFont, char11, CharacterManager::get().getCharacter(char11).m_KingdomName, characterElevenRegions);
-
-	CharacterID char12 = createCharacter(characterTwelveRegions, Title::Baron, Gender::Female, "Barony of Sardinia", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(24, 125, 223));
-	UIManager::get().createUITextElement(m_UIFont, char12, CharacterManager::get().getCharacter(char12).m_KingdomName, characterTwelveRegions);
-
-	CharacterID char13 = createCharacter(characterThirteenRegions, Title::Baron, Gender::Female, "Barony of Molise", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(165, 189, 72));
-	UIManager::get().createUITextElement(m_UIFont, char13, CharacterManager::get().getCharacter(char13).m_KingdomName, characterThirteenRegions);
-
-	CharacterID char14 = createCharacter(characterFourteenRegions, Title::Baron, Gender::Female, "Barony of Valle d'Aosta", CharacterNamePool::getFemaleName(), 50, 5, false, sf::Color(223, 125, 24));
-	UIManager::get().createUITextElement(m_UIFont, char14, CharacterManager::get().getCharacter(char14).m_KingdomName, characterFourteenRegions);
-
-	CharacterID char15 = createCharacter(characterFifteenRegions, Title::Baron, Gender::Male, "Barony of Dyrachion", "Gjergj Kastrioti", 50, 5, false, sf::Color(152, 182, 54));
-	UIManager::get().createUITextElement(m_UIFont, char15, CharacterManager::get().getCharacter(char15).m_KingdomName, characterFifteenRegions);
-
+	m_PlayerRandomCharacterID = rand() * Map::get().m_Data.m_Regions.size() / RAND_MAX + 1;
 	fillEmptyRegionWithOwners();
 
 	//UI
@@ -242,34 +178,35 @@ void Game::addEntitys()
 
 void Game::fillEmptyRegionWithOwners()
 {
+	bool playerControlled = false;
+	CharacterID lastCreatedCharacter = INVALID_CHARACTER_ID;
 	for (auto& region : Map::get().m_Data.m_Regions)
 	{
 		if (region.m_OwnerID == INVALID_CHARACTER_ID)
 		{
-			addRandomEntityOwningRegion({ region.m_RegionId });
+			playerControlled = (lastCreatedCharacter + 1 == m_PlayerRandomCharacterID) ? true : false;
+			if (playerControlled)
+			{
+				lastCreatedCharacter = addRandomEntityOwningRegion({ region.m_RegionId }, playerControlled, 17, 31);
+				Vector2D position = Map::get().convertToScreen(region.m_RegionCapital);
+				m_ViewCenter = { position.x, position.y };
+			}
+			else
+			{
+				lastCreatedCharacter = addRandomEntityOwningRegion({ region.m_RegionId });
+			}
 		}
 	}
 }
 
-void Game::addRandomEntityOwningRegion(std::vector<size_t> regions)
+CharacterID Game::addRandomEntityOwningRegion(std::vector<size_t> regions, bool playerControlled, unsigned int minAge, unsigned int maxAge)
 {
 	bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;
 	Gender gender = male ? Gender::Male : Gender::Female;
 	char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
 	sf::Color regionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
-	CharacterID character = createCharacter(regions, Title::Baron, gender, "Barony of Region", name, 50, 5, false, regionColor);
+	CharacterID character = CharacterManager::get().createCharacterWithRandomBirthday(name, Title::Baron, gender, regions, "", 0, 10, regionColor, playerControlled, minAge, maxAge);
 	UIManager::get().createUITextElement(m_UIFont, character, CharacterManager::get().getCharacter(character).m_KingdomName, regions);
 	CharacterManager::get().updateTitleAndUIText(CharacterManager::get().getCharacter(character));
-}
-
-CharacterID Game::createCharacter(std::vector<unsigned int>& ownedRegions, Title title, Gender gender, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color)
-{
-	CharacterID character = CharacterManager::get().createCharacterWithRandomBirthday(characterName, title, gender, ownedRegions, realmName, army, (float)gold, color, playerControlled, 17, 62);
-
-	for (int i : ownedRegions)
-	{
-		Map::get().setRegionColor(i, color);
-	}
-
 	return character;
 }

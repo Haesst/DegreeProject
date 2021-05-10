@@ -17,6 +17,8 @@ enum Inputs
 	EnterReleased,
 	BackSpacePressed,
 	BackSpaceReleased,
+	TabPressed,
+	TabReleased,
 	CharacterWindowOpen,
 	RegionWindowOpen,
 	WarWindowOpen,

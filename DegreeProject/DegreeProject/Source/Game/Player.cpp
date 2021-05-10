@@ -132,30 +132,15 @@ void Player::tryToSelectUnit()
 {
 	if (InputHandler::getLeftMouseClicked() && !m_Draging)
 	{
-		Vector2DInt mousePosition = InputHandler::getMouseMapPosition();
+		Vector2D mousePosition = InputHandler::getMousePosition();
 
 		bool foundUnit = false;
-
-		if (Map::get().mapSquareDataContainsKey(mousePosition))
+		CharacterID playerCharacterID = CharacterManager::get().getPlayerCharacterID();
+		Unit& unit = UnitManager::get().getUnitOfCharacter(playerCharacterID);
+		if (unit.m_Sprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
-			for (auto& squareData : Map::get().m_MapSquareData)
-			{
-				if (squareData.m_Position != mousePosition)
-				{
-					continue;
-				}
-
-				CharacterID playerCharacter = CharacterManager::get().getPlayerCharacterID();
-
-				for (auto& unitID : squareData.m_EntitiesInSquare)
-				{
-					if (UnitManager::get().getUnitWithId(unitID).m_Owner == playerCharacter)
-					{
-						selectUnit(unitID);
-						foundUnit = true;
-					}
-				}
-			}
+			selectUnit(unit.m_UnitID);
+			foundUnit = true;
 		}
 
 		if (!foundUnit)

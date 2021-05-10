@@ -671,15 +671,17 @@ void CharacterManager::killCharacter(CharacterID characterID)
 	character.m_ColorAtDeath = character.m_RegionColor;
 	character.m_AgeAtDeath = Time::m_GameDate.getAge(character.m_Birthday);
 
+	if (character.m_CharacterID == m_PlayerCharacterID || character.m_Spouse == m_PlayerCharacterID
+		|| character.m_Father == m_PlayerCharacterID || character.m_Mother == m_PlayerCharacterID
+		|| character.m_NextSibling == m_PlayerCharacterID)
+	{
+		UIManager::get().createUIEventElement(characterID, characterID, UIType::Death);
+	}
+
 	if (character.m_CharacterTitle != Title::Unlanded && character.m_OwnedRegionIDs.size() > 0)
 	{
 		handleInheritance(character);
 		UIManager::get().SetRealmTextAsConquered(character.m_CharacterID);
-	}
-	else if (character.m_Spouse == m_PlayerCharacterID || character.m_Father == m_PlayerCharacterID
-		  || character.m_Mother == m_PlayerCharacterID || character.m_NextSibling == m_PlayerCharacterID)
-	{
-		UIManager::get().createUIEventElement(characterID, characterID, UIType::Death);
 	}
 
 	character.m_RegionColor = sf::Color::Black;

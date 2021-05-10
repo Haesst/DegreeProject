@@ -32,8 +32,9 @@ private:
 	HotReloader* m_HotReloader = nullptr;
 	sf::SoundBuffer m_SoundBuffer;
 	sf::SoundBuffer m_BattleSoundBuffer;
-	float m_Volume = 1.0f;
-
+	sf::Vector2f m_ViewCenter;
+	const float m_Volume = 5.0f;
+	CharacterID m_PlayerRandomCharacterID = INVALID_CHARACTER_ID;
 public:
 	static sf::Sound m_Sound;
 	static sf::Sound m_BattleSound;
@@ -52,7 +53,5 @@ private:
 
 	void addEntitys();
 	void fillEmptyRegionWithOwners();
-	void addRandomEntityOwningRegion(std::vector<size_t> regions);
-
-	CharacterID createCharacter(std::vector<unsigned int>& ownedRegions, Title title, Gender gender, const char* realmName, const char* characterName, int army, int gold, bool playerControlled, sf::Color color);
+	CharacterID addRandomEntityOwningRegion(std::vector<size_t> regions, bool playerControlled = false, unsigned int minAge = 17, unsigned int maxAge = 62);
 };

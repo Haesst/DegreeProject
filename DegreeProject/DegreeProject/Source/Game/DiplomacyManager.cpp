@@ -763,6 +763,7 @@ void DiplomacyManager::breakAlliance(const CharacterID& characterOneID, const Ch
 {
 	removeAlly(characterOneID, characterTwoID);
 	removeAlly(characterTwoID, characterOneID);
+	makeTruce(characterOneID, characterTwoID);
 }
 
 std::vector<CharacterID> DiplomacyManager::getAlliances(const CharacterID& character)

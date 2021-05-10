@@ -36,6 +36,8 @@ void InputHandler::handleInputEvents()
 	m_Inputs[MouseMoved] = false;
 	m_Inputs[MouseScrolled] = false;
 	m_Inputs[EscapePressed] = false;
+	m_Inputs[TabPressed] = false;
+	m_Inputs[TabReleased] = false;
 	m_Inputs[PlayerUnitSelected] = false;
 	sf::RenderWindow& window = *Window::getWindow();
 	sf::View view = window.getView();
@@ -157,6 +159,10 @@ void InputHandler::handleInputEvents()
 				//CharacterManager::get().killCharacter(CharacterManager::get().getPlayerCharacterID());
 				break;
 			}
+			case sf::Keyboard::Tab:
+			{
+				m_Inputs[TabPressed] = true;
+			}
 			default:
 			{
 				break;
@@ -179,6 +185,10 @@ void InputHandler::handleInputEvents()
 				{
 					m_Inputs[BackSpaceReleased] = true;
 					break;
+				}
+				case sf::Keyboard::Tab:
+				{
+					m_Inputs[TabReleased] = true;
 				}
 				default:
 				{

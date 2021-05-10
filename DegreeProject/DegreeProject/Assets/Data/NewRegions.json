@@ -357,7 +357,7 @@
 	"tax": 5,
 	"manPower": 40,
 	"capitalx" : 417,
-	"capitaly" : 62
+	"capitaly" : 63
 	},
 	{
 	"name": "Athens",
@@ -677,7 +677,7 @@
 	"tax": 5,
 	"manPower": 70,
 	"capitalx" : 12,
-	"capitaly" : 62
+	"capitaly" : 63
 	},
 	{
 	"name": "Algarve",
@@ -697,7 +697,7 @@
 	"tax": 3,
 	"manPower": 10,
 	"capitalx" : 64,
-	"capitaly" : 31
+	"capitaly" : 32
 	},
 	{
 	"name": "Castille",
@@ -727,7 +727,7 @@
 	"tax": 5,
 	"manPower": 60,
 	"capitalx" : 86,
-	"capitaly" : 53
+	"capitaly" : 54
 	},
 	{
 	"name": "Cordoba",
