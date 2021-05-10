@@ -58,11 +58,11 @@ void Game::run()
 	logoSprite.setTexture(logoTexture, true);
 	logoSprite.setScale(1200 / logoSprite.getLocalBounds().width, 700 / logoSprite.getLocalBounds().height);
 	logoSprite.setPosition(floatResolution.x * 0.5f - logoSprite.getLocalBounds().width * 0.5f, floatResolution.y * 0.5f - logoSprite.getLocalBounds().height * 0.5f);
+	logoSprite.setColor(CharacterManager::get().getPlayerCharacter().m_RegionColor);
 	sf::Text logoText;
 	logoText.setFont(m_UIFont);
 	logoText.setCharacterSize(100);
-	sf::Color logoColor(140, 84, 161);
-	logoText.setFillColor(logoColor);
+	logoText.setFillColor(CharacterManager::get().getPlayerCharacter().m_RegionColor);
 	std::string realmNameString = CharacterManager::get().getPlayerCharacter().m_KingdomName.substr(6);
 	std::stringstream stream;
 	stream << CharacterManager::get().getPlayerCharacter().m_Name << realmNameString;
