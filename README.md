@@ -9,6 +9,8 @@ The player can make alliances to gain strength in wars. If a war reaches +100 wa
 
 Mare Nostrum was developed in C++ using the library SFML during 10 weeks as a degree project at Futuregames, a higher vocational education for game development in Stockholm, Sweden.
 
+Download game: https://fredrikhanses.itch.io/mare-nostrum
+
 Credits:
 
     Fredrik Hanses
