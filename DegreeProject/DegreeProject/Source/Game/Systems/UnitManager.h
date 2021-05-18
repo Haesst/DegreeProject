@@ -33,7 +33,8 @@ private:
 	void unitCombat(Unit& unit);
 	void unitSiege(Unit& unit);
 	void showLinePath(Unit& unit);
-	void setStrengthBox(Unit& unit);
+	void setupUnitUI(Unit& unit);
+	void updateUnitUI(Unit& unit);
 	void startCombatTimer(UnitID unit, UnitID enemyUnit);
 	UnitID unitAtSquare(Vector2DInt square, UnitID unitID);
 	std::vector<UnitID> getAlliesAtSquare(const Character& character, Vector2DInt square);

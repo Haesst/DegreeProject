@@ -39,7 +39,7 @@ private:
 	void clickDrag();
 	void tryToSelectUnit();
 	void moveUnit();
-	void deselectUnits();
+	void deselectUnit();
 
 private:
 	static Player* m_Instance;

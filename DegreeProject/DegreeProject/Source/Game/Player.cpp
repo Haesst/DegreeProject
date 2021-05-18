@@ -11,6 +11,7 @@ Player::Player(CharacterID ownedCharacter)
 
 Player::Player()
 {
+	m_DragWindow.setFillColor(sf::Color::Transparent);
 }
 
 Player& Player::get()
@@ -26,7 +27,6 @@ Player& Player::get()
 void Player::update()
 {
 	clickDrag();
-
 	tryToSelectUnit();
 	moveUnit();
 	hoverOverRegion();
@@ -38,16 +38,6 @@ void Player::render()
 	{
 		Window::getWindow()->draw(m_DragWindow);
 	}
-}
-
-void Player::loseGame(LoseCause cause)
-{
-	UIManager::get().m_EndWindow->openWindow(unsigned int(cause));
-}
-
-void Player::winGame()
-{
-	UIManager::get().m_EndWindow->openWindow(unsigned int(LoseCause::Unlanded) + 1);
 }
 
 void Player::hoverOverRegion()
@@ -90,10 +80,7 @@ void Player::clickDrag()
 	if (m_MouseDownLastFrame && !m_Draging)
 	{
 		m_Draging = true;
-		m_DragWindow.setSize(sf::Vector2f(10.0f, 10.0f));
 		m_DragWindow.setPosition(m_MousePosition.x, m_MousePosition.y);
-		m_DragWindow.setFillColor(sf::Color::Transparent);
-		m_DragWindow.setOutlineThickness(m_DragThickness * InputHandler::m_TotalZoom);
 	}
 
 	if (m_Draging)
@@ -101,10 +88,11 @@ void Player::clickDrag()
 		Vector2D mousePosition = InputHandler::getMousePosition();
 		Vector2D distance = mousePosition - m_MousePosition;
 		m_DragWindow.setSize(sf::Vector2f(distance.x, distance.y));
+		m_DragWindow.setOutlineThickness(m_DragThickness * InputHandler::m_TotalZoom);
 
-		Vector2D normDistance = distance.normalized();
-		m_DragDirection.x = normDistance.x;
-		m_DragDirection.y = normDistance.y;
+		Vector2D direction = distance.normalized();
+		m_DragDirection.x = direction.x;
+		m_DragDirection.y = direction.y;
 	}
 
 	if (InputHandler::getLeftMouseClicked())
@@ -112,20 +100,11 @@ void Player::clickDrag()
 		m_MouseDownLastFrame = true;
 		m_MousePosition = InputHandler::getMousePosition();
 	}
-	else if (InputHandler::getLeftMouseReleased())
+	else if (InputHandler::getLeftMouseReleased() && m_Draging)
 	{
 		m_MouseDownLastFrame = false;
 		m_Draging = false;
 	}
-}
-
-void Player::selectUnit(UnitID id)
-{
-	Unit& unit = UnitManager::get().getUnitWithId(id);
-
-	unit.m_Selected = true;
-	InputHandler::setPlayerUnitSelected(true);
-	m_SelectedUnitID = id;
 }
 
 void Player::tryToSelectUnit()
@@ -133,71 +112,43 @@ void Player::tryToSelectUnit()
 	if (InputHandler::getLeftMouseClicked() && !m_Draging)
 	{
 		Vector2D mousePosition = InputHandler::getMousePosition();
-
-		bool foundUnit = false;
 		CharacterID playerCharacterID = CharacterManager::get().getPlayerCharacterID();
 		Unit& unit = UnitManager::get().getUnitOfCharacter(playerCharacterID);
 		if (unit.m_Sprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
 			selectUnit(unit.m_UnitID);
-			foundUnit = true;
 		}
-
-		if (!foundUnit)
+		else
 		{
-			deselectUnits();
+			deselectUnit();
 		}
 	}
 
 	if (m_Draging && InputHandler::getMouseMoved())
 	{
-		Vector2D startPosition = m_DragWindow.getPosition();
-		float width = m_DragWindow.getGlobalBounds().width;
-		float height = m_DragWindow.getGlobalBounds().height;
-
-		float firstX = startPosition.x;
-		float firstY = startPosition.y;
-
-		if (m_DragDirection.x < 0.0f)
-		{
-			firstX -= width;
-		}
-
-		if (m_DragDirection.y < 0.0f)
-		{
-			firstY -= height;
-		}
-
-		bool foundUnit = false;
 		CharacterID playerCharacterID = CharacterManager::get().getPlayerCharacterID();
 		Unit& unit = UnitManager::get().getUnitOfCharacter(playerCharacterID);
 		Vector2D unitPosition = { unit.m_Position.x + unit.m_HighlightShapeSize.x * 0.5f, unit.m_Position.y + unit.m_HighlightShapeSize.y * 0.5f };
 		if (m_DragWindow.getGlobalBounds().contains(unitPosition.x, unitPosition.y))
 		{
 			selectUnit(unit.m_UnitID);
-			foundUnit = true;
 		}
-
-		if (!foundUnit)
+		else
 		{
-			deselectUnits();
+			deselectUnit();
 		}
 	}
 }
 
-void Player::moveUnit()
+void Player::selectUnit(UnitID id)
 {
-	if (InputHandler::getRightMouseReleased() && m_SelectedUnitID != INVALID_UNIT_ID)
-	{
-		InputHandler::setRightMouseReleased(false);
-		Vector2DInt mousePosition = InputHandler::getMouseMapPosition();
-		Vector2DInt unitPosition = Map::get().convertToMap(UnitManager::get().getUnitWithId(m_SelectedUnitID).m_Position);
-
-		UnitManager::get().giveUnitPath(m_SelectedUnitID, Pathfinding::get().findPath(unitPosition, mousePosition));
-	}
+	Unit& unit = UnitManager::get().getUnitWithId(id);
+	unit.m_Selected = true;
+	InputHandler::setPlayerUnitSelected(true);
+	m_SelectedUnitID = id;
 }
 
-void Player::deselectUnits()
+void Player::deselectUnit()
 {
 	if (m_SelectedUnitID == INVALID_UNIT_ID)
 	{
@@ -208,4 +159,25 @@ void Player::deselectUnits()
 	unit.m_Selected = false;
 	InputHandler::setPlayerUnitSelected(false);
 	m_SelectedUnitID = INVALID_UNIT_ID;
+}
+
+void Player::moveUnit()
+{
+	if (InputHandler::getRightMouseReleased() && m_SelectedUnitID != INVALID_UNIT_ID)
+	{
+		InputHandler::setRightMouseReleased(false);
+		Vector2DInt mousePosition = InputHandler::getMouseMapPosition();
+		Vector2DInt unitPosition = Map::get().convertToMap(UnitManager::get().getUnitWithId(m_SelectedUnitID).m_Position);
+		UnitManager::get().giveUnitPath(m_SelectedUnitID, Pathfinding::get().findPath(unitPosition, mousePosition));
+	}
+}
+
+void Player::loseGame(LoseCause cause)
+{
+	UIManager::get().m_EndWindow->openWindow(unsigned int(cause));
+}
+
+void Player::winGame()
+{
+	UIManager::get().m_EndWindow->openWindow(unsigned int(LoseCause::Unlanded) + 1);
 }

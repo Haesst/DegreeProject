@@ -5,10 +5,10 @@
 #include "Game/Map/Map.h"
 
 static float mouseScrollDirection = 0.0f;
-static Vector2DInt viewMoveDirection = Vector2DInt();
+static Vector2D viewMoveDirection = Vector2D();
 static const float MAX_ZOOM = 5000.0f;
 static const float MIN_ZOOM = 1000.0f;
-static const float MOVE_SPEED = 25.0f;
+static const float MOVE_SPEED = 100.0f;
 static const float ZOOM_SPEED = 0.1f;
 static Vector2D mousePosition = Vector2D(0.0f, 0.0f);
 static Vector2D mousePositionUI = Vector2D(0.0f, 0.0f);
@@ -16,8 +16,8 @@ static Vector2D mousePositionMiniMap = Vector2D(0.0f, 0.0f);
 static Vector2DInt mouseMapPosition = Vector2DInt(0, 0);
 bool InputHandler::m_Inputs[Inputs::PlayerUnitSelected + 1];
 
-sf::View& InputHandler::m_UIView = sf::View();
-sf::View& InputHandler::m_MiniMapView = sf::View();
+sf::View* InputHandler::m_UIView = nullptr;
+sf::View* InputHandler::m_MiniMapView = nullptr;
 float InputHandler::m_TotalZoom = 1.0f;
 float InputHandler::m_InverseZoom = 1.0f;
 float InputHandler::maxCenterXPosition = 26010.0f;
@@ -39,7 +39,8 @@ void InputHandler::handleInputEvents()
 	m_Inputs[EscapePressed] = false;
 	m_Inputs[TabPressed] = false;
 	m_Inputs[TabReleased] = false;
-	m_Inputs[PlayerUnitSelected] = false;
+	m_Inputs[EnterReleased] = false;
+	m_Inputs[BackSpaceReleased] = false;
 	sf::RenderWindow& window = *Window::getWindow();
 	sf::View view = window.getView();
 	sf::Event event;
@@ -60,14 +61,14 @@ void InputHandler::handleInputEvents()
 			case sf::Keyboard::Up:
 			case sf::Keyboard::W:
 			{
-				viewMoveDirection = Vector2DInt(0, -1);
+				viewMoveDirection = Vector2D(0.0f, -1.0f);
 				moveView(window, view);
 				break;
 			}
 			case sf::Keyboard::Left:
 			case sf::Keyboard::A:
 			{
-				viewMoveDirection = Vector2DInt(-1, 0);
+				viewMoveDirection = Vector2D(-1.0f, 0.0f);
 				
 				moveView(window, view);
 				break;
@@ -75,14 +76,14 @@ void InputHandler::handleInputEvents()
 			case sf::Keyboard::Down:
 			case sf::Keyboard::S:
 			{
-				viewMoveDirection = Vector2DInt(0, 1);
+				viewMoveDirection = Vector2D(0.0f, 1.0f);
 				moveView(window, view);
 				break;
 			}
 			case sf::Keyboard::Right:
 			case sf::Keyboard::D:
 			{
-				viewMoveDirection = Vector2DInt(1, 0);
+				viewMoveDirection = Vector2D(1.0f, 0.0f);
 				moveView(window, view);
 				break;
 			}
@@ -315,11 +316,11 @@ void InputHandler::handleInputEvents()
 			{
 				Vector2D distance = (getMousePosition() - previousMousePosition);
 				float length = distance.getLength();
-				if (length > 1.0f)
+				if (length > 75.0f)
 				{
 					Vector2D direction = distance.normalized();
-					view.move(-direction.x, -direction.y);
-					window.setView(view);
+					viewMoveDirection = { -direction.x, -direction.y };
+					moveView(window, view);
 				}
 			}
 			break;
@@ -344,12 +345,12 @@ void InputHandler::handleInputEvents()
 
 void InputHandler::setUIView(sf::View& uiView)
 {
-	m_UIView = uiView;
+	m_UIView = &uiView;
 }
 
 void InputHandler::setMiniMapView(sf::View& minimapView)
 {
-	m_MiniMapView = minimapView;
+	m_MiniMapView = &minimapView;
 }
 
 void InputHandler::zoomView(sf::RenderWindow& window, sf::View& view)
@@ -371,8 +372,8 @@ void InputHandler::setMousePosition(int xPosition, int yPosition, const sf::Rend
 {
 	mouseMapPosition = Vector2DInt(xPosition, yPosition);
 	mousePosition = window.mapPixelToCoords(sf::Vector2i(mouseMapPosition.x, mouseMapPosition.y));
-	mousePositionUI = window.mapPixelToCoords(sf::Vector2i(mouseMapPosition.x, mouseMapPosition.y), m_UIView);
-	mousePositionMiniMap = window.mapPixelToCoords(sf::Vector2i(mouseMapPosition.x, mouseMapPosition.y), m_MiniMapView);
+	mousePositionUI = window.mapPixelToCoords(sf::Vector2i(mouseMapPosition.x, mouseMapPosition.y), *m_UIView);
+	mousePositionMiniMap = window.mapPixelToCoords(sf::Vector2i(mouseMapPosition.x, mouseMapPosition.y), *m_MiniMapView);
 	mouseMapPosition = Map::convertToMap(mousePosition);
 }
 

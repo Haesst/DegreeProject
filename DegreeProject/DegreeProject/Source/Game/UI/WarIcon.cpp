@@ -11,6 +11,7 @@
 #include "Game/Systems/HeraldicShieldManager.h"
 #include "Game/Map/Map.h"
 #include "Game/UI/CharacterWindow.h"
+#include "Game/Game.h"
 
 WarIcon::WarIcon(UIID ID, sf::Font font, unsigned int index, CharacterID attackerID, CharacterID defenderID)
 {
@@ -34,12 +35,22 @@ void WarIcon::activate()
 {
 	m_Active = true;
 	m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { WarIcon& warIcon = *static_cast<WarIcon*>(data); warIcon.onDayChange(); }, static_cast<void*>(this));
+	Game::m_Sound.pause();
+	if (Game::m_BattleSound.getStatus() != sf::SoundSource::Playing)
+	{
+		Game::m_BattleSound.play();
+	}
 	updateInfo();
 }
 
 void WarIcon::deactivate()
 {
 	m_WarIconShape.setSize(sf::Vector2f());
+	if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && DiplomacyManager::get().getWarHandlesOfCharacter(CharacterManager::get().getPlayerCharacterID()).empty())
+	{
+		Game::m_BattleSound.stop();
+		Game::m_Sound.play();
+	}
 	Time::m_GameDate.unsubscribeToDayChange(m_DaySubscriptionHandle);
 	m_DaySubscriptionHandle = -1;
 	m_Active = false;
@@ -67,10 +78,11 @@ void WarIcon::setWarscore(int& warscore, std::stringstream& stream)
 	{
 		warscore = 100;
 	}
-	if (warscore < -100)
+	else if (warscore < -100)
 	{
 		warscore = -100;
 	}
+
 	if (warscore > 0 || warscore == 0)
 	{
 		m_WarscoreText.setFillColor(m_PositiveColor);

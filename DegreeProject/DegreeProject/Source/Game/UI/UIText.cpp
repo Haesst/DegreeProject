@@ -12,12 +12,12 @@ UIText::UIText(UIID id, sf::Font font, std::string realmName, std::vector<unsign
 	m_CountryName = realmName;
 	m_OwnedRegionIDs = ownedRegions;
 	m_Window = Window::getWindow();
-
-	adjustText();
+	setText();
 }
 
 void UIText::start()
 {
+	setText();
 	adjustText();
 }
 
@@ -27,51 +27,13 @@ void UIText::update()
 	{
 		if (InputHandler::getMouseScrolled())
 		{
-			if (InputHandler::m_TotalZoom <= m_HiddenDistance)
-			{
-				m_Hidden = true;
-			}
-			else
-			{
-				m_Hidden = false;
-			}
-			m_CountryNameText.setScale(InputHandler::m_InverseZoom, InputHandler::m_InverseZoom);
-
-			m_OpacityColor = m_FillColor;
-			m_OpacityColor.a = (sf::Uint8)(m_OpacityColor.a * InputHandler::m_TotalZoom * m_FadeSpeed);
-			if (m_OpacityColor.a > m_MaxTextOpacity)
-			{
-				m_OpacityColor.a = m_MaxTextOpacity;
-			}
-			m_CountryNameText.setFillColor(m_OpacityColor);
-
-			m_OpacityColor = m_OutlineColor;
-			m_OpacityColor.a = (sf::Uint8)(m_OpacityColor.a * InputHandler::m_TotalZoom * m_FadeSpeed);
-			if (m_OpacityColor.a > m_MaxTextOpacity)
-			{
-				m_OpacityColor.a = m_MaxTextOpacity;
-			}
-			m_CountryNameText.setOutlineColor(m_OpacityColor);
-
-			if (m_Debug)
-			{
-				for (sf::RectangleShape& cornerShape : m_CornerShapes)
-				{
-					cornerShape.setScale(InputHandler::m_InverseZoom, InputHandler::m_InverseZoom);
-				}
-			}
+			scaleText();
+			fadeText();
 		}
-		m_CountryNameText.setPosition(sf::Vector2f(m_Window->mapCoordsToPixel({ m_PositionX, m_PositionY })));
-
-		if (m_Debug)
-		{
-			for (unsigned int index = 0; index < m_CornerShapes.size(); index++)
-			{
-				m_CornerShapes[index].setPosition(sf::Vector2f(m_Window->mapCoordsToPixel(m_CornerPositions[index])));
-			}
-		}
+		setFixedPosition();
 	}
 }
+
 void UIText::render()
 {
 	if (!m_Conquered && !m_Hidden)
@@ -86,6 +48,25 @@ void UIText::render()
 			m_Window->draw(cornerShape);
 		}
 	}
+}
+
+void UIText::conquerRegion(unsigned int regionID)
+{
+	m_OwnedRegionIDs.push_back(regionID);
+	adjustText();
+}
+
+void UIText::loseRegion(unsigned regionID)
+{
+	for (unsigned int index = 0; index < m_OwnedRegionIDs.size(); index++)
+	{
+		if (m_OwnedRegionIDs[index] == regionID)
+		{
+			m_OwnedRegionIDs.erase(m_OwnedRegionIDs.begin() + index);
+			break;
+		}
+	}
+	adjustText();
 }
 
 void UIText::adjustText()
@@ -105,12 +86,17 @@ void UIText::adjustText()
 		Vector2DInt topRightMostPosition = { 0, map.height };
 		Vector2DInt bottomLeftMostPosition = { map.width, 0 };
 		Vector2DInt bottomRightMostPosition = { 0, 0 };
+		Vector2DInt realmPositions = { 0, 0 };
+		unsigned int numberOfRealmPositions = 0;
 		for (SquareData& square : mapData)
 		{
 			for (unsigned int regionId : m_OwnedRegionIDs)
 			{
 				if (regionId == square.m_RegionID)
 				{
+					realmPositions += square.m_Position;
+					numberOfRealmPositions++;
+
 					if (square.m_Position.x + square.m_Position.y * map.m_AspectRatio <= topLeftMostPosition.x + topLeftMostPosition.y * map.m_AspectRatio)
 					{
 						topLeftMostPosition = square.m_Position;
@@ -169,45 +155,15 @@ void UIText::adjustText()
 			m_CornerPositions.push_back(cornerShape.getPosition());
 		}
 
-		Vector2D diagonal;
-		Vector2D startPosition;
-		Vector2D topLeftToBottomRightDiagonal = bottomRightMostPositionScreen - topLeftMostPositionScreen;
-		Vector2D bottomLeftToTopRightDiagonal = topRightMostPositionScreen - bottomLeftMostPositionScreen;
-		topLeftToBottomRightDiagonal.y *= map.m_AspectRatio;
-		bottomLeftToTopRightDiagonal.y *= map.m_AspectRatio;
-		float topLeftbottomRightLength = topLeftToBottomRightDiagonal.getLength();
-		float bottomLeftToTopRightLength = bottomLeftToTopRightDiagonal.getLength();
-		if (topLeftbottomRightLength >= bottomLeftToTopRightLength)
-		{
-			diagonal = topLeftToBottomRightDiagonal;
-		}
-		else
-		{
-			diagonal = bottomLeftToTopRightDiagonal;
-		}
-		startPosition = calculateIntersection(topLeftMostPositionScreen, bottomRightMostPositionScreen, bottomLeftMostPositionScreen, topRightMostPositionScreen);
+		calculatePosition(realmPositions, numberOfRealmPositions);
 
-		float diagonalLength = diagonal.getLength();
-		if ((unsigned int)(diagonalLength * 0.1f) >= m_MinCharacterSize && (unsigned int)(diagonalLength * 0.1f) <= m_MaxCharacterSize)
-		{
-			m_CharacterSize = (unsigned int)(diagonalLength * 0.1f);
-			m_OutlineThickness = diagonalLength * 0.001f;
-		}
-		else if ((unsigned int)(diagonalLength * 0.1f) < m_MinCharacterSize)
-		{
-			m_CharacterSize = m_MinCharacterSize;
-			m_OutlineThickness = m_MinOutlineThickness;
-		}
-		else
-		{
-			m_CharacterSize = m_MaxCharacterSize;
-			m_OutlineThickness = m_MaxOutlineThickness;
-		}
+		Vector2D diagonal = calculateDiagonal(topLeftMostPositionScreen, bottomRightMostPositionScreen, bottomLeftMostPositionScreen, topRightMostPositionScreen);
+
+		calculateSize(diagonal);
 
 		m_Rotation = (float)(std::atan2f(diagonal.y, diagonal.x) * 180.0f) / (float)M_PI;
-		m_PositionX = startPosition.x;
-		m_PositionY = startPosition.y;
-		setText(m_CountryNameText, m_Font, m_CharacterSize, m_FillColor, m_OutlineColor, m_OutlineThickness, { m_PositionX, m_PositionY }, m_Rotation, m_CountryName);
+
+		updateText();
 	}
 	else
 	{
@@ -215,23 +171,48 @@ void UIText::adjustText()
 	}
 }
 
-void UIText::conquerRegion(unsigned int regionID)
+void UIText::calculatePosition(Vector2DInt realmPositions, unsigned int numberOfRealmPositions)
 {
-	m_OwnedRegionIDs.push_back(regionID);
-	adjustText();
+	Vector2DInt midRealmPosition = realmPositions / numberOfRealmPositions;
+	Vector2D midRealmPositionScreen = Map::get().convertToScreen(midRealmPosition);
+	m_PositionX = midRealmPositionScreen.x;
+	m_PositionY = midRealmPositionScreen.y;
 }
 
-void UIText::loseRegion(unsigned regionID)
+Vector2D UIText::calculateDiagonal(Vector2D topLeftMostPositionScreen, Vector2D bottomRightMostPositionScreen, Vector2D bottomLeftMostPositionScreen, Vector2D topRightMostPositionScreen)
 {
-	for (unsigned int index = 0; index < m_OwnedRegionIDs.size(); index++)
+	Vector2D topLeftToBottomRightDiagonal = bottomRightMostPositionScreen - topLeftMostPositionScreen;
+	Vector2D bottomLeftToTopRightDiagonal = topRightMostPositionScreen - bottomLeftMostPositionScreen;
+	float topLeftbottomRightLength = topLeftToBottomRightDiagonal.getLength();
+	float bottomLeftToTopRightLength = bottomLeftToTopRightDiagonal.getLength();
+	if (topLeftbottomRightLength >= bottomLeftToTopRightLength)
 	{
-		if (m_OwnedRegionIDs[index] == regionID)
-		{
-			m_OwnedRegionIDs.erase(m_OwnedRegionIDs.begin() + index);
-			break;
-		}
+		return topLeftToBottomRightDiagonal;
 	}
-	adjustText();
+	else
+	{
+		return bottomLeftToTopRightDiagonal;
+	}
+}
+
+void UIText::calculateSize(Vector2D diagonal)
+{
+	float diagonalLength = diagonal.getLength();
+	if ((unsigned int)(diagonalLength * 0.1f) >= m_MinCharacterSize && (unsigned int)(diagonalLength * 0.1f) <= m_MaxCharacterSize)
+	{
+		m_CharacterSize = (unsigned int)(diagonalLength * 0.1f);
+		m_OutlineThickness = diagonalLength * 0.001f;
+	}
+	else if ((unsigned int)(diagonalLength * 0.1f) < m_MinCharacterSize)
+	{
+		m_CharacterSize = m_MinCharacterSize;
+		m_OutlineThickness = m_MinOutlineThickness;
+	}
+	else
+	{
+		m_CharacterSize = m_MaxCharacterSize;
+		m_OutlineThickness = m_MaxOutlineThickness;
+	}
 }
 
 void UIText::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position)
@@ -244,36 +225,85 @@ void UIText::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color
 	shape.setScale(InputHandler::m_InverseZoom, InputHandler::m_InverseZoom);
 }
 
-void UIText::setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f position, float rotation, std::string string)
+void UIText::setText()
 {
-	text.setFont(font);
-	text.setCharacterSize(characterSize);
-	text.setFillColor(fillColor);
-	text.setOutlineColor(outlineColor);
-	text.setOutlineThickness(outlineThickness);
-	text.setString(string);
-	text.setOrigin(text.getLocalBounds().width * 0.5f, text.getLocalBounds().height * 0.75f);
-	text.setPosition(position);
-	text.setRotation(rotation);
-	text.setScale(InputHandler::m_InverseZoom, InputHandler::m_InverseZoom);
+	m_CountryNameText.setFont(m_Font);
+	m_CountryNameText.setCharacterSize(m_CharacterSize);
+	m_CountryNameText.setFillColor(m_FillColor);
+	m_CountryNameText.setOutlineColor(m_OutlineColor);
+	m_CountryNameText.setOutlineThickness(m_OutlineThickness);
+	m_CountryNameText.setString(m_CountryName);
+	m_CountryNameText.setOrigin(m_CountryNameText.getLocalBounds().width * 0.5f, m_CountryNameText.getLocalBounds().height * 0.75f);
+	m_CountryNameText.setPosition(m_PositionX, m_PositionY);
+	m_CountryNameText.setRotation(m_Rotation);
+	m_CountryNameText.setScale(InputHandler::m_InverseZoom, InputHandler::m_InverseZoom);
 }
 
-Vector2D UIText::calculateIntersection(Vector2D startV1, Vector2D endV1, Vector2D startV2, Vector2D endV2)
+void UIText::updateText()
 {
-	// y = k * x + m
-	float k1 = (endV1.y - startV1.y) / (endV1.x - startV1.x);
-	float k2 = (endV2.y - startV2.y) / (endV2.x - startV2.x);
-	float m1 = endV1.y - k1 * endV1.x;
-	float m2 = endV2.y - k2 * endV2.x;
-	float x = (m2 - m1) / (k1 - k2);
-	float y = k1 * x + m1;
+	m_CountryNameText.setString(m_CountryName);
+	m_CountryNameText.setCharacterSize(m_CharacterSize);
+	m_CountryNameText.setOutlineThickness(m_OutlineThickness);
+	m_CountryNameText.setOrigin(m_CountryNameText.getLocalBounds().width * 0.5f, m_CountryNameText.getLocalBounds().height * 0.75f);
+	m_CountryNameText.setRotation(m_Rotation);
+}
+
+void UIText::fadeText()
+{
+	if (InputHandler::getMouseScrolled())
+	{
+		if (InputHandler::m_TotalZoom <= m_HiddenDistance)
+		{
+			m_Hidden = true;
+		}
+		else
+		{
+			m_Hidden = false;
+		}
+
+		setFadeColor(m_FillColor);
+		m_CountryNameText.setFillColor(m_OpacityColor);
+
+		setFadeColor(m_OutlineColor);
+		m_CountryNameText.setOutlineColor(m_OpacityColor);
+	}
+}
+
+void UIText::setFadeColor(sf::Color& color)
+{
+	m_OpacityColor = color;
+	m_OpacityColor.a = (sf::Uint8)(m_OpacityColor.a * InputHandler::m_TotalZoom * m_FadeSpeed);
+	if (m_OpacityColor.a > m_MaxTextOpacity)
+	{
+		m_OpacityColor.a = m_MaxTextOpacity;
+	}
+}
+
+void UIText::scaleText()
+{
+	if (InputHandler::getMouseScrolled())
+	{
+		m_CountryNameText.setScale(InputHandler::m_InverseZoom, InputHandler::m_InverseZoom);
+
+		if (m_Debug)
+		{
+			for (sf::RectangleShape& cornerShape : m_CornerShapes)
+			{
+				cornerShape.setScale(InputHandler::m_InverseZoom, InputHandler::m_InverseZoom);
+			}
+		}
+	}
+}
+
+void UIText::setFixedPosition()
+{
+	m_CountryNameText.setPosition(sf::Vector2f(m_Window->mapCoordsToPixel({ m_PositionX, m_PositionY })));
+
 	if (m_Debug)
 	{
-		sf::RectangleShape intersectShape;
-		sf::Color color = sf::Color::Black;
-		setShape(intersectShape, color, m_OutlineColor, 0.0f, { 16.0f, 16.0f * Map::get().m_AspectRatio }, { x, y });
-		m_CornerShapes.push_back(intersectShape);
-		m_CornerPositions.push_back(intersectShape.getPosition());
+		for (unsigned int index = 0; index < m_CornerShapes.size(); index++)
+		{
+			m_CornerShapes[index].setPosition(sf::Vector2f(m_Window->mapCoordsToPixel(m_CornerPositions[index])));
+		}
 	}
-	return Vector2D(x, y);
 }

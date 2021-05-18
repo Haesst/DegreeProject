@@ -32,6 +32,8 @@ private:
 	HotReloader* m_HotReloader = nullptr;
 	sf::SoundBuffer m_SoundBuffer;
 	sf::SoundBuffer m_BattleSoundBuffer;
+	sf::SoundBuffer m_DefeatSoundBuffer;
+	sf::SoundBuffer m_VictorySoundBuffer;
 	const float m_Volume = 5.0f;
 	CharacterID m_PlayerRandomCharacterID = INVALID_CHARACTER_ID;
 	static sf::View m_GameView;
@@ -39,6 +41,8 @@ private:
 public:
 	static sf::Sound m_Sound;
 	static sf::Sound m_BattleSound;
+	static sf::Sound m_VictorySound;
+	static sf::Sound m_DefeatSound;
 	static sf::Font m_UIFont;
 
 public:

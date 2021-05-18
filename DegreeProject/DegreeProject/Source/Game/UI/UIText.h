@@ -18,8 +18,15 @@ public:
 	void conquerRegion(unsigned int regionID);
 	void loseRegion(unsigned regionID);
 	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
-	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f position, float rotation, std::string string);
-	Vector2D calculateIntersection(Vector2D startV1, Vector2D endV1, Vector2D startV2, Vector2D endV2);
+	void setFadeColor(sf::Color& color);
+	void setText();
+	void updateText();
+	void setFixedPosition();
+	void fadeText();
+	void scaleText();
+	void calculatePosition(Vector2DInt realmPositions, unsigned int numberOfRealmPositions);
+	void calculateSize(Vector2D diagonal);
+	Vector2D calculateDiagonal(Vector2D topLeftMostPositionScreen, Vector2D bottomRightMostPositionScreen, Vector2D bottomLeftMostPositionScreen, Vector2D topRightMostPositionScreen);
 
 	sf::Uint8 m_MaxTextOpacity = 150;
 	sf::Color m_FillColor = sf::Color(255, 252, 240, 100);
@@ -33,7 +40,7 @@ public:
 	std::string m_CountryName = "";
 	unsigned int m_CharacterSize = 20;
 	unsigned int m_MinCharacterSize = 30;
-	unsigned int m_MaxCharacterSize = 400;
+	unsigned int m_MaxCharacterSize = 1000;
 	const float m_MinOutlineThickness = 0.1f;
 	const float m_MaxOutlineThickness = 1.0f;
 	float m_Rotation = 0.0f;

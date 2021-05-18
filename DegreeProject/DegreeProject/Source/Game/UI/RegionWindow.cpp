@@ -111,12 +111,12 @@ void RegionWindow::render()
 
 void RegionWindow::clickOnMap()
 {
-	if (InputHandler::getLeftMouseClicked() && !InputHandler::getPlayerUnitSelected() && !InputHandler::getCharacterWindowOpen())
+	if (InputHandler::getLeftMouseReleased() && !InputHandler::getPlayerUnitSelected() && !InputHandler::getCharacterWindowOpen())
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
-			InputHandler::setLeftMouseClicked(false);
+			InputHandler::setLeftMouseReleased(false);
 			Vector2DInt mouseMapPosition = InputHandler::getMouseMapPosition();
 			Map& map = Map::get();
 			if (map.mapSquareDataContainsKey(mouseMapPosition))
@@ -146,12 +146,12 @@ void RegionWindow::clickOnMap()
 			m_Open = false;
 		}
 	}
-	else if (InputHandler::getRightMouseClicked() && !InputHandler::getPlayerUnitSelected() && m_Visible)
+	else if (InputHandler::getRightMouseReleased() && !InputHandler::getPlayerUnitSelected() && m_Visible)
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (!m_WindowShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
-			InputHandler::setRightMouseClicked(false);
+			InputHandler::setRightMouseReleased(false);
 			closeWindow();
 		}
 	}
@@ -262,9 +262,8 @@ void RegionWindow::updateInfo()
 void RegionWindow::handleWindow()
 {
 	InputHandler::setRegionWindowOpen(m_Visible);
-	if (InputHandler::getLeftMouseReleased() && !InputHandler::getPlayerUnitSelected() && m_Open && !m_Visible)
+	if (!InputHandler::getPlayerUnitSelected() && m_Open && !m_Visible)
 	{
-		InputHandler::setLeftMouseReleased(false);
 		openWindow();
 	}
 	else if (m_Visible && (InputHandler::getPlayerUnitSelected() || InputHandler::getEscapePressed()))
@@ -330,7 +329,7 @@ void RegionWindow::clickButton()
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
 		if (m_RaiseArmyShape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
-			InputHandler::setLeftMouseReleased(false);
+ 			InputHandler::setLeftMouseReleased(false);
 			Unit& unit = UnitManager::get().getUnitWithId(m_PlayerCharacter->m_UnitEntity);
 			if (unit.m_Raised)
 			{

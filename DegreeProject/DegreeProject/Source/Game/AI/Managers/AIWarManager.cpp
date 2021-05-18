@@ -135,7 +135,7 @@ float AIWarManager::expansionDecision(CharacterID ID)
 	}
 
 	std::sort(actionScorePerRegion.begin(), actionScorePerRegion.end());
-	std::pair<float, int> region;
+	std::pair<float, int> bestRegionPair;
 
 	int bestRegion = -1;
 	float bestEval = -1.f;
@@ -157,11 +157,11 @@ float AIWarManager::expansionDecision(CharacterID ID)
 		}
 	}
 
-	region = std::make_pair(bestEval, bestRegion);
-	AIManager::get().getWarmindOfCharacter(ID).m_WargoalRegionId = region.second;
-	AIManager::get().getWarmindOfCharacter(ID).m_Opponent = Map::get().getRegionById(region.second).m_OwnerID;
+	bestRegionPair = std::make_pair(bestEval, bestRegion);
+	AIManager::get().getWarmindOfCharacter(ID).m_WargoalRegionId = bestRegionPair.second;
+	AIManager::get().getWarmindOfCharacter(ID).m_Opponent = Map::get().getRegionById(bestRegionPair.second).m_OwnerID;
 
-	return region.first;
+	return bestRegionPair.first;
 }
 
 void AIWarManager::declareWar(AIData& data)

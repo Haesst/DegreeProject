@@ -1184,12 +1184,6 @@ void CharacterWindow::declareWar()
 
 		CharacterManager::get().callAllies(m_CurrentCharacterID, warHandle);
 		CharacterManager::get().callAllies(m_PlayerCharacter->m_CharacterID, warHandle);
-
-		Game::m_Sound.pause();
-		if (Game::m_BattleSound.getStatus() != sf::SoundSource::Playing)
-		{
-			Game::m_BattleSound.play();
-		}
 	}
 }
 

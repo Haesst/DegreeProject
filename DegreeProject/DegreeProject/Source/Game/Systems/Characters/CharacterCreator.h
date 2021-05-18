@@ -12,10 +12,10 @@ class CharacterCreator
 {
 public:
 	CharacterID createRandomUnlandedCharacter(CharacterPool& characterPool, int minAge, int maxAge);
-	CharacterID createCharacterWithRandomBirthday(CharacterPool& characterPool, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge);
-	CharacterID createCharacter(CharacterPool& characterPool, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday);
+	CharacterID createCharacterWithRandomBirthday(CharacterPool& characterPool, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge);
+	CharacterID createCharacter(CharacterPool& characterPool, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, float gold, sf::Color color, bool playerControlled, Date birthday);
 	CharacterID createNewChild(CharacterPool& characterPool, CharacterID motherID);
-	CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled);
+	CharacterID internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, float gold, sf::Color color, bool playerControlled);
 	void setRandomPortraitPath(CharacterID& characterID);
 private:
 	void setRandomPortraitPath(Character& character, const unsigned int numberOfPortraits, const char* portraitPath);

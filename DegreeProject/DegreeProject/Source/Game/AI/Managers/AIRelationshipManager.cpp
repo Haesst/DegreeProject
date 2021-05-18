@@ -76,7 +76,7 @@ void AIRelationshipManager::makeAlliance(AIData& data)
 float AIRelationshipManager::marriageDecision(AIData& data, CharacterID potentialSpouse)
 {
 	MarriageConsideration marriage;
-	float opinionWeight = CharacterManager::get().getCharacterOpinion(data.m_OwnerID, potentialSpouse);
+	float opinionWeight = (float)CharacterManager::get().getCharacterOpinion(data.m_OwnerID, potentialSpouse);
 	return marriage.evaluate(data.m_OwnerID, potentialSpouse) + (opinionWeight * 0.1f);
 }
 

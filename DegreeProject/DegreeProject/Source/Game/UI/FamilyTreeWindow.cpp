@@ -81,7 +81,7 @@ void FamilyTreeWindow::clearInfo()
 	m_FamilySize = 0;
 }
 
-void FamilyTreeWindow::displayFamily(CharacterID& familyHeadID, unsigned int depth, float width)
+void FamilyTreeWindow::displayFamily(CharacterID familyHeadID, unsigned int depth, float width)
 {
 	if (familyHeadID == INVALID_CHARACTER_ID)
 	{
@@ -98,14 +98,14 @@ void FamilyTreeWindow::displayFamily(CharacterID& familyHeadID, unsigned int dep
 	displayFamily(character.m_NextSibling, depth, width + 1);
 }
 
-CharacterID& FamilyTreeWindow::findFamilyHead(CharacterID& characterID)
+CharacterID FamilyTreeWindow::findFamilyHead(CharacterID characterID)
 {
 	Character& character = CharacterManager::get().getCharacter(characterID);
 	if (character.m_Father == INVALID_CHARACTER_ID)
 	{
 		return characterID;
 	}
-	findFamilyHead(character.m_Father);
+	return findFamilyHead(character.m_Father);
 }
 
 void FamilyTreeWindow::updateInfo()
@@ -211,7 +211,7 @@ void FamilyTreeWindow::clickButton()
 	}
 }
 
-void FamilyTreeWindow::setFamilyMember(CharacterID& characterID, unsigned int depth, float width)
+void FamilyTreeWindow::setFamilyMember(CharacterID characterID, unsigned int depth, float width)
 {
 	for (CharacterID familyID : m_CharacterIDs)
 	{
@@ -246,10 +246,10 @@ void FamilyTreeWindow::setFamilyMember(CharacterID& characterID, unsigned int de
 	setShape(characterShape, m_TransparentColor, characterColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, characterPosition);
 	m_CharacterShapes.push_back(characterShape);
 
-	if (character.m_Gender == Gender::Female)
-	{
-		characterTitle += (unsigned int)Title::Unlanded + 1;
-	}
+	//if (character.m_Gender == Gender::Female)
+	//{
+	//	characterTitle += (unsigned int)Title::Unlanded + 1;
+	//}
 
 	const char* portraitPath = character.m_PortraitPath.c_str();
 	bool textureLoaded = false;

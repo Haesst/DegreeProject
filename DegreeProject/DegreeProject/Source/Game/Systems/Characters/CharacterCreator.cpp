@@ -16,10 +16,10 @@ CharacterID CharacterCreator::createRandomUnlandedCharacter(CharacterPool& chara
 	char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
 	std::vector<unsigned int> regions = std::vector<unsigned int>();
 
-	return createCharacterWithRandomBirthday(characterPool, name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::Black, false, minAge, maxAge);
+	return createCharacterWithRandomBirthday(characterPool, name, Title::Unlanded, gender, regions, "", 0, sf::Color::Black, false, minAge, maxAge);
 }
 
-CharacterID CharacterCreator::createCharacterWithRandomBirthday(CharacterPool& characterPool, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge)
+CharacterID CharacterCreator::createCharacterWithRandomBirthday(CharacterPool& characterPool, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge)
 {
 	ASSERT(minAge <= maxAge, "Minimum age can't be less than maximum age");
 
@@ -27,16 +27,16 @@ CharacterID CharacterCreator::createCharacterWithRandomBirthday(CharacterPool& c
 
 	character.m_Birthday = Time::m_GameDate.getRandomDate(false, minAge, maxAge);
 
-	return internalCreateCharacter(character, characterName, title, gender, ownedRegions, realmName, army, gold, color, playerControlled);
+	return internalCreateCharacter(character, characterName, title, gender, ownedRegions, realmName, gold, color, playerControlled);
 }
 
-CharacterID CharacterCreator::createCharacter(CharacterPool& characterPool, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday)
+CharacterID CharacterCreator::createCharacter(CharacterPool& characterPool, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, float gold, sf::Color color, bool playerControlled, Date birthday)
 {
 	Character& character = characterPool.Rent();
 
 	character.m_Birthday = birthday;
 
-	return internalCreateCharacter(character, characterName, title, gender, ownedRegions, realmName, army, gold, color, playerControlled);
+	return internalCreateCharacter(character, characterName, title, gender, ownedRegions, realmName, gold, color, playerControlled);
 }
 
 CharacterID CharacterCreator::createNewChild(CharacterPool& characterPool, CharacterID motherID)
@@ -47,7 +47,7 @@ CharacterID CharacterCreator::createNewChild(CharacterPool& characterPool, Chara
 	Gender gender = male ? Gender::Male : Gender::Female;
 	char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
 	std::vector<unsigned int> regions = std::vector<unsigned int>();
-	CharacterID childID = createCharacter(characterPool, name, Title::Unlanded, gender, regions, "NONAME", 0, 0, sf::Color::Black, false, Time::m_GameDate.m_Date);
+	CharacterID childID = createCharacter(characterPool, name, Title::Unlanded, gender, regions, "", 0, sf::Color::Black, false, Time::m_GameDate.m_Date);
 	Character& child = characterManager.getCharacter(childID);
 	Character& mother = characterManager.getCharacter(motherID);
 	Character& father = characterManager.getCharacter(mother.m_LastChildFather);
@@ -102,7 +102,7 @@ CharacterID CharacterCreator::createNewChild(CharacterPool& characterPool, Chara
 	return childID;
 }
 
-CharacterID CharacterCreator::internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled)
+CharacterID CharacterCreator::internalCreateCharacter(Character& character, const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, float gold, sf::Color color, bool playerControlled)
 {
 	CharacterManager& characterManager = CharacterManager::get();
 
@@ -142,7 +142,7 @@ CharacterID CharacterCreator::internalCreateCharacter(Character& character, cons
 		}
 	}
 
-	character.m_UnitEntity = UnitManager::get().addUnit(id, character.m_MaxArmySize);
+	character.m_UnitEntity = UnitManager::get().addUnit(character.m_CharacterID, character.m_MaxArmySize);
 
 	characterManager.addNewCharacter(character);
 
@@ -174,16 +174,6 @@ CharacterID CharacterCreator::internalCreateCharacter(Character& character, cons
 	setRandomPortraitPath(character.m_CharacterID);
 
 	return id;
-}
-
-void CharacterCreator::setRandomPortraitPath(Character& character, const unsigned int numberOfPortraits, const char* portraitPath)
-{
-	character.m_PortraitIndex = rand() * numberOfPortraits / RAND_MAX;
-	std::stringstream stream;
-	stream << portraitPath << character.m_PortraitIndex + 1 << CharacterConstants::m_PortraitPathEnding;
-	character.m_PortraitPath = stream.str();
-	stream.str(std::string());
-	stream.clear();
 }
 
 void CharacterCreator::setRandomPortraitPath(CharacterID& characterID)
@@ -228,4 +218,14 @@ void CharacterCreator::setRandomPortraitPath(CharacterID& characterID)
 			setRandomPortraitPath(character, CharacterConstants::m_NumberOfOldFemalePortraits, CharacterConstants::m_OldFemalePortraitPath);
 		}
 	}
+}
+
+void CharacterCreator::setRandomPortraitPath(Character& character, const unsigned int numberOfPortraits, const char* portraitPath)
+{
+	character.m_PortraitIndex = rand() * numberOfPortraits / RAND_MAX;
+	std::stringstream stream;
+	stream << portraitPath << character.m_PortraitIndex + 1 << CharacterConstants::m_PortraitPathEnding;
+	character.m_PortraitPath = stream.str();
+	stream.str(std::string());
+	stream.clear();
 }

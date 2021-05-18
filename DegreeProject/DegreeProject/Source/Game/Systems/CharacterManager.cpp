@@ -69,14 +69,14 @@ void CharacterManager::createUnlandedCharacters(size_t amount)
 	}
 }
 
-CharacterID CharacterManager::createCharacterWithRandomBirthday(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge)
+CharacterID CharacterManager::createCharacterWithRandomBirthday(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge)
 {
-	return m_CharacterCreator.createCharacterWithRandomBirthday(m_CharacterPool, characterName, title, gender, ownedRegions, realmName, army, gold, color, playerControlled, minAge, maxAge);
+	return m_CharacterCreator.createCharacterWithRandomBirthday(m_CharacterPool, characterName, title, gender, ownedRegions, realmName, gold, color, playerControlled, minAge, maxAge);
 }
 
-CharacterID CharacterManager::createCharacter(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday)
+CharacterID CharacterManager::createCharacter(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, float gold, sf::Color color, bool playerControlled, Date birthday)
 {
-	return m_CharacterCreator.createCharacter(m_CharacterPool, characterName, title, gender, ownedRegions, realmName, army, gold, color, playerControlled, birthday);
+	return m_CharacterCreator.createCharacter(m_CharacterPool, characterName, title, gender, ownedRegions, realmName, gold, color, playerControlled, birthday);
 }
 
 CharacterID CharacterManager::createNewChild(CharacterID motherID)
@@ -424,6 +424,11 @@ void CharacterManager::update()
 
 void CharacterManager::dailyUpdates(Character& character)
 {
+	if (character.m_CharacterID > m_Characters.size())
+	{
+		return;
+	}
+
 	tryForPregnancy(character);
 
 	if (character.m_Gender == Gender::Female)
@@ -434,14 +439,17 @@ void CharacterManager::dailyUpdates(Character& character)
 	if (!character.m_Dead)
 	{
 		unsigned int age = Time::m_GameDate.getAge(character.m_Birthday);
-		float dieChance = ((float)((age - CharacterConstants::m_DeadlyAge) * (age - CharacterConstants::m_DeadlyAge)) / (CharacterConstants::m_AgeMax * CharacterConstants::m_AgeMax)) * m_MortalityRate;
-		age < CharacterConstants::m_DeadlyAge ? dieChance *= 0.001f : dieChance;
+		float dividend = (float)((age - CharacterConstants::m_DeadlyAge) * (age - CharacterConstants::m_DeadlyAge));
+		float divisor = (float)(CharacterConstants::m_AgeMax * CharacterConstants::m_AgeMax);
+		float quotient = dividend / divisor;
+		float dieChance = quotient * m_MortalityRate;
+		age < CharacterConstants::m_DeadlyAge ? dieChance *= CharacterConstants::m_YoungAgeModifier : dieChance;
 		bool die = chancePerPercent(dieChance);
 		if (die)
 		{
 			killCharacter(character.m_CharacterID);
 		}
-		if (character.m_Age != age && (age == CharacterConstants::m_AgeOfConsent || age == CharacterConstants::m_AgeOfConsent * 2 || age == CharacterConstants::m_DeadlyAge))
+		else if (character.m_Age != age && (age == CharacterConstants::m_AgeOfConsent || age == CharacterConstants::m_AgeOfConsent * 2 || age == CharacterConstants::m_DeadlyAge))
 		{
 			setRandomPortraitPath(character.m_CharacterID);
 		}
@@ -735,38 +743,39 @@ CharacterID CharacterManager::getUnlandedCharacterOfGender(Gender gender)
 void CharacterManager::updateTitleAndUIText(Character& character)
 {
 	bool createNewUI = character.m_CharacterTitle >= Title::Unlanded;
-	if (character.m_OwnedRegionIDs.size() == 0)
+	unsigned int numberOfRegions = character.m_OwnedRegionIDs.size();
+	if (numberOfRegions <= 0)
 	{
 		character.m_CharacterTitle = Title::Unlanded;
-		character.m_KingdomName = "Unlanded ";
+		character.m_KingdomName = m_EmptyString;
 		return;
 	}
 
 	std::stringstream stream;
-	if (character.m_OwnedRegionIDs.size() == 1)
+	if (numberOfRegions == m_BaronyLevel)
 	{
 		character.m_CharacterTitle = Title::Baron;
-		stream << "Barony of ";
+		stream << m_BaronyOfString;
 	}
-	else if (character.m_OwnedRegionIDs.size() == 2 || character.m_OwnedRegionIDs.size() == 3)
+	else if (numberOfRegions < m_DuchyLevel)
 	{
 		character.m_CharacterTitle = Title::Count;
-		stream << "County of ";
+		stream << m_CountyOfString;
 	}
-	else if (character.m_OwnedRegionIDs.size() == 4)
+	else if (numberOfRegions < m_KingdomLevel)
 	{
 		character.m_CharacterTitle = Title::Duke;
-		stream << "Duchy of ";
+		stream << m_DuchyOfString;
 	}
-	else if (character.m_OwnedRegionIDs.size() < 9)
+	else if (numberOfRegions < m_EmpireLevel)
 	{
 		character.m_CharacterTitle = Title::King;
-		stream << "Kingdom of ";
+		stream << m_KingdomOfString;
 	}
-	else if (character.m_OwnedRegionIDs.size() >= 9)
+	else if (numberOfRegions >= m_EmpireLevel)
 	{
 		character.m_CharacterTitle = Title::Emperor;
-		stream << "Empire of ";
+		stream << m_EmpireOfString;
 	}
 	stream << Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
 	character.m_KingdomName = stream.str();
@@ -790,7 +799,7 @@ void CharacterManager::handleInheritance(Character& character)
 {
 	std::vector<CharacterID> aliveChildren = getAliveChildren(character.m_CharacterID);
 
-	if (character.m_IsPlayerControlled && aliveChildren.size() == 0)
+	if (character.m_IsPlayerControlled && aliveChildren.size() <= 0)
 	{
 		Player::get().loseGame(LoseCause::No_Heir);
 	}
@@ -799,7 +808,8 @@ void CharacterManager::handleInheritance(Character& character)
 	{
 		for (unsigned int ownedRegionID : character.m_OwnedRegionIDs)
 		{
-			Character& newCharacter = getCharacter(m_CharacterCreator.createRandomUnlandedCharacter(m_CharacterPool, CharacterConstants::m_MinAgeNewUnlandedChar, CharacterConstants::m_MaxAgeNewUnlandedChar));
+			CharacterID newCharacterID = m_CharacterCreator.createRandomUnlandedCharacter(m_CharacterPool, CharacterConstants::m_MinAgeNewUnlandedChar, CharacterConstants::m_MaxAgeNewUnlandedChar);
+			Character& newCharacter = getCharacter(newCharacterID);
 			newCharacter.m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
 			addRegion(newCharacter.m_CharacterID, ownedRegionID);
 			updateTitleAndUIText(newCharacter);
@@ -810,7 +820,6 @@ void CharacterManager::handleInheritance(Character& character)
 
 	if (character.m_OwnedRegionIDs.size() > 0)
 	{
-		// Todo: Get alive children instead of children
 		size_t regionsByChild = character.m_OwnedRegionIDs.size() / aliveChildren.size();
 		size_t giveOneMoreToChildren = character.m_OwnedRegionIDs.size() % aliveChildren.size();
 		float goldByChild = character.m_CurrentGold / aliveChildren.size();
@@ -823,50 +832,50 @@ void CharacterManager::handleInheritance(Character& character)
 
 		size_t currentChild = 0;
 		size_t currentChildInheritedRegions = 0;
-		Character* currentChildCharacter = &getCharacter(aliveChildren[currentChild]);
-		currentChildCharacter->m_CurrentGold += goldByChild;
+		Character& currentChildCharacter = getCharacter(aliveChildren[currentChild]);
+		currentChildCharacter.m_CurrentGold += goldByChild;
 		bool childGotOneMore = false;
-		if (currentChildCharacter->m_RegionColor == sf::Color::Black)
+		if (currentChildCharacter.m_RegionColor == sf::Color::Black)
 		{
-			currentChildCharacter->m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
-		} // Todo: Create character color on birth
-
-		if (!currentChildCharacter->m_IsPlayerControlled)
-		{
-			currentChildCharacter->m_IsPlayerControlled = character.m_IsPlayerControlled;
+			currentChildCharacter.m_RegionColor = getRandomColor();
 		}
-		if (currentChildCharacter->m_IsPlayerControlled && m_PlayerCharacterID != currentChildCharacter->m_CharacterID)
+
+		if (!currentChildCharacter.m_IsPlayerControlled)
 		{
-			m_PlayerCharacterID = currentChildCharacter->m_CharacterID;
-			m_PlayerCharacter = currentChildCharacter;
-			AIManager::get().deactivateAI(currentChildCharacter->m_CharacterID);
-			UIManager::get().m_DateBar->updateOwnerColor(currentChildCharacter->m_RegionColor);
-			UIManager::get().m_StatBar->updateOwnerColor(currentChildCharacter->m_RegionColor);
-			UIManager::get().m_MiniMap->setPlayerColor(currentChildCharacter->m_RegionColor);
+			currentChildCharacter.m_IsPlayerControlled = character.m_IsPlayerControlled;
+		}
+		if (currentChildCharacter.m_IsPlayerControlled && m_PlayerCharacterID != currentChildCharacter.m_CharacterID)
+		{
+			m_PlayerCharacterID = currentChildCharacter.m_CharacterID;
+			m_PlayerCharacter = &currentChildCharacter;
+			AIManager::get().deactivateAI(currentChildCharacter.m_CharacterID);
+			UIManager::get().m_DateBar->updateOwnerColor(currentChildCharacter.m_RegionColor);
+			UIManager::get().m_StatBar->updateOwnerColor(currentChildCharacter.m_RegionColor);
+			UIManager::get().m_MiniMap->setPlayerColor(currentChildCharacter.m_RegionColor);
 		}
 
 		for (size_t i = 0; i < character.m_OwnedRegionIDs.size(); ++i)
 		{
-			addRegion(currentChildCharacter->m_CharacterID, character.m_OwnedRegionIDs[i]);
+			addRegion(currentChildCharacter.m_CharacterID, character.m_OwnedRegionIDs[i]);
 			currentChildInheritedRegions++;
 
 			if (currentChildInheritedRegions >= regionsByChild && i < character.m_OwnedRegionIDs.size() - 1)
 			{
 				if (giveOneMoreToChildren <= currentChild || childGotOneMore)
 				{
-					updateTitleAndUIText(*currentChildCharacter);
-					UIManager::get().AdjustOwnerships(currentChildCharacter->m_CharacterID, character.m_CharacterID, currentChildCharacter->m_OwnedRegionIDs);
+					updateTitleAndUIText(currentChildCharacter);
+					UIManager::get().AdjustOwnerships(currentChildCharacter.m_CharacterID, character.m_CharacterID, currentChildCharacter.m_OwnedRegionIDs);
 
 					++currentChild;
-					currentChildCharacter = &getCharacter(aliveChildren[currentChild]);
+					currentChildCharacter = getCharacter(aliveChildren[currentChild]);
 					currentChildInheritedRegions = 0;
-					currentChildCharacter->m_CurrentGold += goldByChild;
+					currentChildCharacter.m_CurrentGold += goldByChild;
 					childGotOneMore = false;
 
-					if (currentChildCharacter->m_RegionColor == sf::Color::Black)
+					if (currentChildCharacter.m_RegionColor == sf::Color::Black)
 					{
-						currentChildCharacter->m_RegionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
-					} // Todo: Create character color on birth
+						currentChildCharacter.m_RegionColor = getRandomColor();
+					}
 				}
 				else
 				{
@@ -875,8 +884,8 @@ void CharacterManager::handleInheritance(Character& character)
 			}
 		}
 		
-		updateTitleAndUIText(*currentChildCharacter);
-		UIManager::get().AdjustOwnerships(currentChildCharacter->m_CharacterID, character.m_CharacterID, currentChildCharacter->m_OwnedRegionIDs);
+		updateTitleAndUIText(currentChildCharacter);
+		UIManager::get().AdjustOwnerships(currentChildCharacter.m_CharacterID, character.m_CharacterID, currentChildCharacter.m_OwnedRegionIDs);
 	}
 
 	if (character.m_UnitEntity != INVALID_UNIT_ID)
@@ -884,6 +893,11 @@ void CharacterManager::handleInheritance(Character& character)
 		UnitManager::get().dismissUnit(character.m_UnitEntity);
 		character.m_UnitEntity = INVALID_UNIT_ID;
 	}
+}
+
+sf::Color CharacterManager::getRandomColor()
+{
+	return sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
 }
 
 bool CharacterManager::chancePerPercent(float weight)
@@ -1002,7 +1016,7 @@ void CharacterManager::removeRegion(const CharacterID characterId, const unsigne
 	if (character.m_OwnedRegionIDs.empty())
 	{
 		DiplomacyManager* diplomacyManager = &DiplomacyManager::get();
-		auto& truces = diplomacyManager->getTruces(character.m_CharacterID);
+		std::vector<Truce> truces = diplomacyManager->getTruces(character.m_CharacterID);
 		diplomacyManager->endTruces(truces);
 
 		for (auto& ally : diplomacyManager->getAlliances(character.m_CharacterID))

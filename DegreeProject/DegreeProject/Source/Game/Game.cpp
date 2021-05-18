@@ -15,6 +15,8 @@
 
 sf::Sound Game::m_Sound;
 sf::Sound Game::m_BattleSound;
+sf::Sound Game::m_VictorySound;
+sf::Sound Game::m_DefeatSound;
 sf::Font Game::m_UIFont;
 sf::View Game::m_GameView;
 Window* Game::m_Window;
@@ -37,7 +39,8 @@ void Game::init()
 void Game::run()
 {
 	sf::RenderWindow* internalWindow = m_Window->getWindow();
-	internalWindow->setFramerateLimit(60);
+	//internalWindow->setFramerateLimit(60);
+	internalWindow->setVerticalSyncEnabled(true);
 	sf::Vector2f floatResolution = sf::Vector2f((float)m_Resolution.x, (float)m_Resolution.y);
 	m_GameView.setCenter(m_GameViewCenter);
 	m_GameView.setSize(floatResolution);
@@ -144,9 +147,17 @@ void Game::initAssets()
 
 void Game::initSound()
 {
-	m_BattleSound = m_AssetHandler->loadAudioFile("Assets/Audio/battle.wav", m_BattleSoundBuffer);
+	m_BattleSound = m_AssetHandler->loadAudioFile("Assets/Audio/Battle.wav", m_BattleSoundBuffer);
 	m_BattleSound.setLoop(true);
 	m_BattleSound.setVolume(m_Volume);
+
+	m_VictorySound = m_AssetHandler->loadAudioFile("Assets/Audio/Victory.wav", m_VictorySoundBuffer);
+	m_VictorySound.setLoop(true);
+	m_VictorySound.setVolume(m_Volume);
+
+	m_DefeatSound = m_AssetHandler->loadAudioFile("Assets/Audio/Defeat.wav", m_DefeatSoundBuffer);
+	m_DefeatSound.setLoop(true);
+	m_DefeatSound.setVolume(m_Volume);
 
 	m_Sound = m_AssetHandler->loadAudioFile("Assets/Audio/Minstrel_Dance.wav", m_SoundBuffer);
 	m_Sound.setLoop(true);
@@ -245,7 +256,7 @@ CharacterID Game::addRandomEntityOwningRegion(std::vector<size_t> regions, bool 
 	Gender gender = male ? Gender::Male : Gender::Female;
 	char* name = male ? CharacterNamePool::getMaleName() : CharacterNamePool::getFemaleName();
 	sf::Color regionColor = sf::Color((sf::Uint8)std::rand(), (sf::Uint8)std::rand(), (sf::Uint8)std::rand());
-	CharacterID character = CharacterManager::get().createCharacterWithRandomBirthday(name, Title::Baron, gender, regions, "", 0, 10, regionColor, playerControlled, minAge, maxAge);
+	CharacterID character = CharacterManager::get().createCharacterWithRandomBirthday(name, Title::Baron, gender, regions, "", 10, regionColor, playerControlled, minAge, maxAge);
 	UIManager::get().createUITextElement(m_UIFont, character, CharacterManager::get().getCharacter(character).m_KingdomName, regions);
 	CharacterManager::get().updateTitleAndUIText(CharacterManager::get().getCharacter(character));
 	return character;

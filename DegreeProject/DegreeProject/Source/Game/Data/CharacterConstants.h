@@ -10,6 +10,7 @@ namespace CharacterConstants
 	static const unsigned int m_MaxAgeNewUnlandedChar = 72;
 	static const unsigned int m_DeadlyAge = 50;
 	static const unsigned int m_AgeMax = 100;
+	static const float m_YoungAgeModifier = 0.001f;
 
 	static const unsigned int m_LowerBaseFertility = 2;
 	static const unsigned int m_UpperBaseFertility = 15;

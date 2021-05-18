@@ -184,10 +184,11 @@ void WarWindow::setWarscore(CharacterID& characterID, std::stringstream& stream,
 	{
 		warscore = 100;
 	}
-	if (warscore < -100)
+	else if (warscore < -100)
 	{
 		warscore = -100;
 	}
+
 	if (warscore > 0 || warscore == 0)
 	{
 		m_WarscoreAmountText.setFillColor(m_PositiveColor);
@@ -495,12 +496,6 @@ void WarWindow::sendPeaceOffer(PeaceType type)
 	if (!DiplomacyManager::get().getWarHandlesOfCharacter(playerCharacter.m_CharacterID).empty())
 	{
 		CharacterManager::get().sendPeaceOffer(playerCharacter.m_CharacterID, enemy, type);
-
-		if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && DiplomacyManager::get().getWarHandlesOfCharacter(playerCharacter.m_CharacterID).empty())
-		{
-			Game::m_BattleSound.stop();
-			Game::m_Sound.play();
-		}
 	}
 }
 

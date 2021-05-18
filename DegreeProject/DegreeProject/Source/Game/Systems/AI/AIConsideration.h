@@ -63,7 +63,7 @@ struct ArmySizeConsideration : public Consideration
 		{
 			//y = x^2
 			float value = percentDiff + 0.5f;
-			value = std::pow(0.5, percentDiff) + smallDiffWeight;
+			value = std::pow(0.5f, percentDiff) + smallDiffWeight;
 			return std::clamp(value, 0.0f, 1.0f);
 		}
 
@@ -173,7 +173,7 @@ struct ExpansionConsideration : public Consideration
 
 	}
 
-	float evaluate(CharacterID context, int regionIndex)
+	float evaluate(CharacterID context, unsigned int regionIndex)
 	{
 		auto& character = CharacterManager::get().getCharacter(context);
 

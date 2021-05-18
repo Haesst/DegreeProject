@@ -50,7 +50,6 @@ void UnitManager::update()
 				unit.m_RepresentedForce = 0;
 			}
 		}
-		
 
 		if (!unit.m_Raised)
 		{
@@ -59,9 +58,9 @@ void UnitManager::update()
 
 		// Move unit
 		moveUnit(unit);
+
 		if (unit.m_Owner == CharacterManager::get().getPlayerCharacterID())
 		{
-			//showPath(unit);
 			showLinePath(unit);
 		}
 		// Engage enemy
@@ -73,6 +72,8 @@ void UnitManager::update()
 		unitSiege(unit);
 
 		updateSprite(unit);
+
+		updateUnitUI(unit);
 
 		if (unit.m_InCombat)
 		{
@@ -102,32 +103,17 @@ void UnitManager::render()
 
 		Window::getWindow()->draw(unit.m_Sprite);
 
+		if (unit.m_Selected)
+		{
+			Window::getWindow()->draw(unit.m_HighlightShape);
+		}
+
+		Window::getWindow()->draw(unit.m_StrengthShape);
+		Window::getWindow()->draw(unit.m_StrengthText);
+
 		if (unit.m_Moving && unit.m_Owner == CharacterManager::get().getPlayerCharacterID())
 		{
 			Window::getWindow()->draw(m_UnitLinePath);
-		}
-
-		unit.m_StrengthShape.setFillColor(CharacterManager::get().getCharacter(unit.m_Owner).m_RegionColor);
-		unit.m_StrengthShape.setOutlineThickness(unit.m_OutlineThickness * InputHandler::m_TotalZoom);
-		unit.m_StrengthShape.setPosition({ unit.m_Position.x, unit.m_Position.y + unit.m_HighlightShapeSize.y });
-		Window::getWindow()->draw(unit.m_StrengthShape);
-		std::stringstream stream;
-		stream << unit.m_RepresentedForce;
-		unit.m_StrengthText.setString(stream.str());
-		stream.str(std::string());
-		stream.clear();
-		unit.m_StrengthText.setOutlineThickness(unit.m_OutlineThickness * InputHandler::m_TotalZoom);
-		unit.m_StrengthText.setPosition(unit.m_StrengthShape.getPosition() + unit.m_StrengthShape.getSize() * 0.5f);
-		Window::getWindow()->draw(unit.m_StrengthText);
-
-		if (unit.m_Selected)
-		{
-			unit.m_HighlightShape.setPosition({ unit.m_Position.x, unit.m_Position.y });
-			unit.m_HighlightShape.setOutlineThickness(unit.m_OutlineThickness * InputHandler::m_TotalZoom);
-			unit.m_HighlightShape.setFillColor(unit.m_TransparentColor);
-			unit.m_HighlightShape.setOutlineColor(unit.m_OutlineColor);
-			unit.m_HighlightShape.setSize(unit.m_HighlightShapeSize);
-			Window::getWindow()->draw(unit.m_HighlightShape);
 		}
 
 		if (unit.m_SeizingRegionID != INVALID_REGION_ID)
@@ -181,7 +167,7 @@ UnitID UnitManager::addUnit(CharacterID owner, int size)
 	newUnit.m_RepresentedForce = size;
 
 	updateSprite(newUnit);
-	setStrengthBox(newUnit);
+	setupUnitUI(newUnit);
 	m_Units.push_back(newUnit);
 
 	return newUnit.m_UnitID;
@@ -591,7 +577,7 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 
 	if (getUnitWithId(unitID).m_RepresentedForce > 0 && getUnitWithId(enemyID).m_RepresentedForce > 0)
 	{
-		armyWeight = (float)unitTotalForce / enemyTotalForce;
+		armyWeight = ((float)unitTotalForce / enemyTotalForce) * ((float)unitTotalForce / enemyTotalForce) * 0.5f;
 	}
 
 	else
@@ -602,7 +588,7 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	LOG_INFO("ARMY WEIGHT: {0}", armyWeight);
 	bool win = weightedRandomCombat(armyWeight);
 
-	unitTotalForce > enemyTotalForce ? win = true : win = false;
+	//unitTotalForce > enemyTotalForce ? win = true : win = false;
 
 	if (win)
 	{
@@ -627,7 +613,7 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 
 	else
 	{
-		LOG_INFO("{0} won the battle against {1}", CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner).m_Name, CharacterManager::get().getCharacter(getUnitWithId(enemyID).m_Owner).m_Name);
+		LOG_INFO("{0} won the battle against {1}", CharacterManager::get().getCharacter(getUnitWithId(enemyID).m_Owner).m_Name, CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner).m_Name);
 		dismissUnit(unitID);
 		getUnitWithId(unitID).m_RepresentedForce = (int)(getUnitWithId(unitID).m_RepresentedForce * 0.5f);
 		
@@ -753,7 +739,7 @@ void UnitManager::unitSiege(Unit& unit)
 				defender.m_CurrentGold -= region.m_RegionTax;
 				attacker.m_CurrentGold += region.m_RegionTax;
 
-				defender.m_MaxArmySize -= region.m_ManPower;
+				//defender.m_MaxArmySize -= region.m_ManPower;
 
 				bool allRegionsSiezed = true;
 
@@ -784,7 +770,7 @@ void UnitManager::unitSiege(Unit& unit)
 				attacker.m_CurrentGold -= region.m_RegionTax;
 				defender.m_CurrentGold += region.m_RegionTax;
 
-				attacker.m_MaxArmySize -= region.m_ManPower;
+				//attacker.m_MaxArmySize -= region.m_ManPower;
 
 				bool allRegionsSiezed = true;
 
@@ -882,8 +868,7 @@ void UnitManager::startConquerRegion(Unit& unit)
 bool UnitManager::weightedRandomCombat(float weight)
 {
 	float f = rand() * 1.0f / RAND_MAX;
-	float vv = weight / 5.0f;
-	return f < vv;
+	return f < weight;
 }
 
 void UnitManager::updateSprite(Unit& unit)
@@ -907,27 +892,40 @@ void UnitManager::showLinePath(Unit& unit)
 	for each (Vector2DInt position in unit.m_CurrentPath)
 	{
 		Vector2D screenPosition = Map::convertToScreen(position);
-		m_UnitLinePath.append(sf::Vertex({ screenPosition.x + m_SpriteSize / 2, screenPosition.y + m_SpriteSize / 2}));
+		m_UnitLinePath.append(sf::Vertex({ screenPosition.x + m_SpriteSize * 0.5f, screenPosition.y + m_SpriteSize * 0.5f }));
 	}
 }
 
-void UnitManager::setStrengthBox(Unit& unit)
+void UnitManager::setupUnitUI(Unit& unit)
 {
-	unit.m_StrengthShape.setPosition({ unit.m_Position.x, unit.m_Position.y + unit.m_HighlightShapeSize.y });
 	unit.m_StrengthShape.setSize({ unit.m_HighlightShapeSize.x, unit.m_HighlightShapeSize.y * 0.5f });
-	unit.m_StrengthShape.setOutlineThickness(unit.m_OutlineThickness);
 	unit.m_StrengthShape.setOutlineColor(unit.m_StrengthOutlineColor);
 
 	unit.m_StrengthText.setFont(Game::m_UIFont);
 	unit.m_StrengthText.setCharacterSize(unit.m_CharacterSize);
 	unit.m_StrengthText.setFillColor(unit.m_OutlineColor);
 	unit.m_StrengthText.setOutlineColor(unit.m_StrengthOutlineColor);
-	unit.m_StrengthText.setOutlineThickness(unit.m_OutlineThickness);
+
+	unit.m_HighlightShape.setFillColor(unit.m_TransparentColor);
+	unit.m_HighlightShape.setOutlineColor(unit.m_OutlineColor);
+	unit.m_HighlightShape.setSize(unit.m_HighlightShapeSize);
+}
+
+void UnitManager::updateUnitUI(Unit& unit)
+{
+	unit.m_StrengthShape.setFillColor(CharacterManager::get().getCharacter(unit.m_Owner).m_RegionColor);
+	unit.m_StrengthShape.setOutlineThickness(unit.m_OutlineThickness * InputHandler::m_TotalZoom);
+	unit.m_StrengthShape.setPosition({ unit.m_Position.x, unit.m_Position.y + unit.m_HighlightShapeSize.y });
+
 	std::stringstream stream;
 	stream << unit.m_RepresentedForce;
 	unit.m_StrengthText.setString(stream.str());
 	stream.str(std::string());
 	stream.clear();
-	unit.m_StrengthText.setOrigin(unit.m_StrengthText.getLocalBounds().width * 0.5f, unit.m_StrengthText.getLocalBounds().height * 0.75f);
+	unit.m_StrengthText.setOrigin(unit.m_StrengthText.getLocalBounds().width * 0.5f, unit.m_StrengthShape.getSize().y * 0.9f);
+	unit.m_StrengthText.setOutlineThickness(unit.m_OutlineThickness * InputHandler::m_TotalZoom);
 	unit.m_StrengthText.setPosition(unit.m_StrengthShape.getPosition() + unit.m_StrengthShape.getSize() * 0.5f);
+
+	unit.m_HighlightShape.setPosition({ unit.m_Position.x, unit.m_Position.y });
+	unit.m_HighlightShape.setOutlineThickness(unit.m_OutlineThickness * InputHandler::m_TotalZoom);
 }

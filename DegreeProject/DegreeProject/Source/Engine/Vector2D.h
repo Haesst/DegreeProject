@@ -64,7 +64,7 @@ public:
 		return { other.x * scalar, other.y * scalar };
 	}
 
-	inline Vec2D<T>& operator/(const T d) const
+	inline Vec2D<T> operator/(const T d) const
 	{
 		return (d != 0 ? Vec2D<T>(x / d, y / d) : Vec2D<T>());
 	}

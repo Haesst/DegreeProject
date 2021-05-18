@@ -71,8 +71,8 @@ private:
 	static void zoomView(sf::RenderWindow& window, sf::View& view);
 
 private:
-	static sf::View& m_UIView;
-	static sf::View& m_MiniMapView;
+	static sf::View* m_UIView;
+	static sf::View* m_MiniMapView;
 
 	static float maxCenterXPosition;
 	static float minCenterXPosition;

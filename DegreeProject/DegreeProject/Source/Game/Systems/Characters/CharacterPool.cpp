@@ -17,8 +17,8 @@ Character& CharacterPool::Rent()
 
 void CharacterPool::Push(Character& character)
 {
-	character.m_KingdomName = "NONAME";
-	character.m_Name = "NONAME";
+	character.m_KingdomName = "";
+	character.m_Name = "";
 	character.m_CharacterID = INVALID_CHARACTER_ID;
 
 	m_Pool.push(character);
@@ -34,7 +34,7 @@ void CharacterPool::Init(size_t amount)
 		newChar.m_CharacterTitle = Title::Baron;
 
 		newChar.m_OwnedRegionIDs = std::vector<unsigned int>();
-		newChar.m_KingdomName = "NONAME";
+		newChar.m_KingdomName = "";
 
 		newChar.m_MaxArmySize = 0;
 		newChar.m_CurrentMaxArmySize = 0;
@@ -45,7 +45,7 @@ void CharacterPool::Init(size_t amount)
 
 		newChar.m_RegionColor = sf::Color::White;
 
-		newChar.m_Name = "NONAME";
+		newChar.m_Name = "";
 
 		m_Pool.push(newChar);
 	}

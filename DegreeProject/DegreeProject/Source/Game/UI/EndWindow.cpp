@@ -3,6 +3,7 @@
 #include "Engine/InputHandler.h"
 #include "Game/Systems/CharacterManager.h"
 #include "Engine/Time.h"
+#include "Game/Game.h"
 
 EndWindow::EndWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
 {
@@ -48,6 +49,17 @@ void EndWindow::render()
 void EndWindow::openWindow(unsigned int loseCause)
 {
 	Time::pauseGame();
+
+	Game::m_Sound.stop();
+	Game::m_BattleSound.stop();
+	if (loseCause > 1)
+	{
+		Game::m_VictorySound.play();
+	}
+	else
+	{
+		Game::m_DefeatSound.play();
+	}
 
 	Character& playerCharacter = CharacterManager::get().getPlayerCharacter();
 	if (!playerCharacter.m_Dead)

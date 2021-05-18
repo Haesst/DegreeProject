@@ -23,9 +23,9 @@ public:
 	void openWindow();
 	void closeWindow();
 	void clickButton();
-	void setFamilyMember(CharacterID& characterID, unsigned int depth, float width);
-	void displayFamily(CharacterID& characterID, unsigned int depth, float width);
-	CharacterID& findFamilyHead(CharacterID& characterID);
+	void setFamilyMember(CharacterID characterID, unsigned int depth, float width);
+	void displayFamily(CharacterID characterID, unsigned int depth, float width);
+	CharacterID findFamilyHead(CharacterID characterID);
 	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
 	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string = "");
 	void setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize = m_SpriteSize);

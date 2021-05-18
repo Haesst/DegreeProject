@@ -17,7 +17,7 @@ enum class Gender
 struct Character
 {
 	// Don't add any functions to this. Keep it as POD
-	CharacterID m_CharacterID = 0;
+	CharacterID m_CharacterID = INVALID_CHARACTER_ID;
 
 	bool m_IsPlayerControlled = false;
 

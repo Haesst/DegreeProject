@@ -44,8 +44,8 @@ public:
 	void setPlayerCharacter(Character& character);
 	void addNewCharacter(Character& character);
 	
-	CharacterID createCharacterWithRandomBirthday(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge);
-	CharacterID createCharacter(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, int army, float gold, sf::Color color, bool playerControlled, Date birthday);
+	CharacterID createCharacterWithRandomBirthday(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, float gold, sf::Color color, bool playerControlled, size_t minAge, size_t maxAge);
+	CharacterID createCharacter(const char* characterName, Title title, Gender gender, std::vector<unsigned int>& ownedRegions, const char* realmName, float gold, sf::Color color, bool playerControlled, Date birthday);
 	CharacterID createNewChild(CharacterID motherID);
 	void addTrait(CharacterID ID, Trait trait);
 	void removeTrait(CharacterID ID, Trait trait);
@@ -69,7 +69,7 @@ public:
 
 	bool ownsRegion(CharacterID ID, int regionIndex);
 	void updateTitleAndUIText(Character& character);
-
+	sf::Color getRandomColor();
 	void setRandomPortraitPath(CharacterID& characterID);
 
 	Player* m_Player = nullptr;
@@ -103,4 +103,15 @@ private:
 	Date m_LastDayUpdate;
 
 	float m_MortalityRate = 0.13f;
+
+	const char* m_EmptyString = "";
+	const char* m_BaronyOfString = "Barony of ";
+	const char* m_CountyOfString = "County of ";
+	const char* m_DuchyOfString = "Duchy of ";
+	const char* m_KingdomOfString = "Kingdom of ";
+	const char* m_EmpireOfString = "Empire of ";
+	unsigned int m_BaronyLevel = 1;
+	unsigned int m_DuchyLevel = 4;
+	unsigned int m_KingdomLevel = 9;
+	unsigned int m_EmpireLevel = 19;
 };
