@@ -12,6 +12,7 @@
 #include "Game/DiplomacyManager.h"
 #include "Game/Systems/HeraldicShieldManager.h"
 #include "Game/Systems/Characters/CharacterNamePool.h"
+#include <sstream>
 
 sf::Sound Game::m_Sound;
 sf::Sound Game::m_BattleSound;

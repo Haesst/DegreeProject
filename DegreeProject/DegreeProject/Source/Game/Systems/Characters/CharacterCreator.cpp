@@ -9,6 +9,8 @@
 #include "Game/Map/MapRegion.h"
 #include "Game/AI/AIManager.h"
 
+#include <sstream>
+
 CharacterID CharacterCreator::createRandomUnlandedCharacter(CharacterPool& characterPool, int minAge, int maxAge)
 {
 	bool male = (static_cast <float> (rand()) / static_cast <float> (RAND_MAX)) <= 0.5f;

@@ -12,6 +12,8 @@
 #include "Engine/InputHandler.h"
 #include "Game/Player.h"
 
+#include <sstream>
+
 UnitManager* UnitManager::m_Instance = nullptr;
 UnitID UnitManager::m_UnitIDs = INVALID_UNIT_ID + 1;
 
