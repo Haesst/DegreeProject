@@ -12,6 +12,7 @@
 #include "Game/Map/Map.h"
 #include "Game/UI/CharacterWindow.h"
 #include "Game/Game.h"
+#include <Game/Systems/SoundManager.h>
 
 WarIcon::WarIcon(UIID ID, sf::Font font, unsigned int index, CharacterID attackerID, CharacterID defenderID)
 {
@@ -35,21 +36,20 @@ void WarIcon::activate()
 {
 	m_Active = true;
 	m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { WarIcon& warIcon = *static_cast<WarIcon*>(data); warIcon.onDayChange(); }, static_cast<void*>(this));
-	Game::m_Sound.pause();
-	if (Game::m_BattleSound.getStatus() != sf::SoundSource::Playing)
-	{
-		Game::m_BattleSound.play();
-	}
+	SoundManager& soundManager = SoundManager::get();
+	soundManager.pauseCurrentMusic();
+	soundManager.playBattleMusic();
 	updateInfo();
 }
 
 void WarIcon::deactivate()
 {
 	m_WarIconShape.setSize(sf::Vector2f());
-	if (Game::m_BattleSound.getStatus() == sf::SoundSource::Playing && DiplomacyManager::get().getWarHandlesOfCharacter(CharacterManager::get().getPlayerCharacterID()).empty())
+	if (DiplomacyManager::get().getWarHandlesOfCharacter(CharacterManager::get().getPlayerCharacterID()).empty())
 	{
-		Game::m_BattleSound.stop();
-		Game::m_Sound.play();
+		SoundManager& soundManager = SoundManager::get();
+		soundManager.stopBattleMusic();
+		soundManager.resumeCurrentMusic();
 	}
 	Time::m_GameDate.unsubscribeToDayChange(m_DaySubscriptionHandle);
 	m_DaySubscriptionHandle = -1;

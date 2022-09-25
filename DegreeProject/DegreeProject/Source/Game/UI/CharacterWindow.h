@@ -1,9 +1,10 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
-#include "Game/Data/Types.h"
-#include "Game/Data/Titles.h"
-#include "Engine/Vector2D.h"
+#include <Game/Data/Types.h>
+#include <Game/Data/Titles.h>
+#include <Engine/Vector2D.h>
+#include <Game/UI/UIWindow.h>
 
 struct Character;
 struct HeraldicShield;
@@ -21,14 +22,14 @@ enum class Traits
 	Female
 };
 
-class CharacterWindow
+class CharacterWindow : public UIWindow
 {
 public:
 
 	CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size);
-	void start();
-	void update();
-	void render();
+	void start() override;
+	void update() override;
+	void render() override;
 	void clickOnMap();
 	void onDayChange();
 	void clearInfo();
@@ -41,20 +42,15 @@ public:
 	void updateWars();
 	void updateTruces();
 	void handleWindow();
-	void openWindow();
-	void closeWindow();
-	void clickButton();
+	void openWindow() override;
+	void closeWindow() override;
+	void clickButton() override;
 	void declareWar();
 	void proposeMarriage();
 	void proposeAlliance();
 	void breakAlliance();
 	void assassinate();
-	void setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position);
-	void setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string = "");
-	void setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize = m_SpriteSize);
 	bool checkIfPlayerCharacter();
-
-	sf::RectangleShape m_WindowShape;
 
 	std::vector<sf::Text> m_OwnedRegionsTexts = std::vector<sf::Text>();
 	std::vector<sf::RectangleShape> m_OwnedRegionShapes = std::vector<sf::RectangleShape>();
@@ -105,22 +101,15 @@ public:
 
 	sf::Texture m_MaleChildTexture;
 	sf::Texture m_FemaleChildTexture;
-	sf::Color m_FillColor = sf::Color(255, 252, 240);
 	sf::Color m_OwnerColor = sf::Color::Red;
 	sf::Color m_DeclareWarColor = sf::Color(210, 32, 60);
 	sf::Color m_MakePeaceColor = sf::Color(67, 175, 17);
-	sf::Color m_TransparentColor = sf::Color::Transparent;
 
-	float m_SizeX = 600.0f;
-	float m_SizeY = 1060.0f;
-	float m_OutlineThickness = 10.0f;
-	bool m_Visible = false;
 	sf::Text m_RealmNameText;
 	sf::Text m_GoldText;
 	sf::Text m_ArmyText;
 	sf::Text m_CharacterNameText;
 	sf::Text m_CharacterAgeText;
-	sf::Font m_Font;
 	std::vector<sf::Text> m_ChildrenNames = std::vector<sf::Text>();
 	std::vector<bool> m_ShowChildrenNames = std::vector<bool>();
 	unsigned int m_CurrentRegionID = 0;
@@ -129,23 +118,19 @@ public:
 	const char* m_EmptyString = "";
 	std::vector<const char*> m_MaleTitles = { "Emperor ", "King ", "Duke ", "Count ", "Baron " };
 	std::vector<const char*> m_FemaleTitles = { "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness " };
-	int m_CharacterSize = 25;
 	int m_DaySubscriptionHandle = -1;
 	bool m_Open = false;
 	const float m_AssassinationCost = 50.0f;
 	const float m_AssassinationChance = 0.5f;
-	sf::RenderWindow* m_Window = nullptr;
 	Character* m_PlayerCharacter = nullptr;
 	Character* m_CurrentCharacter = nullptr;
 	bool m_IsPlayerCharacter = false;
 
-	UIID m_OwnedUIWindow = INVALID_UI_ID;
 	unsigned int m_CurrentWars = 0;
 
 	CharacterID m_PreviousCharacterID = INVALID_CHARACTER_ID;
 	sf::Texture m_CurrentCharacterTexture;
 	sf::Sprite m_CharacterSprite;
-	const static int m_SpriteSize = 32;
 	sf::Vector2f m_CharacterPosition;
 
 	sf::Texture m_GoldTexture;

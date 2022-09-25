@@ -11,6 +11,8 @@ namespace CharacterConstants
 	static const unsigned int m_DeadlyAge = 50;
 	static const unsigned int m_AgeMax = 100;
 	static const float m_YoungAgeModifier = 0.001f;
+	static const float m_MortalityRate = 0.13f;
+	static const float m_LeaderMortalityMultiplier = 2.0f;
 
 	static const unsigned int m_LowerBaseFertility = 2;
 	static const unsigned int m_UpperBaseFertility = 15;
@@ -32,6 +34,19 @@ namespace CharacterConstants
 
 	static const float m_InheritTraitChance = 0.4f;
 	static const float m_NewTraitChance = 0.05f;
+
+	static const std::vector<const char*> m_MaleTitles = { "Emperor ", "King ", "Duke ", "Count ", "Baron " };
+	static const std::vector<const char*> m_FemaleTitles = { "Empress ", "Queen ", "Duchess ", "Countess ", "Baroness " };
+	static const char* m_EmptyString = "";
+	static const char* m_BaronyOfString = "Barony of ";
+	static const char* m_CountyOfString = "County of ";
+	static const char* m_DuchyOfString = "Duchy of ";
+	static const char* m_KingdomOfString = "Kingdom of ";
+	static const char* m_EmpireOfString = "Empire of ";
+	static unsigned int m_BaronyLevel = 1;
+	static unsigned int m_DuchyLevel = 4;
+	static unsigned int m_KingdomLevel = 9;
+	static unsigned int m_EmpireLevel = 19;
 
 	static const char* m_ChildMalePortraitPath = "Assets/Graphics/Portraits/Male/Child/(";
 	static const char* m_ChildFemalePortraitPath = "Assets/Graphics/Portraits/Female/Child/(";

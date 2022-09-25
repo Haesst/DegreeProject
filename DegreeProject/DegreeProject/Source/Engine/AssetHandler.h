@@ -25,7 +25,9 @@ public:
 
 	sf::Font loadFontFromFile(const char* FilePath);
 
-	sf::Sound loadAudioFile(const char* FilePath, sf::SoundBuffer& Buffer);
+	sf::Sound loadSoundFile(const char* FilePath, sf::SoundBuffer& Buffer);
+
+	bool openMusicFile(const char* FilePath, sf::Music& music);
 
 	const sf::Texture getTextureAtPath(const char* FilePath);
 

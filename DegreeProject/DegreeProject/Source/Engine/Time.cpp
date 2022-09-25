@@ -29,14 +29,14 @@ void Time::updateTime()
 void Time::pauseGame()
 {
 	m_GamePaused = true;
-	UIManager::get().m_PauseWindow->activate();
+	UIManager::get().m_PauseWindow->openWindow();
 }
 
 void Time::unpauseGame()
 {
 	m_DeltaClock.restart().asSeconds();
 	m_GamePaused = false;
-	UIManager::get().m_PauseWindow->deactivate();
+	UIManager::get().m_PauseWindow->closeWindow();
 }
 
 void Time::decreaseGameSpeed()

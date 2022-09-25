@@ -293,6 +293,7 @@ EventWindow::EventWindow(UIID ID, sf::Font font, CharacterID instigatorID, Chara
 		setShape(m_DismissShape, m_TransparentColor, m_DismissColor, m_OutlineThickness * 0.5f, { m_SpriteSize * 1.25f, m_SpriteSize * 0.5f }, { m_PositionX + m_SpriteSize * 0.5f, m_PositionY + m_SizeY - m_SpriteSize });
 		setText(m_DismissText, m_Font, m_CharacterSize, m_DismissColor, m_DismissShape.getPosition(), m_DismissString);
 	}
+	m_WasPaused = Time::gamePaused();
 	Time::pauseGame();
 }
 
@@ -384,7 +385,10 @@ void EventWindow::moveWindow()
 void EventWindow::closeWindow()
 {
 	m_Dismissed = true;
-	Time::unpauseGame();
+	if (!m_WasPaused)
+	{
+		Time::unpauseGame();
+	}
 }
 
 void EventWindow::dismissRequest()
@@ -487,13 +491,13 @@ void EventWindow::clickButton()
 		m_MousePosition = InputHandler::getUIMousePosition();
 		if (m_DismissShape.getGlobalBounds().contains(m_MousePosition.x, m_MousePosition.y))
 		{
-			InputHandler::setLeftMouseReleased(false);
+			InputHandler::setLeftMouseClicked(false);
 			m_DismissShape.setFillColor(m_DismissShape.getOutlineColor());
 			m_DismissText.setFillColor(m_FillColor);
 		}
 		else if (m_AgreeShape.getGlobalBounds().contains(m_MousePosition.x, m_MousePosition.y))
 		{
-			InputHandler::setLeftMouseReleased(false);
+			InputHandler::setLeftMouseClicked(false);
 			m_AgreeShape.setFillColor(m_AgreeShape.getOutlineColor());
 			m_AgreeText.setFillColor(m_FillColor);
 		}

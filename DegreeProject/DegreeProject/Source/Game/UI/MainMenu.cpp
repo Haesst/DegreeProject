@@ -1,41 +1,41 @@
-#include "Game/UI/MainMenu.h"
-#include "Engine/Window.h"
-#include "Engine/InputHandler.h"
-#include "Game/Systems/CharacterManager.h"
-#include "Engine/Time.h"
+#include <Game/UI/MainMenu.h>
+#include <Game/Systems/CharacterManager.h>
+#include <Engine/Time.h>
+#include <Engine/InputHandler.h>
 
-MainMenu::MainMenu(UIID id, sf::Font font, Vector2D, Vector2D size)
+MainMenu::MainMenu(UIID id, sf::Font font, Vector2D position, Vector2D size) : UIWindow(id, font, position, size)
 {
-	m_OwnedUIWindow = id;
-	m_Font = font;
-	m_SizeX = size.x;
-	m_SizeY = size.y;
+	m_OutlineThickness = 10.0f;
+	m_WindowFillColor = sf::Color(255, 252, 240);
+	m_WindowPosition = { m_PositionX - m_SizeX * 0.5f, m_PositionY - m_SizeY * 0.5f };
+	m_TextStrings = { "Main Menu" };
+	m_CharacterSize = 25;
+	m_ButtonStrings = { "Resume", "Options", "Exit" };
+}
 
-	m_Window = Window::getWindow();
+void MainMenu::start()
+{
+	UIWindow::start();
 
 	setShape(m_BackgroundShape, m_BackgroundFillColor, m_TransparentColor, 0.0f, { (float)m_Window->getSize().x, (float)m_Window->getSize().y }, {  });
-
-	m_MainMenuPosition = { m_PositionX - m_SizeX * 0.5f, m_PositionY - m_SizeY * 0.5f };
-	setShape(m_MainMenuShape, m_FillColor, m_OwnerColor, m_OutlineThickness, { m_SizeX, m_SizeY }, m_MainMenuPosition);
-	setText(m_MainMenuText, m_Font, m_CharacterSize, m_OwnerColor, { m_MainMenuPosition.x + m_SizeX * 0.25f, m_MainMenuPosition.y }, m_MainMenuString);
-
-	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
+	setShape(m_WindowShape, m_WindowFillColor, m_TextFillColor, m_OutlineThickness, { m_SizeX, m_SizeY }, m_WindowPosition);
+	for (unsigned int index = 0; index < m_TextStrings.size(); index++)
 	{
-		sf::Vector2f buttonPosition = { m_MainMenuPosition.x + m_SizeX * 0.25f, m_MainMenuPosition.y + 100 + 100 * index };
-
-		sf::RectangleShape buttonShape;
-		setShape(buttonShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness, { m_SizeX * 0.25f, m_SizeY * 0.1f }, buttonPosition);
-		m_ButtonShapes.push_back(buttonShape);
-
-		sf::Text buttonText;
-		setText(buttonText, m_Font, m_CharacterSize, m_OwnerColor, buttonPosition, m_ButtonStrings[index]);
-		m_ButtonTexts.push_back(buttonText);
+		m_Texts.push_back(sf::Text());
+		setText(m_Texts[index], m_Font, m_CharacterSize, m_TextFillColor, { m_WindowPosition.x + m_SizeX * 0.5f, m_WindowPosition.y + m_SizeY * 0.05f }, m_TextStrings[index].c_str(), true);
+	}
+	for (unsigned int index = 0; index < m_ButtonStrings.size(); index++)
+	{
+		sf::Vector2f buttonPosition = { m_WindowPosition.x + m_SizeX * 0.5f, m_WindowPosition.y + m_SizeY * 0.25f + m_SizeY * 0.25f * index };
+		m_Buttons.push_back(new Button(m_Font, m_Window, buttonPosition, { m_SizeX * 0.25f, m_SizeY * 0.1f }));
+		m_Buttons[index]->setShape(m_TransparentColor, m_OutlineColor, m_OutlineThickness * 0.5f, { m_SizeX * 0.25f, m_SizeY * 0.1f }, buttonPosition, true);
+		m_Buttons[index]->setText(m_Font, m_CharacterSize, m_TextFillColor, buttonPosition, m_ButtonStrings[index], true);
 	}
 }
 
 void MainMenu::update()
 {
-	handleWindow();
+	UIWindow::update();
 
 	if (m_Visible)
 	{
@@ -45,59 +45,48 @@ void MainMenu::update()
 
 void MainMenu::render()
 {
-	if (m_Visible)
-	{
-		m_Window->draw(m_BackgroundShape);
-
-		m_Window->draw(m_MainMenuShape);
-		m_Window->draw(m_MainMenuText);
-
-		for (unsigned int index = 0; index < m_NumberOfButtons; index++)
-		{
-			m_Window->draw(m_ButtonShapes[index]);
-			m_Window->draw(m_ButtonTexts[index]);
-		}
-	}
+	UIWindow::render();
 }
 
 void MainMenu::openWindow()
 {
-	Time::pauseGame();
+	UIWindow::openWindow();
 
-	m_MainMenuShape.setOutlineColor(m_OwnerColor);
-
-	m_MainMenuText.setFillColor(m_OwnerColor);
-
-	for (unsigned int index = 0; index < m_NumberOfButtons; index++)
+	m_WasPaused = Time::gamePaused();
+	if (!m_WasPaused)
 	{
-		m_ButtonShapes[index].setOutlineColor(m_OwnerColor);
-		m_ButtonTexts[index].setFillColor(m_OwnerColor);
+		Time::pauseGame();
 	}
-
-	m_Visible = true;
 }
 
 void MainMenu::closeWindow()
 {
-	Time::unpauseGame();
-	m_Visible = false;
+	UIWindow::closeWindow();
+
+	if (!m_WasPaused)
+	{
+		Time::unpauseGame();
+	}
 }
 
 void MainMenu::clickButton()
 {
+	UIWindow::clickButton();
+
 	if (InputHandler::getLeftMouseReleased())
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
-		for (unsigned int index = 0; index < m_NumberOfButtons; index++)
+		for (Button* button : m_Buttons)
 		{
-			if (m_ButtonShapes[index].getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+			if (button->m_Shape.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 			{
+				std::string buttonString = button->m_Text.getString();
 				InputHandler::setLeftMouseReleased(false);
-				if (m_ButtonStrings[index] == std::string("Resume"))
+				if (buttonString == m_ButtonStrings[0])
 				{
 					closeWindow();
 				}
-				else if (m_ButtonStrings[index] == std::string("Exit"))
+				else if (buttonString == m_ButtonStrings[m_ButtonStrings.size() - 1])
 				{
 					m_Window->close();
 				}
@@ -108,31 +97,16 @@ void MainMenu::clickButton()
 
 void MainMenu::handleWindow()
 {
+	UIWindow::handleWindow();
+
 	if (!m_Visible && InputHandler::getEscapePressed() && !InputHandler::getCharacterWindowOpen() && !InputHandler::getRegionWindowOpen() && !InputHandler::getWarWindowOpen())
 	{
-		m_OwnerColor = CharacterManager::get().getPlayerCharacter().m_RegionColor;
+		m_TextFillColor = CharacterManager::get().getPlayerCharacter().m_RegionColor;
+		m_OutlineColor = m_TextFillColor;
 		openWindow();
 	}
 	else if (m_Visible && InputHandler::getEscapePressed())
 	{
 		closeWindow();
 	}
-}
-
-void MainMenu::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position)
-{
-	shape.setFillColor(fillColor);
-	shape.setOutlineColor(outlineColor);
-	shape.setOutlineThickness(outlineThickness);
-	shape.setSize(size);
-	shape.setPosition(position);
-}
-
-void MainMenu::setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string)
-{
-	text.setFont(font);
-	text.setCharacterSize(characterSize);
-	text.setFillColor(fillColor);
-	text.setString(string);
-	text.setPosition(position);
 }

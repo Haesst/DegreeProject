@@ -1,9 +1,8 @@
 #include "MiniMap.h"
-
 #include "Engine/Window.h"
 #include "Engine/Log.h"
 #include "Engine/InputHandler.h"
-
+#include "Game/UI/UIManager.h"
 #include "Game/Map/Map.h"
 
 void MiniMap::start()
@@ -49,7 +48,7 @@ void MiniMap::update()
 {
 	updateGameViewRectangle();
 
-	if (InputHandler::getLeftMouseReleased())
+	if (InputHandler::getLeftMouseReleased() && !UIManager::get().IsDraggingWindow())
 	{
 		Vector2D mousePos = InputHandler::getMiniMapMousePosition();
 

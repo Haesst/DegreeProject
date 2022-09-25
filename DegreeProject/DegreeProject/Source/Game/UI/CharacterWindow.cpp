@@ -1,34 +1,40 @@
-#include "Game/UI/CharacterWindow.h"
+#include <Game/UI/CharacterWindow.h>
 #include <SFML/Graphics.hpp>
-#include "Engine/Window.h"
-#include "Engine/InputHandler.h"
-#include "Engine/AssetHandler.h"
-#include "Game/Data/Character.h"
-#include "Game/Map/Map.h"
-#include "Game/Systems/CharacterManager.h"
-#include "Game/Game.h"
+#include <Engine/Window.h>
+#include <Engine/InputHandler.h>
+#include <Engine/AssetHandler.h>
+#include <Game/Data/Character.h>
+#include <Game/Map/Map.h>
+#include <Game/Systems/CharacterManager.h>
+#include <Game/Game.h>
 #include <iomanip>
 #include <sstream>
-#include "Game/AI/AIManager.h"
-#include "Game/DiplomacyManager.h"
-#include "Game/Data/AIData.h"
-#include "Game/UI/UIManager.h"
-#include "Game/UI/WarWindow.h"
-#include "Game/Systems/HeraldicShieldManager.h"
-#include "Game/UI/RegionWindow.h"
-#include "Game/UI/FamilyTreeWindow.h"
-#include "Game/Systems/UnitManager.h"
-#include "Game/Data/Unit.h"
-#include "Game/Data/CharacterConstants.h"
+#include <Game/AI/AIManager.h>
+#include <Game/DiplomacyManager.h>
+#include <Game/Data/AIData.h>
+#include <Game/UI/UIManager.h>
+#include <Game/UI/WarWindow.h>
+#include <Game/Systems/HeraldicShieldManager.h>
+#include <Game/UI/RegionWindow.h>
+#include <Game/UI/FamilyTreeWindow.h>
+#include <Game/Systems/UnitManager.h>
+#include <Game/Data/Unit.h>
+#include <Game/Data/CharacterConstants.h>
 
-CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size)
+CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D position, Vector2D size) : UIWindow(id, font, position, size)
 {
-	m_OwnedUIWindow = id;
-	m_Font = font;
-	m_SizeX = size.x;
-	m_SizeY = size.y;
+	m_CharacterSize = 25;
+	m_OutlineThickness = 10;
+}
 
-	setShape(m_WindowShape, m_FillColor, m_OwnerColor, m_OutlineThickness, {  }, { m_OutlineThickness, m_OutlineThickness });
+void CharacterWindow::start()
+{
+	UIWindow::start();
+
+	m_PlayerCharacter = &CharacterManager::get().getPlayerCharacter();
+	m_OutlineColor = m_PlayerCharacter->m_RegionColor;
+	m_TextFillColor = m_OutlineColor;
+	setShape(m_WindowShape, m_WindowFillColor, m_OutlineColor, m_OutlineThickness, {  }, { m_OutlineThickness, m_OutlineThickness });
 
 	unsigned int numberOfButtons = m_ButtonStrings.size();
 	for (unsigned int index = 0; index < numberOfButtons; index++)
@@ -59,7 +65,7 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	for (unsigned int index = 0; index < numberOfRelations; index++)
 	{
 		sf::Sprite relationSprite;
-		setSprite(relationSprite, m_DiplomacyTextures[index], { m_SizeX * 0.1f + (m_SizeX * 0.1f * index), m_SpriteSize * 10 });
+		setSprite(relationSprite, m_DiplomacyTextures[index], { m_SizeX * 0.1f + (m_SizeX * 0.1f * index), m_SpriteSize * 10.0f });
 		m_DiplomacySprites.push_back(relationSprite);
 
 		sf::Text relationText;
@@ -78,7 +84,7 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	for (unsigned int index = 0; index < m_NumberOfTraits; index++)
 	{
 		sf::Sprite traitSprite;
-		m_TraitPositions.push_back({ m_SpriteSize * index + m_SizeX * 0.1f, m_SpriteSize * 8 });
+		m_TraitPositions.push_back({ m_SpriteSize * index + m_SizeX * 0.1f, (float)m_SpriteSize * 8 });
 		setSprite(traitSprite, m_TraitTextures[index], m_TraitPositions[index]);
 		m_TraitSprites.push_back(traitSprite);
 
@@ -90,7 +96,7 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 		m_TraitsShowText.push_back(false);
 	}
 
-	setText(m_RealmNameText, m_Font, m_CharacterSize, m_OwnerColor, { m_SizeX * 0.25f, m_SpriteSize * 2 });
+	setText(m_RealmNameText, m_Font, m_CharacterSize, m_OwnerColor, { m_SizeX * 0.25f, (float)m_SpriteSize * 2 });
 
 	setText(m_CharacterNameText, m_Font, (unsigned int)(m_CharacterSize * 1.5f), m_OwnerColor, { m_SizeX * 0.25f, m_SpriteSize * 0.75f });
 
@@ -98,49 +104,45 @@ CharacterWindow::CharacterWindow(UIID id, sf::Font font, Vector2D, Vector2D size
 	m_FemaleChildTexture = assetHandler.getTextureAtPath("Assets/Graphics/BabyFemale.png");
 
 	m_GoldTexture = assetHandler.getTextureAtPath("Assets/Graphics/Coins.png");
-	m_GoldPosition = { m_SizeX * 0.1f, m_SpriteSize * 4 };
+	m_GoldPosition = { m_SizeX * 0.1f, (float)m_SpriteSize * 4 };
 	setText(m_GoldText, m_Font, m_CharacterSize, m_OwnerColor, { m_GoldPosition.x + m_SpriteSize * 1.5f, m_GoldPosition.y });
 	setSprite(m_GoldSprite, m_GoldTexture, m_GoldPosition);
 
 	m_ArmyTexture = assetHandler.getTextureAtPath("Assets/Graphics/soldier unit.png");
-	m_ArmyPosition = { m_SizeX * 0.1f, m_SpriteSize * 6 };
+	m_ArmyPosition = { m_SizeX * 0.1f, (float)m_SpriteSize * 6 };
 	setText(m_ArmyText, m_Font, m_CharacterSize, m_OwnerColor, { m_ArmyPosition.x + m_SpriteSize * 1.5f, m_ArmyPosition.y });
 	setSprite(m_ArmySprite, m_ArmyTexture, m_ArmyPosition);
 
 	m_AgeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Age.png");
-	m_AgePosition = { m_SizeX - m_SpriteSize * 3, m_SpriteSize };
+	m_AgePosition = { m_SizeX - m_SpriteSize * 3, (float)m_SpriteSize };
 	setText(m_CharacterAgeText, m_Font, m_CharacterSize, m_OwnerColor, { m_AgePosition.x + m_SpriteSize * 1.5f, m_AgePosition.y });
 	setSprite(m_AgeSprite, m_AgeTexture, m_AgePosition);
 
 	m_DeadTexture = assetHandler.getTextureAtPath("Assets/Graphics/Dead.png");
 	m_DeadPosition = { m_AgePosition.x - m_SpriteSize * 1.5f, m_AgePosition.y };
-	m_BirthPosition = { m_DeadPosition.x, m_DeadPosition.y + m_SpriteSize * 2};
+	m_BirthPosition = { m_DeadPosition.x, m_DeadPosition.y + m_SpriteSize * 2 };
 	setSprite(m_DeadSprite, m_DeadTexture, m_DeadPosition);
 	setText(m_DeathDate, m_Font, m_CharacterSize, m_OwnerColor, { m_DeadPosition.x, m_DeadPosition.y + m_SpriteSize });
 	setText(m_Birthday, m_Font, m_CharacterSize, m_OwnerColor, { m_BirthPosition.x, m_BirthPosition.y + m_SpriteSize });
 
-	m_FatherPosition = { m_SizeX * 0.5f, m_SpriteSize * 12 };
-	setShape(m_FatherShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, m_FatherPosition);
+	m_FatherPosition = { m_SizeX * 0.5f, (float)m_SpriteSize * 12 };
+	setShape(m_FatherShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness * 0.5f, { (float)m_SpriteSize, (float)m_SpriteSize }, m_FatherPosition);
 	setText(m_FatherName, m_Font, m_CharacterSize, m_OwnerColor, { m_FatherPosition.x + m_SizeX * 0.1f, m_FatherPosition.y });
 
 	m_MotherPosition = { m_SizeX * 0.5f, m_SpriteSize * 13 + m_OutlineThickness * 1.5f };
-	setShape(m_MotherShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, m_MotherPosition);
+	setShape(m_MotherShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness * 0.5f, { (float)m_SpriteSize, (float)m_SpriteSize }, m_MotherPosition);
 	setText(m_MotherName, m_Font, m_CharacterSize, m_OwnerColor, { m_MotherPosition.x + m_SizeX * 0.1f, m_MotherPosition.y });
 
 	m_FamilyTreeTexture = assetHandler.getTextureAtPath("Assets/Graphics/Bloodline.png");
 	setSprite(m_FamilyTreeSprite, m_FamilyTreeTexture, { m_DiplomacySprites.back().getPosition().x + m_SpriteSize * 2, m_DiplomacySprites.back().getPosition().y });
 	setText(m_FamilyTreeText, m_Font, m_CharacterSize, m_OwnerColor, { m_FamilyTreeSprite.getPosition().x, m_FamilyTreeSprite.getPosition().y + m_SpriteSize }, "Family Tree");
-}
 
-void CharacterWindow::start()
-{
-	m_Window = Window::getWindow();
-
-	m_PlayerCharacter = &CharacterManager::get().getPlayerCharacter();
 }
 
 void CharacterWindow::update()
 {
+	UIWindow::update();
+
 	clickOnMap();
 	handleWindow();
 
@@ -152,9 +154,10 @@ void CharacterWindow::update()
 
 void CharacterWindow::render()
 {
+	UIWindow::render();
+
 	if (m_Visible)
 	{
-		m_Window->draw(m_WindowShape);
 		m_Window->draw(m_RealmNameText);
 
 		if (m_Dead)
@@ -491,7 +494,7 @@ void CharacterWindow::updateChildren()
 		Character& child = characterManager.getCharacter(m_CurrentCharacter->m_Children[index]);
 
 		sf::RectangleShape childShape;
-		setShape(childShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.2f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
+		setShape(childShape, m_TransparentColor, m_OwnerColor, m_OutlineThickness * 0.5f, { (float)m_SpriteSize, (float)m_SpriteSize }, { m_SizeX * 0.2f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
 
 		sf::Text childNameText;
 		setText(childNameText, m_Font, m_CharacterSize, m_OwnerColor, { childShape.getPosition().x, childShape.getPosition().y + m_SpriteSize }, child.m_Name);
@@ -530,7 +533,7 @@ void CharacterWindow::updateChildren()
 				m_ChildrenTextures.push_back(texture);
 			}
 		}
-		setSprite(m_ChildrenSprites[index], m_ChildrenTextures[index], m_ChildrenShapes[index].getPosition(), m_SpriteSize);
+		setSprite(m_ChildrenSprites[index], m_ChildrenTextures[index], m_ChildrenShapes[index].getPosition());
 	}
 }
 
@@ -547,7 +550,7 @@ void CharacterWindow::updateAllies()
 		Character& ally = characterManager.getCharacter(m_AlliesIDs[index]);
 
 		sf::RectangleShape allyShape;
-		setShape(allyShape, m_TransparentColor, ally.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.3f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
+		setShape(allyShape, m_TransparentColor, ally.m_RegionColor, m_OutlineThickness * 0.5f, { (float)m_SpriteSize, (float)m_SpriteSize }, { m_SizeX * 0.3f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
 		m_AlliesShapes.push_back(allyShape);
 
 		sf::Sprite allySprite;
@@ -563,7 +566,7 @@ void CharacterWindow::updateAllies()
 				m_AlliesTextures.push_back(texture);
 			}
 		}
-		setSprite(m_AlliesSprites[index], m_AlliesTextures[index], m_AlliesShapes[index].getPosition(), m_SpriteSize);
+		setSprite(m_AlliesSprites[index], m_AlliesTextures[index], m_AlliesShapes[index].getPosition());
 	}
 }
 
@@ -594,7 +597,7 @@ void CharacterWindow::updateWars()
 		Character& opponent = characterManager.getCharacter(opponentID);
 
 		sf::RectangleShape warShape;
-		setShape(warShape, m_TransparentColor, opponent.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.4f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
+		setShape(warShape, m_TransparentColor, opponent.m_RegionColor, m_OutlineThickness * 0.5f, { (float)m_SpriteSize, (float)m_SpriteSize }, { m_SizeX * 0.4f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
 
 		m_WarShapes.push_back(warShape);;
 		m_WarDefenders.push_back(defenderID);
@@ -613,7 +616,7 @@ void CharacterWindow::updateWars()
 				m_WarTextures.push_back(texture);
 			}
 		}
-		setSprite(m_WarSprites[index], m_WarTextures[index], m_WarShapes[index].getPosition(), m_SpriteSize);
+		setSprite(m_WarSprites[index], m_WarTextures[index], m_WarShapes[index].getPosition());
 	}
 }
 
@@ -634,7 +637,7 @@ void CharacterWindow::updateTruces()
 		Character& opponent = characterManager.getCharacter(truce.m_TruceOpponent);
 
 		sf::RectangleShape truceShape;
-		setShape(truceShape, m_TransparentColor, opponent.m_RegionColor, m_OutlineThickness * 0.5f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.6f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
+		setShape(truceShape, m_TransparentColor, opponent.m_RegionColor, m_OutlineThickness * 0.5f, { (float)m_SpriteSize, (float)m_SpriteSize }, { m_SizeX * 0.6f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
 
 		sf::Text truceText;
 		std::stringstream stream;
@@ -660,7 +663,7 @@ void CharacterWindow::updateTruces()
 				m_TruceTextures.push_back(texture);
 			}
 		}
-		setSprite(m_TruceSprites[index], m_TruceTextures[index], m_TruceShapes[index].getPosition(), m_SpriteSize);
+		setSprite(m_TruceSprites[index], m_TruceTextures[index], m_TruceShapes[index].getPosition());
 	}
 }
 
@@ -678,7 +681,9 @@ void CharacterWindow::updateInfo()
 
 		if (m_CurrentCharacter->m_CharacterTitle != Title::Unlanded)
 		{
-			m_OwnerColor = m_CurrentCharacter->m_RegionColor;
+			m_OutlineColor = m_CurrentCharacter->m_RegionColor;
+			m_TextFillColor = m_OutlineColor;
+			m_OwnerColor = m_OutlineColor;
 			m_RealmNameText.setString(m_CurrentCharacter->m_KingdomName);
 			m_RealmNameText.setFillColor(m_OwnerColor);
 		}
@@ -716,7 +721,7 @@ void CharacterWindow::updateInfo()
 		for (unsigned int index = 0; index < ownedRegionSize; index++)
 		{
 			sf::RectangleShape regionShape;
-			setShape(regionShape, m_TransparentColor, m_TransparentColor, 0.0f, { m_SpriteSize, m_SpriteSize }, { m_SizeX * 0.1f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
+			setShape(regionShape, m_TransparentColor, m_TransparentColor, 0.0f, { (float)m_SpriteSize, (float)m_SpriteSize }, { m_SizeX * 0.1f, m_SpriteSize * index + m_OutlineThickness * 1.5f * index + m_SpriteSize * 12.0f });
 
 			MapRegion& mapRegion = map.getRegionById(m_CurrentCharacter->m_OwnedRegionIDs[index]);
 			sf::Text regionNameText;
@@ -768,7 +773,7 @@ void CharacterWindow::updateInfo()
 					textureLoaded = true;
 				}
 			}
-			setSprite(m_CharacterSprite, m_CurrentCharacterTexture, { m_SizeX * 0.1f, m_SpriteSize }, m_SpriteSize * 2);
+			setSprite(m_CharacterSprite, m_CurrentCharacterTexture, { m_SizeX * 0.1f, (float)m_SpriteSize }, 2.0f);
 		}
 
 		Unit& unit = UnitManager::get().getUnitOfCharacter(m_CurrentCharacterID);
@@ -825,6 +830,8 @@ void CharacterWindow::updateInfo()
 
 void CharacterWindow::handleWindow()
 {
+	UIWindow::handleWindow();
+
 	InputHandler::setCharacterWindowOpen(m_Visible);
 	if (!m_Visible && InputHandler::m_Inputs[TabReleased])
 	{
@@ -861,25 +868,30 @@ void CharacterWindow::openWindow()
 	{
 		m_WindowShape.setSize({ m_SizeX, m_SizeY });
 		m_DaySubscriptionHandle = Time::m_GameDate.subscribeToDayChange([](void* data) { CharacterWindow& characterWindow = *static_cast<CharacterWindow*>(data); characterWindow.onDayChange(); }, static_cast<void*>(this));
-		m_Visible = true;
 		InputHandler::setCharacterWindowOpen(true);
 	}
+
+	UIWindow::openWindow();
 }
 
 void CharacterWindow::closeWindow()
 {
+
 	if (m_Visible)
 	{
 		Time::m_GameDate.unsubscribeToDayChange(m_DaySubscriptionHandle);
 		m_WindowShape.setSize({  });
 		m_Open = false;
-		m_Visible = false;
 		InputHandler::setCharacterWindowOpen(false);
 	}
+
+	UIWindow::closeWindow();
 }
 
 void CharacterWindow::clickButton()
 {
+	UIWindow::clickButton();
+
 	if (InputHandler::getLeftMouseClicked())
 	{
 		Vector2D mousePosition = InputHandler::getUIMousePosition();
@@ -890,7 +902,7 @@ void CharacterWindow::clickButton()
 			{
 				InputHandler::setLeftMouseReleased(false);
 				m_ButtonShapes[index].setFillColor(m_ButtonShapes[index].getOutlineColor());
-				m_ButtonTexts[index].setFillColor(m_FillColor);
+				m_ButtonTexts[index].setFillColor(m_WindowFillColor);
 			}
 		}
 	}
@@ -1004,8 +1016,17 @@ void CharacterWindow::clickButton()
 		UIManager& uiManager = UIManager::get();
 		if (m_CharacterSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
 		{
-			Vector2DInt mapPosition = Map::get().getRegionById(m_CurrentCharacter->m_OwnedRegionIDs.front()).m_RegionCapital;
-			Vector2D screenPosition = Map::get().convertToScreen(mapPosition);
+			Vector2D screenPosition;
+			Unit& unit = UnitManager::get().getUnitOfCharacter(m_CurrentCharacter->m_CharacterID);
+			if (m_CurrentCharacter->m_LeadingArmy && unit.m_Raised)
+			{
+				screenPosition = unit.m_Position;
+			}
+			else
+			{
+				Vector2DInt mapPosition = Map::get().getRegionById(m_CurrentCharacter->m_OwnedRegionIDs.front()).m_RegionCapital;
+				screenPosition = Map::get().convertToScreen(mapPosition);
+			}
 			Game::setGameViewCenter({ screenPosition.x, screenPosition.y });
 		}
 		else if (m_FamilyTreeSprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
@@ -1087,6 +1108,15 @@ void CharacterWindow::clickButton()
 				regionWindow.checkIfPlayerRegion();
 				regionWindow.openWindow();
 				regionWindow.updateInfo();
+			}
+		}
+		if (m_ArmySprite.getGlobalBounds().contains(mousePosition.x, mousePosition.y))
+		{
+			Unit& unit = UnitManager::get().getUnitOfCharacter(m_CurrentCharacter->m_CharacterID);
+			if (unit.m_Raised)
+			{
+				Vector2D screenPosition = unit.m_Position;
+				Game::setGameViewCenter({ screenPosition.x, screenPosition.y });
 			}
 		}
 	}
@@ -1239,29 +1269,4 @@ void CharacterWindow::assassinate()
 bool CharacterWindow::checkIfPlayerCharacter()
 {
 	return m_IsPlayerCharacter = m_CurrentCharacterID == m_PlayerCharacter->m_CharacterID;
-}
-
-void CharacterWindow::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position)
-{
-	shape.setFillColor(fillColor);
-	shape.setOutlineColor(outlineColor);
-	shape.setOutlineThickness(outlineThickness);
-	shape.setSize(size);
-	shape.setPosition(position);
-}
-
-void CharacterWindow::setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string)
-{
-	text.setFont(font);
-	text.setCharacterSize(characterSize);
-	text.setFillColor(fillColor);
-	text.setPosition(position);
-	text.setString(string);
-}
-
-void CharacterWindow::setSprite(sf::Sprite& sprite, sf::Texture& texture, sf::Vector2f position, unsigned int spriteSize)
-{
-	sprite.setTexture(texture, true);
-	sprite.setScale(spriteSize / sprite.getLocalBounds().width, spriteSize / sprite.getLocalBounds().height);
-	sprite.setPosition(position);
 }

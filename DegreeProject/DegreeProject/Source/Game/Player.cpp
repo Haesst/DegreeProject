@@ -1,6 +1,7 @@
 #include "Player.h"
 #include "Game/UI/UIManager.h"
 #include "Game/UI/EndWindow.h"
+#include "UI/ArmyWindow.h"
 
 Player* Player::m_Instance = nullptr;
 
@@ -42,6 +43,16 @@ void Player::render()
 
 void Player::hoverOverRegion()
 {
+	if (UIManager::get().IsDraggingWindow())
+	{
+		if (m_HighlightedRegion >= 0)
+		{
+			Map::get().getRegionById(m_HighlightedRegion).m_Highlighted = false;
+			m_HighlightedRegion = -1;
+		}
+		return;
+	}
+
 	Vector2DInt currentMousePosition = InputHandler::getMouseMapPosition();
 
 	if (Map::get().mapSquareDataContainsKey(currentMousePosition))
@@ -77,6 +88,13 @@ void Player::hoverOverRegion()
 
 void Player::clickDrag()
 {
+	if (UIManager::get().IsDraggingWindow())
+	{
+		m_MouseDownLastFrame = false;
+		m_Draging = false;
+		return;
+	}
+
 	if (m_MouseDownLastFrame && !m_Draging)
 	{
 		m_Draging = true;
@@ -111,6 +129,8 @@ void Player::tryToSelectUnit()
 {
 	if (InputHandler::getLeftMouseClicked() && !m_Draging)
 	{
+		ArmyWindow& armyWindow = *UIManager::get().m_ArmyWindow;
+		Vector2D mousePositionUI = InputHandler::getUIMousePosition();
 		Vector2D mousePosition = InputHandler::getMousePosition();
 		CharacterID playerCharacterID = CharacterManager::get().getPlayerCharacterID();
 		Unit& unit = UnitManager::get().getUnitOfCharacter(playerCharacterID);
@@ -118,7 +138,7 @@ void Player::tryToSelectUnit()
 		{
 			selectUnit(unit.m_UnitID);
 		}
-		else
+		else if (m_SelectedUnitID != INVALID_UNIT_ID && !armyWindow.m_WindowShape.getGlobalBounds().contains(mousePositionUI.x, mousePositionUI.y))
 		{
 			deselectUnit();
 		}
@@ -126,6 +146,8 @@ void Player::tryToSelectUnit()
 
 	if (m_Draging && InputHandler::getMouseMoved())
 	{
+		ArmyWindow& armyWindow = *UIManager::get().m_ArmyWindow;
+		Vector2D mousePositionUI = InputHandler::getUIMousePosition();
 		CharacterID playerCharacterID = CharacterManager::get().getPlayerCharacterID();
 		Unit& unit = UnitManager::get().getUnitOfCharacter(playerCharacterID);
 		Vector2D unitPosition = { unit.m_Position.x + unit.m_HighlightShapeSize.x * 0.5f, unit.m_Position.y + unit.m_HighlightShapeSize.y * 0.5f };
@@ -133,7 +155,7 @@ void Player::tryToSelectUnit()
 		{
 			selectUnit(unit.m_UnitID);
 		}
-		else
+		else if (m_SelectedUnitID != INVALID_UNIT_ID && !armyWindow.m_WindowShape.getGlobalBounds().contains(mousePositionUI.x, mousePositionUI.y))
 		{
 			deselectUnit();
 		}
@@ -145,19 +167,18 @@ void Player::selectUnit(UnitID id)
 	Unit& unit = UnitManager::get().getUnitWithId(id);
 	unit.m_Selected = true;
 	InputHandler::setPlayerUnitSelected(true);
+	ArmyWindow& armyWindow = *UIManager::get().m_ArmyWindow;
+	armyWindow.openWindow();
 	m_SelectedUnitID = id;
 }
 
 void Player::deselectUnit()
 {
-	if (m_SelectedUnitID == INVALID_UNIT_ID)
-	{
-		return;
-	}
-
 	Unit& unit = UnitManager::get().getUnitWithId(m_SelectedUnitID);
 	unit.m_Selected = false;
 	InputHandler::setPlayerUnitSelected(false);
+	ArmyWindow& armyWindow = *UIManager::get().m_ArmyWindow;
+	armyWindow.closeWindow();
 	m_SelectedUnitID = INVALID_UNIT_ID;
 }
 

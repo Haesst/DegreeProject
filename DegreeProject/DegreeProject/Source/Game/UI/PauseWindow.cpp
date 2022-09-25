@@ -1,60 +1,39 @@
-#include "Game/UI/PauseWindow.h"
-#include "Engine/Window.h"
-#include "Game/Systems/CharacterManager.h"
-#include "Game/Data/Character.h"
+#include <Game/UI/PauseWindow.h>
+#include <Game/Systems/CharacterManager.h>
 
-PauseWindow::PauseWindow(UIID ID, sf::Font font, Vector2D position, Vector2D size)
+PauseWindow::PauseWindow(UIID id, sf::Font font, Vector2D position, Vector2D size) : UIWindow(id, font, position, size)
 {
-	m_OwnerUIElement = ID;
-	m_Font = font;
-	m_SizeX = size.x;
-	m_SizeY = size.y;
-	m_PositionX = position.x;
-	m_PositionY = position.y;
+	m_OutlineColor = m_BackgroundFillColor;
+	m_WindowPosition = { m_PositionX - m_SizeX * 0.5f, m_PositionY - m_SizeY * 0.5f };
+	m_TextStrings = { "Paused" };
+	m_CharacterSize = 25;
+}
 
-	m_Window = Window::getWindow();
+void PauseWindow::start()
+{
+	UIWindow::start();
 
-	sf::Vector2f shapeSize = { m_SizeX, m_SizeY };
-	sf::Vector2f shapePosition = { m_PositionX - m_SizeX * 0.5f, m_PositionY - m_SizeY * 0.5f };
-	setShape(m_PausedShape, m_PausedShapeColor, m_PausedShapeColor, 0.0f, shapeSize, shapePosition);
-	setText(m_PausedText, m_Font, m_CharacterSize, m_PausedTextColor, { shapePosition.x + m_SizeX * 0.25f, shapePosition.y + m_SizeY * 0.2f }, m_Paused);
+	setShape(m_WindowShape, m_BackgroundFillColor, m_BackgroundFillColor, m_OutlineThickness, { m_SizeX, m_SizeY }, m_WindowPosition);
+	for (unsigned int index = 0; index < m_TextStrings.size(); index++)
+	{
+		m_Texts.push_back(sf::Text());
+		setText(m_Texts[index], m_Font, m_CharacterSize, m_TextFillColor, { m_WindowPosition.x + m_SizeX * 0.25f, m_WindowPosition.y + m_SizeY * 0.2f }, m_TextStrings[index].c_str());
+	}
 }
 
 void PauseWindow::render()
 {
-	if (m_Active)
-	{
-		m_Window->draw(m_PausedShape);
-		m_Window->draw(m_PausedText);
-	}
+	UIWindow::render();
 }
 
-void PauseWindow::deactivate()
+void PauseWindow::closeWindow()
 {
-	m_Active = false;
+	UIWindow::closeWindow();
 }
 
-void PauseWindow::activate()
+void PauseWindow::openWindow()
 {
-	m_PausedTextColor = CharacterManager::get().getPlayerCharacter().m_RegionColor;
-	m_PausedText.setFillColor(m_PausedTextColor);
-	m_Active = true;
-}
+	m_TextFillColor = CharacterManager::get().getPlayerCharacter().m_RegionColor;
 
-void PauseWindow::setShape(sf::RectangleShape& shape, sf::Color& fillColor, sf::Color& outlineColor, float outlineThickness, sf::Vector2f size, sf::Vector2f position)
-{
-	shape.setFillColor(fillColor);
-	shape.setOutlineColor(outlineColor);
-	shape.setOutlineThickness(outlineThickness);
-	shape.setSize(size);
-	shape.setPosition(position);
-}
-
-void PauseWindow::setText(sf::Text& text, sf::Font& font, unsigned int characterSize, sf::Color& fillColor, sf::Vector2f position, const char* string)
-{
-	text.setFont(font);
-	text.setCharacterSize(characterSize);
-	text.setFillColor(fillColor);
-	text.setString(string);
-	text.setPosition(position);
+	UIWindow::openWindow();
 }

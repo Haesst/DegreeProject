@@ -12,6 +12,7 @@
 #include "Game/UI/FamilyTreeWindow.h"
 #include "Game/UI/MiniMap.h"
 #include "Game/UI/EndWindow.h"
+#include "Game/UI/ArmyWindow.h"
 #include "Game/Game.h"
 
 UIManager* UIManager::m_Instance = nullptr;
@@ -121,6 +122,11 @@ void UIManager::SetRealmNameOnText(CharacterID characterID, std::string realmNam
 	m_UITexts[characterID]->m_CountryName = realmName;
 }
 
+bool UIManager::IsDraggingWindow()
+{
+	return m_DraggingWindow;
+}
+
 UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D position, Vector2D size)
 {
 	UIID id = m_UIElementsIDs++;
@@ -176,6 +182,11 @@ UIID UIManager::createUIWindowElement(sf::Font font, UIType type, Vector2D posit
 			m_DateBar = new DateBar(id, font, position, size);
 			break;
 		}
+		case UIType::ArmyWindow:
+		{
+			m_ArmyWindow = new ArmyWindow(id, font, position, size);
+			break;
+		}
 		default:
 		{
 			break;
@@ -197,6 +208,7 @@ void UIManager::start()
 	ASSERT(m_WarWindow != nullptr, "War Window does not exist");
 	ASSERT(m_StatBar != nullptr, "Stat Bar does not exist");
 	ASSERT(m_DateBar != nullptr, "Date Bar does not exist");
+	ASSERT(m_ArmyWindow != nullptr, "Army Window does not exist");
 	for (std::pair<CharacterID, UIText*> uiTextPair : m_UITexts)
 	{
 		uiTextPair.second->start();
@@ -208,16 +220,25 @@ void UIManager::start()
 	m_StatBar->start();
 	m_DateBar->start();
 	m_MiniMap->start();
+	m_ArmyWindow->start();
+	m_EndWindow->start();
+	m_PauseWindow->start();
+	m_MainMenu->start();
 }
 
 void UIManager::update()
 {
 	m_EndWindow->update();
 	m_MainMenu->update();
+	bool dragginWindow = false;
 	for (std::map<UIID, EventWindow*>::reverse_iterator eventWindowIterator = m_EventWindows.rbegin(); eventWindowIterator != m_EventWindows.rend(); ++eventWindowIterator)
 	{
 		if (!(*eventWindowIterator).second->m_Dismissed)
 		{
+			if ((*eventWindowIterator).second->m_MovingWindow)
+			{
+				dragginWindow = true;
+			}			
 			(*eventWindowIterator).second->update();
 		}
 		else
@@ -225,6 +246,7 @@ void UIManager::update()
 			m_EventWindowsToRemove.push_back((*eventWindowIterator).first);
 		}
 	}
+	m_DraggingWindow = dragginWindow;
 	for (UIID uiID : m_EventWindowsToRemove)
 	{
 		delete m_EventWindows[uiID];
@@ -276,6 +298,7 @@ void UIManager::update()
 	m_WarIconsToRemove.clear();
 	m_FamilyTreeWindow->update();
 	m_CharacterWindow->update();
+	m_ArmyWindow->update();
 	m_RegionWindow->update();
 }
 
@@ -293,6 +316,7 @@ void UIManager::render()
 	m_FamilyTreeWindow->render();
 	m_CharacterWindow->render();
 	m_RegionWindow->render();
+	m_ArmyWindow->render();
 	m_WarWindow->render();
 	m_StatBar->render();
 	m_DateBar->render();

@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Game/Data/Types.h"
-#include "Game/Data/Titles.h"
-#include "Game/Data/Trait.h"
-#include "Game/GameDate.h"
-
+#include <Game/Data/Types.h>
+#include <Game/Data/Titles.h>
+#include <Game/Data/Trait.h>
+#include <Game/GameDate.h>
 #include <vector>
 #include <SFML/Graphics.hpp>
 
@@ -66,6 +65,7 @@ struct Character
 	unsigned int m_AgeAtDeath = 0;
 	bool m_Inherited = false;
 	bool m_RecentlyAtWar = false;  //Flag for raising units when war starts // <- This might not be necessary
+	bool m_LeadingArmy = false;
 
 	UnitID m_UnitEntity = INVALID_UNIT_ID; // Don't think this will be necessary but still keep it until fixed
 };

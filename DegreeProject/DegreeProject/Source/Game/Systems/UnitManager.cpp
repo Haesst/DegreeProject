@@ -32,6 +32,13 @@ void UnitManager::update()
 	for (auto& unit : m_Units)
 	{
 		Character& character = CharacterManager::get().getCharacter(unit.m_Owner);
+
+		if (character.m_CharacterID == INVALID_UNIT_ID)
+		{
+			dismissUnit(unit.m_UnitID);
+			continue;
+		}
+
 		if (m_LastDay < currentDate)
 		{
 			if (character.m_CurrentGold < 0)
@@ -564,22 +571,30 @@ void UnitManager::determineCombat(UnitID unitID, UnitID enemyID)
 	std::vector<UnitID> unitAllies = getAlliesAtSquare(CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner), Map::get().convertToMap(getUnitWithId(unitID).m_Position));
 	std::vector<UnitID> enemyAllies = getAlliesAtSquare(CharacterManager::get().getCharacter(getUnitWithId(enemyID).m_Owner), Map::get().convertToMap(getUnitWithId(enemyID).m_Position));
 
-	int unitTotalForce = getUnitWithId(unitID).m_RepresentedForce;
-	int enemyTotalForce = getUnitWithId(enemyID).m_RepresentedForce;
+	float unitTotalForce = (float)getUnitWithId(unitID).m_RepresentedForce;
+	float enemyTotalForce = (float)getUnitWithId(enemyID).m_RepresentedForce;
+
+	bool leader = CharacterManager::get().getCharacter(getUnitWithId(unitID).m_Owner).m_LeadingArmy;
+	bool enemyLeader = CharacterManager::get().getCharacter(getUnitWithId(enemyID).m_Owner).m_LeadingArmy;
 
 	for (auto& unit : unitAllies)
 	{
 		unitTotalForce += getUnitWithId(unit).m_RepresentedForce;
+		leader = CharacterManager::get().getCharacter(getUnitWithId(unit).m_Owner).m_LeadingArmy ? true : leader;
 	}
 
 	for (auto& unit : enemyAllies)
 	{
 		enemyTotalForce += getUnitWithId(unit).m_RepresentedForce;
+		enemyLeader = CharacterManager::get().getCharacter(getUnitWithId(unit).m_Owner).m_LeadingArmy ? true : enemyLeader;
 	}
+
+	unitTotalForce = leader ? unitTotalForce * m_LeaderCombatMultiplier : unitTotalForce;
+	enemyTotalForce = enemyLeader ? enemyTotalForce * m_LeaderCombatMultiplier : enemyTotalForce;
 
 	if (getUnitWithId(unitID).m_RepresentedForce > 0 && getUnitWithId(enemyID).m_RepresentedForce > 0)
 	{
-		armyWeight = ((float)unitTotalForce / enemyTotalForce) * ((float)unitTotalForce / enemyTotalForce) * 0.5f;
+		armyWeight = (unitTotalForce / enemyTotalForce) * (unitTotalForce / enemyTotalForce) * 0.5f;
 	}
 
 	else

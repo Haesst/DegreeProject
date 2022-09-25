@@ -123,7 +123,7 @@ void InputHandler::handleInputEvents()
 			}
 			case sf::Keyboard::Delete:
 			{
-				//window.close();
+				window.close();
 				break;
 			}
 			case sf::Keyboard::Numpad1:
@@ -158,7 +158,7 @@ void InputHandler::handleInputEvents()
 			}
 			case sf::Keyboard::U:
 			{
-				//CharacterManager::get().killCharacter(CharacterManager::get().getPlayerCharacterID());
+				CharacterManager::get().killCharacter(CharacterManager::get().getPlayerCharacterID());
 				break;
 			}
 			case sf::Keyboard::Tab:

@@ -75,4 +75,7 @@ public:
 	sf::Texture m_MessageTypeTexture;
 	sf::Sprite m_MessageTypeSprite;
 	sf::Text m_MessageText;
+private:
+	
+	bool m_WasPaused;
 };

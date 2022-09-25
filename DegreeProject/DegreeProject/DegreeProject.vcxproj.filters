@@ -219,6 +219,13 @@
     <ClInclude Include="Source\Game\War.h">
       <Filter>Game</Filter>
     </ClInclude>
+    <ClInclude Include="Source\Game\UI\ArmyWindow.h">
+      <Filter>Game\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="Source\Game\UI\Button.h" />
+    <ClInclude Include="Source\Game\Data\Entity.h" />
+    <ClInclude Include="Source\Game\UI\UIWindow.h" />
+    <ClInclude Include="Source\Game\Systems\SoundManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Source\Engine\AssetHandler.cpp">
@@ -354,5 +361,12 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Source\StrategyGame.cpp" />
+    <ClCompile Include="Source\Game\UI\ArmyWindow.cpp">
+      <Filter>Game\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="Source\Game\UI\Button.cpp" />
+    <ClCompile Include="Source\Game\Data\Entity.cpp" />
+    <ClCompile Include="Source\Game\UI\UIWindow.cpp" />
+    <ClCompile Include="Source\Game\Systems\SoundManager.cpp" />
   </ItemGroup>
 </Project>

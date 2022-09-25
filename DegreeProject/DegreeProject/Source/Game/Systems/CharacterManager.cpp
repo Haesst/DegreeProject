@@ -413,6 +413,11 @@ void CharacterManager::update()
 			continue;
 		}
 
+		if (character.m_CharacterID > m_Characters.size())
+		{
+			continue;
+		}
+
 		if (m_LastDayUpdate < Time::m_GameDate.m_Date)
 		{
 			dailyUpdates(character);
@@ -442,7 +447,8 @@ void CharacterManager::dailyUpdates(Character& character)
 		float dividend = (float)((age - CharacterConstants::m_DeadlyAge) * (age - CharacterConstants::m_DeadlyAge));
 		float divisor = (float)(CharacterConstants::m_AgeMax * CharacterConstants::m_AgeMax);
 		float quotient = dividend / divisor;
-		float dieChance = quotient * m_MortalityRate;
+		float dieChance = quotient * CharacterConstants::m_MortalityRate;
+		dieChance = character.m_LeadingArmy && UnitManager::get().getUnitOfCharacter(character.m_CharacterID).m_Raised ? dieChance * CharacterConstants::m_LeaderMortalityMultiplier : dieChance;
 		age < CharacterConstants::m_DeadlyAge ? dieChance *= CharacterConstants::m_YoungAgeModifier : dieChance;
 		bool die = chancePerPercent(dieChance);
 		if (die)
@@ -747,35 +753,35 @@ void CharacterManager::updateTitleAndUIText(Character& character)
 	if (numberOfRegions <= 0)
 	{
 		character.m_CharacterTitle = Title::Unlanded;
-		character.m_KingdomName = m_EmptyString;
+		character.m_KingdomName = CharacterConstants::m_EmptyString;
 		return;
 	}
 
 	std::stringstream stream;
-	if (numberOfRegions == m_BaronyLevel)
+	if (numberOfRegions == CharacterConstants::m_BaronyLevel)
 	{
 		character.m_CharacterTitle = Title::Baron;
-		stream << m_BaronyOfString;
+		stream << CharacterConstants::m_BaronyOfString;
 	}
-	else if (numberOfRegions < m_DuchyLevel)
+	else if (numberOfRegions < CharacterConstants::m_DuchyLevel)
 	{
 		character.m_CharacterTitle = Title::Count;
-		stream << m_CountyOfString;
+		stream << CharacterConstants::m_CountyOfString;
 	}
-	else if (numberOfRegions < m_KingdomLevel)
+	else if (numberOfRegions < CharacterConstants::m_KingdomLevel)
 	{
 		character.m_CharacterTitle = Title::Duke;
-		stream << m_DuchyOfString;
+		stream << CharacterConstants::m_DuchyOfString;
 	}
-	else if (numberOfRegions < m_EmpireLevel)
+	else if (numberOfRegions < CharacterConstants::m_EmpireLevel)
 	{
 		character.m_CharacterTitle = Title::King;
-		stream << m_KingdomOfString;
+		stream << CharacterConstants::m_KingdomOfString;
 	}
-	else if (numberOfRegions >= m_EmpireLevel)
+	else if (numberOfRegions >= CharacterConstants::m_EmpireLevel)
 	{
 		character.m_CharacterTitle = Title::Emperor;
-		stream << m_EmpireOfString;
+		stream << CharacterConstants::m_EmpireOfString;
 	}
 	stream << Map::get().getRegionById(character.m_OwnedRegionIDs.front()).m_RegionName;
 	character.m_KingdomName = stream.str();

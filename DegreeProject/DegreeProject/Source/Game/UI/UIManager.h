@@ -20,6 +20,7 @@ class PauseWindow;
 class FamilyTreeWindow;
 class MiniMap;
 class EndWindow;
+class ArmyWindow;
 
 class UIManager
 {
@@ -38,12 +39,14 @@ public:
 	void AdjustOwnerships(CharacterID conquerorID, CharacterID loserID, std::vector<unsigned int>& regionIDs);
 	void SetRealmTextAsConquered(CharacterID characterID);
 	void SetRealmNameOnText(CharacterID characterID, std::string realmName);
+	bool IsDraggingWindow();
 	UIElement& getUIElement(UIID ID);
 	UIText& getUIText(UIID ID);
 	FamilyTreeWindow* m_FamilyTreeWindow = nullptr;
 	CharacterWindow* m_CharacterWindow = nullptr;
 	RegionWindow* m_RegionWindow = nullptr;
 	PauseWindow* m_PauseWindow = nullptr;
+	ArmyWindow* m_ArmyWindow = nullptr;
 	WarWindow* m_WarWindow = nullptr;
 	EndWindow* m_EndWindow = nullptr;
 	MainMenu* m_MainMenu = nullptr;
@@ -61,4 +64,5 @@ private:
 	std::vector<UIID> m_EventWindowsToRemove;
 	std::vector<UIID> m_WarIconsToRemove;
 	bool m_MoveWarIcon = false;
+	bool m_DraggingWindow = false;
 };

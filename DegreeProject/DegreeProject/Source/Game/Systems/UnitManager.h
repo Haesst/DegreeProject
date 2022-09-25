@@ -73,4 +73,6 @@ private:
 	sf::Texture m_UnitTexture;
 	sf::Sprite m_UnitSprite;
 	sf::VertexArray m_UnitLinePath;
+
+	float m_LeaderCombatMultiplier = 1.2f;
 };

@@ -40,7 +40,7 @@ sf::Font AssetHandler::loadFontFromFile(const char* FilePath)
 	return Font;
 }
 
-sf::Sound AssetHandler::loadAudioFile(const char* FilePath, sf::SoundBuffer& Buffer)
+sf::Sound AssetHandler::loadSoundFile(const char* FilePath, sf::SoundBuffer& Buffer)
 {
 	if (Buffer.loadFromFile(FilePath))
 	{
@@ -50,6 +50,16 @@ sf::Sound AssetHandler::loadAudioFile(const char* FilePath, sf::SoundBuffer& Buf
 	}
 	
 	return sf::Sound();
+}
+
+bool AssetHandler::openMusicFile(const char* FilePath, sf::Music& music)
+{
+	if (music.openFromFile(FilePath))
+	{
+		return true;
+	}
+
+	return false;
 }
 
 const sf::Texture AssetHandler::getTextureAtPath(const char* FilePath)

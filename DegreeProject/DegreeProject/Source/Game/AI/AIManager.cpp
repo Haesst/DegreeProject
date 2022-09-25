@@ -9,6 +9,7 @@
 #include "Managers/AIWarManager.h"
 #include "Managers/AISettlementManager.h"
 #include "Game/UI/UIManager.h"
+#include "Game/Data/CharacterConstants.h"
 
 AIManager* AIManager::m_Instance = nullptr;
 
@@ -479,6 +480,7 @@ void AIManager::UpdateWarmind(WarmindComponent& warmind, CharacterManager& chara
 					if (Map::get().getRegionById(region).m_OccupiedBy == INVALID_CHARACTER_ID)
 					{
 						unitManager.raiseUnit(character.m_UnitEntity, Map::get().getRegionCapitalLocation(region));
+						character.m_LeadingArmy = character.m_Age < CharacterConstants::m_DeadlyAge ? true : false;
 					}
 				}
 

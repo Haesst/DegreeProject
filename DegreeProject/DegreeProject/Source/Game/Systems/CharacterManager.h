@@ -101,17 +101,4 @@ private:
 	CharacterPool m_CharacterPool;
 
 	Date m_LastDayUpdate;
-
-	float m_MortalityRate = 0.13f;
-
-	const char* m_EmptyString = "";
-	const char* m_BaronyOfString = "Barony of ";
-	const char* m_CountyOfString = "County of ";
-	const char* m_DuchyOfString = "Duchy of ";
-	const char* m_KingdomOfString = "Kingdom of ";
-	const char* m_EmpireOfString = "Empire of ";
-	unsigned int m_BaronyLevel = 1;
-	unsigned int m_DuchyLevel = 4;
-	unsigned int m_KingdomLevel = 9;
-	unsigned int m_EmpireLevel = 19;
 };

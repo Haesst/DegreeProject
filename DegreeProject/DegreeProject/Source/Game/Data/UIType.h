@@ -8,6 +8,7 @@ enum class UIType
 	FamilyTreeWindow,
 	CharacterWindow,
 	RegionWindow,
+	ArmyWindow,
 	WarWindow,
 	StatBar,
 	DateBar,

@@ -1,23 +1,20 @@
-#include "Game.h"
-#include "Engine/Window.h"
-#include "Engine/Time.h"
-#include "Engine/InputHandler.h"
-#include "Game/Systems/UnitManager.h"
-#include "Game/HotReloader.h"
-#include "Game/GameData.h"
-#include "Game/AI/AIManager.h"
-#include "Game/UI/UIManager.h"
-#include "Game/UI/MiniMap.h"
-#include "Game/StaticSpriteManager.h"
-#include "Game/DiplomacyManager.h"
-#include "Game/Systems/HeraldicShieldManager.h"
-#include "Game/Systems/Characters/CharacterNamePool.h"
+#include <Game/Game.h>
+#include <Engine/Window.h>
+#include <Engine/Time.h>
+#include <Engine/InputHandler.h>
+#include <Game/Systems/UnitManager.h>
+#include <Game/Systems/SoundManager.h>
+#include <Game/HotReloader.h>
+#include <Game/GameData.h>
+#include <Game/AI/AIManager.h>
+#include <Game/UI/UIManager.h>
+#include <Game/UI/MiniMap.h>
+#include <Game/StaticSpriteManager.h>
+#include <Game/DiplomacyManager.h>
+#include <Game/Systems/HeraldicShieldManager.h>
+#include <Game/Systems/Characters/CharacterNamePool.h>
 #include <sstream>
 
-sf::Sound Game::m_Sound;
-sf::Sound Game::m_BattleSound;
-sf::Sound Game::m_VictorySound;
-sf::Sound Game::m_DefeatSound;
 sf::Font Game::m_UIFont;
 sf::View Game::m_GameView;
 Window* Game::m_Window;
@@ -59,35 +56,8 @@ void Game::run()
 	UIManager::get().m_MiniMap->setGameView(&m_GameView);
 	UIManager::get().m_MiniMap->setUIView(&uiView);
 
-	//Logo Splash Screen
-	sf::Texture logoTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/UI/Logo.png");
-	sf::Sprite logoSprite;
-	logoSprite.setTexture(logoTexture, true);
-	logoSprite.setScale(1200 / logoSprite.getLocalBounds().width, 700 / logoSprite.getLocalBounds().height);
-	logoSprite.setPosition(floatResolution.x * 0.5f - logoSprite.getLocalBounds().width * 0.5f, floatResolution.y * 0.5f - logoSprite.getLocalBounds().height * 0.5f);
-	logoSprite.setColor(CharacterManager::get().getPlayerCharacter().m_RegionColor);
-	sf::Text logoText;
-	logoText.setFont(m_UIFont);
-	logoText.setCharacterSize(100);
-	logoText.setFillColor(CharacterManager::get().getPlayerCharacter().m_RegionColor);
-	std::string realmNameString = CharacterManager::get().getPlayerCharacter().m_KingdomName.substr(6);
-	std::stringstream stream;
-	stream << CharacterManager::get().getPlayerCharacter().m_Name << realmNameString;
-	logoText.setString(stream.str());
-	stream.str(std::string());
-	stream.clear();
-	logoText.setOrigin(logoText.getLocalBounds().width * 0.5f, logoText.getLocalBounds().height * 0.5f);
-	logoText.setPosition(floatResolution.x * 0.5f, floatResolution.y * 0.75f);
-	while (!InputHandler::m_Inputs[KeyPressed] && !InputHandler::m_Inputs[MouseClicked])
-	{
-		Window::getWindow()->setView(m_GameView);
-		InputHandler::handleInputEvents();
-		Window::getWindow()->setView(uiView);
-		Window::getWindow()->clear(sf::Color::Black);
-		Window::getWindow()->draw(logoSprite);
-		Window::getWindow()->draw(logoText);
-		Window::getWindow()->display();
-	}
+	showSplashScreen(floatResolution, uiView);
+
 	Window::getWindow()->setView(m_GameView);
 
 	Time::pauseGame();
@@ -106,6 +76,7 @@ void Game::run()
 		AIManager::get().update();
 		DiplomacyManager::get().update();
 		UIManager::get().update();
+		SoundManager::get().update();
 
 		// Render
 		Window::getWindow()->clear(sf::Color::Black);
@@ -148,22 +119,7 @@ void Game::initAssets()
 
 void Game::initSound()
 {
-	m_BattleSound = m_AssetHandler->loadAudioFile("Assets/Audio/Battle.wav", m_BattleSoundBuffer);
-	m_BattleSound.setLoop(true);
-	m_BattleSound.setVolume(m_Volume);
-
-	m_VictorySound = m_AssetHandler->loadAudioFile("Assets/Audio/Victory.wav", m_VictorySoundBuffer);
-	m_VictorySound.setLoop(true);
-	m_VictorySound.setVolume(m_Volume);
-
-	m_DefeatSound = m_AssetHandler->loadAudioFile("Assets/Audio/Defeat.wav", m_DefeatSoundBuffer);
-	m_DefeatSound.setLoop(true);
-	m_DefeatSound.setVolume(m_Volume);
-
-	m_Sound = m_AssetHandler->loadAudioFile("Assets/Audio/Minstrel_Dance.wav", m_SoundBuffer);
-	m_Sound.setLoop(true);
-	m_Sound.setVolume(m_Volume);
-	m_Sound.play();
+	SoundManager::get().init(m_AssetHandler);
 }
 
 void Game::setGameViewCenter(sf::Vector2f viewCenter)
@@ -187,45 +143,11 @@ void Game::addEntitys()
 
 	m_UIFont = m_AssetHandler->loadFontFromFile("Assets/Fonts/TestFont.ttf");
 
-	m_PlayerRandomCharacterID = rand() * Map::get().m_Data.m_Regions.size() / RAND_MAX + 1;
+	m_PlayerRandomCharacterID = rand() % Map::get().m_Data.m_Regions.size() + 1;
+
 	fillEmptyRegionWithOwners();
-
-	//UI
-	Vector2D mainMenuPosition = { 960.0f, 540.0f };
-	Vector2D mainMenuSize = { 300.0f, 500.0f };
-	UIManager::get().createUIWindowElement(m_UIFont, UIType::MainMenu, mainMenuPosition, mainMenuSize);
-
-	Vector2D endWindowPosition = { 960.0f, 540.0f };
-	Vector2D endWindowSize = { 300.0f, 500.0f };
-	UIManager::get().createUIWindowElement(m_UIFont, UIType::EndWindow, endWindowPosition, endWindowSize);
-
-	Vector2D pauseWindowPosition = { 960.0f, 270.0f };
-	Vector2D pauseWindowSize = { 150.0f, 50.0f };
-	UIManager::get().createUIWindowElement(m_UIFont, UIType::PauseWindow, pauseWindowPosition, pauseWindowSize);
-
-	Vector2D characterWindowPosition = { 10.0f, 10.0f };
-	Vector2D characterWindowSize = { 600.0f, 1060.0f };
-	UIManager::get().createUIWindowElement(m_UIFont, UIType::CharacterWindow, characterWindowPosition, characterWindowSize);
-
-	Vector2D regionWindowPosition = { 10.0f, Window::getWindow()->getSize().y - (600.0f + 10.0f) };
-	Vector2D regionWindowSize = { 600.0f, 600.0f };
-	UIManager::get().createUIWindowElement(m_UIFont, UIType::RegionWindow, regionWindowPosition, regionWindowSize);
-
-	Vector2D familyTreeWindowPosition = { characterWindowPosition.x * 2 + characterWindowSize.x, 10.0f };
-	Vector2D familyTreeWindowSize = { Window::getWindow()->getSize().x - familyTreeWindowPosition.x - 10.0f, 1060.0f };
-	UIManager::get().createUIWindowElement(m_UIFont, UIType::FamilyTreeWindow, familyTreeWindowPosition, familyTreeWindowSize);
-
-	Vector2D warWindowPosition = { 10.0f, Window::getWindow()->getSize().y - (300.0f + 10.0f) };
-	Vector2D warWindowSize = { 1900.0f, 300.0f };
-	UIManager::get().createUIWindowElement(m_UIFont, UIType::WarWindow, warWindowPosition, warWindowSize);
-
-	Vector2D statBarPosition = { Window::getWindow()->getSize().x - (400.0f + 10.0f), 10.0f };
-	Vector2D statBarSize = { 400.0f, 50.0f };
-	UIManager::get().createUIWindowElement(m_UIFont, UIType::StatBar, statBarPosition, statBarSize);
-
-	Vector2D dateBarPosition = { Window::getWindow()->getSize().x - (600.0f + 10.0f), Window::getWindow()->getSize().y - (50.0f + 10.0f) };
-	Vector2D dateBarSize = { 600.0f, 50.0f };
-	UIManager::get().createUIWindowElement(m_UIFont, UIType::DateBar, dateBarPosition, dateBarSize);
+	
+	createUI();
 }
 
 void Game::fillEmptyRegionWithOwners()
@@ -261,4 +183,83 @@ CharacterID Game::addRandomEntityOwningRegion(std::vector<size_t> regions, bool 
 	UIManager::get().createUITextElement(m_UIFont, character, CharacterManager::get().getCharacter(character).m_KingdomName, regions);
 	CharacterManager::get().updateTitleAndUIText(CharacterManager::get().getCharacter(character));
 	return character;
+}
+
+void Game::createUI()
+{
+	Vector2D mainMenuPosition = { 960.0f, 540.0f };
+	Vector2D mainMenuSize = { 300.0f, 500.0f };
+	UIManager::get().createUIWindowElement(m_UIFont, UIType::MainMenu, mainMenuPosition, mainMenuSize);
+
+	Vector2D endWindowPosition = { 960.0f, 540.0f };
+	Vector2D endWindowSize = { 300.0f, 500.0f };
+	UIManager::get().createUIWindowElement(m_UIFont, UIType::EndWindow, endWindowPosition, endWindowSize);
+
+	Vector2D pauseWindowPosition = { 960.0f, 270.0f };
+	Vector2D pauseWindowSize = { 150.0f, 50.0f };
+	UIManager::get().createUIWindowElement(m_UIFont, UIType::PauseWindow, pauseWindowPosition, pauseWindowSize);
+
+	Vector2D characterWindowPosition = { 10.0f, 10.0f };
+	Vector2D characterWindowSize = { 600.0f, 1060.0f };
+	UIManager::get().createUIWindowElement(m_UIFont, UIType::CharacterWindow, characterWindowPosition, characterWindowSize);
+
+	Vector2D regionWindowPosition = { 10.0f, Window::getWindow()->getSize().y - (600.0f + 10.0f) };
+	Vector2D regionWindowSize = { 600.0f, 600.0f };
+	UIManager::get().createUIWindowElement(m_UIFont, UIType::RegionWindow, regionWindowPosition, regionWindowSize);
+
+	Vector2D armyWindowPosition = { 10.0f, 10.0f };
+	Vector2D armyWindowSize = { 600.0f, 300.0f };
+	UIManager::get().createUIWindowElement(m_UIFont, UIType::ArmyWindow, armyWindowPosition, armyWindowSize);
+
+	Vector2D familyTreeWindowPosition = { characterWindowPosition.x * 2 + characterWindowSize.x, 10.0f };
+	Vector2D familyTreeWindowSize = { Window::getWindow()->getSize().x - familyTreeWindowPosition.x - 10.0f, 1060.0f };
+	UIManager::get().createUIWindowElement(m_UIFont, UIType::FamilyTreeWindow, familyTreeWindowPosition, familyTreeWindowSize);
+
+	Vector2D warWindowPosition = { 10.0f, Window::getWindow()->getSize().y - (300.0f + 10.0f) };
+	Vector2D warWindowSize = { 1900.0f, 300.0f };
+	UIManager::get().createUIWindowElement(m_UIFont, UIType::WarWindow, warWindowPosition, warWindowSize);
+
+	Vector2D statBarPosition = { Window::getWindow()->getSize().x - (400.0f + 10.0f), 10.0f };
+	Vector2D statBarSize = { 400.0f, 50.0f };
+	UIManager::get().createUIWindowElement(m_UIFont, UIType::StatBar, statBarPosition, statBarSize);
+
+	Vector2D dateBarPosition = { Window::getWindow()->getSize().x - (600.0f + 10.0f), Window::getWindow()->getSize().y - (50.0f + 10.0f) };
+	Vector2D dateBarSize = { 600.0f, 50.0f };
+	UIManager::get().createUIWindowElement(m_UIFont, UIType::DateBar, dateBarPosition, dateBarSize);
+}
+
+void Game::showSplashScreen(sf::Vector2f resolution, sf::View& uiView)
+{
+	sf::Texture logoTexture = AssetHandler::get().getTextureAtPath("Assets/Graphics/UI/Logo.png");
+
+	sf::Sprite logoSprite;
+	logoSprite.setTexture(logoTexture, true);
+	logoSprite.setScale(1200 / logoSprite.getLocalBounds().width, 700 / logoSprite.getLocalBounds().height);
+	logoSprite.setPosition(resolution.x * 0.5f - logoSprite.getLocalBounds().width * 0.5f, resolution.y * 0.5f - logoSprite.getLocalBounds().height * 0.5f);
+	logoSprite.setColor(CharacterManager::get().getPlayerCharacter().m_RegionColor);
+
+	sf::Text logoText;
+	logoText.setFont(m_UIFont);
+	logoText.setCharacterSize(100);
+	logoText.setFillColor(CharacterManager::get().getPlayerCharacter().m_RegionColor);
+
+	std::string realmNameString = CharacterManager::get().getPlayerCharacter().m_KingdomName.substr(6);
+	std::stringstream stream;
+	stream << CharacterManager::get().getPlayerCharacter().m_Name << realmNameString;
+	logoText.setString(stream.str());
+	stream.str(std::string());
+	stream.clear();
+
+	logoText.setOrigin(logoText.getLocalBounds().width * 0.5f, logoText.getLocalBounds().height * 0.5f);
+	logoText.setPosition(resolution.x * 0.5f, resolution.y * 0.75f);
+
+	Window::getWindow()->setView(uiView);
+	Window::getWindow()->draw(logoSprite);
+	Window::getWindow()->draw(logoText);
+	Window::getWindow()->display();
+
+	while (!InputHandler::m_Inputs[KeyPressed] && !InputHandler::m_Inputs[MouseClicked])
+	{
+		InputHandler::handleInputEvents();
+	}
 }
